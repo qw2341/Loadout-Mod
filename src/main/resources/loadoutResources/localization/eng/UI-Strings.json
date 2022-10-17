@@ -1,0 +1,80 @@
+{
+	"loadout:OptionsMenu": {
+		"TEXT": [
+			"Spawn Mod relic at run start?",
+			"Render locked and unseen relics?",
+			"Show relics in Starter pool?",
+			"Show relics in Common pool?",
+			"Show relics in Uncommon pool?",
+			"Show relics in Rare pool?",
+			"Show relics in Boss pool?",
+			"Show relics in Shop pool?",
+			"Show relics in Event pool?",
+			"Show relics in Deprecated pool?",
+			"Amount of relic to obtain at once",
+			"Enable category name?",
+			"Enable category descriptions?",
+			"Remove relic from pool after obtaining?",
+			"Use item icons from Binding of Isaac? (Game Restart Needed)",
+			"Clear card modification data?"
+		]
+	},
+	"loadout:RelicSelectionScreen": {
+		"TEXT": [
+			"Deprecated:",
+			"Relics that might cause bugs.",
+			"Uncategorized:",
+			"",
+			"Shared:",
+			"Relics that are shared between characters",
+			"Relics from the original Slay the Spire",
+			"Click relics to select them for removal:"
+		]
+	},
+	"loadout:RelicSelectSortHeader": {
+		"TEXT": [
+			"Class",
+			"Rarity",
+			"A-Z",
+			"Mod",
+			"Ruby Key",
+			"Green Key",
+			"Blue Key",
+			"Relic Obtain Multiplier",
+			"Select",
+			"Click",
+			"Relic Selection Mode",
+			"Shared"
+		]
+	},
+	"loadout:PotionSelectSortHeader": {
+		"TEXT": [
+			"Class",
+			"Rarity",
+			"A-Z",
+			"Mod",
+			"Potion Slot"
+		]
+	},
+	"loadout:CardSelectSortHeader": {
+		"TEXT": [
+			"All",
+			"Selection Mode",
+			"Hand"
+		]
+	},
+	"loadout:CardViewPopupHeader": {
+		"TEXT": [
+			"Damage",
+			"Magic Number",
+			"Heal",
+			"Draw",
+			"Restore",
+			"Make Unplayable",
+			"Make Playable",
+			"Make Un-curse",
+			"Make Curse",
+			"Save For All Future Cards"
+		]
+	}
+}

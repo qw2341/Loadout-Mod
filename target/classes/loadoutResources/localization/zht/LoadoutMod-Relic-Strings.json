@@ -1,0 +1,107 @@
+{
+  "loadout:LoadoutBag": {
+    "NAME": "裝備箱",
+    "FLAVOR": "選什麽呢？當然是衣架了",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來獲取任何你想要的遺物。"
+    ]
+  },
+  "loadout:LoadoutBagAlt":{
+    "NAME": "死亡證明",
+    "FLAVOR": "選什麽呢？當然是鴨架了",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來獲取任何你想要的遺物。"
+    ]
+  },
+  "loadout:TheBin": {
+    "NAME": "回收桶",
+    "FLAVOR": "選什麽呢？當然是綻放印記了",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來移除任何你不想要的遺物。"
+    ]
+  },
+  "loadout:TheBinAlt": {
+    "NAME": "虛空",
+    "FLAVOR": "亞門🙏",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來吸入任何你不想要的遺物。"
+    ]
+  },"loadout:LoadoutCauldron": {
+  "NAME": "煉藥大鍋",
+  "FLAVOR": "加一點毒蘑菇，再加一個舊鞋跟。",
+  "DESCRIPTIONS": [
+    "右鍵此遺物來獲取任何你想要的藥水。"
+  ]
+},
+  "loadout:LoadoutCauldronAlt": {
+    "NAME": "媽媽的藥瓶",
+    "FLAVOR": "並沒有真的藥丸。",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來獲取任何你想要的藥水。"
+    ]
+  },
+  "loadout:CardPrinter": {
+    "NAME": "印卡機",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來添加卡牌進入牌組；戰鬥中使用也會同時添加進手牌。",
+      "獲取任何卡牌。"
+    ]
+  },
+  "loadout:CardShredder": {
+    "NAME": "卡牌粉碎機",
+    "FLAVOR": "並不能幫你移除傷口",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來從牌組刪除卡牌; 戰鬥中使用也會同時將其從戰鬥中刪除。",
+      "摧毀任何卡牌。"
+    ]
+  },
+  "loadout:CardModifier": {
+    "NAME": "卡牌修改機",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來升級卡牌從牌組; 右鍵卡牌來修改它。",
+      "升級任何卡牌。 右鍵卡牌來修改它。"
+    ]
+  },
+  "loadout:CardPrinterAlt": {
+    "NAME": "卡牌盒",
+    "FLAVOR": "盡在卡牌中",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來添加卡牌進入牌組；戰鬥中使用也會同時添加進手牌。",
+      "獲取任何卡牌。"
+    ]
+  },
+  "loadout:CardShredderAlt": {
+    "NAME": "撲克牌殘片",
+    "FLAVOR": "吐根 + 鏡子",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來從牌組刪除卡牌; 戰鬥中使用也會同時將其從戰鬥中刪除。",
+      "摧毀任何卡牌。"
+    ]
+  },
+  "loadout:CardModifierAlt": {
+    "NAME": "空白卡牌",
+    "FLAVOR": "Jera",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來升級卡牌從牌組；右鍵卡牌來修改它。",
+      "升級任何卡牌。 右鍵卡牌來修改它。"
+    ]
+  },
+  "loadout:EventfulCompass": {
+    "NAME": "事件指南針",
+    "FLAVOR": "總是指向一些有趣的地方",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來選擇你想去的事件。"
+    ]
+  },
+  "loadout:EventfulCompassAlt": {
+    "NAME": "指南針",
+    "FLAVOR": "並不能帶你去超級隱藏房",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來選擇你想去的事件。"
+    ]
+  }
+
+
+}

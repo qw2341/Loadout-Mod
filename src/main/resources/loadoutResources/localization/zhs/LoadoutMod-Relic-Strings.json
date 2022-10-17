@@ -1,0 +1,105 @@
+{
+  "loadout:LoadoutBag": {
+    "NAME": "装备箱",
+    "FLAVOR": "选什么呢？当然是衣架了",
+    "DESCRIPTIONS": [
+      "右键此遗物来获取任何你想要的遗物。"
+    ]
+  },
+  "loadout:LoadoutBagAlt":{
+    "NAME": "死亡证明",
+    "FLAVOR": "选什么呢？当然是鸭架了",
+    "DESCRIPTIONS": [
+      "右键此遗物来获取任何你想要的遗物。"
+    ]
+  },
+  "loadout:TheBin": {
+    "NAME": "回收桶",
+    "FLAVOR": "选什么呢？当然是绽放印记了",
+    "DESCRIPTIONS": [
+      "右键此遗物来移除任何你不想要的遗物。"
+    ]
+  },
+  "loadout:TheBinAlt": {
+    "NAME": "虚空",
+    "FLAVOR": "亚门🙏",
+    "DESCRIPTIONS": [
+      "右键此遗物来吸入任何你不想要的遗物。"
+    ]
+  },"loadout:LoadoutCauldron": {
+  "NAME": "炼药大锅",
+  "FLAVOR": "加一点毒蘑菇，再加一个旧鞋跟。",
+  "DESCRIPTIONS": [
+    "右键此遗物来获取任何你想要的药水。"
+  ]
+},
+  "loadout:LoadoutCauldronAlt": {
+    "NAME": "妈妈的药瓶",
+    "FLAVOR": "并没有真的药丸。",
+    "DESCRIPTIONS": [
+      "右键此遗物来获取任何你想要的药水。"
+    ]
+  },
+  "loadout:CardPrinter": {
+    "NAME": "印卡机",
+    "FLAVOR": "可能很卡",
+    "DESCRIPTIONS": [
+      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。",
+      "获取任何卡牌。"
+    ]
+  },
+  "loadout:CardShredder": {
+    "NAME": "卡牌粉碎机",
+    "FLAVOR": "并不能帮你移除伤口",
+    "DESCRIPTIONS": [
+      "右键此遗物来从牌组删除卡牌; 战斗中使用也会同时将其从战斗中删除。",
+      "摧毁任何卡牌。"
+    ]
+  },
+  "loadout:CardModifier": {
+    "NAME": "卡牌修改机",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "右键此遗物来升级卡牌从牌组；右键卡牌来修改它。",
+      "升级任何卡牌。 右键卡牌来修改它。"
+    ]
+  },
+  "loadout:CardPrinterAlt": {
+    "NAME": "卡牌盒",
+    "FLAVOR": "尽在卡牌中",
+    "DESCRIPTIONS": [
+      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。",
+      "获取任何卡牌。"
+    ]
+  },
+  "loadout:CardShredderAlt": {
+    "NAME": "扑克牌残片",
+    "FLAVOR": "吐根 + 镜子",
+    "DESCRIPTIONS": [
+      "右键此遗物来从牌组删除卡牌; 战斗中使用也会同时将其从战斗中删除。",
+      "摧毁任何卡牌。"
+    ]
+  },
+  "loadout:CardModifierAlt": {
+    "NAME": "空白卡牌",
+    "FLAVOR": "Jera",
+    "DESCRIPTIONS": [
+      "右键此遗物来升级卡牌从牌组；右键卡牌来修改它。",
+      "升级任何卡牌。 右键卡牌来修改它。"
+    ]
+  },
+  "loadout:EventfulCompass": {
+    "NAME": "事件指南针",
+    "FLAVOR": "总是指向一些有趣的地方",
+    "DESCRIPTIONS": [
+      "右键此遗物来选择你想去的事件。"
+    ]
+  },
+  "loadout:EventfulCompassAlt": {
+    "NAME": "指南针",
+    "FLAVOR": "并不能带你去超级隐藏房",
+    "DESCRIPTIONS": [
+      "右键此遗物来选择你想去的事件。"
+    ]
+  }
+}

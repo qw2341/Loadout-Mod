@@ -1,0 +1,79 @@
+{
+	"loadout:OptionsMenu": {
+		"TEXT": [
+			"Spawn Mod relic au début de la course?",
+			"Rendre des reliques verrouillées et invisibles?",
+			"Montrer des reliques dans la piscine de démarrage?",
+			"Montrer des reliques dans la piscine commune?",
+			"Montrer des reliques dans une piscine peu commune?",
+			"Montrer des reliques dans une piscine rare?",
+			"Montrer des reliques dans le pool de boss?",
+			"Montrer des reliques dans la piscine de la boutique?",
+			"Montrer des reliques dans la piscine de l’événement?",
+			"Afficher les reliques dans un pool obsolète ?",
+			"Quantité de relique à obtenir immédiatement",
+			"Activer le nom de catégorie ?",
+			"Activer les descriptions de catégorie ?",
+			"Retirer la relique de la piscine après l’obtention?",
+			"Utiliser les icônes d'objets de Binding of Isaac? (Redémarrage du jeu nécessaire)",
+			"Effacer les données de modification de la carte?"
+		]
+	},
+	"loadout:RelicSelectionScreen": {
+		"TEXT": [
+			"Obsolescent:",
+			"Des reliques qui pourraient causer des bugs.",
+			"Non Classé:",
+			"",
+			"Partager:",
+			"Reliques partagées entre les personnages",
+			"Reliques de l'original Tuez la flèche",
+			"Cliquez sur les reliques pour les sélectionner à supprimer:"
+		]
+	},
+	"loadout:RelicSelectSortHeader": {
+		"TEXT": [
+			"Classe",
+			"Rareté",
+			"A-Z",
+			"Mod",
+			"Clé rubis",
+			"Clé émeraude",
+			"Clé saphir",
+			"Multiplicateur d'Obtention de Relique",
+			"Choisir",
+			"Cliquez sur",
+			"Mode de Sélection des Reliques"
+		]
+	},
+	"loadout:PotionSelectSortHeader": {
+		"TEXT": [
+			"Classe",
+			"Rareté",
+			"A-Z",
+			"Mod",
+			"Emplacement de Potion"
+		]
+	},
+	"loadout:CardSelectSortHeader": {
+		"TEXT": [
+			"Tout",
+			"Mode de Sélection",
+			"Main de Cartes"
+		]
+	},
+	"loadout:CardViewPopupHeader": {
+		"TEXT": [
+			"Endommager",
+			"Nombre magique",
+			"Guérir",
+			"Dessiner",
+			"Restaurer",
+			"Rendre injouable",
+			"Rendre jouable",
+			"Faire Un-malédiction",
+			"Faire Malédiction",
+			"Économisez Pour Toutes Les Futures Cartes"
+		]
+	}
+}

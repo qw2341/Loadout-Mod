@@ -1,0 +1,109 @@
+{
+  "loadout:LoadoutBag": {
+    "NAME": "Sac de Chargement",
+    "FLAVOR": "Un sac sorti de nulle part... Était-ce l’orgueil ?",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez."
+    ]
+  },
+  "loadout:LoadoutBagAlt": {
+    "NAME": "Acte de Décès",
+    "FLAVOR": "spawn 5.100.628",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez."
+    ]
+  },
+  "loadout:TheBin": {
+    "NAME": "Le Bac",
+    "FLAVOR": "Recycle toutes sortes de choses.",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour effacer toute relique que vous voulez."
+    ]
+  },
+  "loadout:TheBinAlt": {
+    "NAME": "Le Vide",
+    "FLAVOR": "C’est nul.",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour annuler toute relique que vous voulez."
+    ]
+  },
+  "loadout:LoadoutCauldron": {
+    "NAME": "Le Chaudron",
+    "FLAVOR": "Pinch of Death Cap, talon de chaussure.",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la potion que vous voulez."
+    ]
+  },
+  "loadout:LoadoutCauldronAlt": {
+    "NAME": "La Bouteille de Pilules de Maman",
+    "FLAVOR": "DÉMOLIT",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la potion que vous voulez."
+    ]
+  },
+  "loadout:CardPrinter": {
+    "NAME": "Imprimante à Cartes",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la carte de votre choix; l’utiliser pendant le combat l’ajoutera également à votre main.",
+      "Obtenez des cartes."
+    ]
+  },
+  "loadout:CardShredder": {
+    "NAME": "Déchiqueteuse de Cartes",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour effacer toute carte que vous voulez; l’utilisation pendant le combat le retirera également du combat.",
+      "Détruisez toutes les cartes."
+    ]
+  },
+  "loadout:CardModifier": {
+    "NAME": "Modificateur de Carte",
+    "FLAVOR": "Versa",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour modifier la carte de votre choix; cliquez avec le bouton droit sur les cartes pour les modifier.",
+      "Mettez à niveau toutes les cartes. Faites un clic droit sur une carte pour la modifier."
+    ]
+  },
+  "loadout:CardPrinterAlt": {
+    "NAME": "Jeu de Cartes",
+    "FLAVOR": "C’est dans les cartes",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la carte de votre choix; l’utiliser pendant le combat l’ajoutera également à votre main.",
+      "Obtenez des cartes."
+    ]
+  },
+  "loadout:CardShredderAlt": {
+    "NAME": "Carte Déchirée",
+    "FLAVOR": "Ipecac + Ma Réflexion",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour effacer toute carte que vous voulez; l’utilisation pendant le combat le retirera également du combat.",
+      "Détruisez toutes les cartes."
+    ]
+  },
+  "loadout:CardModifierAlt": {
+    "NAME": "Carte Vierge",
+    "FLAVOR": "Dissuasif",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour modifier la carte de votre choix; cliquez avec le bouton droit sur les cartes pour les modifier.",
+      "Mettez à niveau toutes les cartes. Cliquez avec le bouton droit sur une carte pour la modifier."
+    ]
+  },
+  "loadout:EventfulCompass": {
+    "NAME": "Boussole Mouvementée",
+    "FLAVOR": "Il pointe toujours vers un endroit intéressant",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner l’événement souhaité."
+    ]
+  },
+  "loadout:EventfulCompassAlt": {
+    "NAME": "La Boussole",
+    "FLAVOR": "La fin est proche",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner l’événement souhaité."
+    ]
+  }
+
+
+
+}

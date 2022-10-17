@@ -1,0 +1,109 @@
+{
+  "loadout:LoadoutBag": {
+    "NAME": "로드아웃 백",
+    "FLAVOR": "아무데도 가방이 없어. . . 그것은 오만함이었습니까?",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 유물을 얻습니다."
+    ]
+  },
+  "loadout:LoadoutBagAlt": {
+    "NAME": "사망 진단서",
+    "FLAVOR": "spawn 5.100.628",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 유물을 얻습니다."
+    ]
+  },
+  "loadout:TheBin": {
+    "NAME": "빈",
+    "FLAVOR": "모든 종류의 물건을 재활용합니다.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 유물을 지웁니다."
+    ]
+  },
+  "loadout:TheBinAlt": {
+    "NAME": "공허",
+    "FLAVOR": "그것은 짜증나.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 유물을 무효화하십시오."
+    ]
+  },
+  "loadout:LoadoutCauldron": {
+    "NAME": "가마솥",
+    "FLAVOR": "데스 캡의 핀치, 신발의 발 뒤꿈치.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 물약을 얻으십시오."
+    ]
+  },
+  "loadout:LoadoutCauldronAlt": {
+    "NAME": "엄마의 알약 병",
+    "FLAVOR": "눈물 흘려",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 물약을 얻으십시오."
+    ]
+  },
+  "loadout:CardPrinter": {
+    "NAME": "카드 프린터",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 얻으십시오. 전투 중에 사용하면 손에 추가됩니다.",
+      "카드를 구입하십시오."
+    ]
+  },
+  "loadout:CardShredder": {
+    "NAME": "카드 슈레더",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 지웁니다. 전투 중에 사용하면 전투에서 제거됩니다.",
+      "모든 카드를 파괴하십시오."
+    ]
+  },
+  "loadout:CardModifier": {
+    "NAME": "카드 수정 기계",
+    "FLAVOR": "Versa",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 수정하십시오. 카드를 마우스 오른쪽 단추로 클릭하여 수정합니다.",
+      "모든 카드를 업그레이드합니다. 카드를 마우스 오른쪽 버튼으로 클릭하여 수정합니다."
+    ]
+  },
+  "loadout:CardPrinterAlt": {
+    "NAME": "카드 덱",
+    "FLAVOR": "카드에 있습니다.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 얻으십시오. 전투 중에 사용하면 손에 추가됩니다.",
+      "카드를 구입하십시오."
+    ]
+  },
+  "loadout:CardShredderAlt": {
+    "NAME": "찢어진 카드",
+    "FLAVOR": "이펙 + 내 반성",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 지웁니다. 전투 중에 사용하면 전투에서 제거됩니다.",
+      "모든 카드를 파괴하십시오."
+    ]
+  },
+  "loadout:CardModifierAlt": {
+    "NAME": "빈 카드",
+    "FLAVOR": "억지 력",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 카드를 수정하십시오. 카드를 마우스 오른쪽 버튼으로 클릭하여 수정합니다.",
+      "모든 카드를 업그레이드합니다. 카드를 마우스 오른쪽 단추로 클릭하여 수정합니다."
+    ]
+  },
+  "loadout:EventfulCompass": {
+    "NAME": "다사다난한 나침반",
+    "FLAVOR": "항상 흥미로운 곳을 가리 킵니다.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 이벤트를 선택합니다."
+    ]
+  },
+  "loadout:EventfulCompassAlt": {
+    "NAME": "나침반",
+    "FLAVOR": "끝이 가까웠다.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 이벤트를 선택합니다."
+    ]
+  }
+
+
+
+}
