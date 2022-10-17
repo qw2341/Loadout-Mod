@@ -608,6 +608,8 @@ public class EventSelectScreen implements ScrollBarListener
             }
 
         }
+
+        this.owner.flash();
     }
 
     public void render(SpriteBatch sb)

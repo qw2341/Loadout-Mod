@@ -163,10 +163,6 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
                     if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                         upgradeCard(card);
                     } else
-//                    card.upgrade();
-//                    AbstractDungeon.topLevelEffects.add(new ShowCardBrieflyEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
-//                    AbstractDungeon.topLevelEffects.add(new UpgradeShineEffect(Settings.WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
-//                    CardCrawlGame.sound.play("CARD_UPGRADE");
                         upgradeCard(card,Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0f, Settings.HEIGHT / 2.0F);
                 }
 
@@ -177,7 +173,6 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
 
     public void upgradeCard(AbstractCard card, float x, float y) {
         if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-            //upgradeCardInCombat(card);
             card.upgrade();
             card.superFlash();
         } else {
@@ -194,47 +189,6 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
         this.upgradeCard(card,Settings.WIDTH / 2.0F,Settings.HEIGHT / 2.0F);
     }
 
-    public void upgradeCardInCombat(AbstractCard card) {
-        String cardId = card.cardID;
-        boolean found = false;
-        if (!found) {
-            for (AbstractCard ac : AbstractDungeon.player.hand.group) {
-                if(ac.cardID.equals(cardId) && !ac.upgraded) {
-                    ac.upgrade();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (!found) {
-            for (AbstractCard ac : AbstractDungeon.player.drawPile.group) {
-                if(ac.cardID.equals(cardId) && !ac.upgraded) {
-                    ac.upgrade();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (!found) {
-            for (AbstractCard ac : AbstractDungeon.player.discardPile.group) {
-                if(ac.cardID.equals(cardId) && !ac.upgraded) {
-                    ac.upgrade();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (!found) {
-            for (AbstractCard ac : AbstractDungeon.player.exhaustPile.group) {
-                if(ac.cardID.equals(cardId) && !ac.upgraded) {
-                    ac.upgrade();
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-    }
 
     @Override
     public AbstractRelic makeCopy() {
