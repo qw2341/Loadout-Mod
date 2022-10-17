@@ -103,15 +103,10 @@ public class EventSelectScreen implements ScrollBarListener
         }
 
         public void update() {
-            //this.hb.cX = this.x;
-            //this.hb.cY = this.y;
-
             this.hb.update();
         }
 
         public void render(SpriteBatch sb) {
-
-
             if (this.hb != null) {
                 this.hb.render(sb);
                 if (this.hb.hovered) {
@@ -125,25 +120,14 @@ public class EventSelectScreen implements ScrollBarListener
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
                 }
-                //if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
-
-                        //FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
             }
 
         }
     }
-    private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString("RelicViewScreen");
-    public static final String[] rTEXT = rUiStrings.TEXT;
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] gTEXT = gUiStrings.TEXT;
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectionScreen"));
     public static final String[] TEXT = UiStrings.TEXT;
-    private static final CharacterStrings redStrings = CardCrawlGame.languagePack.getCharacterString("Ironclad");
-    private static final CharacterStrings greenStrings = CardCrawlGame.languagePack.getCharacterString("Silent");
-    private static final CharacterStrings blueStrings = CardCrawlGame.languagePack.getCharacterString("Defect");
-    private static final CharacterStrings purpleStrings = CardCrawlGame.languagePack.getCharacterString("Watcher");
-
-    private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
     private static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 450.0F * Settings.scale;
@@ -160,11 +144,6 @@ public class EventSelectScreen implements ScrollBarListener
     private int scrollTitleCount = 0;
     private int row = 0;
     private int col = 0;
-    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
-    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
-    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
-    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
-    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
 
     private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
     private EventButton hoveredEvent = null;
@@ -227,14 +206,10 @@ public class EventSelectScreen implements ScrollBarListener
         this.eventAddingMods = new HashSet<>();
         this.eventModNames = new HashMap<>();
 
-        //addBaseGameEvents();
-
         for (AddEventParams aep : LoadoutMod.eventsToDisplay) {
             String eID = aep.eventID;
             if (eID == null) continue;
-            //LoadoutMod.logger.info("Adding event: " + eID);
-            //eID = BaseMod.underScoreEventIDs.get(eID);
-            //if (!BaseMod.underScoreEventIDs.containsKey(eID)) continue;
+
 
             Class<? extends AbstractEvent> eClass = aep.eventClass;
 
