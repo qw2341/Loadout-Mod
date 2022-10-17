@@ -174,7 +174,7 @@ StartGameSubscriber{
     public static ArrayList<AbstractCard> cardsToDisplay = new ArrayList<>();
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
-    public static ArrayList<AbstractPower> powersToDisplay = new ArrayList<>();
+    public static ArrayList<Class<? extends AbstractPower>> powersToDisplay = new ArrayList<>();
 
     public static boolean isScreenUp = false;
 
@@ -1048,7 +1048,7 @@ StartGameSubscriber{
         powersToDisplay.clear();
         for (String pid : BaseMod.getPowerKeys()) {
             try {
-                powersToDisplay.add(BaseMod.getPowerClass(pid).getDeclaredConstructor().newInstance());
+                powersToDisplay.add(BaseMod.getPowerClass(pid));
             } catch (Exception e) {
                 logger.error("Failed to instantiate power");
             }

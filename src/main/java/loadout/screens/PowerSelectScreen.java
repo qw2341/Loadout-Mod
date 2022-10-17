@@ -4,15 +4,12 @@ import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -22,18 +19,13 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
-import loadout.helper.PotionClassComparator;
 import loadout.helper.PotionModComparator;
 import loadout.helper.PotionNameComparator;
-import loadout.helper.PotionTierComparator;
-import loadout.relics.LoadoutBag;
 import loadout.relics.PowerGiver;
-import loadout.relics.TrashBin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -90,7 +82,7 @@ public class PowerSelectScreen implements ScrollBarListener
     private ScrollBar scrollBar;
     private Hitbox controllerRelicHb = null;
 
-    private ArrayList<AbstractPower> powers;
+    private ArrayList<Class<? extends AbstractPower>> powers;
     private boolean show = false;
     public static int selectMult = 1;
     private ArrayList<AbstractPower> selectedPowers = new ArrayList<>();
@@ -177,7 +169,7 @@ public class PowerSelectScreen implements ScrollBarListener
         scrolledUsingBar(0.0F);
     }
 
-    public void open(ArrayList<AbstractPower> powers)
+    public void open(ArrayList<Class<? extends AbstractPower>> powers)
     {
         if(AbstractDungeon.isScreenUp) {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
