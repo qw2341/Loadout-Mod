@@ -1,18 +1,29 @@
 package loadout.screens;
 
+import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -24,59 +35,135 @@ import loadout.LoadoutMod;
 import loadout.helper.PotionModComparator;
 import loadout.helper.PotionNameComparator;
 import loadout.relics.PowerGiver;
+import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 public class PowerSelectScreen implements ScrollBarListener
 {
+    public static AbstractCreature dummyCreature = new AbstractCreature() {
+        public final String name = "Placeholder";
+
+        @Override
+        public void damage(DamageInfo damageInfo) {
+
+        }
+
+        @Override
+        public void render(SpriteBatch spriteBatch) {
+
+        }
+    };
+
+    public static AbstractCard dummyCard = new Madness();
+
     public class PowerButton {
+
         public Class<? extends AbstractPower> pClass;
+        public AbstractPower instance;
         public String id;
+        public PowerStrings powerStrings;
         public String name;
         public AbstractPower.PowerType type;
         public String modID;
         public String[] desc;
-        public int stack;
+        public int amount;
         public Hitbox hb;
         public float x;
         public float y;
         public ArrayList<PowerTip> tips;
+        public TextureAtlas.AtlasRegion region48;
+        public TextureAtlas.AtlasRegion region128;
 
         public PowerButton(Class<? extends AbstractPower> pClass) {
             this.pClass = pClass;
-            //this.power = pClass.getDeclaredConstructor();
+            Constructor<?>[] con = pClass.getDeclaredConstructors();
+            this.tips = new ArrayList<>();
             try {
+//                int paramCt = con[0].getParameterCount();
+//                Class[] params = con[0].getParameterTypes();
+//                Object[] paramz = new Object[paramCt];
+//
+//                for (int i = 0 ; i< paramCt; i++) {
+//                    Class param = params[i];
+//                    if (AbstractCreature.class.isAssignableFrom(param)) {
+//                        paramz[i] = dummyCreature;
+//                    } else if (int.class.isAssignableFrom(param)) {
+//                        paramz[i] = 0;
+//                    } else if (AbstractCard.class.isAssignableFrom(param)) {
+//                        paramz[i] = dummyCard;
+//                    } else if (boolean.class.isAssignableFrom(param)) {
+//                        paramz[i] = true;
+//                    }
+//                }
+//                LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+//
+//                this.instance = (AbstractPower) con[0].newInstance(paramz);
+
                 this.id = (String) pClass.getField("POWER_ID").get(null);
-                this.name = (String) pClass.getField("NAME").get(null);
-                String[] desc = ((String[]) pClass.getField("DESCRIPTIONS").get(null));
-                this.desc = desc;
+                this.powerStrings = ReflectionHacks.getPrivateStatic(pClass,"powerStrings");
+                //this.name = instance.name;
+                this.name = powerStrings.NAME;
+                this.desc = powerStrings.DESCRIPTIONS;
                 this.modID = WhatMod.findModID(pClass);
                 if (this.modID == null) this.modID = "Slay the Spire";
-                if(desc != null && desc.length > 0) {
-                    for (String d : desc)
-                        this.tips.add(new PowerTip(this.name, d));
-                    //this.tips.add(new PowerTip(this.name, desc[0]));
-                }
-                this.tips.add(new PowerTip("Mod",this.modID));
+
+                //TextureAtlas ta = (TextureAtlas) pClass.getField("atlas").get(null);
+
+
+
             } catch (Exception e) {
-                LoadoutMod.logger.info("Failed to create power button for: " + pClass.getName());
+
+                LoadoutMod.logger.info("Failed to create power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
+                e.printStackTrace();
             }
+            if (this.name == null) this.name = "Unnamed Power";
+            if(desc != null && desc.length > 0) {
+                String fullD = StringUtils.join(desc," ");
+//                for (String d : desc)
+//                {
+//                    if (d != null)
+//                        this.tips.add(new PowerTip(this.name, d));
+//                }
+
+                this.tips.add(new PowerTip(this.name, fullD, region48));
+            }
+            this.tips.add(new PowerTip("Mod",this.modID));
             this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
-            this.stack = 0;
+            this.amount = 0;
             this.x = 0;
             this.y = 0;
+            this.loadRegion(StringUtils.lowerCase(this.id));
+            //this.type = instance.type;
+            LoadoutMod.logger.info("Created power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
         }
 
         public void update() {
             this.hb.update();
         }
+        protected void loadRegion(String fileName) {
+            this.region48 = AbstractPower.atlas.findRegion("48/" + fileName);
+            this.region128 = AbstractPower.atlas.findRegion("128/" + fileName);
+        }
 
         public void render(SpriteBatch sb) {
             if (this.hb != null) {
                 this.hb.render(sb);
+
+                if(this.region128 != null) {
+                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 1.0F));
+                    sb.draw(this.region128, x - (float)this.region128.packedWidth / 2.0F, y - (float)this.region128.packedHeight / 2.0F, (float)this.region128.packedWidth / 2.0F, (float)this.region128.packedHeight / 2.0F, (float)this.region128.packedWidth, (float)this.region128.packedHeight, Settings.scale, Settings.scale, 0.0F);
+
+                } else {
+                    if (this.region48 != null) {
+                        sb.setColor(new Color(1.0F, 1.0F, 1.0F, 1.0F));
+                        sb.draw(this.region48, x - (float)this.region48.packedWidth / 2.0F, y - (float)this.region48.packedHeight / 2.0F, (float)this.region48.packedWidth / 2.0F, (float)this.region48.packedHeight / 2.0F, 128.0f, 128.0f, Settings.scale, Settings.scale, 0.0F);
+
+                    }
+                }
+
                 if (this.hb.hovered) {
                     sb.setBlendFunction(770, 1);
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
@@ -87,6 +174,11 @@ public class PowerSelectScreen implements ScrollBarListener
                     TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
+                }
+                if (this.amount > 0) {
+                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+30.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
+                } else if (this.amount < 0) {
+                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+30.0f, y-30.0f, 3.0f, Settings.RED_TEXT_COLOR);
                 }
             }
         }
@@ -109,12 +201,12 @@ public class PowerSelectScreen implements ScrollBarListener
     private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
     private static final float SPACE = 80.0F * Settings.scale;
-    protected static final float START_X = 750.0F * Settings.scale;
+    protected static final float START_X = 300.0F * Settings.scale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
-    public static final float SPACE_X = 226.0F * Settings.yScale;
+    public static final float SPACE_X = 300.0F * Settings.yScale;
 
-    private PotionSelectSortHeader sortHeader;
+    private PowerSelectSortHeader sortHeader;
 
     protected float scrollY = START_Y;
     private float targetY = this.scrollY;
@@ -161,6 +253,11 @@ public class PowerSelectScreen implements ScrollBarListener
 
     private AbstractRelic owner;
 
+    private InputAction shiftKey;
+    private InputAction ctrlKey;
+
+
+
     public boolean doneSelecting()
     {
         return doneSelecting;
@@ -173,12 +270,21 @@ public class PowerSelectScreen implements ScrollBarListener
         return ret;
     }
 
-    public PowerSelectScreen(boolean isDeleteMode, AbstractRelic owner)
+    public PowerSelectScreen(AbstractRelic owner)
     {
         scrollBar = new ScrollBar(this);
-
-        this.isDeleteMode = isDeleteMode;
+        this.sortHeader = new PowerSelectSortHeader(this);
         this.owner = owner;
+        this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
+        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+
+        this.powers = new ArrayList<>();
+
+        for (Class<? extends AbstractPower> pClass : LoadoutMod.powersToDisplay) {
+            this.powers.add(new PowerButton(pClass));
+        }
+
+
     }
 
     private void sortOnOpen() {
@@ -224,7 +330,7 @@ public class PowerSelectScreen implements ScrollBarListener
         scrolledUsingBar(0.0F);
     }
 
-    public void open(ArrayList<Class<? extends AbstractPower>> powers)
+    public void open(HashMap<String,Integer> savedPowers)
     {
         if(AbstractDungeon.isScreenUp) {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
@@ -243,10 +349,11 @@ public class PowerSelectScreen implements ScrollBarListener
         confirmButton.isDisabled = false;
         confirmButton.show();
         controllerRelicHb = null;
-        this.powers = new ArrayList<>();
 
-        for (Class pClass : powers) {
-            this.powers.add(new PowerButton(pClass));
+        for (PowerButton pb : this.powers) {
+            if (savedPowers.containsKey(pb.id)) {
+                pb.amount = savedPowers.get(pb.id);
+            }
         }
 
         targetY = scrollLowerBound;
@@ -269,6 +376,7 @@ public class PowerSelectScreen implements ScrollBarListener
             this.powers.clear();
         }
     }
+
 
     public boolean isOpen()
     {
@@ -322,6 +430,17 @@ public class PowerSelectScreen implements ScrollBarListener
                 }
             }
         }
+
+        if (this.shiftKey.isPressed() && this.ctrlKey.isPressed()) {
+            selectMult = 50;
+        } else if (this.shiftKey.isPressed()) {
+            selectMult = 10;
+        } else if (this.ctrlKey.isPressed()) {
+            selectMult = 5;
+        } else {
+            selectMult = 1;
+        }
+
         confirmButton.update();
         this.sortHeader.update();
 
@@ -341,7 +460,8 @@ public class PowerSelectScreen implements ScrollBarListener
                 if (hoveredPower == clickStartedPower)
                 {
 
-
+                    clickStartedPower.amount += selectMult;
+                    ((PowerGiver)owner).modifyAmount(clickStartedPower.id, +selectMult);
 
                     this.owner.flash();
                     clickStartedPower = null;
@@ -361,6 +481,8 @@ public class PowerSelectScreen implements ScrollBarListener
                 CInputActionSet.select.unpress();
                 if (hoveredPower == clickStartedPower)
                 {
+                    clickStartedPower.amount -= selectMult;
+                    ((PowerGiver)owner).modifyAmount(clickStartedPower.id, -selectMult);
                     clickStartedPower = null;
                 }
             }
@@ -447,9 +569,8 @@ public class PowerSelectScreen implements ScrollBarListener
         for (PowerButton p : list)
         {
             p.update();
-            p.hb.move(p.x, p.y);
-            if(!isDeleteMode)
-                p.update();
+            p.hb.move(p.x  + 150.0f, p.y);
+
             if (p.hb.hovered)
             {
                 hoveredPower = p;
@@ -497,7 +618,7 @@ public class PowerSelectScreen implements ScrollBarListener
             if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
                     //check if the name is alphanumeric
-                    char pFirst = (LoadoutMod.languageSupport().equals("eng")&&p.name.substring(0,1).matches("[A-Za-z\\d]+")) ? p.name.toUpperCase().charAt(0) : PotionNameComparator.editModPotionId(p.id).toUpperCase().charAt(0);
+                    char pFirst = (LoadoutMod.languageSupport().equals("eng")&& p.name.length() > 0 &&p.name.substring(0,1).matches("[A-Za-z\\d]+")) ? p.name.toUpperCase().charAt(0) : PotionNameComparator.editModPotionId(p.id).toUpperCase().charAt(0);
                     //char pFirst = PotionNameComparator.editModPotionId(p.ID).toUpperCase().charAt(0);
                     if (pFirst != prevFirst) {
                         row++;
@@ -552,26 +673,17 @@ public class PowerSelectScreen implements ScrollBarListener
                     }
                 }
             }
-            if (col == 10) {
+            if (col == 5) {
                 col = 0;
                 row += 1;
             }
-            curX = (START_X + SPACE * col);
+            curX = (START_X + SPACE_X * col);
             curY = (scrollY - SPACE * row);
 
-//            p.posX = curX;
-//            p.posY = curY;
-//                if(selectedPowers.contains(p)) {
-//                    sb.setColor(new Color(1.0F, 0.8F, 0.2F, 0.5F + (
-//                            MathUtils.cosDeg((float)(System.currentTimeMillis() / 4L % 360L)) + 1.25F) / 5.0F));
-//                    sb.draw(ImageMaster.FILTER_GLOW_BG, curX-60.0F*Settings.scale, curY-64.0F*Settings.yScale, 64.0F, 64.0F, 80.0f*1.5f, 80.0f*1.5f, Settings.scale, Settings.scale, 0.0F, 0, 0, 128, 128, false, false);
-//                    p.renderOutline(sb, Color.GOLD);
-//                    p.labRender(sb);
-//                } else {
-//                    outlineColor = PotionClassComparator.getRelicColor(p);
-//                    p.renderOutline(sb,outlineColor);
-//                    p.labRender(sb);
-//                }
+            p.x = curX;
+            p.y = curY;
+
+            p.render(sb);
 
 
             col += 1;

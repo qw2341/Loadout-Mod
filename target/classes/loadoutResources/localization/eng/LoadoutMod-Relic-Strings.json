@@ -101,5 +101,19 @@
     "DESCRIPTIONS": [
       "Right-click this relic to select the event you want."
     ]
+  },
+  "loadout:PowerGiver": {
+    "NAME": "PowerGiver",
+    "FLAVOR": "It always points to somewhere interesting",
+    "DESCRIPTIONS": [
+      "Right-click this relic to select the event you want."
+    ]
+  },
+  "loadout:PowerGiverAlt": {
+    "NAME": "PowerGiver",
+    "FLAVOR": "The end is near",
+    "DESCRIPTIONS": [
+      "Right-click this relic to select the event you want."
+    ]
   }
 }

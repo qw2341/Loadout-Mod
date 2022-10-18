@@ -1,20 +1,30 @@
 package loadout.relics;
 
+import basemod.BaseMod;
 import basemod.abstracts.CustomRelic;
+import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.audio.Sfx;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.PotionSelectScreen;
 import loadout.screens.PowerSelectScreen;
 import loadout.util.TextureLoader;
+
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
 
 import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
@@ -22,7 +32,7 @@ import static loadout.relics.LoadoutBag.isIsaacMode;
 /**
  * TODO: Unfinished
  */
-public class PowerGiver extends CustomRelic implements ClickableRelic {
+public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSavable<HashMap<String,Integer>> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("PowerGiver");
@@ -35,6 +45,8 @@ public class PowerGiver extends CustomRelic implements ClickableRelic {
     private boolean fakeHover = false;
 
     public static boolean isSelectionScreenUp = false;
+
+    public HashMap<String, Integer> savedPowers;
 
 
 
@@ -51,6 +63,10 @@ public class PowerGiver extends CustomRelic implements ClickableRelic {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        if (savedPowers == null) {
+            savedPowers = new HashMap<>();
         }
     }
 
@@ -97,25 +113,21 @@ public class PowerGiver extends CustomRelic implements ClickableRelic {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
         }
 
-        openPotionSelect();
+        openPowerSelect();
     }
 
 
 
-    private void openPotionSelect()
+    private void openPowerSelect()
     {
         powerSelected = false;
         isSelectionScreenUp = true;
-        //ArrayList<AbstractRelic> relics = relicsToDisplay;
-        //sort if relic filter is enabled
-        //boolean isSorting = Loader.isModLoadedOrSideloaded("RelicFilter")||Loader.isModLoadedOrSideloaded("Relic Filter")||Loader.isModLoadedOrSideloaded("RelicFilterMod");
-        //logger.info("Relic Filter mod is installed: " + isSorting);
         try {
-            if (this.powerSelectScreen == null) powerSelectScreen = new PowerSelectScreen(false,this);
+            if (this.powerSelectScreen == null) powerSelectScreen = new PowerSelectScreen(this);
         } catch (NoClassDefFoundError e) {
         logger.info("Error: PotionSelectScreen Class not found while opening potion select for cauldron!");
     }
-        if (this.powerSelectScreen != null) powerSelectScreen.open(powersToDisplay);
+        if (this.powerSelectScreen != null) powerSelectScreen.open(savedPowers);
     }
 
     @Override
@@ -182,5 +194,64 @@ public class PowerGiver extends CustomRelic implements ClickableRelic {
         }
     }
 
+    public void modifyAmount(String pID, int modAmt) {
+        if (savedPowers.containsKey(pID)) {
+            int result = savedPowers.get(pID) + modAmt;
+            if (result != 0)
+                savedPowers.put(pID, result);
+            else
+                savedPowers.remove(pID);
+        } else {
+            savedPowers.put(pID, modAmt);
+        }
+    }
 
+
+    @Override
+    public HashMap<String, Integer> onSave() {
+        return savedPowers;
+    }
+
+    @Override
+    public void onLoad(HashMap<String, Integer> savedPowers) {
+        this.savedPowers = savedPowers;
+    }
+
+    @Override
+    public void atBattleStart() {
+        savedPowers.keySet().forEach(id -> {
+            Class<? extends AbstractPower> powerClassToApply = BaseMod.getPowerClass(id);
+            AbstractPower powerToApply;
+            int amount = savedPowers.get(id);
+            try {
+                Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();
+                int paramCt = con[0].getParameterCount();
+                Class[] params = con[0].getParameterTypes();
+                Object[] paramz = new Object[paramCt];
+
+                for (int i = 0 ; i< paramCt; i++) {
+                    Class param = params[i];
+                    if (AbstractCreature.class.isAssignableFrom(param)) {
+                        paramz[i] = AbstractDungeon.player;
+                    } else if (int.class.isAssignableFrom(param)) {
+                        paramz[i] = amount;
+                    } else if (AbstractCard.class.isAssignableFrom(param)) {
+                        paramz[i] = new Madness();
+                    } else if (boolean.class.isAssignableFrom(param)) {
+                        paramz[i] = true;
+                    }
+                }
+                //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+
+                powerToApply = (AbstractPower) con[0].newInstance(paramz);
+
+                AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, (AbstractPower) powerToApply, amount));
+
+            } catch (Exception e) {
+                logger.info("Failed to get player power: " + id);
+                e.printStackTrace();
+            }
+
+        });
+    }
 }

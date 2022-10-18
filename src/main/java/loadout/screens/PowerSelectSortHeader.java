@@ -22,7 +22,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
     public static final String POTION_SLOT_NAME = pStrings.NAME;
     public boolean justSorted = false;
 
-    public static final float START_X = 600.0F * Settings.xScale;
+    public static final float START_X = 150.0F * Settings.xScale;
     public static final float SPACE_X = 226.0F * Settings.xScale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
@@ -30,8 +30,8 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
     private HeaderButtonPlus classButton;
     private HeaderButtonPlus nameButton;
     private HeaderButtonPlus modButton;
-    private HeaderButtonPlus slotAddButton;
-    private HeaderButtonPlus slotSubButton;
+    private HeaderButtonPlus resetAllButton;
+    private HeaderButtonPlus clearAllEffectsButton;
     public HeaderButtonPlus[] buttons;
     public int selectionIndex = -1;
 
@@ -55,12 +55,12 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
         yPosition -= SPACE_Y;
         this.modButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= 2*SPACE_Y;
-        this.slotAddButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
-        this.slotAddButton.isAscending = false;
+        this.resetAllButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.resetAllButton.isAscending = false;
         yPosition -= SPACE_Y;
-        this.slotSubButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
-        this.slotSubButton.isAscending = true;
-        this.buttons = new HeaderButtonPlus[] { this.classButton, this.rarityButton, this.nameButton, this.modButton, this.slotAddButton, this.slotSubButton };
+        this.clearAllEffectsButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.clearAllEffectsButton.isAscending = true;
+        this.buttons = new HeaderButtonPlus[] { this.classButton, this.rarityButton, this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
         this.powerSelectScreen = powerSelectScreen;
 
     }
@@ -124,10 +124,10 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
             clearActiveButtons();
             this.powerSelectScreen.sortByMod(isAscending);
             resetOtherButtons();
-        } else if (button == this.slotAddButton) {
+        } else if (button == this.resetAllButton) {
             AbstractDungeon.player.potionSlots ++;
             AbstractDungeon.player.potions.add(new PotionSlot(AbstractDungeon.player.potionSlots - 1));
-        } else if (button == this.slotSubButton) {
+        } else if (button == this.clearAllEffectsButton) {
             AbstractDungeon.player.potionSlots --;
 //            if(!(AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1) instanceof PotionSlot))
                 AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1);
@@ -135,7 +135,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
             return;
         }
         this.justSorted = true;
-        if (button != this.slotSubButton && button != this.slotAddButton)
+        if (button != this.clearAllEffectsButton && button != this.resetAllButton)
             button.setActive(true);
 
     }
