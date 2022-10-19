@@ -70,12 +70,14 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.resetAllButton.isAscending = true;
         this.resetAllButton.texture = ImageMaster.WARNING_ICON_VFX;
         this.resetAllButton.hb.resize(200.0F * Settings.xScale, 48.0F * Settings.scale);
+        this.resetAllButton.hb.moveX(xPosition - 100.0f);
         yPosition -= SPACE_Y;
         this.clearAllEffectsButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
         this.clearAllEffectsButton.isIcon = true;
         this.clearAllEffectsButton.texture = ImageMaster.MAP_NODE_REST;
         this.clearAllEffectsButton.isAscending = true;
         this.clearAllEffectsButton.hb.resize(200.0F * Settings.xScale, 48.0F * Settings.scale);
+        this.clearAllEffectsButton.hb.moveX(xPosition - 100.0f);
         this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
 
         this.targetSelectMenu = new DropdownMenu(this, new String[] {TEXT[4],TEXT[5]}, FontHelper.panelNameFont, Settings.CREAM_COLOR);

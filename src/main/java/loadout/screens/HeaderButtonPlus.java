@@ -19,6 +19,8 @@ public class HeaderButtonPlus extends SortHeaderButton {
     public Hitbox hb;
     public boolean isAscending;
     public boolean isActive;
+    public float x;
+    public float y;
     private String text;
     public HeaderButtonPlusListener delegate;
     private final float ARROW_SIZE;
@@ -49,6 +51,8 @@ public class HeaderButtonPlus extends SortHeaderButton {
         this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, Float.MAX_VALUE, 0.0F);
         this.hb = new Hitbox(100.0F * Settings.xScale, 48.0F * Settings.scale);
         this.hb.move(cx, cy);
+        this.x = cx;
+        this.y = cy;
     }
 
     public HeaderButtonPlus(String text, float cx, float cy, HeaderButtonPlusListener delegate) {
@@ -124,40 +128,40 @@ public class HeaderButtonPlus extends SortHeaderButton {
         float arrowCenterOffset = 16.0F;
 
         if (this.alignment == Alignment.CENTER) {
-            FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.hb.cX, this.hb.cY, color);
+            FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, color);
             sb.setColor(color);
             if (isSorting) {
-                sb.draw(ImageMaster.FILTER_ARROW, this.hb.cX - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
+                sb.draw(ImageMaster.FILTER_ARROW, this.x - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
             } else if (isToggle) {
-                sb.draw(ImageMaster.OPTION_TOGGLE, this.hb.cX - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                sb.draw(ImageMaster.OPTION_TOGGLE, this.x - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
                 if(isActive)
-                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.hb.cX - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.x - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
             } else {
-                sb.draw(this.texture, this.hb.cX - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
+                sb.draw(this.texture, this.x - arrowCenterOffset + this.textWidth / 2.0F + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
             }
         } else if (this.alignment == Alignment.RIGHT) {
-            FontHelper.renderFontRightAligned(sb, FontHelper.topPanelInfoFont, this.text, this.hb.cX, this.hb.cY, color);
+            FontHelper.renderFontRightAligned(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, color);
             sb.setColor(color);
             if (isSorting) {
-                sb.draw(ImageMaster.FILTER_ARROW, this.hb.cX - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
+                sb.draw(ImageMaster.FILTER_ARROW, this.x - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
             } else if (isToggle) {
-                sb.draw(ImageMaster.OPTION_TOGGLE, this.hb.cX - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                sb.draw(ImageMaster.OPTION_TOGGLE, this.x - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
                 if(isActive)
-                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.hb.cX - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.x - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
             } else {
-                sb.draw(this.texture, this.hb.cX - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
+                sb.draw(this.texture, this.x - arrowCenterOffset + arrowCenterOffset * Settings.xScale, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
             }
         } else if (this.alignment == Alignment.LEFT) {
-            FontHelper.renderFontLeft(sb, FontHelper.topPanelInfoFont, this.text, this.hb.cX, this.hb.cY, color);
+            FontHelper.renderFontLeft(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, color);
             sb.setColor(color);
             if (isSorting) {
-                sb.draw(ImageMaster.FILTER_ARROW, this.hb.cX + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
+                sb.draw(ImageMaster.FILTER_ARROW, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
             } else if (isToggle) {
-                sb.draw(ImageMaster.OPTION_TOGGLE, this.hb.cX + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                sb.draw(ImageMaster.OPTION_TOGGLE, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
                 if(isActive)
-                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.hb.cX + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
             } else {
-                sb.draw(this.texture, this.hb.cX + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.hb.cY - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
+                sb.draw(this.texture, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
             }
         }
         this.hb.render(sb);
