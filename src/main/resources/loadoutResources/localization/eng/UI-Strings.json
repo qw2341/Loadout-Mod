@@ -82,7 +82,10 @@
 			"A-Z",
 			"Mod",
 			"Reset Amounts",
-			"Clear De/Buffs"
+			"Clear De/Buffs",
+			"Player",
+			"Monsters",
+			"Target"
 		]
 	}
 }

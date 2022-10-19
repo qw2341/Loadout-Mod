@@ -7,6 +7,7 @@ loadout\relics\EventfulCompass.class
 loadout\screens\PotionSelectScreen$SortType.class
 loadout\LoadoutMod.class
 loadout\savables\CardModifications.class
+loadout\relics\PowerGiver$PowerTarget.class
 loadout\screens\EventSelectScreen$EventButton.class
 loadout\LoadoutMod$1.class
 loadout\screens\GCardSelectScreen$CardDisplayMode.class

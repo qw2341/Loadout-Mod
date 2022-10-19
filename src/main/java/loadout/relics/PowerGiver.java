@@ -16,11 +16,11 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
-import loadout.screens.PotionSelectScreen;
 import loadout.screens.PowerSelectScreen;
 import loadout.util.TextureLoader;
 
@@ -33,7 +33,7 @@ import static loadout.relics.LoadoutBag.isIsaacMode;
 /**
  * TODO: Unfinished
  */
-public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSavable<HashMap<String,Integer>> {
+public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSavable<HashMap<String,Integer>[]> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("PowerGiver");
@@ -47,9 +47,15 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
 
     public static boolean isSelectionScreenUp = false;
 
-    public HashMap<String, Integer> savedPowers;
+    public HashMap<String, Integer> savedPowersPlayer;
 
+    public HashMap<String, Integer> savedPowersMonster;
 
+    private final AbstractCard placeholderCard = new Madness();
+
+    public enum PowerTarget {
+        PLAYER, MONSTER
+    }
 
     public PowerGiver() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -66,8 +72,11 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
             }
         }
 
-        if (savedPowers == null) {
-            savedPowers = new HashMap<>();
+        if (savedPowersPlayer == null) {
+            savedPowersPlayer = new HashMap<>();
+        }
+        if (savedPowersMonster == null) {
+            savedPowersMonster = new HashMap<>();
         }
     }
 
@@ -128,7 +137,7 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
         } catch (NoClassDefFoundError e) {
         logger.info("Error: PotionSelectScreen Class not found while opening potion select for cauldron!");
     }
-        if (this.powerSelectScreen != null) powerSelectScreen.open(savedPowers);
+        if (this.powerSelectScreen != null) powerSelectScreen.open();
     }
 
     @Override
@@ -195,30 +204,46 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
         }
     }
 
-    public void modifyAmount(String pID, int modAmt) {
-        if (savedPowers.containsKey(pID)) {
-            int result = savedPowers.get(pID) + modAmt;
+    public void modifyAmountPlayer(String pID, int modAmt) {
+        if (savedPowersPlayer.containsKey(pID)) {
+            int result = savedPowersPlayer.get(pID) + modAmt;
             if (result != 0)
-                savedPowers.put(pID, result);
+                savedPowersPlayer.put(pID, result);
             else
-                savedPowers.remove(pID);
+                savedPowersPlayer.remove(pID);
         } else {
-            savedPowers.put(pID, modAmt);
+            savedPowersPlayer.put(pID, modAmt);
+        }
+    }
+    public void modifyAmountMonster(String pID, int modAmt) {
+        if (savedPowersMonster.containsKey(pID)) {
+            int result = savedPowersMonster.get(pID) + modAmt;
+            if (result != 0)
+                savedPowersMonster.put(pID, result);
+            else
+                savedPowersMonster.remove(pID);
+        } else {
+            savedPowersMonster.put(pID, modAmt);
         }
     }
 
 
     @Override
-    public HashMap<String, Integer> onSave() {
-        return savedPowers;
+    public HashMap<String, Integer>[] onSave() {
+        HashMap<String, Integer>[] ret = new HashMap[2];
+        ret[0] = savedPowersPlayer;
+        ret[1] = savedPowersMonster;
+
+        return ret;
     }
 
     @Override
-    public void onLoad(HashMap<String, Integer> savedPowers) {
-        this.savedPowers = savedPowers;
+    public void onLoad(HashMap<String, Integer>[] savedPowers) {
+        this.savedPowersPlayer = savedPowers[0];
+        this.savedPowersMonster = savedPowers[1];
     }
 
-    public AbstractPower getPowerForPlayer(String pID, int amount) {
+    public AbstractPower getPower(String pID, int amount, AbstractCreature creature, AbstractCard card) {
         Class<? extends AbstractPower> powerClassToApply = BaseMod.getPowerClass(pID);
         AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyCreature,0);
 
@@ -231,11 +256,11 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
             for (int i = 0 ; i< paramCt; i++) {
                 Class param = params[i];
                 if (AbstractCreature.class.isAssignableFrom(param)) {
-                    paramz[i] = AbstractDungeon.player;
+                    paramz[i] = creature;
                 } else if (int.class.isAssignableFrom(param)) {
                     paramz[i] = amount;
                 } else if (AbstractCard.class.isAssignableFrom(param)) {
-                    paramz[i] = new Madness();
+                    paramz[i] = card;
                 } else if (boolean.class.isAssignableFrom(param)) {
                     paramz[i] = true;
                 }
@@ -254,15 +279,36 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
     }
 
     public void applyPowerToPlayer(String id, int amount) {
-        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPowerForPlayer(id, amount), amount));
+        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPower(id, amount, AbstractDungeon.player, placeholderCard), amount));
 
+    }
+
+    public void applyPowerToMonster(String id, int amount, AbstractCreature monster) {
+        AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(monster,monster, getPower(id, amount, monster, placeholderCard), amount));
     }
 
     @Override
     public void atBattleStart() {
-        savedPowers.keySet().forEach(id -> {
-            int amount = savedPowers.get(id);
+        savedPowersPlayer.keySet().forEach(id -> {
+            int amount = savedPowersPlayer.get(id);
             applyPowerToPlayer(id, amount);
         });
+
+        for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+            savedPowersMonster.keySet().forEach(id -> {
+                int amount = savedPowersMonster.get(id);
+                applyPowerToMonster(id,amount,monster);
+            });
+        }
     }
+
+    @Override
+    public void onSpawnMonster(AbstractMonster monster) {
+        savedPowersMonster.keySet().forEach(id -> {
+            int amount = savedPowersMonster.get(id);
+            applyPowerToMonster(id,amount,monster);
+        });
+    }
+
+
 }

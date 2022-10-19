@@ -5,6 +5,7 @@ import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
+import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -1082,6 +1083,8 @@ StartGameSubscriber{
                 logger.error("Failed to instantiate power");
             }
         }
+
+        
 
     }
 

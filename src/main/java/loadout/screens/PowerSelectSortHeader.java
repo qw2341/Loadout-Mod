@@ -8,13 +8,17 @@ import com.megacrit.cardcrawl.actions.unique.RemoveAllPowersAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.potions.PotionSlot;
+import com.megacrit.cardcrawl.screens.options.DropdownMenu;
+import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
+import loadout.relics.PowerGiver;
 
-public class PowerSelectSortHeader implements HeaderButtonPlusListener {
+public class PowerSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
 
     private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PotionSelectSortHeader"));
     public static final String[] pTEXT = pUiStrings.TEXT;
@@ -34,6 +38,11 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
     private HeaderButtonPlus resetAllButton;
     private HeaderButtonPlus clearAllEffectsButton;
     public HeaderButtonPlus[] buttons;
+
+    private DropdownMenu targetSelectMenu;
+    public DropdownMenu[] dropdownMenus;
+    public String[] dropdownMenuHeaders;
+
     public int selectionIndex = -1;
 
     private static Texture img;
@@ -44,6 +53,8 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
 
 
     public PowerSelectSortHeader(PowerSelectScreen powerSelectScreen) {
+        this.powerSelectScreen = powerSelectScreen;
+
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         float xPosition = START_X;
@@ -63,7 +74,14 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
         this.clearAllEffectsButton.texture = ImageMaster.MAP_NODE_REST;
         this.clearAllEffectsButton.isAscending = true;
         this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
-        this.powerSelectScreen = powerSelectScreen;
+
+        this.targetSelectMenu = new DropdownMenu(this, new String[] {TEXT[4],TEXT[5]}, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+        this.targetSelectMenu.setSelectedIndex(powerSelectScreen.currentTarget.ordinal());
+
+        this.dropdownMenus = new DropdownMenu[] {this.targetSelectMenu};
+        this.dropdownMenuHeaders = new String[] {TEXT[6]};
+
+
 
     }
 
@@ -71,6 +89,16 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
     public void update() {
         for (HeaderButtonPlus button : this.buttons) {
             button.update();
+        }
+        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
+            if (dropdownMenu.isOpen) {
+                dropdownMenu.update();
+                return;
+            }
+        }
+
+        for (DropdownMenu dm : this.dropdownMenus) {
+            dm.update();
         }
     }
 
@@ -80,6 +108,12 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
                 return button.hb;
             }
         }
+
+        for (DropdownMenu dm: this.dropdownMenus) {
+            if(dm.getHitbox().hovered)
+                return dm.getHitbox();
+        }
+
         return null;
     }
 
@@ -154,6 +188,21 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
         for (HeaderButtonPlus b : this.buttons) {
             b.render(sb);
         }
+
+        float spaceY = 52.0f * Settings.yScale;
+        float yPos = START_Y - 7.0f * spaceY;
+
+        float xPos = 20.0f * Settings.scale;
+
+        for (int i = 0; i< this.dropdownMenus.length ; i++) {
+
+            DropdownMenu ddm = this.dropdownMenus[i];
+
+            ddm.render(sb,xPos,yPos);
+            yPos += 0.5f * spaceY;
+            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, dropdownMenuHeaders[i], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
+            yPos += spaceY;
+        }
     }
 
     protected void renderSelection(SpriteBatch sb) {
@@ -165,6 +214,14 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
 
                 sb.draw(img, (this.buttons[this.selectionIndex]).hb.cX - 80.0F - (this.buttons[this.selectionIndex]).textWidth / 2.0F * Settings.scale, (this.buttons[this.selectionIndex]).hb.cY - 43.0F, 100.0F, 43.0F, 160.0F + (this.buttons[this.selectionIndex]).textWidth, 86.0F, Settings.scale * doop, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
             }
+        }
+    }
+
+    @Override
+    public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
+        if (dropdownMenu == this.targetSelectMenu) {
+            this.powerSelectScreen.currentTarget = PowerGiver.PowerTarget.values()[i];
+            this.powerSelectScreen.refreshPowersForTarget();
         }
     }
 }

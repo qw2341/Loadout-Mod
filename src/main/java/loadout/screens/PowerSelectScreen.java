@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -21,7 +19,6 @@ import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -32,22 +29,12 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.CodeIterator;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Mnemonic;
 import loadout.LoadoutMod;
-import loadout.helper.PotionModComparator;
-import loadout.helper.PotionNameComparator;
 import loadout.relics.PowerGiver;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class PowerSelectScreen implements ScrollBarListener
@@ -267,6 +254,8 @@ public class PowerSelectScreen implements ScrollBarListener
     private InputAction shiftKey;
     private InputAction ctrlKey;
 
+    public PowerGiver.PowerTarget currentTarget = PowerGiver.PowerTarget.PLAYER;
+
 
 
     public boolean doneSelecting()
@@ -347,7 +336,23 @@ public class PowerSelectScreen implements ScrollBarListener
         scrolledUsingBar(0.0F);
     }
 
-    public void open(HashMap<String,Integer> savedPowers)
+    public void refreshPowersForTarget() {
+        PowerGiver o = ((PowerGiver)owner);
+        for(PowerButton pb : this.powers) {
+            pb.amount = 0;
+            if (currentTarget == PowerGiver.PowerTarget.PLAYER) {
+                if(o.savedPowersPlayer.containsKey(pb.id)) {
+                    pb.amount = o.savedPowersPlayer.get(pb.id);
+                }
+            } else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                if(o.savedPowersMonster.containsKey(pb.id)) {
+                    pb.amount = o.savedPowersMonster.get(pb.id);
+                }
+            }
+        }
+    }
+
+    public void open()
     {
         if(AbstractDungeon.isScreenUp) {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
@@ -367,11 +372,7 @@ public class PowerSelectScreen implements ScrollBarListener
         confirmButton.show();
         controllerRelicHb = null;
 
-        for (PowerButton pb : this.powers) {
-            if (savedPowers.containsKey(pb.id)) {
-                pb.amount = savedPowers.get(pb.id);
-            }
-        }
+        refreshPowersForTarget();
 
         targetY = scrollLowerBound;
         scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
@@ -398,8 +399,10 @@ public class PowerSelectScreen implements ScrollBarListener
         for (PowerButton pb : this.powers) {
             pb.amount = 0;
         }
-
-        ((PowerGiver)this.owner).savedPowers.clear();
+        if (currentTarget == PowerGiver.PowerTarget.PLAYER)
+            ((PowerGiver)this.owner).savedPowersPlayer.clear();
+        else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+            ((PowerGiver)this.owner).savedPowersMonster.clear();
     }
 
     public boolean isOpen()
@@ -485,9 +488,19 @@ public class PowerSelectScreen implements ScrollBarListener
                 {
 
                     clickStartedPower.amount += selectMult;
-                    ((PowerGiver)owner).modifyAmount(clickStartedPower.id, +selectMult);
+                    if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, +selectMult);
+                    else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                        ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, +selectMult);
+
                     if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                        ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
+                        if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
+                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                            for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                                ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, +selectMult, am);
+                            }
+                        }
                     }
 
                     this.owner.flash();
@@ -509,10 +522,19 @@ public class PowerSelectScreen implements ScrollBarListener
                 if (hoveredPower == clickStartedPower)
                 {
                     clickStartedPower.amount -= selectMult;
-                    ((PowerGiver)owner).modifyAmount(clickStartedPower.id, -selectMult);
+                    if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, -selectMult);
+                    else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                        ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, -selectMult);
 
                     if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                        ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, -selectMult);
+                        if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, -selectMult);
+                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                            for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                                ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, -selectMult, am);
+                            }
+                        }
                     }
 
                     this.owner.flash();
@@ -600,6 +622,8 @@ public class PowerSelectScreen implements ScrollBarListener
 
     private void updateList(ArrayList<PowerButton> list)
     {
+        if (this.confirmButton.hb.hovered) return;
+
         for (PowerButton p : list)
         {
             p.update();
