@@ -689,7 +689,7 @@ public class PowerSelectScreen implements ScrollBarListener
                         String desc = "Error";
                         if (prevMod != null) {
                             msg = prevMod + ":";
-                            desc = PotionModComparator.getModDesc(p.pClass);
+                            desc = "";
                         }
                         //remove other lines
                         if (desc.contains("NL")) {
