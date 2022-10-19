@@ -126,6 +126,9 @@ StartGameSubscriber{
     public static final String ENABLE_STARTING_LOADOUT_COMPASS = "enableEventfulCompassStarting";
     public static boolean enableCompassStarting = true;
 
+    public static final String ENABLE_STARTING_LOADOUT_POWER = "enablePowerGiverStarting";
+    public static boolean enablePowerStarting = true;
+
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
     public static final String ENABLE_STARTER_POOL = "enableStarterPool";
@@ -240,6 +243,7 @@ StartGameSubscriber{
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_SHREDDER, "TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_MODIFIER, "TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_COMPASS,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -269,6 +273,7 @@ StartGameSubscriber{
             enableShredderStarting = config.getBool(ENABLE_STARTING_LOADOUT_SHREDDER);
             enableModifierStarting = config.getBool(ENABLE_STARTING_LOADOUT_MODIFIER);
             enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
+            enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -456,8 +461,7 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enableCauldronAsStartingButton);
-        settingXPos = startingXPos + 100.0f;
-        settingYPos -= lineSpacing;
+        settingXPos += xSpacing;
 
         ModLabeledToggleButton enablePrinterAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardPrinter.ID).name,
         settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -477,7 +481,9 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enablePrinterAsStartingButton);
-        settingXPos += xSpacing;
+
+        settingXPos = startingXPos + 100.0f;
+        settingYPos -= lineSpacing;
 
         ModLabeledToggleButton enableShredderAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardShredder.ID).name,
         settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -537,6 +543,26 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enableCompassAsStartingButton);
+        settingXPos += xSpacing;
+
+        ModLabeledToggleButton enablePowerAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(PowerGiver.ID).name,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enablePowerStarting, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+
+                    enablePowerStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+                    try {
+                        // And based on that boolean, set the settings and save them
+                        config.setBool(ENABLE_STARTING_LOADOUT_POWER, enablePowerStarting);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        settingsPanel.addUIElement(enablePowerAsStartingButton);
         settingXPos += xSpacing;
 
         settingXPos = startingXPos;
