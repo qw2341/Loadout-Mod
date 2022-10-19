@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.PotionSelectScreen;
@@ -217,41 +218,51 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
         this.savedPowers = savedPowers;
     }
 
+    public AbstractPower getPowerForPlayer(String pID, int amount) {
+        Class<? extends AbstractPower> powerClassToApply = BaseMod.getPowerClass(pID);
+        AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyCreature,0);
+
+        try {
+            Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();
+            int paramCt = con[0].getParameterCount();
+            Class[] params = con[0].getParameterTypes();
+            Object[] paramz = new Object[paramCt];
+
+            for (int i = 0 ; i< paramCt; i++) {
+                Class param = params[i];
+                if (AbstractCreature.class.isAssignableFrom(param)) {
+                    paramz[i] = AbstractDungeon.player;
+                } else if (int.class.isAssignableFrom(param)) {
+                    paramz[i] = amount;
+                } else if (AbstractCard.class.isAssignableFrom(param)) {
+                    paramz[i] = new Madness();
+                } else if (boolean.class.isAssignableFrom(param)) {
+                    paramz[i] = true;
+                }
+            }
+            //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+
+            powerToApply = (AbstractPower) con[0].newInstance(paramz);
+
+            return powerToApply;
+
+        } catch (Exception e) {
+            logger.info("Failed to get player power: " + pID);
+            e.printStackTrace();
+        }
+        return powerToApply;
+    }
+
+    public void applyPowerToPlayer(String id, int amount) {
+        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPowerForPlayer(id, amount), amount));
+
+    }
+
     @Override
     public void atBattleStart() {
         savedPowers.keySet().forEach(id -> {
-            Class<? extends AbstractPower> powerClassToApply = BaseMod.getPowerClass(id);
-            AbstractPower powerToApply;
             int amount = savedPowers.get(id);
-            try {
-                Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();
-                int paramCt = con[0].getParameterCount();
-                Class[] params = con[0].getParameterTypes();
-                Object[] paramz = new Object[paramCt];
-
-                for (int i = 0 ; i< paramCt; i++) {
-                    Class param = params[i];
-                    if (AbstractCreature.class.isAssignableFrom(param)) {
-                        paramz[i] = AbstractDungeon.player;
-                    } else if (int.class.isAssignableFrom(param)) {
-                        paramz[i] = amount;
-                    } else if (AbstractCard.class.isAssignableFrom(param)) {
-                        paramz[i] = new Madness();
-                    } else if (boolean.class.isAssignableFrom(param)) {
-                        paramz[i] = true;
-                    }
-                }
-                //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
-
-                powerToApply = (AbstractPower) con[0].newInstance(paramz);
-
-                AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, (AbstractPower) powerToApply, amount));
-
-            } catch (Exception e) {
-                logger.info("Failed to get player power: " + id);
-                e.printStackTrace();
-            }
-
+            applyPowerToPlayer(id, amount);
         });
     }
 }

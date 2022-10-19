@@ -81,8 +81,8 @@
 		"TEXT": [
 			"A-Z",
 			"Mod",
-			"Reset All Amounts",
-			"Clear Player De/Buffs"
+			"Reset Amounts",
+			"Clear De/Buffs"
 		]
 	}
 }

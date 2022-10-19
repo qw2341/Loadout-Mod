@@ -25,7 +25,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
 
     public boolean justSorted = false;
 
-    public static final float START_X = 150.0F * Settings.xScale;
+    public static final float START_X = 200.0F * Settings.xScale;
     public static final float SPACE_X = 226.0F * Settings.xScale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
@@ -54,9 +54,13 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
         this.modButton = new HeaderButtonPlus(pTEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= 2*SPACE_Y;
         this.resetAllButton = new HeaderButtonPlus(TEXT[2], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
-        this.resetAllButton.isAscending = false;
+        this.resetAllButton.isIcon = true;
+        this.resetAllButton.isAscending = true;
+        this.resetAllButton.texture = ImageMaster.WARNING_ICON_VFX;
         yPosition -= SPACE_Y;
         this.clearAllEffectsButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.clearAllEffectsButton.isIcon = true;
+        this.clearAllEffectsButton.texture = ImageMaster.MAP_NODE_REST;
         this.clearAllEffectsButton.isAscending = true;
         this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
         this.powerSelectScreen = powerSelectScreen;

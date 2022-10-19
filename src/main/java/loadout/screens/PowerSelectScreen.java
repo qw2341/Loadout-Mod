@@ -168,7 +168,7 @@ public class PowerSelectScreen implements ScrollBarListener
         public void render(SpriteBatch sb) {
             if (this.hb != null) {
                 this.hb.render(sb);
-                float a = (amount == 0) ? 1.0f : 0.7f;
+                float a = (amount == 0 || this.hb.hovered) ? 0.7f : 1.0f;
                 if(this.region128 != null) {
 
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, a));
@@ -203,20 +203,11 @@ public class PowerSelectScreen implements ScrollBarListener
 
     }
 
-    private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString("RelicViewScreen");
-    public static final String[] rTEXT = rUiStrings.TEXT;
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] gTEXT = gUiStrings.TEXT;
-    private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString("PotionViewScreen");
-    public static final String[] pTEXT = pUiStrings.TEXT;
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectionScreen"));
     public static final String[] TEXT = UiStrings.TEXT;
-    private static final CharacterStrings redStrings = CardCrawlGame.languagePack.getCharacterString("Ironclad");
-    private static final CharacterStrings greenStrings = CardCrawlGame.languagePack.getCharacterString("Silent");
-    private static final CharacterStrings blueStrings = CardCrawlGame.languagePack.getCharacterString("Defect");
-    private static final CharacterStrings purpleStrings = CardCrawlGame.languagePack.getCharacterString("Watcher");
 
-    private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
     private static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 300.0F * Settings.scale;
@@ -269,6 +260,8 @@ public class PowerSelectScreen implements ScrollBarListener
         return powerModID == null? "Slay the Spire" : powerModID;
     });
 
+    private static final Comparator<PowerButton> BY_ID = Comparator.comparing(p -> p.id);
+
     private AbstractRelic owner;
 
     private InputAction shiftKey;
@@ -305,10 +298,14 @@ public class PowerSelectScreen implements ScrollBarListener
 
     }
 
+    private boolean shouldSortById() {
+        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
+    }
+
     private void sortOnOpen() {
         if(!isDeleteMode) {
             this.sortHeader.justSorted = true;
-            sortAlphabetically(true);
+            sortByMod(true);
             this.sortHeader.resetAllButtons();
             this.sortHeader.clearActiveButtons();
         }
@@ -328,10 +325,12 @@ public class PowerSelectScreen implements ScrollBarListener
     public void sortAlphabetically(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.powers.sort(BY_NAME);
+            if (shouldSortById()) this.powers.sort(BY_ID);
+            else this.powers.sort(BY_NAME);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.powers.sort(BY_NAME.reversed());
+            if (shouldSortById()) this.powers.sort(BY_ID.reversed());
+            else this.powers.sort(BY_NAME.reversed());
         }
         this.currentSortType = SortType.NAME;
         scrolledUsingBar(0.0F);
@@ -487,6 +486,9 @@ public class PowerSelectScreen implements ScrollBarListener
 
                     clickStartedPower.amount += selectMult;
                     ((PowerGiver)owner).modifyAmount(clickStartedPower.id, +selectMult);
+                    if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                        ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
+                    }
 
                     this.owner.flash();
                     clickStartedPower = null;
@@ -508,6 +510,11 @@ public class PowerSelectScreen implements ScrollBarListener
                 {
                     clickStartedPower.amount -= selectMult;
                     ((PowerGiver)owner).modifyAmount(clickStartedPower.id, -selectMult);
+
+                    if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                        ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, -selectMult);
+                    }
+
                     this.owner.flash();
 
                     clickStartedPower = null;
@@ -644,9 +651,9 @@ public class PowerSelectScreen implements ScrollBarListener
             PowerButton p = it.next();
             if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
-                    //check if the name is alphanumeric
-                    char pFirst = (LoadoutMod.languageSupport().equals("eng")&& p.name.length() > 0 &&p.name.substring(0,1).matches("[A-Za-z\\d]+")) ? p.name.toUpperCase().charAt(0) : PotionNameComparator.editModPotionId(p.id).toUpperCase().charAt(0);
-                    //char pFirst = PotionNameComparator.editModPotionId(p.ID).toUpperCase().charAt(0);
+
+                    char pFirst = (shouldSortById() || p.name== null || p.name.length() == 0) ?   p.id.toUpperCase().charAt(0) : p.name.toUpperCase().charAt(0);
+
                     if (pFirst != prevFirst) {
                         row++;
                         scrollTitleCount++;
@@ -669,7 +676,7 @@ public class PowerSelectScreen implements ScrollBarListener
                         col = 0;
                     }
                 } else if (currentSortType == SortType.MOD) {
-                    String pMod = WhatMod.findModName(p.getClass());
+                    String pMod = p.modID;
                     if (pMod == null) pMod = "Slay the Spire";
                     if (!pMod.equals(prevMod)) {
                         row++;

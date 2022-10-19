@@ -106,14 +106,14 @@
     "NAME": "Potion of Powers",
     "FLAVOR": "A powerful draught",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power you want. Left-click to increase, right-click to decrease."
+      "Right-click this relic to select the power you want at the start of combat. Left-click to increase, right-click to decrease."
     ]
   },
   "loadout:PowerGiverAlt": {
     "NAME": "Lemegeton",
     "FLAVOR": "Grants you power... but at what cost?",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power you want. Left-click to increase, right-click to decrease."
+      "Right-click this relic to select the power you want at the start of combat. Left-click to increase, right-click to decrease."
     ]
   }
 }
