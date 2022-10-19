@@ -75,5 +75,14 @@
 			"Faire Malédiction",
 			"Économisez Pour Toutes Les Futures Cartes"
 		]
+	},
+	"loadout:PowerSelectSortHeader": {
+		"TEXT": [
+			"A-Z",
+			"Mod",
+			"Réinitialiser tous les montants",
+			"Effacer les de/buffs du lecteur"
+		]
 	}
+
 }

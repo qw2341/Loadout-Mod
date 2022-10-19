@@ -20,7 +20,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
     public static final String[] pTEXT = pUiStrings.TEXT;
 
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PowerSelectSortHeader"));
-    public static final String[] TEXT = pUiStrings.TEXT;
+    public static final String[] TEXT = UiStrings.TEXT;
 
 
     public boolean justSorted = false;

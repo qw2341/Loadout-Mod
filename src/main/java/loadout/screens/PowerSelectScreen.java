@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -31,6 +32,13 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Mnemonic;
 import loadout.LoadoutMod;
 import loadout.helper.PotionModComparator;
 import loadout.helper.PotionNameComparator;
@@ -39,23 +47,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class PowerSelectScreen implements ScrollBarListener
 {
-    public static AbstractCreature dummyCreature = new AbstractCreature() {
-        public final String name = "Placeholder";
+    public static AbstractCreature dummyCreature;
 
-        @Override
-        public void damage(DamageInfo damageInfo) {
-
+    static {
+        try {
+            dummyCreature = Ironclad.class.getDeclaredConstructor(String.class).newInstance("");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        @Override
-        public void render(SpriteBatch spriteBatch) {
-
-        }
-    };
+    }
 
     public static AbstractCard dummyCard = new Madness();
 
@@ -82,25 +87,25 @@ public class PowerSelectScreen implements ScrollBarListener
             Constructor<?>[] con = pClass.getDeclaredConstructors();
             this.tips = new ArrayList<>();
             try {
-//                int paramCt = con[0].getParameterCount();
-//                Class[] params = con[0].getParameterTypes();
-//                Object[] paramz = new Object[paramCt];
-//
-//                for (int i = 0 ; i< paramCt; i++) {
-//                    Class param = params[i];
-//                    if (AbstractCreature.class.isAssignableFrom(param)) {
-//                        paramz[i] = dummyCreature;
-//                    } else if (int.class.isAssignableFrom(param)) {
-//                        paramz[i] = 0;
-//                    } else if (AbstractCard.class.isAssignableFrom(param)) {
-//                        paramz[i] = dummyCard;
-//                    } else if (boolean.class.isAssignableFrom(param)) {
-//                        paramz[i] = true;
-//                    }
-//                }
-//                LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
-//
-//                this.instance = (AbstractPower) con[0].newInstance(paramz);
+                int paramCt = con[0].getParameterCount();
+                Class[] params = con[0].getParameterTypes();
+                Object[] paramz = new Object[paramCt];
+
+                for (int i = 0 ; i< paramCt; i++) {
+                    Class param = params[i];
+                    if (AbstractCreature.class.isAssignableFrom(param)) {
+                        paramz[i] = dummyCreature;
+                    } else if (int.class.isAssignableFrom(param)) {
+                        paramz[i] = 0;
+                    } else if (AbstractCard.class.isAssignableFrom(param)) {
+                        paramz[i] = dummyCard;
+                    } else if (boolean.class.isAssignableFrom(param)) {
+                        paramz[i] = true;
+                    }
+                }
+                LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+
+                this.instance = (AbstractPower) con[0].newInstance(paramz);
 
                 this.id = (String) pClass.getField("POWER_ID").get(null);
                 this.powerStrings = ReflectionHacks.getPrivateStatic(pClass,"powerStrings");
@@ -110,9 +115,21 @@ public class PowerSelectScreen implements ScrollBarListener
                 this.modID = WhatMod.findModID(pClass);
                 if (this.modID == null) this.modID = "Slay the Spire";
 
+                this.region48 = this.instance.region48;
+                this.region128 = this.instance.region128;
+
                 //TextureAtlas ta = (TextureAtlas) pClass.getField("atlas").get(null);
-
-
+//                CtClass cc = ClassPool.getDefault().get(pClass.getName());
+                //cc.getDeclaredMethod("<init>");
+//                ClassFile cf = cc.getClassFile();
+//                MethodInfo mi = cf.getMethod("<init>");
+//                CodeIterator ci = mi.getCodeAttribute().iterator();
+//
+//                while (ci.hasNext()) {
+//                    int idx = ci.next();
+//                    int op = ci.byteAt(idx);
+//                    LoadoutMod.logger.info(Mnemonic.OPCODE[op]);
+//                }
 
             } catch (Exception e) {
 
@@ -135,7 +152,7 @@ public class PowerSelectScreen implements ScrollBarListener
             this.amount = 0;
             this.x = 0;
             this.y = 0;
-            this.loadRegion(StringUtils.lowerCase(this.id));
+            //this.loadRegion(StringUtils.lowerCase(this.id));
             //this.type = instance.type;
             LoadoutMod.logger.info("Created power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
         }
@@ -151,14 +168,15 @@ public class PowerSelectScreen implements ScrollBarListener
         public void render(SpriteBatch sb) {
             if (this.hb != null) {
                 this.hb.render(sb);
-
+                float a = (amount == 0) ? 1.0f : 0.7f;
                 if(this.region128 != null) {
-                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 1.0F));
+
+                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, a));
                     sb.draw(this.region128, x - (float)this.region128.packedWidth / 2.0F, y - (float)this.region128.packedHeight / 2.0F, (float)this.region128.packedWidth / 2.0F, (float)this.region128.packedHeight / 2.0F, (float)this.region128.packedWidth, (float)this.region128.packedHeight, Settings.scale, Settings.scale, 0.0F);
 
                 } else {
                     if (this.region48 != null) {
-                        sb.setColor(new Color(1.0F, 1.0F, 1.0F, 1.0F));
+                        sb.setColor(new Color(1.0F, 1.0F, 1.0F, a));
                         sb.draw(this.region48, x - (float)this.region48.packedWidth / 2.0F, y - (float)this.region48.packedHeight / 2.0F, (float)this.region48.packedWidth / 2.0F, (float)this.region48.packedHeight / 2.0F, 128.0f, 128.0f, Settings.scale, Settings.scale, 0.0F);
 
                     }
@@ -552,8 +570,8 @@ public class PowerSelectScreen implements ScrollBarListener
         int size = powers.size();
 
         int scrollTmp = 0;
-        if (size > 10) {
-            scrollTmp = size / 5-2;
+        if (size > 5) {
+            scrollTmp = size / 5;
             scrollTmp += 5;
             if (size % 5 != 0) {
                 ++scrollTmp;
