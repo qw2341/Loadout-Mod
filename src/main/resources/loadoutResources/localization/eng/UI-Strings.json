@@ -76,5 +76,13 @@
 			"Make Curse",
 			"Save For All Future Cards"
 		]
+	},
+	"loadout:PowerSelectSortHeader": {
+		"TEXT": [
+			"A-Z",
+			"Mod",
+			"Reset All Amounts",
+			"Clear Player De/Buffs"
+		]
 	}
 }

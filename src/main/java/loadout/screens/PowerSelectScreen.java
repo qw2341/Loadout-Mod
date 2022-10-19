@@ -377,6 +377,13 @@ public class PowerSelectScreen implements ScrollBarListener
         }
     }
 
+    public void resetPowerAmounts() {
+        for (PowerButton pb : this.powers) {
+            pb.amount = 0;
+        }
+
+        ((PowerGiver)this.owner).savedPowers.clear();
+    }
 
     public boolean isOpen()
     {
@@ -483,6 +490,8 @@ public class PowerSelectScreen implements ScrollBarListener
                 {
                     clickStartedPower.amount -= selectMult;
                     ((PowerGiver)owner).modifyAmount(clickStartedPower.id, -selectMult);
+                    this.owner.flash();
+
                     clickStartedPower = null;
                 }
             }

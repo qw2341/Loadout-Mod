@@ -4,30 +4,31 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.actions.unique.RemoveAllPowersAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.localization.PotionStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.potions.PotionSlot;
 import loadout.LoadoutMod;
 
 public class PowerSelectSortHeader implements HeaderButtonPlusListener {
 
-    private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PotionSelectSortHeader"));
-    public static final String[] TEXT = UiStrings.TEXT;
-    private static final PotionStrings pStrings = CardCrawlGame.languagePack.getPotionString("Potion Slot");
-    public static final String POTION_SLOT_NAME = pStrings.NAME;
+    private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PotionSelectSortHeader"));
+    public static final String[] pTEXT = pUiStrings.TEXT;
+
+    private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PowerSelectSortHeader"));
+    public static final String[] TEXT = pUiStrings.TEXT;
+
+
     public boolean justSorted = false;
 
     public static final float START_X = 150.0F * Settings.xScale;
     public static final float SPACE_X = 226.0F * Settings.xScale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
-    private HeaderButtonPlus rarityButton;
-    private HeaderButtonPlus classButton;
     private HeaderButtonPlus nameButton;
     private HeaderButtonPlus modButton;
     private HeaderButtonPlus resetAllButton;
@@ -47,20 +48,17 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         float xPosition = START_X;
         float yPosition = START_Y;
-        this.classButton = new HeaderButtonPlus(TEXT[0], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
+
+        this.nameButton = new HeaderButtonPlus(pTEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= SPACE_Y;
-        this.rarityButton = new HeaderButtonPlus(TEXT[1], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
-        yPosition -= SPACE_Y;
-        this.nameButton = new HeaderButtonPlus(TEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
-        yPosition -= SPACE_Y;
-        this.modButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.modButton = new HeaderButtonPlus(pTEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= 2*SPACE_Y;
-        this.resetAllButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.resetAllButton = new HeaderButtonPlus(TEXT[2], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
         this.resetAllButton.isAscending = false;
         yPosition -= SPACE_Y;
-        this.clearAllEffectsButton = new HeaderButtonPlus(POTION_SLOT_NAME, xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
+        this.clearAllEffectsButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
         this.clearAllEffectsButton.isAscending = true;
-        this.buttons = new HeaderButtonPlus[] { this.classButton, this.rarityButton, this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
+        this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
         this.powerSelectScreen = powerSelectScreen;
 
     }
@@ -125,12 +123,9 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener {
             this.powerSelectScreen.sortByMod(isAscending);
             resetOtherButtons();
         } else if (button == this.resetAllButton) {
-            AbstractDungeon.player.potionSlots ++;
-            AbstractDungeon.player.potions.add(new PotionSlot(AbstractDungeon.player.potionSlots - 1));
+            this.powerSelectScreen.resetPowerAmounts();
         } else if (button == this.clearAllEffectsButton) {
-            AbstractDungeon.player.potionSlots --;
-//            if(!(AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1) instanceof PotionSlot))
-                AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1);
+            AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
         } else {
             return;
         }
