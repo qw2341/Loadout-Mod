@@ -168,7 +168,7 @@ public class PowerSelectScreen implements ScrollBarListener
         public void render(SpriteBatch sb) {
             if (this.hb != null) {
                 this.hb.render(sb);
-                float a = (amount == 0 || this.hb.hovered) ? 0.7f : 1.0f;
+                float a = (amount != 0 || this.hb.hovered) ? 1.0f : 0.7f;
                 if(this.region128 != null) {
 
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, a));
