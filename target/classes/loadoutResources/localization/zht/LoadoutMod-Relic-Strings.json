@@ -101,7 +101,22 @@
     "DESCRIPTIONS": [
       "右鍵此遺物來選擇你想去的事件。"
     ]
+  },
+  "loadout:PowerGiver": {
+    "NAME": "能力藥水",
+    "FLAVOR": "大力出奇迹",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來選擇你在戰鬥開始時/中想要的能力。 左鍵增加，右鍵減少。"
+    ]
+  },
+  "loadout:PowerGiverAlt": {
+    "NAME": "所羅門魔典",
+    "FLAVOR": "給予你力量... 但是代價是什麽呢?",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來選擇你在戰鬥開始時/中想要的能力。 左鍵增加，右鍵減少。"
+    ]
   }
+
 
 
 }

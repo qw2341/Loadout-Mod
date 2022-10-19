@@ -209,7 +209,7 @@ public class PowerSelectScreen implements ScrollBarListener
     public static final String[] TEXT = UiStrings.TEXT;
 
 
-    private static final float SPACE = 80.0F * Settings.scale;
+    private static final float SPACE = 85.0F * Settings.scale;
     protected static final float START_X = 300.0F * Settings.scale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
@@ -689,7 +689,7 @@ public class PowerSelectScreen implements ScrollBarListener
                         String desc = "Error";
                         if (prevMod != null) {
                             msg = prevMod + ":";
-                            desc = PotionModComparator.getModDesc(p);
+                            desc = PotionModComparator.getModDesc(p.pClass);
                         }
                         //remove other lines
                         if (desc.contains("NL")) {

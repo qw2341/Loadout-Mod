@@ -75,6 +75,14 @@
 			"变为 诅咒牌",
 			"为未来卡牌保存修改"
 		]
+	},
+	"loadout:PowerSelectSortHeader": {
+		"TEXT": [
+			"A-Z",
+			"Mod",
+			"重置所有计数",
+			"清除玩家增/减益"
+		]
 	}
 
 }
