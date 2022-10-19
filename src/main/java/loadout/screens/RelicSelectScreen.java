@@ -117,6 +117,15 @@ public class RelicSelectScreen implements ScrollBarListener
 
     public static HashSet<String> screenRelics = new HashSet<>();
 
+    static {
+        screenRelics.add(BottledFlame.ID);
+        screenRelics.add(BottledLightning.ID);
+        screenRelics.add(BottledTornado.ID);
+        screenRelics.add(TinyHouse.ID);
+        screenRelics.add(EmptyCage.ID);
+        screenRelics.add(Orrery.ID);
+    }
+
     public boolean doneSelecting()
     {
         return doneSelecting;
@@ -148,10 +157,7 @@ public class RelicSelectScreen implements ScrollBarListener
         this.isDeleteMode = isDeleteMode;
         this.owner = owner;
 
-        screenRelics.add(BottledFlame.ID);
-        screenRelics.add(BottledLightning.ID);
-        screenRelics.add(BottledTornado.ID);
-        screenRelics.add(TinyHouse.ID);
+
     }
 
     private void sortOnOpen() {
@@ -367,6 +373,13 @@ public class RelicSelectScreen implements ScrollBarListener
 
     }
 
+    public void hide() {
+        confirmButton.isDisabled = true;
+        confirmButton.hide();
+        show = false;
+        LoadoutBag.isSelectionScreenUp = false;
+    }
+
     public boolean isOpen()
     {
         return show;
@@ -378,7 +391,7 @@ public class RelicSelectScreen implements ScrollBarListener
             return;
         }
         if (LoadoutMod.isScreenUp) {
-            close();
+            hide();
             return;
         }
         if (InputHelper.pressedEscape) {
