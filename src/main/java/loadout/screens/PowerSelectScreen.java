@@ -103,7 +103,7 @@ public class PowerSelectScreen implements ScrollBarListener
                         paramz[i] = true;
                     }
                 }
-                LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+                //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
 
                 this.instance = (AbstractPower) con[0].newInstance(paramz);
 
@@ -154,7 +154,7 @@ public class PowerSelectScreen implements ScrollBarListener
             this.y = 0;
             //this.loadRegion(StringUtils.lowerCase(this.id));
             //this.type = instance.type;
-            LoadoutMod.logger.info("Created power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
+            //LoadoutMod.logger.info("Created power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
         }
 
         public void update() {
