@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.PotionSlot;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
@@ -68,11 +69,13 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.resetAllButton.isIcon = true;
         this.resetAllButton.isAscending = true;
         this.resetAllButton.texture = ImageMaster.WARNING_ICON_VFX;
+        this.resetAllButton.hb.resize(200.0F * Settings.xScale, 48.0F * Settings.scale);
         yPosition -= SPACE_Y;
         this.clearAllEffectsButton = new HeaderButtonPlus(TEXT[3], xPosition, yPosition, this,false,false, HeaderButtonPlus.Alignment.RIGHT);
         this.clearAllEffectsButton.isIcon = true;
         this.clearAllEffectsButton.texture = ImageMaster.MAP_NODE_REST;
         this.clearAllEffectsButton.isAscending = true;
+        this.clearAllEffectsButton.hb.resize(200.0F * Settings.xScale, 48.0F * Settings.scale);
         this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
 
         this.targetSelectMenu = new DropdownMenu(this, new String[] {TEXT[4],TEXT[5]}, FontHelper.panelNameFont, Settings.CREAM_COLOR);
@@ -163,7 +166,14 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         } else if (button == this.resetAllButton) {
             this.powerSelectScreen.resetPowerAmounts();
         } else if (button == this.clearAllEffectsButton) {
-            AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
+            if(this.powerSelectScreen.currentTarget == PowerGiver.PowerTarget.PLAYER)
+                AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
+            else if (this.powerSelectScreen.currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                    AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(am,false));
+                }
+            }
+
         } else {
             return;
         }

@@ -81,7 +81,10 @@
 			"A-Z",
 			"Mod",
 			"Réinitialiser tous les montants",
-			"Effacer les de/buffs du lecteur"
+			"Effacer les de/buffs du lecteur",
+			"Joueur",
+			"Monstres",
+			"Cible"
 		]
 	}
 
