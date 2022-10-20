@@ -26,6 +26,7 @@ loadout\screens\RelicSelectSortHeader.class
 loadout\helper\HanyuPinyinOutputFormat$HanyuPinyinVCharType.class
 loadout\patches\AbstractCardPatch$MultiUse.class
 loadout\patches\AbstractCardPatch.class
+loadout\util\PowerFilter.class
 loadout\screens\RelicSelectScreen$SortOrder.class
 loadout\helper\RelicTierComparator$1.class
 loadout\patches\OverlayMenuUpdatePatch$UpdateFix.class

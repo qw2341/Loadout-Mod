@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
@@ -36,22 +37,28 @@ import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATED_DarkCore;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 import loadout.screens.EventSelectScreen;
+import loadout.util.PowerFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
 import loadout.util.IDCheckDontTouchPls;
 import loadout.util.TextureLoader;
+import org.clapper.util.classutil.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -178,7 +185,7 @@ StartGameSubscriber{
     public static ArrayList<AbstractCard> cardsToDisplay = new ArrayList<>();
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
-    public static ArrayList<Class<? extends AbstractPower>> powersToDisplay = new ArrayList<>();
+    public static HashMap<String,Class<? extends AbstractPower>> powersToDisplay = new HashMap<>();
 
     public static boolean isScreenUp = false;
 
@@ -868,6 +875,9 @@ StartGameSubscriber{
         logger.info("Initializing base game events");
         createEventList();
         logger.info("Done initializing base game events");
+        logger.info("Initializing powers");
+        createPowerList();
+        logger.info("Done initializing powers");
     }
     
     // =============== / POST-INITIALIZE/ =================
@@ -996,7 +1006,7 @@ StartGameSubscriber{
         createRelicList();
         createPotionList();
         createCardList();
-        createPowerList();
+
     }
 
     private void createEventList() {
@@ -1078,15 +1088,58 @@ StartGameSubscriber{
         powersToDisplay.clear();
         for (String pid : BaseMod.getPowerKeys()) {
             try {
-                powersToDisplay.add(BaseMod.getPowerClass(pid));
+                powersToDisplay.put(pid,BaseMod.getPowerClass(pid));
             } catch (Exception e) {
                 logger.error("Failed to instantiate power");
             }
         }
 
-        
+        try {
+            autoAddPowers();
+        } catch (Exception e) {
+            logger.info("Failed to initialize custom powers");
+            e.printStackTrace();
+        }
 
     }
+
+    private void autoAddPowers() throws URISyntaxException, NotFoundException, ClassNotFoundException {
+        ClassFinder finder = new ClassFinder();
+        AndClassFilter andClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
+
+        for (ModInfo mi : Loader.MODINFOS) {
+            URL url = mi.jarURL;
+            finder.add(new java.io.File(url.toURI()));
+            Collection<ClassInfo> foundClasses = new ArrayList<>();
+            finder.findClasses(foundClasses, (ClassFilter) andClassFilter);
+            for (ClassInfo classInfo : foundClasses) {
+                CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
+//                if (cls.hasAnnotation(CardIgnore.class))
+//                    continue;
+                boolean isPower = false;
+                CtClass superCls = cls;
+                while (superCls != null) {
+                    superCls = superCls.getSuperclass();
+                    if (superCls == null)
+                        break;
+                    if (superCls.getName().equals(AbstractPower.class.getName())) {
+                        isPower = true;
+                        break;
+                    }
+                }
+                if (!isPower)
+                    continue;
+
+                //System.out.println(classInfo.getClassName());
+                Class<?> powerC = Loader.getClassPool().getClassLoader().loadClass(cls.getName());
+                PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
+
+                powersToDisplay.put(pStr.NAME, (Class<? extends AbstractPower>) powerC);
+            }
+
+        }
+    }
+
 
     private void initAllRelics() {
         HashMap<String, AbstractRelic> ur = null;

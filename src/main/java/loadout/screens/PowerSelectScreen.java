@@ -280,7 +280,7 @@ public class PowerSelectScreen implements ScrollBarListener
 
         this.powers = new ArrayList<>();
 
-        for (Class<? extends AbstractPower> pClass : LoadoutMod.powersToDisplay) {
+        for (Class<? extends AbstractPower> pClass : LoadoutMod.powersToDisplay.values()) {
             this.powers.add(new PowerButton(pClass));
         }
 
