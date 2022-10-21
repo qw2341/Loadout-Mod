@@ -1094,47 +1094,71 @@ StartGameSubscriber{
             }
         }
 
-        try {
-            autoAddPowers();
-        } catch (Exception e) {
-            logger.info("Failed to initialize custom powers");
-            e.printStackTrace();
-        }
+        autoAddPowers();
+
 
     }
 
-    private void autoAddPowers() throws URISyntaxException, NotFoundException, ClassNotFoundException {
+    private void autoAddPowers() {
         ClassFinder finder = new ClassFinder();
         AndClassFilter andClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
+        ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
 
         for (ModInfo mi : Loader.MODINFOS) {
-            URL url = mi.jarURL;
-            finder.add(new java.io.File(url.toURI()));
-            Collection<ClassInfo> foundClasses = new ArrayList<>();
-            finder.findClasses(foundClasses, (ClassFilter) andClassFilter);
-            for (ClassInfo classInfo : foundClasses) {
-                CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
+            try {
+                URL url = mi.jarURL;
+                finder.add(new java.io.File(url.toURI()));
+                Collection<ClassInfo> foundClasses = new ArrayList<>();
+                finder.findClasses(foundClasses, (ClassFilter) andClassFilter);
+                for (ClassInfo classInfo : foundClasses) {
+                    try {
+                        CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
 //                if (cls.hasAnnotation(CardIgnore.class))
 //                    continue;
-                boolean isPower = false;
-                CtClass superCls = cls;
-                while (superCls != null) {
-                    superCls = superCls.getSuperclass();
-                    if (superCls == null)
-                        break;
-                    if (superCls.getName().equals(AbstractPower.class.getName())) {
-                        isPower = true;
-                        break;
+                        boolean isPower = false;
+                        CtClass superCls = cls;
+                        while (superCls != null) {
+                            superCls = superCls.getSuperclass();
+                            if (superCls == null)
+                                break;
+                            if (superCls.getName().equals(AbstractPower.class.getName())) {
+                                isPower = true;
+                                break;
+                            }
+                        }
+                        if (!isPower)
+                            continue;
+
+                        //System.out.println(classInfo.getClassName());
+                        Class<?extends AbstractPower> powerC = (Class<? extends AbstractPower>) clazzLoader.loadClass(cls.getName());
+                        //PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
+
+                        try{
+                            Class.forName(powerC.getName());
+                        } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
+                            logger.info("does not exist");
+                            continue;
+                        }
+
+                        String pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
+                        if (pID == null)  {
+                            AbstractPower p = powerC.newInstance();
+                            pID = p.ID;
+                            if (pID == null) {
+                                continue;
+                            }
+                        }
+
+
+                        powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
+                    } catch (InstantiationException|IllegalAccessException e) {
+                        logger.info("Failed to initialize custom power for " + classInfo.getClassName());
                     }
+
                 }
-                if (!isPower)
-                    continue;
-
-                //System.out.println(classInfo.getClassName());
-                Class<?> powerC = Loader.getClassPool().getClassLoader().loadClass(cls.getName());
-                PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
-
-                powersToDisplay.put(pStr.NAME, (Class<? extends AbstractPower>) powerC);
+            } catch (Exception e) {
+                logger.info("Failed to initialize custom power for "+ mi.ID);
+                e.printStackTrace();
             }
 
         }

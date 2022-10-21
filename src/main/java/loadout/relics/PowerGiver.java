@@ -1,6 +1,5 @@
 package loadout.relics;
 
-import basemod.BaseMod;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
@@ -244,8 +243,8 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
     }
 
     public AbstractPower getPower(String pID, int amount, AbstractCreature creature, AbstractCard card) {
-        Class<? extends AbstractPower> powerClassToApply = BaseMod.getPowerClass(pID);
-        AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyCreature,0);
+        Class<? extends AbstractPower> powerClassToApply = powersToDisplay.get(pID);
+        AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyPlayer,0);
 
         try {
             Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();

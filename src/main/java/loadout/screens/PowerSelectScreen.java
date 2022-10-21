@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -22,6 +23,7 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -31,7 +33,6 @@ import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -39,12 +40,30 @@ import java.util.*;
 
 public class PowerSelectScreen implements ScrollBarListener
 {
-    public static AbstractCreature dummyCreature;
+    public static AbstractPlayer dummyPlayer;
+    public static AbstractMonster dummyMonster;
 
     static {
         try {
-            dummyCreature = Ironclad.class.getDeclaredConstructor(String.class).newInstance("");
+            Constructor<Ironclad> con = Ironclad.class.getDeclaredConstructor(String.class);
+            con.setAccessible(true);
+            dummyPlayer = con.newInstance("");
+            dummyPlayer.name = "Player";
+            dummyPlayer.isPlayer = true;
+            dummyPlayer.isDying = false;
         } catch (Exception e) {
+            LoadoutMod.logger.info("Failed to create dummy player");
+            e.printStackTrace();
+        }
+
+        try {
+
+            dummyMonster = new Cultist(0,0,false);
+            //dummyMonster.name = "";
+            dummyMonster.isPlayer = false;
+            dummyMonster.isDying = false;
+        } catch (Exception e) {
+            LoadoutMod.logger.info("Failed to create dummy monster");
             e.printStackTrace();
         }
     }
@@ -60,7 +79,7 @@ public class PowerSelectScreen implements ScrollBarListener
         public String name;
         public AbstractPower.PowerType type;
         public String modID;
-        public String[] desc;
+        public String desc;
         public int amount;
         public Hitbox hb;
         public float x;
@@ -69,7 +88,7 @@ public class PowerSelectScreen implements ScrollBarListener
         public TextureAtlas.AtlasRegion region48;
         public TextureAtlas.AtlasRegion region128;
 
-        public PowerButton(Class<? extends AbstractPower> pClass) {
+        public PowerButton(String id, Class<? extends AbstractPower> pClass) {
             this.pClass = pClass;
             Constructor<?>[] con = pClass.getDeclaredConstructors();
             this.tips = new ArrayList<>();
@@ -81,7 +100,11 @@ public class PowerSelectScreen implements ScrollBarListener
                 for (int i = 0 ; i< paramCt; i++) {
                     Class param = params[i];
                     if (AbstractCreature.class.isAssignableFrom(param)) {
-                        paramz[i] = dummyCreature;
+                        paramz[i] = dummyPlayer;
+                    } else if (AbstractPlayer.class.isAssignableFrom(param)) {
+                        paramz[i] = dummyPlayer;
+                    } else if (AbstractMonster.class.isAssignableFrom(param)) {
+                        paramz[i] = dummyMonster;
                     } else if (int.class.isAssignableFrom(param)) {
                         paramz[i] = 0;
                     } else if (AbstractCard.class.isAssignableFrom(param)) {
@@ -94,11 +117,11 @@ public class PowerSelectScreen implements ScrollBarListener
 
                 this.instance = (AbstractPower) con[0].newInstance(paramz);
 
-                this.id = (String) pClass.getField("POWER_ID").get(null);
+                this.id = id;
                 this.powerStrings = ReflectionHacks.getPrivateStatic(pClass,"powerStrings");
                 //this.name = instance.name;
                 this.name = powerStrings.NAME;
-                this.desc = powerStrings.DESCRIPTIONS;
+                this.desc = this.instance.description;
                 this.modID = WhatMod.findModID(pClass);
                 if (this.modID == null) this.modID = "Slay the Spire";
 
@@ -123,16 +146,19 @@ public class PowerSelectScreen implements ScrollBarListener
                 LoadoutMod.logger.info("Failed to create power button for: " + pClass.getName() + " with name = "+ this.name + " for mod: "+ this.modID);
                 e.printStackTrace();
             }
+            if(this.id == null) this.id = "Unnamed Power";
             if (this.name == null) this.name = "Unnamed Power";
-            if(desc != null && desc.length > 0) {
-                String fullD = StringUtils.join(desc," ");
+            if (this.modID == null) this.modID = "Slay the Spire";
+
+            if(desc != null && desc.length() > 0) {
+                //String fullD = StringUtils.join(desc," ");
 //                for (String d : desc)
 //                {
 //                    if (d != null)
 //                        this.tips.add(new PowerTip(this.name, d));
 //                }
 
-                this.tips.add(new PowerTip(this.name, fullD, region48));
+                this.tips.add(new PowerTip(this.name, desc, region48));
             }
             this.tips.add(new PowerTip("Mod",this.modID));
             this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
@@ -242,10 +268,7 @@ public class PowerSelectScreen implements ScrollBarListener
 
     private static final Comparator<PowerButton> BY_TYPE = Comparator.comparing(p -> p.type);
     private static final Comparator<PowerButton> BY_NAME = Comparator.comparing(p -> p.name);
-    private static final Comparator<PowerButton> BY_MOD = Comparator.comparing(p -> {
-        String powerModID = WhatMod.findModID(p.getClass());
-        return powerModID == null? "Slay the Spire" : powerModID;
-    });
+    private static final Comparator<PowerButton> BY_MOD = Comparator.comparing(p -> p.modID);
 
     private static final Comparator<PowerButton> BY_ID = Comparator.comparing(p -> p.id);
 
@@ -280,8 +303,10 @@ public class PowerSelectScreen implements ScrollBarListener
 
         this.powers = new ArrayList<>();
 
-        for (Class<? extends AbstractPower> pClass : LoadoutMod.powersToDisplay.values()) {
-            this.powers.add(new PowerButton(pClass));
+        for (String pID : LoadoutMod.powersToDisplay.keySet()) {
+            if(pID == null) continue;
+            Class<? extends AbstractPower> pClass = LoadoutMod.powersToDisplay.get(pID);
+            this.powers.add(new PowerButton(pID, pClass));
         }
 
 
@@ -327,10 +352,10 @@ public class PowerSelectScreen implements ScrollBarListener
     public void sortByMod(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.powers.sort(BY_MOD);
+            this.powers.sort(BY_MOD.thenComparing(BY_ID));
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.powers.sort(BY_MOD.reversed());
+            this.powers.sort(BY_MOD.reversed().thenComparing(BY_ID));
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
