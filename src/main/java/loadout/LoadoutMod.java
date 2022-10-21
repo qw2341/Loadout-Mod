@@ -1149,6 +1149,8 @@ StartGameSubscriber{
                             pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
                         } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
 
+                        } catch (NoClassDefFoundError ncdfe) {
+                            continue;
                         }
 
                         if (pID == null)  {
