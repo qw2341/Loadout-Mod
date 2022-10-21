@@ -630,7 +630,7 @@ public class PowerSelectScreen implements ScrollBarListener
             if (size % 5 != 0) {
                 ++scrollTmp;
             }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 75.0f * Settings.scale;
+            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 175.0f * Settings.scale;
         } else {
             scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
         }

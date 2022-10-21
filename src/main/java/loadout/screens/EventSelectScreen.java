@@ -84,7 +84,12 @@ public class EventSelectScreen implements ScrollBarListener
             //this.name = EventHelper.getEventName(id);
             try {
                 //this.name = (String) eClass.getField("NAME").get(null);
-                this.name = (String) ReflectionHacks.getPrivateStatic(eClass,"NAME");
+                try {
+                    this.name = (String) ReflectionHacks.getPrivateStatic(eClass,"NAME");
+                } catch (Exception ignored) {
+
+                }
+
                 if (this.name == null || this.name.length() == 0) this.name = "Unnamed Event";
                 String[] desc = (String[]) eClass.getField("DESCRIPTIONS").get(null);
                 if(desc != null && desc.length > 0) {

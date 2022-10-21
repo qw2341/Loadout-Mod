@@ -1103,6 +1103,9 @@ StartGameSubscriber{
         ClassFinder finder = new ClassFinder();
         AndClassFilter andClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
         ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
+        String noID = "Unnamed Power ";
+        int count = 0;
+
 
         for (ModInfo mi : Loader.MODINFOS) {
             try {
@@ -1134,24 +1137,39 @@ StartGameSubscriber{
                         //PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
 
                         try{
-                            Class.forName(powerC.getName());
+                            Class.forName(powerC.getName(),false,clazzLoader);
                         } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                            logger.info("does not exist");
+                            logger.info(powerC.getName() + "does not exist");
                             continue;
                         }
 
-                        String pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
+                        String pID = null;
+
+                        try {
+                            pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
+                        } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
+
+                        }
+
                         if (pID == null)  {
-                            AbstractPower p = powerC.newInstance();
-                            pID = p.ID;
+
+                            try {
+                                AbstractPower p = powerC.newInstance();
+
+                                pID = p.ID;
+                            } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
+
+                            }
+
                             if (pID == null) {
+                                //pID = noID + count++;
                                 continue;
                             }
                         }
 
 
                         powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
-                    } catch (InstantiationException|IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         logger.info("Failed to initialize custom power for " + classInfo.getClassName());
                     }
 
