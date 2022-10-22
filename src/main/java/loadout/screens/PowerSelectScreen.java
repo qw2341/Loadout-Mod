@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.TheBombPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
@@ -70,6 +71,11 @@ public class PowerSelectScreen implements ScrollBarListener
 
     public static AbstractCard dummyCard = new Madness();
 
+    public static HashSet<String> specialCases = new HashSet<>();
+    static {
+        specialCases.add("TheBomb");
+    }
+
     public class PowerButton {
 
         public Class<? extends AbstractPower> pClass;
@@ -92,30 +98,44 @@ public class PowerSelectScreen implements ScrollBarListener
             this.pClass = pClass;
             Constructor<?>[] con = pClass.getDeclaredConstructors();
             this.tips = new ArrayList<>();
+
+
+
+
+
             try {
-                int paramCt = con[0].getParameterCount();
-                Class[] params = con[0].getParameterTypes();
-                Object[] paramz = new Object[paramCt];
-
-                for (int i = 0 ; i< paramCt; i++) {
-                    Class param = params[i];
-                    if (AbstractCreature.class.isAssignableFrom(param)) {
-                        paramz[i] = dummyPlayer;
-                    } else if (AbstractPlayer.class.isAssignableFrom(param)) {
-                        paramz[i] = dummyPlayer;
-                    } else if (AbstractMonster.class.isAssignableFrom(param)) {
-                        paramz[i] = dummyMonster;
-                    } else if (int.class.isAssignableFrom(param)) {
-                        paramz[i] = 0;
-                    } else if (AbstractCard.class.isAssignableFrom(param)) {
-                        paramz[i] = dummyCard;
-                    } else if (boolean.class.isAssignableFrom(param)) {
-                        paramz[i] = true;
+                if (specialCases.contains(id)) {
+                    switch (id) {
+                        case "TheBomb":
+                            this.instance = new TheBombPower(dummyPlayer,0,40);
+                            break;
                     }
-                }
-                //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+                } else {
+                    int paramCt = con[0].getParameterCount();
+                    Class[] params = con[0].getParameterTypes();
+                    Object[] paramz = new Object[paramCt];
 
-                this.instance = (AbstractPower) con[0].newInstance(paramz);
+                    for (int i = 0 ; i< paramCt; i++) {
+                        Class param = params[i];
+                        if (AbstractCreature.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyPlayer;
+                        } else if (AbstractPlayer.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyPlayer;
+                        } else if (AbstractMonster.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyMonster;
+                        } else if (int.class.isAssignableFrom(param)) {
+                            paramz[i] = 0;
+                        } else if (AbstractCard.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyCard;
+                        } else if (boolean.class.isAssignableFrom(param)) {
+                            paramz[i] = true;
+                        }
+                    }
+                    //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+
+                    this.instance = (AbstractPower) con[0].newInstance(paramz);
+                }
+
 
                 this.id = id;
                 this.powerStrings = ReflectionHacks.getPrivateStatic(pClass,"powerStrings");

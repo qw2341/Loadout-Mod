@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
+import com.megacrit.cardcrawl.powers.TheBombPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.PowerSelectScreen;
@@ -247,26 +248,34 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
         AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyPlayer,0);
 
         try {
-            Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();
-            int paramCt = con[0].getParameterCount();
-            Class[] params = con[0].getParameterTypes();
-            Object[] paramz = new Object[paramCt];
-
-            for (int i = 0 ; i< paramCt; i++) {
-                Class param = params[i];
-                if (AbstractCreature.class.isAssignableFrom(param)) {
-                    paramz[i] = creature;
-                } else if (int.class.isAssignableFrom(param)) {
-                    paramz[i] = amount;
-                } else if (AbstractCard.class.isAssignableFrom(param)) {
-                    paramz[i] = card;
-                } else if (boolean.class.isAssignableFrom(param)) {
-                    paramz[i] = true;
+            if (PowerSelectScreen.specialCases.contains(pID)) {
+                switch (pID) {
+                    case "TheBomb":
+                        return new TheBombPower(creature,amount,40);
                 }
-            }
-            //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+            } else {
+                Constructor<?>[] con = powerClassToApply.getDeclaredConstructors();
+                int paramCt = con[0].getParameterCount();
+                Class[] params = con[0].getParameterTypes();
+                Object[] paramz = new Object[paramCt];
 
-            powerToApply = (AbstractPower) con[0].newInstance(paramz);
+                for (int i = 0 ; i< paramCt; i++) {
+                    Class param = params[i];
+                    if (AbstractCreature.class.isAssignableFrom(param)) {
+                        paramz[i] = creature;
+                    } else if (int.class.isAssignableFrom(param)) {
+                        paramz[i] = amount;
+                    } else if (AbstractCard.class.isAssignableFrom(param)) {
+                        paramz[i] = card;
+                    } else if (boolean.class.isAssignableFrom(param)) {
+                        paramz[i] = true;
+                    }
+                }
+                //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
+
+                powerToApply = (AbstractPower) con[0].newInstance(paramz);
+            }
+
 
             return powerToApply;
 
