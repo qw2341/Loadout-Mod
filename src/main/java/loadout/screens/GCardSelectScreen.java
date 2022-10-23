@@ -2,6 +2,7 @@ package loadout.screens;
 
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -16,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -117,6 +119,9 @@ public class GCardSelectScreen
     public CardDisplayMode currentMode = CardDisplayMode.OBTAIN;
     private AbstractCard clickStartedCard = null;
 
+    private InputAction shiftKey;
+    private InputAction ctrlKey;
+
     public AbstractRelic caller;
 
     public enum ViewingPool {
@@ -124,6 +129,8 @@ public class GCardSelectScreen
     }
 
     public ViewingPool currentPool;
+
+    public int selectMult = 1;
 
 
     public GCardSelectScreen(CardDisplayMode currentMode,  AbstractRelic caller) {
@@ -144,6 +151,9 @@ public class GCardSelectScreen
         this.scrollBar.move(+50.0F * Settings.scale, 50.0F * Settings.scale);
         this.scrollBar.changeHeight(Settings.HEIGHT/1.5f);
         this.currentMode = currentMode;
+
+        this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
+        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
 
         switch (currentMode) {
 
@@ -190,7 +200,15 @@ public class GCardSelectScreen
             }
         }
 
-
+        if (this.shiftKey.isPressed() && this.ctrlKey.isPressed()) {
+            selectMult = 50;
+        } else if (this.shiftKey.isPressed()) {
+            selectMult = 10;
+        } else if (this.ctrlKey.isPressed()) {
+            selectMult = 5;
+        } else {
+            selectMult = 1;
+        }
 
 
         if (this.forClarity) {
@@ -295,7 +313,7 @@ public class GCardSelectScreen
                         switch (currentMode) {
 
                             case OBTAIN:
-                                ((CardPrinter)caller).obtainCard(this.hoveredCard);
+                                for (int i=0; i<selectMult; i++) ((CardPrinter)caller).obtainCard(this.hoveredCard);
                                 break;
                             case DELETE:
                                 ((CardShredder)caller).removeCard(this.hoveredCard);
