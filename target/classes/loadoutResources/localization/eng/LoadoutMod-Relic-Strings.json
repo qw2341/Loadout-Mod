@@ -106,14 +106,14 @@
     "NAME": "Potion of Powers",
     "FLAVOR": "A powerful draught",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10"
+      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite"
     ]
   },
   "loadout:PowerGiverAlt": {
     "NAME": "Lemegeton",
     "FLAVOR": "Grants you power... but at what cost?",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10"
+      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite"
     ]
   }
 }

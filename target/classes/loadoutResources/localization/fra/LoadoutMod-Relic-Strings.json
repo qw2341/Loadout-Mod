@@ -107,14 +107,14 @@
     "NAME": "Potion de pouvoirs",
     "FLAVOR": "Un puissant courant d’air",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour sélectionner la puissance souhaitée. Cliquez avec le bouton gauche de la souris pour augmenter, cliquez avec le bouton droit pour réduire."
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner la puissance souhaitée. Cliquez avec le bouton gauche de la souris pour augmenter, cliquez avec le bouton droit pour réduire. Alt + clic gauche vers favori"
     ]
   },
   "loadout:PowerGiverAlt": {
     "NAME": "Lemegeton",
     "FLAVOR": "Vous donne le pouvoir... Mais à quel prix ?",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour sélectionner la puissance souhaitée. Cliquez avec le bouton gauche de la souris pour augmenter, cliquez avec le bouton droit pour réduire."
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner la puissance souhaitée. Cliquez avec le bouton gauche de la souris pour augmenter, cliquez avec le bouton droit pour réduire. Alt + clic gauche vers favori"
     ]
   }
 
