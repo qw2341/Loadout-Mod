@@ -34,10 +34,13 @@ import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
+import loadout.savables.Favorites;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PowerSelectScreen implements ScrollBarListener
 {
@@ -263,6 +266,12 @@ public class PowerSelectScreen implements ScrollBarListener
     private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
     private static final Color BLACK_OUTLINE_COLOR = new Color(168);
 
+    private static final Color GOLD_BACKGROUND = new Color(-2686721);
+    static {
+        GOLD_BACKGROUND.a = 0.5f;
+    }
+
+
     private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
     private PowerButton hoveredPower = null;
     private PowerButton clickStartedPower = null;
@@ -272,6 +281,7 @@ public class PowerSelectScreen implements ScrollBarListener
     private Hitbox controllerRelicHb = null;
 
     private ArrayList<PowerButton> powers;
+    private ArrayList<PowerButton> powersClone;
     private boolean show = false;
     public static int selectMult = 1;
     private ArrayList<PowerButton> selectedPowers = new ArrayList<>();
@@ -297,7 +307,14 @@ public class PowerSelectScreen implements ScrollBarListener
     private InputAction shiftKey;
     private InputAction ctrlKey;
 
+    private InputAction altKey;
+
     public PowerGiver.PowerTarget currentTarget = PowerGiver.PowerTarget.PLAYER;
+
+
+
+    public boolean filterFavorites = false;
+    public boolean filterAll = true;
 
 
 
@@ -316,18 +333,32 @@ public class PowerSelectScreen implements ScrollBarListener
     public PowerSelectScreen(AbstractRelic owner)
     {
         scrollBar = new ScrollBar(this);
-        this.sortHeader = new PowerSelectSortHeader(this);
+
+        //import favorites
+
+
+
         this.owner = owner;
         this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+        this.altKey = new InputAction(Input.Keys.ALT_LEFT);
 
         this.powers = new ArrayList<>();
+        this.powersClone = new ArrayList<>();
+
+        this.currentSortType = SortType.MOD;
+
 
         for (String pID : LoadoutMod.powersToDisplay.keySet()) {
             if(pID == null) continue;
             Class<? extends AbstractPower> pClass = LoadoutMod.powersToDisplay.get(pID);
-            this.powers.add(new PowerButton(pID, pClass));
+            PowerButton pb = new PowerButton(pID, pClass);
+            this.powers.add(pb);
+            this.powersClone.add(pb);
         }
+
+
+        this.sortHeader = new PowerSelectSortHeader(this);
 
 
     }
@@ -337,12 +368,16 @@ public class PowerSelectScreen implements ScrollBarListener
     }
 
     private void sortOnOpen() {
-        if(!isDeleteMode) {
-            this.sortHeader.justSorted = true;
-            sortByMod(true);
-            this.sortHeader.resetAllButtons();
-            this.sortHeader.clearActiveButtons();
-        }
+
+
+        updateFilters(true);
+
+        this.sortHeader.justSorted = true;
+        sortByMod(true);
+        this.sortHeader.resetAllButtons();
+        this.sortHeader.clearActiveButtons();
+
+
     }
     public void sortByType(boolean isAscending){
         if (isAscending) {
@@ -381,9 +416,23 @@ public class PowerSelectScreen implements ScrollBarListener
         scrolledUsingBar(0.0F);
     }
 
+    public void sort(boolean isAscending) {
+        switch (currentSortType) {
+            case NAME:
+                sortAlphabetically(isAscending);
+                break;
+            case MOD:
+                sortByMod(isAscending);
+                break;
+            case TYPE:
+                sortByType(isAscending);
+                break;
+        }
+    }
+
     public void refreshPowersForTarget() {
         PowerGiver o = ((PowerGiver)owner);
-        for(PowerButton pb : this.powers) {
+        for(PowerButton pb : this.powersClone) {
             pb.amount = 0;
             if (currentTarget == PowerGiver.PowerTarget.PLAYER) {
                 if(o.savedPowersPlayer.containsKey(pb.id)) {
@@ -513,6 +562,14 @@ public class PowerSelectScreen implements ScrollBarListener
             selectMult = 1;
         }
 
+        boolean isFaving;
+
+        if(this.altKey.isPressed()) {
+            isFaving = true;
+        } else {
+            isFaving = false;
+        }
+
         confirmButton.update();
         this.sortHeader.update();
 
@@ -531,24 +588,42 @@ public class PowerSelectScreen implements ScrollBarListener
                 CInputActionSet.select.unpress();
                 if (hoveredPower == clickStartedPower)
                 {
+                    if(isFaving) {
+                        String pID = hoveredPower.id;
+                        //Add to fav
+                        if(Favorites.favoritePowers.contains(pID)) {
+                            Favorites.favoritePowers.remove(pID);
+                        } else {
+                            Favorites.favoritePowers.add(pID);
+                        }
+                        if(filterFavorites)
+                            updateFilters(false);
 
-                    clickStartedPower.amount += selectMult;
-                    if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, +selectMult);
-                    else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-                        ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, +selectMult);
-
-                    if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                        try {
+                            LoadoutMod.favorites.save();
+                        } catch (IOException e) {
+                            LoadoutMod.logger.info("Failed to save favorites");
+                        }
+                    } else {
+                        clickStartedPower.amount += selectMult;
                         if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
-                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
-                            for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                                ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, +selectMult, am);
+                            ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, +selectMult);
+                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                            ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, +selectMult);
+
+                        if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                            if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
+                            else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                                    ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, +selectMult, am);
+                                }
                             }
                         }
+
+                        this.owner.flash();
                     }
 
-                    this.owner.flash();
                     clickStartedPower = null;
 
                     if (doneSelecting()) {
@@ -587,6 +662,7 @@ public class PowerSelectScreen implements ScrollBarListener
                     clickStartedPower = null;
                 }
             }
+
         } else {
             clickStartedPower = null;
         }
@@ -638,6 +714,26 @@ public class PowerSelectScreen implements ScrollBarListener
         resetScrolling();
         updateBarPosition();
     }
+
+    public void resetFilters() {
+        this.powers.clear();
+        this.powers.addAll(this.powersClone);
+    }
+
+    protected boolean testFilter(PowerButton pb) {
+        boolean favCheck = filterAll || (filterFavorites && Favorites.favoritePowers.contains(pb.id));
+        return favCheck;
+    }
+
+    public void updateFilters(boolean resetScroll) {
+        resetFilters();
+        this.powers = this.powers.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
+        sort(true);
+
+        if(resetScroll)
+            scrolledUsingBar(0.0f);
+    }
+
 
     private void calculateScrollBounds()
     {
@@ -786,7 +882,14 @@ public class PowerSelectScreen implements ScrollBarListener
             p.x = curX;
             p.y = curY;
 
+            if(filterAll && Favorites.favoritePowers.contains(p.id)) {
+
+                sb.setColor(GOLD_BACKGROUND);
+                sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT,curX - (float)128 / 2.0F, curY - (float)128 / 2.0F, (float)128, (float)128);
+            }
+
             p.render(sb);
+
 
 
             col += 1;

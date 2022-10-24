@@ -85,7 +85,9 @@
 			"Clear De/Buffs",
 			"Player",
 			"Monsters",
-			"Target"
+			"Target",
+			"Type",
+			"Favorite"
 		]
 	}
 }

@@ -42,6 +42,7 @@ import javassist.NotFoundException;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.savables.CardModifications;
+import loadout.savables.Favorites;
 import loadout.savables.SerializableCard;
 import loadout.screens.EventSelectScreen;
 import loadout.util.PowerFilter;
@@ -190,6 +191,7 @@ StartGameSubscriber{
     public static boolean isScreenUp = false;
 
     public static CardModifications cardModifications = null;
+    public static Favorites favorites = null;
 
 
 
@@ -307,12 +309,20 @@ StartGameSubscriber{
 
         try {
             ModifierLibrary.initialize();
-            this.cardModifications = new CardModifications();
+            cardModifications = new CardModifications();
         } catch (IOException e) {
             logger.error("Error loading card modifications");
         }
 
         logger.info("Done loading card modifications");
+
+        logger.info("loading favorites");
+        try {
+            favorites = new Favorites();
+        } catch (IOException e) {
+            logger.error("Error loading favorites");
+        }
+        logger.info("Done loading favorites");
     }
     
     // ====== NO EDIT AREA ======

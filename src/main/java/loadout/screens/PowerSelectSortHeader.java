@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
+import loadout.savables.Favorites;
 
 public class PowerSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
 
@@ -27,6 +28,8 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PowerSelectSortHeader"));
     public static final String[] TEXT = UiStrings.TEXT;
 
+    private static final UIStrings cUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("CardSelectSortHeader"));
+    public static final String[] cTEXT = cUiStrings.TEXT;
 
     public boolean justSorted = false;
 
@@ -36,10 +39,12 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
     public static final float SPACE_Y = 75.0F * Settings.yScale;
     private HeaderButtonPlus nameButton;
     private HeaderButtonPlus modButton;
+
     private HeaderButtonPlus resetAllButton;
     private HeaderButtonPlus clearAllEffectsButton;
     public HeaderButtonPlus[] buttons;
 
+    private DropdownMenu typeButton;
     private DropdownMenu targetSelectMenu;
     public DropdownMenu[] dropdownMenus;
     public String[] dropdownMenuHeaders;
@@ -78,13 +83,20 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.clearAllEffectsButton.isAscending = true;
         this.clearAllEffectsButton.hb.resize(200.0F * Settings.xScale, 48.0F * Settings.scale);
         this.clearAllEffectsButton.hb.moveX(xPosition - 100.0f);
+
+
+
         this.buttons = new HeaderButtonPlus[] {  this.nameButton, this.modButton, this.resetAllButton, this.clearAllEffectsButton};
 
         this.targetSelectMenu = new DropdownMenu(this, new String[] {TEXT[4],TEXT[5]}, FontHelper.panelNameFont, Settings.CREAM_COLOR);
         this.targetSelectMenu.setSelectedIndex(powerSelectScreen.currentTarget.ordinal());
 
-        this.dropdownMenus = new DropdownMenu[] {this.targetSelectMenu};
-        this.dropdownMenuHeaders = new String[] {TEXT[6]};
+        this.typeButton = new DropdownMenu(this, new String[] {cTEXT[0],TEXT[8]}, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+
+        this.typeButton.setSelectedIndex(!Favorites.favoritePowers.isEmpty() ? 1 : 0);
+
+        this.dropdownMenus = new DropdownMenu[] {this.targetSelectMenu, this.typeButton};
+        this.dropdownMenuHeaders = new String[] {TEXT[6],TEXT[7]};
 
 
 
@@ -202,7 +214,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         }
 
         float spaceY = 52.0f * Settings.yScale;
-        float yPos = START_Y - 7.0f * spaceY;
+        float yPos = START_Y - 9.0f * spaceY;
 
         float xPos = 20.0f * Settings.scale;
 
@@ -234,6 +246,17 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         if (dropdownMenu == this.targetSelectMenu) {
             this.powerSelectScreen.currentTarget = PowerGiver.PowerTarget.values()[i];
             this.powerSelectScreen.refreshPowersForTarget();
+        }
+        if(dropdownMenu == this.typeButton) {
+            if(i == 1) {
+                this.powerSelectScreen.filterFavorites = true;
+
+
+            } else if (i==0) {
+                this.powerSelectScreen.filterFavorites = false;
+            }
+            this.powerSelectScreen.filterAll = !this.powerSelectScreen.filterFavorites;
+            this.powerSelectScreen.updateFilters(true);
         }
     }
 }
