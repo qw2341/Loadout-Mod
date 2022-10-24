@@ -108,7 +108,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
         isSelectionScreenUp = true;
 
         try {
-            if (this.statSelectScreen == null) statSelectScreen = new EventSelectScreen(this);
+            if (this.statSelectScreen == null) statSelectScreen = new StatModSelectScreen(this);
         } catch (NoClassDefFoundError e) {
             logger.info("Error: EventSelectScreen Class not found while opening potion select for cauldron!");
         }
