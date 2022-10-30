@@ -34,8 +34,7 @@ public abstract class SortHeader implements HeaderButtonPlusListener, DropdownMe
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         this.startX = startX;
-        float xPosition = this.startX - 75.0f;
-        float yPosition = START_Y - 450.0f * Settings.yScale;
+
 
         this.selectScreen = ss;
 

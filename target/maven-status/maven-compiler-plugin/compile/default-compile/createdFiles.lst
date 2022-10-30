@@ -16,6 +16,7 @@ loadout\screens\HeaderButtonPlus$Alignment.class
 loadout\screens\StatModSelectScreen$StatModButton.class
 loadout\screens\CombatCardSelectSortHeader.class
 loadout\patches\AbstractCardPatch$CardModificationFields.class
+loadout\screens\StatModSelectScreen$1.class
 loadout\savables\Favorites.class
 loadout\patches\OverlayMenuUpdatePatch.class
 loadout\screens\RelicSelectSortHeader$1.class
@@ -69,6 +70,7 @@ loadout\patches\AbstractCardPatch$MultiUse$1.class
 loadout\relics\LoadoutCauldron.class
 loadout\helper\PotionTierComparator.class
 loadout\savables\CardModifications$1.class
+loadout\screens\StatModSelectScreen$ModType.class
 loadout\cardmods\UnexhaustMod.class
 loadout\patches\AddEventPatch.class
 loadout\patches\ScreensPatch.class

@@ -115,5 +115,19 @@
     "DESCRIPTIONS": [
       "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite"
     ]
+  },
+  "loadout:TildeKey": {
+    "NAME": "Tilde Key",
+    "FLAVOR": "It always points to somewhere interesting",
+    "DESCRIPTIONS": [
+      "Right-click this relic to select the mod you want."
+    ]
+  },
+  "loadout:TildeKeyAlt": {
+    "NAME": "Tilde Key",
+    "FLAVOR": "The end is near",
+    "DESCRIPTIONS": [
+      "Right-click this relic to select the mod you want."
+    ]
   }
 }

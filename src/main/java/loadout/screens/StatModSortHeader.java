@@ -1,12 +1,44 @@
 package loadout.screens;
 
+import com.megacrit.cardcrawl.actions.common.InstantKillAction;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
+import loadout.LoadoutMod;
+import loadout.relics.TildeKey;
 
 public class StatModSortHeader extends SortHeader{
 
+    private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("StatModSortHeader"));
+    public static final String[] TEXT = uiStrings.TEXT;
+
+    private HeaderButtonPlus killAllButton;
+
+    private HeaderButtonPlus godModeButton;
+    private HeaderButtonPlus infEnergyButton;
 
     public StatModSortHeader(SelectScreen ss) {
         super(ss);
+        float xPosition = this.startX - 75.0f;
+        float yPosition = START_Y - 450.0f * Settings.yScale;
+
+        this.killAllButton = new HeaderButtonPlus(TEXT[0], xPosition, yPosition, this, false, true, HeaderButtonPlus.Alignment.CENTER);
+
+        yPosition -= SPACE_Y;
+
+        this.godModeButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+
+        yPosition -= SPACE_Y;
+
+        this.infEnergyButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+
+
+        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton};
+        this.dropdownMenus = new DropdownMenu[] {};
+        this.dropdownMenuHeaders = new String[] {};
     }
 
     @Override
@@ -15,7 +47,15 @@ public class StatModSortHeader extends SortHeader{
     }
 
     @Override
-    public void didChangeOrder(HeaderButtonPlus var1, boolean var2) {
+    public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
+        if(button == this.killAllButton) {
+            TildeKey.isKillAllMode = isAscending;
+
+        } else if (button == this.godModeButton) {
+            TildeKey.isGodMode = isAscending;
+        } else if (button == this.infEnergyButton) {
+            TildeKey.isInfiniteEnergy = isAscending;
+        }
 
     }
 }

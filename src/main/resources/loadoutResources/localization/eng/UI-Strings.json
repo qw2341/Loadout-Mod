@@ -89,5 +89,13 @@
 			"Type",
 			"Favorite"
 		]
+	},
+	"StatModSortHeader": {
+		"TEXT": [
+			"Kill All Enemies",
+			"God Mode",
+			"Infinite Energy"
+		]
+
 	}
 }

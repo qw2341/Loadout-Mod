@@ -916,6 +916,7 @@ StartGameSubscriber{
         BaseMod.addRelic(new CardModifier(), RelicType.SHARED);
         BaseMod.addRelic(new EventfulCompass(), RelicType.SHARED);
         BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
+        BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
@@ -1005,7 +1006,7 @@ StartGameSubscriber{
             if(enableModifierStarting&&RelicLibrary.isARelic("loadout:CardModifier")&&!AbstractDungeon.player.hasRelic(CardModifier.ID)) RelicLibrary.getRelic("loadout:CardModifier").makeCopy().instantObtain();
             if(enableCompassStarting&&RelicLibrary.isARelic(EventfulCompass.ID)&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) RelicLibrary.getRelic(EventfulCompass.ID).makeCopy().instantObtain();
             if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
-
+            if(RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
         }
 
     }

@@ -61,7 +61,7 @@ public abstract class SelectScreen implements ScrollBarListener {
     public enum SortOrder {ASCENDING,DESCENDING};
     public EventSelectScreen.SortOrder currentSortOrder = EventSelectScreen.SortOrder.ASCENDING;
 
-    private AbstractRelic owner;
+    public AbstractRelic owner;
     private boolean isDragSelecting = false;
     private boolean isTryingToScroll = false;
 
@@ -115,7 +115,6 @@ public abstract class SelectScreen implements ScrollBarListener {
         this.currentSortOrder = EventSelectScreen.SortOrder.ASCENDING;
 
         sortOnOpen();
-        sortHeader.resetAllButtons();
 
         calculateScrollBounds();
     }

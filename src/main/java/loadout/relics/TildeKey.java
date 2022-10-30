@@ -4,15 +4,19 @@ import basemod.abstracts.CustomRelic;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.audio.Sfx;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
-import loadout.screens.EventSelectScreen;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
 
@@ -28,11 +32,24 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("compass_relic.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
-    private boolean eventSelected = true;
+    private boolean modSelected = true;
     public StatModSelectScreen statSelectScreen;
     private boolean fakeHover = false;
 
     public static boolean isSelectionScreenUp = false;
+
+    public static boolean isHealthLocked = false;
+    public static int healthLockAmount;
+    public static boolean isMaxHealthLocked = false;
+    public static int maxHealthLockAmount;
+    public static boolean isGoldLocked = false;
+    public static int goldLockAmount;
+
+    public static boolean isKillAllMode = false;
+
+    public static boolean isGodMode = false;
+
+    public static boolean isInfiniteEnergy = false;
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -104,7 +121,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
 
     private void openEventSelect()
     {
-        eventSelected = false;
+        modSelected = false;
         isSelectionScreenUp = true;
 
         try {
@@ -121,9 +138,30 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     {
         super.update();
 
-        if (!eventSelected && statSelectScreen != null) {
+        if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
+        if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
+        if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
+
+        if(isInfiniteEnergy && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            if(AbstractDungeon.player.energy.energy<999) AbstractDungeon.player.energy.energy = 999;
+        }
+
+//        if(isKillAllMode) {
+//            MonsterGroup mg = AbstractDungeon.getMonsters();
+//            if(mg != null) {
+//                if ((mg.areMonstersBasicallyDead()||mg.areMonstersDead())) {
+//
+//                } else {
+//                    for (AbstractMonster am: mg.monsters) {
+//                        AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
+//                    }
+//                }
+//            }
+//        }
+
+        if (!modSelected && statSelectScreen != null) {
             if (statSelectScreen.doneSelecting()) {
-                eventSelected = true;
+                modSelected = true;
                 isSelectionScreenUp = false;
             } else {
                 statSelectScreen.update();
@@ -138,7 +176,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     @Override
     public void renderTip(SpriteBatch sb)
     {
-        if (!eventSelected && fakeHover) {
+        if (!modSelected && fakeHover) {
             statSelectScreen.render(sb);
         }
         if (fakeHover) {
@@ -154,7 +192,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     {
         super.renderInTopPanel(sb);
 
-        if (!eventSelected && !fakeHover && statSelectScreen != null) {
+        if (!modSelected && !fakeHover && statSelectScreen != null) {
             statSelectScreen.render(sb);
         }
     }
@@ -162,7 +200,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     @Override
     public AbstractRelic makeCopy()
     {
-        return new EventfulCompass();
+        return new TildeKey();
     }
 
     @Override
@@ -180,4 +218,39 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
         }
     }
 
+    @Override
+    public void atBattleStart() {
+        if(isKillAllMode) {
+            this.flash();
+            for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+                AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
+            }
+        }
+
+
+    }
+
+    @Override
+    public void onSpawnMonster(AbstractMonster monster) {
+
+        if(isKillAllMode)  {
+            this.flash();
+            AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
+        }
+    }
+
+    @Override
+    public void atTurnStart() {
+        if(isKillAllMode) {
+            this.flash();
+            for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+                AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
+            }
+        }
+    }
+
+    @Override
+    public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
+        return isGodMode ? 0 : damageAmount;
+    }
 }
