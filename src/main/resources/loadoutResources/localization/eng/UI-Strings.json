@@ -90,7 +90,7 @@
 			"Favorite"
 		]
 	},
-	"StatModSortHeader": {
+	"loadout:StatModSortHeader": {
 		"TEXT": [
 			"Kill All Enemies",
 			"God Mode",

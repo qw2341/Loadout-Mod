@@ -1,6 +1,7 @@
 package loadout.relics;
 
 import basemod.abstracts.CustomRelic;
+import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
@@ -13,18 +14,20 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import loadout.LoadoutMod;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
+
+import java.util.HashMap;
 
 import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 
-public class TildeKey extends CustomRelic implements ClickableRelic {
+public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavable<HashMap<String,String>> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
@@ -39,17 +42,29 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     public static boolean isSelectionScreenUp = false;
 
     public static boolean isHealthLocked = false;
-    public static int healthLockAmount;
+    private static final String isHealthLockedKey = "isHealthLocked";
+    public static int healthLockAmount = 100;
+    private static final String healthLockAmountKey = "healthLockAmount";
     public static boolean isMaxHealthLocked = false;
-    public static int maxHealthLockAmount;
+    private static final String isMaxHealthLockedKey = "isMaxHealthLocked";
+    public static int maxHealthLockAmount = 100;
+    private static final String maxHealthLockAmountKey = "maxHealthLockAmount";
     public static boolean isGoldLocked = false;
-    public static int goldLockAmount;
+    private static final String isGoldLockedKey = "isGoldLocked";
+    public static int goldLockAmount = 100;
 
+    private static final String goldLockAmountKey = "goldLockAmount";
     public static boolean isKillAllMode = false;
+    private static final String isKillAllModeKey = "isKillAllMode";
 
     public static boolean isGodMode = false;
+    private static final String isGodModeKey = "isGodMode";
 
     public static boolean isInfiniteEnergy = false;
+    private static final String isInfiniteEnergyKey = "isInfiniteEnergy";
+
+    public static boolean canGoToAnyRooms = false;
+    private static final String canGoToAnyRoomsKey = "canGoToAnyRooms";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -114,12 +129,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
         }
 
-        openEventSelect();
+        openStatModSelect();
     }
 
 
 
-    private void openEventSelect()
+    private void openStatModSelect()
     {
         modSelected = false;
         isSelectionScreenUp = true;
@@ -143,7 +158,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
         if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
 
         if(isInfiniteEnergy && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-            if(AbstractDungeon.player.energy.energy<999) AbstractDungeon.player.energy.energy = 999;
+            if(EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
         }
 
 //        if(isKillAllMode) {
@@ -252,5 +267,37 @@ public class TildeKey extends CustomRelic implements ClickableRelic {
     @Override
     public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
         return isGodMode ? 0 : damageAmount;
+    }
+
+    @Override
+    public HashMap<String, String> onSave() {
+        HashMap<String, String> sav = new HashMap<>();
+        sav.put(isHealthLockedKey, String.valueOf(isHealthLocked));
+        sav.put(healthLockAmountKey, String.valueOf(healthLockAmount));
+        sav.put(isMaxHealthLockedKey, String.valueOf(isMaxHealthLocked));
+        sav.put(maxHealthLockAmountKey, String.valueOf(maxHealthLockAmount));
+        sav.put(isGoldLockedKey, String.valueOf(isGoldLocked));
+        sav.put(goldLockAmountKey, String.valueOf(goldLockAmount));
+        sav.put(isKillAllModeKey, String.valueOf(isKillAllMode));
+        sav.put(isGodModeKey, String.valueOf(isGodMode));
+        sav.put(isInfiniteEnergyKey, String.valueOf(isInfiniteEnergy));
+        sav.put(canGoToAnyRoomsKey, String.valueOf(canGoToAnyRooms));
+
+        return sav;
+    }
+
+    @Override
+    public void onLoad(HashMap<String, String> sav) {
+        isHealthLocked = Boolean.parseBoolean(sav.get(isHealthLockedKey));
+        healthLockAmount = Integer.parseInt(sav.get(healthLockAmountKey));
+        isMaxHealthLocked = Boolean.parseBoolean(sav.get(isMaxHealthLockedKey));
+        maxHealthLockAmount = Integer.parseInt(sav.get(maxHealthLockAmountKey));
+        isGoldLocked = Boolean.parseBoolean(sav.get(isGoldLockedKey));
+        goldLockAmount = Integer.parseInt(sav.get(goldLockAmountKey));
+        isKillAllMode = Boolean.parseBoolean(sav.get(isKillAllModeKey));
+        isGodMode = Boolean.parseBoolean(sav.get(isGodModeKey));
+        isInfiniteEnergy = Boolean.parseBoolean(sav.get(isInfiniteEnergyKey));
+        canGoToAnyRooms = Boolean.parseBoolean(sav.get(canGoToAnyRoomsKey));
+
     }
 }
