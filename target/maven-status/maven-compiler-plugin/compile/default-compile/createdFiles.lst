@@ -69,6 +69,7 @@ loadout\helper\RelicTierComparator.class
 loadout\patches\AbstractCardPatch$MultiUse$1.class
 loadout\relics\LoadoutCauldron.class
 loadout\helper\PotionTierComparator.class
+loadout\patches\MapRoomNodePatch$ConnectionPatch.class
 loadout\savables\CardModifications$1.class
 loadout\screens\StatModSelectScreen$ModType.class
 loadout\cardmods\UnexhaustMod.class
@@ -90,6 +91,7 @@ loadout\screens\GCardSelectScreen$SortType.class
 loadout\helper\HanyuPinyinOutputFormat$HanyuPinyinToneType.class
 loadout\screens\StatModSortHeader.class
 loadout\patches\AbstractCardPatch$CardModApplicatorPatch.class
+loadout\patches\MapRoomNodePatch.class
 loadout\screens\PowerSelectScreen$SortOrder.class
 loadout\screens\CardSelectSortHeader$1.class
 loadout\cardmods\PlayableMod.class

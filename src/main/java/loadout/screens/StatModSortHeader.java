@@ -19,6 +19,7 @@ public class StatModSortHeader extends SortHeader{
 
     private HeaderButtonPlus godModeButton;
     private HeaderButtonPlus infEnergyButton;
+    private HeaderButtonPlus canGoToAnyRoomButton;
 
     public StatModSortHeader(SelectScreen ss) {
         super(ss);
@@ -26,17 +27,21 @@ public class StatModSortHeader extends SortHeader{
         float yPosition = START_Y - 450.0f * Settings.yScale;
 
         this.killAllButton = new HeaderButtonPlus(TEXT[0], xPosition, yPosition, this, false, true, HeaderButtonPlus.Alignment.CENTER);
-
+        this.killAllButton.isAscending = TildeKey.isKillAllMode;
         yPosition -= SPACE_Y;
 
         this.godModeButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
-
+        this.godModeButton.isAscending = TildeKey.isGodMode;
         yPosition -= SPACE_Y;
 
         this.infEnergyButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.infEnergyButton.isAscending = TildeKey.isInfiniteEnergy;
+        yPosition -= SPACE_Y;
 
+        this.canGoToAnyRoomButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.canGoToAnyRoomButton.isAscending = TildeKey.canGoToAnyRooms;
 
-        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton};
+        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.canGoToAnyRoomButton};
         this.dropdownMenus = new DropdownMenu[] {};
         this.dropdownMenuHeaders = new String[] {};
     }
@@ -55,6 +60,8 @@ public class StatModSortHeader extends SortHeader{
             TildeKey.isGodMode = isAscending;
         } else if (button == this.infEnergyButton) {
             TildeKey.isInfiniteEnergy = isAscending;
+        } else if (button == this.canGoToAnyRoomButton) {
+            TildeKey.canGoToAnyRooms = isAscending;
         }
 
     }
