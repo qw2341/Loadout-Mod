@@ -49,7 +49,7 @@ public class HeaderButtonPlus extends SortHeaderButton {
 
         this.text = text;
         this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, Float.MAX_VALUE, 0.0F);
-        this.hb = new Hitbox(100.0F * Settings.xScale, 48.0F * Settings.scale);
+        this.hb = new Hitbox(textWidth + this.ARROW_SIZE * 2 * Settings.scale, 48.0F * Settings.scale);
         this.hb.move(cx, cy);
         this.x = cx;
         this.y = cy;
@@ -65,17 +65,7 @@ public class HeaderButtonPlus extends SortHeaderButton {
         this.isSorting = isSorting;
         this.isToggle = isToggle;
         this.alignment = alignment;
-//        switch (alignment) {
-//            case RIGHT:
-//                this.hb.move(cx - this.textWidth / 2.0F, cy);
-//                break;
-//            case CENTER:
-//                this.hb.move(cx, cy);
-//                break;
-//            case LEFT:
-//                this.hb.move(cx + this.textWidth / 2.0F, cy);
-//                break;
-//        }
+
     }
 
     public HeaderButtonPlus(String text, float cx, float cy, HeaderButtonPlusListener delegate, boolean isIcon, Texture icon) {
@@ -89,7 +79,21 @@ public class HeaderButtonPlus extends SortHeaderButton {
     }
 
     public void update() {
+        switch (alignment) {
+            case RIGHT:
+                this.hb.move(x - this.textWidth / 2.0F, y);
+                break;
+            case CENTER:
+                this.hb.move(x, y);
+                break;
+            case LEFT:
+                this.hb.move(x + this.textWidth / 2.0F, y);
+                break;
+        }
+
         this.hb.update();
+
+
         if (this.hb.justHovered) {
             CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
         }

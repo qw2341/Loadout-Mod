@@ -101,6 +101,7 @@ loadout\screens\SCardViewPopup$1.class
 loadout\patches\ScreensPatch$GridScreenCloseBool.class
 loadout\relics\CardShredder.class
 loadout\actions\AddRelicAction.class
+loadout\screens\HeaderButtonPlus$1.class
 loadout\screens\RelicSelectScreen$1.class
 loadout\screens\EventSelectSortHeader.class
 loadout\screens\RelicSelectScreen$SortType.class
