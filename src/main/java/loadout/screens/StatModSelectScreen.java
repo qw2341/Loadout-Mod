@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.relics.TildeKey;
 
@@ -92,10 +93,10 @@ public class StatModSelectScreen extends SelectScreen{
     @Override
     public void close() {
         super.close();
-
-        if(TildeKey.isKillAllMode && AbstractDungeon.getMonsters() != null) {
+        MonsterGroup mg = AbstractDungeon.getMonsters();
+        if(TildeKey.isKillAllMode && mg != null && !mg.areMonstersDead()) {
             this.owner.flash();
-            for (AbstractMonster am: AbstractDungeon.getMonsters().monsters) {
+            for (AbstractMonster am: mg.monsters) {
                 AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
             }
         }

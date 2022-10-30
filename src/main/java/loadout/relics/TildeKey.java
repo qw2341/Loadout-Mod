@@ -31,8 +31,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("compass_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("compass_relic.png"));
+    //TODO: Make non Isaac version icon
+    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png"));
+    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
     private boolean modSelected = true;
@@ -288,6 +289,8 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
 
     @Override
     public void onLoad(HashMap<String, String> sav) {
+        if(sav == null) return;
+
         isHealthLocked = Boolean.parseBoolean(sav.get(isHealthLockedKey));
         healthLockAmount = Integer.parseInt(sav.get(healthLockAmountKey));
         isMaxHealthLocked = Boolean.parseBoolean(sav.get(isMaxHealthLockedKey));
