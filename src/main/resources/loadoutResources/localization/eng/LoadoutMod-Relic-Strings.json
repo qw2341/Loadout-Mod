@@ -118,16 +118,16 @@
   },
   "loadout:TildeKey": {
     "NAME": "Tilde Key",
-    "FLAVOR": "It always points to somewhere interesting",
+    "FLAVOR": "Debug without debug console",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the mod you want."
+      "Right-click this relic to select debug powers you want."
     ]
   },
   "loadout:TildeKeyAlt": {
     "NAME": "Tilde Key",
-    "FLAVOR": "The end is near",
+    "FLAVOR": "Time to start over ... wait",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the mod you want."
+      "Right-click this relic to select debug powers you want."
     ]
   }
 }

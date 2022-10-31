@@ -116,6 +116,20 @@
     "DESCRIPTIONS": [
       "Cliquez avec le bouton droit sur cette relique pour sélectionner la puissance souhaitée. Cliquez avec le bouton gauche de la souris pour augmenter, cliquez avec le bouton droit pour réduire. Alt + clic gauche vers favori"
     ]
+  },
+  "loadout:TildeKey": {
+    "NAME": "Clé Tilde",
+    "FLAVOR": "Débogage sans console de débogage",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités."
+    ]
+  },
+  "loadout:TildeKeyAlt": {
+    "NAME": "Clé Tilde",
+    "FLAVOR": "Il est temps de recommencer... attendre",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités."
+    ]
   }
 
 

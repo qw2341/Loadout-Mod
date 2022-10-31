@@ -88,6 +88,14 @@
 			"Taper",
 			"Favori"
 		]
+	},
+	"loadout:StatModSortHeader": {
+		"TEXT": [
+			"Tuez tous les ennemis",
+			"Mode Dieu",
+			"Énergie infinie",
+			"Aller dans n’importe quelle pièce normale"
+		]
 	}
 
 }

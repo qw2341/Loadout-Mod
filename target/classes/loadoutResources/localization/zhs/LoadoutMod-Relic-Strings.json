@@ -115,5 +115,19 @@
     "DESCRIPTIONS": [
       "右键此遗物来选择你或怪物在战斗开始时/中获得的能力。 左键增加，右键减少。Ctrl x5, Shift x10。 Alt+左键收藏"
     ]
+  },
+  "loadout:TildeKey": {
+    "NAME": "波浪键",
+    "FLAVOR": "调试但是不用控制台",
+    "DESCRIPTIONS": [
+      "右键此遗物来进行调试。"
+    ]
+  },
+  "loadout:TildeKeyAlt": {
+    "NAME": "波浪键",
+    "FLAVOR": "是时候重来了...等等",
+    "DESCRIPTIONS": [
+      "右键此遗物来进行调试。"
+    ]
   }
 }
