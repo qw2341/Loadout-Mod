@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.ui.panels.SeedPanel;
 import loadout.relics.TildeKey;
 
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public class StatModSelectScreen extends SelectScreen{
         }
     }
 
+    public SeedPanel seedPanel = new SeedPanel();
+
     public StatModSelectScreen(AbstractRelic owner) {
         super(owner);
         if (sortHeader == null) this.sortHeader = new StatModSortHeader(this);
@@ -97,6 +100,9 @@ public class StatModSelectScreen extends SelectScreen{
     @Override
     public void close() {
         super.close();
+
+        if(this.seedPanel.shown) this.seedPanel.close();
+
         MonsterGroup mg = AbstractDungeon.getMonsters();
         if(TildeKey.isKillAllMode && mg != null && !mg.areMonstersDead()) {
             this.owner.flash();
@@ -128,6 +134,15 @@ public class StatModSelectScreen extends SelectScreen{
 
     @Override
     public void update() {
-        super.update();
+        if(!seedPanel.shown) super.update();
+        if(seedPanel.shown) seedPanel.update();
+
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        super.render(sb);
+
+        if(this.seedPanel.shown) this.seedPanel.render(sb);
     }
 }

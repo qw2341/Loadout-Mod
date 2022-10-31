@@ -97,7 +97,9 @@
 			"Infinite Energy",
 			"Go To Any Normal Rooms",
 			"Always Player Turn",
-			"Draw Cards Till Limit"
+			"Draw Cards Till Limit",
+			"Change Seed",
+			"Apply Seed Change"
 		]
 	}
 }
