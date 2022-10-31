@@ -21,6 +21,8 @@ public class StatModSortHeader extends SortHeader{
     private HeaderButtonPlus infEnergyButton;
     private HeaderButtonPlus canGoToAnyRoomButton;
 
+    private HeaderButtonPlus alwaysPlayerTurnButton;
+
     public StatModSortHeader(SelectScreen ss) {
         super(ss);
         float xPosition = this.startX - 75.0f;
@@ -41,7 +43,12 @@ public class StatModSortHeader extends SortHeader{
         this.canGoToAnyRoomButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.canGoToAnyRoomButton.isAscending = TildeKey.canGoToAnyRooms;
 
-        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.canGoToAnyRoomButton};
+        yPosition -= SPACE_Y;
+
+        this.alwaysPlayerTurnButton = new HeaderButtonPlus(TEXT[4], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.alwaysPlayerTurnButton.isAscending = TildeKey.isAlwaysPlayerTurn;
+
+        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton};
         this.dropdownMenus = new DropdownMenu[] {};
         this.dropdownMenuHeaders = new String[] {};
     }
@@ -62,6 +69,8 @@ public class StatModSortHeader extends SortHeader{
             TildeKey.isInfiniteEnergy = isAscending;
         } else if (button == this.canGoToAnyRoomButton) {
             TildeKey.canGoToAnyRooms = isAscending;
+        } else if (button == this.alwaysPlayerTurnButton) {
+            TildeKey.isAlwaysPlayerTurn = isAscending;
         }
 
     }

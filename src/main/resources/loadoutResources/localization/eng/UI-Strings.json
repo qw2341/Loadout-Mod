@@ -95,7 +95,8 @@
 			"Kill All Enemies",
 			"God Mode",
 			"Infinite Energy",
-			"Go To Any Normal Rooms"
+			"Go To Any Normal Rooms",
+			"Always Player Turn"
 		]
 	}
 }

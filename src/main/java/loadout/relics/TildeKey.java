@@ -67,6 +67,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
     public static boolean canGoToAnyRooms = false;
     private static final String canGoToAnyRoomsKey = "canGoToAnyRooms";
 
+    public static boolean isAlwaysPlayerTurn = false;
+    private static final String isAlwaysPlayerTurnKey = "isAlwaysPlayerTurn";
+
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
 
@@ -158,9 +161,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
         if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
 
-        if(isInfiniteEnergy && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-            if(EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
+        if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
+            if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
         }
+
+
 
 //        if(isKillAllMode) {
 //            MonsterGroup mg = AbstractDungeon.getMonsters();
@@ -265,6 +271,8 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         }
     }
 
+
+
     @Override
     public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
         return isGodMode ? 0 : damageAmount;
@@ -283,6 +291,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         sav.put(isGodModeKey, String.valueOf(isGodMode));
         sav.put(isInfiniteEnergyKey, String.valueOf(isInfiniteEnergy));
         sav.put(canGoToAnyRoomsKey, String.valueOf(canGoToAnyRooms));
+        sav.put(isAlwaysPlayerTurnKey, String.valueOf(isAlwaysPlayerTurn));
 
         return sav;
     }
@@ -301,6 +310,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         isGodMode = Boolean.parseBoolean(sav.get(isGodModeKey));
         isInfiniteEnergy = Boolean.parseBoolean(sav.get(isInfiniteEnergyKey));
         canGoToAnyRooms = Boolean.parseBoolean(sav.get(canGoToAnyRoomsKey));
+        isAlwaysPlayerTurn = Boolean.parseBoolean(sav.get(isAlwaysPlayerTurnKey));
 
     }
 }
