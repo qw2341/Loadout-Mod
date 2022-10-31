@@ -93,7 +93,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
             return; // Don't do anything.
         }
 
-        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp)
+        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp)
             return;
 
         if(isSelectionScreenUp) {
