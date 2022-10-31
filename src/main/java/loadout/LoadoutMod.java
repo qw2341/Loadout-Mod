@@ -1034,6 +1034,8 @@ StartGameSubscriber{
             if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
         }
 
+        TildeKey.resetToDefault();
+
     }
 
     private void init() {
@@ -1042,7 +1044,7 @@ StartGameSubscriber{
         createRelicList();
         createPotionList();
         createCardList();
-        TildeKey.resetToDefault();
+
     }
 
     private void createEventList() {
