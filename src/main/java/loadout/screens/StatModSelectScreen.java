@@ -70,6 +70,10 @@ public class StatModSelectScreen extends SelectScreen{
                     break;
             }
         }
+
+        public void render(SpriteBatch sb) {
+
+        }
     }
 
     public StatModSelectScreen(AbstractRelic owner) {

@@ -1,13 +1,18 @@
 package loadout.relics;
 
+import basemod.BaseMod;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
+import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -69,6 +74,8 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
 
     public static boolean isAlwaysPlayerTurn = false;
     private static final String isAlwaysPlayerTurnKey = "isAlwaysPlayerTurn";
+    public static boolean isDrawCardsTillLimit = false;
+    private static final String isDrawCardsTillLimitKey = "isDrawCardsTillLimit";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -251,6 +258,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         isGodMode = false;
         isInfiniteEnergy = false;
         isAlwaysPlayerTurn = false;
+        isDrawCardsTillLimit = false;
     }
 
     @Override
@@ -292,6 +300,18 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
     }
 
     @Override
+    public void onRefreshHand() {
+        if ( isDrawCardsTillLimit && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.player.hasPower("No Draw") && !AbstractDungeon.isScreenUp && !AbstractDungeon.actionManager.turnHasEnded) {
+            if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player.hand.size() < BaseMod.MAX_HAND_SIZE && (
+                AbstractDungeon.player.discardPile.size() > 0 || AbstractDungeon.player.drawPile.size() > 0)) {
+                flash();
+                addToTop((AbstractGameAction)new RelicAboveCreatureAction((AbstractCreature)AbstractDungeon.player, this));
+                addToBot((AbstractGameAction)new DrawCardAction((AbstractCreature)AbstractDungeon.player, BaseMod.MAX_HAND_SIZE - AbstractDungeon.player.hand.size()));
+            }
+        }
+    }
+
+    @Override
     public HashMap<String, String> onSave() {
         HashMap<String, String> sav = new HashMap<>();
         sav.put(isHealthLockedKey, String.valueOf(isHealthLocked));
@@ -305,25 +325,34 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         sav.put(isInfiniteEnergyKey, String.valueOf(isInfiniteEnergy));
         sav.put(canGoToAnyRoomsKey, String.valueOf(canGoToAnyRooms));
         sav.put(isAlwaysPlayerTurnKey, String.valueOf(isAlwaysPlayerTurn));
-
+        sav.put(isDrawCardsTillLimitKey, String.valueOf(isDrawCardsTillLimit));
         return sav;
     }
 
     @Override
     public void onLoad(HashMap<String, String> sav) {
-        if(sav == null) return;
+        if(sav == null) {
+            resetToDefault();
+            return;
+        }
 
-        isHealthLocked = Boolean.parseBoolean(sav.get(isHealthLockedKey));
-        healthLockAmount = Integer.parseInt(sav.get(healthLockAmountKey));
-        isMaxHealthLocked = Boolean.parseBoolean(sav.get(isMaxHealthLockedKey));
-        maxHealthLockAmount = Integer.parseInt(sav.get(maxHealthLockAmountKey));
-        isGoldLocked = Boolean.parseBoolean(sav.get(isGoldLockedKey));
-        goldLockAmount = Integer.parseInt(sav.get(goldLockAmountKey));
-        isKillAllMode = Boolean.parseBoolean(sav.get(isKillAllModeKey));
-        isGodMode = Boolean.parseBoolean(sav.get(isGodModeKey));
-        isInfiniteEnergy = Boolean.parseBoolean(sav.get(isInfiniteEnergyKey));
-        canGoToAnyRooms = Boolean.parseBoolean(sav.get(canGoToAnyRoomsKey));
-        isAlwaysPlayerTurn = Boolean.parseBoolean(sav.get(isAlwaysPlayerTurnKey));
+        try {
+            isHealthLocked = Boolean.parseBoolean(sav.get(isHealthLockedKey));
+            healthLockAmount = Integer.parseInt(sav.get(healthLockAmountKey));
+            isMaxHealthLocked = Boolean.parseBoolean(sav.get(isMaxHealthLockedKey));
+            maxHealthLockAmount = Integer.parseInt(sav.get(maxHealthLockAmountKey));
+            isGoldLocked = Boolean.parseBoolean(sav.get(isGoldLockedKey));
+            goldLockAmount = Integer.parseInt(sav.get(goldLockAmountKey));
+            isKillAllMode = Boolean.parseBoolean(sav.get(isKillAllModeKey));
+            isGodMode = Boolean.parseBoolean(sav.get(isGodModeKey));
+            isInfiniteEnergy = Boolean.parseBoolean(sav.get(isInfiniteEnergyKey));
+            canGoToAnyRooms = Boolean.parseBoolean(sav.get(canGoToAnyRoomsKey));
+            isAlwaysPlayerTurn = Boolean.parseBoolean(sav.get(isAlwaysPlayerTurnKey));
+            isDrawCardsTillLimit = Boolean.parseBoolean(sav.get(isDrawCardsTillLimitKey));
+        } catch (Exception e) {
+            logger.info("Loading save for TildeKey failed, reverting to default");
+            resetToDefault();
+        }
 
     }
 }

@@ -23,6 +23,8 @@ public class StatModSortHeader extends SortHeader{
 
     private HeaderButtonPlus alwaysPlayerTurnButton;
 
+    private HeaderButtonPlus drawTillLimitButton;
+
     public StatModSortHeader(SelectScreen ss) {
         super(ss);
         float xPosition = this.startX - 75.0f;
@@ -47,6 +49,12 @@ public class StatModSortHeader extends SortHeader{
 
         this.alwaysPlayerTurnButton = new HeaderButtonPlus(TEXT[4], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.alwaysPlayerTurnButton.isAscending = TildeKey.isAlwaysPlayerTurn;
+
+        yPosition -= SPACE_Y;
+
+        this.drawTillLimitButton = new HeaderButtonPlus(TEXT[5], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.drawTillLimitButton.isAscending = TildeKey.isDrawCardsTillLimit;
+
 
         this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton};
         this.dropdownMenus = new DropdownMenu[] {};
