@@ -24,7 +24,7 @@ public class StatModSortHeader extends SortHeader{
     public StatModSortHeader(SelectScreen ss) {
         super(ss);
         float xPosition = this.startX - 75.0f;
-        float yPosition = START_Y - 450.0f * Settings.yScale;
+        float yPosition = START_Y;
 
         this.killAllButton = new HeaderButtonPlus(TEXT[0], xPosition, yPosition, this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.killAllButton.isAscending = TildeKey.isKillAllMode;
