@@ -164,14 +164,20 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
     {
         super.update();
 
-        if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
-        if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
-        if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
+        if (AbstractDungeon.isPlayerInDungeon()) {
+            if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
+            if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
+            if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
 
-        if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-            if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
-            if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
+            if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
+                if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
+            }
+
+
         }
+
+
 
 
 
