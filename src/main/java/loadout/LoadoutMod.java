@@ -1042,7 +1042,7 @@ StartGameSubscriber{
         createRelicList();
         createPotionList();
         createCardList();
-
+        TildeKey.resetToDefault();
     }
 
     private void createEventList() {

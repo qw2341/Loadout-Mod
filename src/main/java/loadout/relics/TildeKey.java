@@ -240,6 +240,19 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         }
     }
 
+    public static void resetToDefault() {
+        isHealthLocked = false;
+        healthLockAmount = 100;
+        isMaxHealthLocked = false;
+        maxHealthLockAmount = 100;
+        isGoldLocked = false;
+        goldLockAmount = 100;
+        isKillAllMode = false;
+        isGodMode = false;
+        isInfiniteEnergy = false;
+        isAlwaysPlayerTurn = false;
+    }
+
     @Override
     public void atBattleStart() {
         if(isKillAllMode) {
