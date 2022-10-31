@@ -138,6 +138,9 @@ StartGameSubscriber{
     public static final String ENABLE_STARTING_LOADOUT_POWER = "enablePowerGiverStarting";
     public static boolean enablePowerStarting = true;
 
+    public static final String ENABLE_STARTING_LOADOUT_TILDE = "enableTildeKeyStarting";
+    public static boolean enableTildeStarting = true;
+
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
     public static final String ENABLE_STARTER_POOL = "enableStarterPool";
@@ -254,6 +257,7 @@ StartGameSubscriber{
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_MODIFIER, "TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_COMPASS,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -284,6 +288,7 @@ StartGameSubscriber{
             enableModifierStarting = config.getBool(ENABLE_STARTING_LOADOUT_MODIFIER);
             enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
             enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
+            enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -581,6 +586,26 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enablePowerAsStartingButton);
+        settingXPos += xSpacing;
+
+        ModLabeledToggleButton enableTildeAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(TildeKey.ID).name,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableTildeStarting, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+
+                    enableTildeStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+                    try {
+                        // And based on that boolean, set the settings and save them
+                        config.setBool(ENABLE_STARTING_LOADOUT_TILDE, enableTildeStarting);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        settingsPanel.addUIElement(enableTildeAsStartingButton);
         settingXPos += xSpacing;
 
         settingXPos = startingXPos;
@@ -1006,7 +1031,7 @@ StartGameSubscriber{
             if(enableModifierStarting&&RelicLibrary.isARelic("loadout:CardModifier")&&!AbstractDungeon.player.hasRelic(CardModifier.ID)) RelicLibrary.getRelic("loadout:CardModifier").makeCopy().instantObtain();
             if(enableCompassStarting&&RelicLibrary.isARelic(EventfulCompass.ID)&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) RelicLibrary.getRelic(EventfulCompass.ID).makeCopy().instantObtain();
             if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
-            if(RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
+            if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
         }
 
     }
