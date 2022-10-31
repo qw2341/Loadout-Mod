@@ -775,7 +775,7 @@ StartGameSubscriber{
                     }
                 });
         //TODO
-        //settingsPanel.addUIElement(enableDeprecatedPoolButton);
+        settingsPanel.addUIElement(enableDeprecatedPoolButton);
 
         settingXPos = startingXPos;
         settingYPos -= lineSpacing;
@@ -1302,13 +1302,23 @@ StartGameSubscriber{
             relics.addAll(RelicLibrary.shopList);
         if (LoadoutMod.enableEventPool)
             relics.addAll(RelicLibrary.specialList);
-        if(enableDeprecatedPool) {
+        if(LoadoutMod.enableDeprecatedPool) {
             try {relics.add(new DEPRECATED_DarkCore());
                 relics.add(new DerpRock());
                 relics.add(new DEPRECATEDDodecahedron());
                 relics.add(new DEPRECATEDYin());
             } catch (Exception e) {
-                logger.warn("Error occurred while adding deprecated relics");
+                logger.info("Error occurred while adding deprecated relics");
+            }
+
+            try {
+                relics.add(new com.megacrit.cardcrawl.relics.Test1());
+                relics.add(new com.megacrit.cardcrawl.relics.Test3());
+                relics.add(new com.megacrit.cardcrawl.relics.Test4());
+                relics.add(new com.megacrit.cardcrawl.relics.Test5());
+                relics.add(new com.megacrit.cardcrawl.relics.Test6());
+            }catch (Exception e) {
+                logger.info("Error occurred while adding test relics");
             }
 
         }
