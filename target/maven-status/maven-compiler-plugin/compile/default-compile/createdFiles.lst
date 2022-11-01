@@ -55,10 +55,12 @@ loadout\savables\SerializableCard.class
 loadout\screens\RelicSelectScreen.class
 loadout\screens\HeaderButtonPlus.class
 loadout\screens\PotionSelectScreen$SortOrder.class
+loadout\patches\AbstractPlayerPatch.class
 loadout\patches\ExitSavePatch.class
 loadout\helper\PotionNameComparator.class
 loadout\LoadoutMod$2.class
 loadout\screens\PotionSelectScreen.class
+loadout\patches\AbstractPlayerPatch$DamageCheckPatch.class
 loadout\helper\RelicNameComparator.class
 loadout\relics\TrashBin.class
 loadout\screens\PotionSelectScreen$1.class
