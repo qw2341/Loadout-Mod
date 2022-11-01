@@ -106,9 +106,7 @@ public class StatModSelectScreen extends SelectScreen{
         MonsterGroup mg = AbstractDungeon.getMonsters();
         if(TildeKey.isKillAllMode && mg != null && !mg.areMonstersDead()) {
             this.owner.flash();
-            for (AbstractMonster am: mg.monsters) {
-                AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
-            }
+            TildeKey.killAllMonsters();
         }
     }
 

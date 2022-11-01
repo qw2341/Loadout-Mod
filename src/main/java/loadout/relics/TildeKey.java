@@ -175,16 +175,16 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
                 if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
 
 
-                if(isKillAllMode) {
-                    MonsterGroup mg = AbstractDungeon.getMonsters();
-                    if(mg != null) {
-                        if (AbstractDungeon.actionManager.actions.isEmpty() && !(mg.areMonstersDead())) {
-                            for (AbstractMonster am: mg.monsters) {
-                                AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
-                            }
-                        }
-                    }
-                }
+//                if(isKillAllMode) {
+//                    MonsterGroup mg = AbstractDungeon.getMonsters();
+//                    if(mg != null) {
+//                        if (AbstractDungeon.actionManager.actions.isEmpty() && !(mg.areMonstersDead()||mg.areMonstersBasicallyDead())) {
+//                            for (AbstractMonster am: mg.monsters) {
+//                                AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
+//                            }
+//                        }
+//                    }
+//                }
             }
 
 
@@ -269,16 +269,19 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         isDrawCardsTillLimit = false;
     }
 
+    public static void killAllMonsters() {
+        for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+            AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
+            //monster.isDead = true;
+        }
+    }
+
     @Override
     public void atBattleStart() {
         if(isKillAllMode) {
             this.flash();
-            for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
-                AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
-            }
+            killAllMonsters();
         }
-
-
     }
 
     @Override
@@ -294,9 +297,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
     public void atTurnStart() {
         if(isKillAllMode) {
             this.flash();
-            for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
-                AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
-            }
+            killAllMonsters();
         }
     }
 
