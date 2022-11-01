@@ -47,7 +47,7 @@ public class RelicNameComparator implements Comparator<AbstractRelic> {
         if (LoadoutMod.languageSupport().equals("zhs")||LoadoutMod.languageSupport().equals("zht"))
             return RelicNameComparator.editModRelicId(a.relicId);
             //return compareCharToChar(o1.name,o2.name,0);
-        if (!a.name.substring(0,1).matches("[A-Za-z\\d]+"))
+        if (a.name.length() >0 && !a.name.substring(0,1).matches("[A-Za-z\\d]+"))
             return RelicNameComparator.editModRelicId(a.relicId);
         return a.name;
     }
