@@ -287,7 +287,7 @@ StartGameSubscriber{
             enableShredderStarting = config.getBool(ENABLE_STARTING_LOADOUT_SHREDDER);
             enableModifierStarting = config.getBool(ENABLE_STARTING_LOADOUT_MODIFIER);
             enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
-            enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
+            enablePowerStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
             enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
