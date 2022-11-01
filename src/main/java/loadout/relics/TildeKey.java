@@ -19,6 +19,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
@@ -172,6 +173,18 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
             if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                 if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
                 if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
+
+
+                if(isKillAllMode) {
+                    MonsterGroup mg = AbstractDungeon.getMonsters();
+                    if(mg != null) {
+                        if (AbstractDungeon.actionManager.actions.isEmpty() && !(mg.areMonstersDead())) {
+                            for (AbstractMonster am: mg.monsters) {
+                                AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
+                            }
+                        }
+                    }
+                }
             }
 
 
@@ -181,18 +194,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
 
 
 
-//        if(isKillAllMode) {
-//            MonsterGroup mg = AbstractDungeon.getMonsters();
-//            if(mg != null) {
-//                if ((mg.areMonstersBasicallyDead()||mg.areMonstersDead())) {
-//
-//                } else {
-//                    for (AbstractMonster am: mg.monsters) {
-//                        AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
-//                    }
-//                }
-//            }
-//        }
+
 
         if (!modSelected && statSelectScreen != null) {
             if (statSelectScreen.doneSelecting()) {
@@ -316,6 +318,8 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
             }
         }
     }
+
+
 
     @Override
     public HashMap<String, String> onSave() {
