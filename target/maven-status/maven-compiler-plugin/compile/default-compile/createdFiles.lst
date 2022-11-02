@@ -4,6 +4,7 @@ loadout\helper\FieldAccessor$1.class
 loadout\screens\PotionSelectSortHeader.class
 loadout\helper\RelicClassComparator.class
 loadout\relics\EventfulCompass.class
+loadout\cardmods\GraveMod.class
 loadout\screens\PotionSelectScreen$SortType.class
 loadout\LoadoutMod.class
 loadout\savables\CardModifications.class
@@ -15,6 +16,7 @@ loadout\screens\GCardSelectScreen$CardDisplayMode.class
 loadout\screens\HeaderButtonPlus$Alignment.class
 loadout\screens\StatModSelectScreen$StatModButton.class
 loadout\screens\CombatCardSelectSortHeader.class
+loadout\cardmods\AutoplayMod.class
 loadout\patches\AbstractCardPatch$CardModificationFields.class
 loadout\screens\StatModSelectScreen$1.class
 loadout\savables\Favorites.class
@@ -71,6 +73,7 @@ loadout\helper\ModifierLibrary.class
 loadout\helper\RelicTierComparator.class
 loadout\patches\AbstractCardPatch$MultiUse$1.class
 loadout\relics\LoadoutCauldron.class
+loadout\cardmods\SoulboundMod.class
 loadout\helper\PotionTierComparator.class
 loadout\patches\MapRoomNodePatch$ConnectionPatch.class
 loadout\savables\CardModifications$1.class
@@ -101,6 +104,7 @@ loadout\cardmods\PlayableMod.class
 loadout\relics\CardPrinter.class
 loadout\relics\CardModifier.class
 loadout\screens\SCardViewPopup$1.class
+loadout\cardmods\FleetingMod.class
 loadout\patches\ScreensPatch$GridScreenCloseBool.class
 loadout\relics\CardShredder.class
 loadout\actions\AddRelicAction.class

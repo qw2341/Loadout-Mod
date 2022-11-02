@@ -4,6 +4,10 @@ import basemod.abstracts.AbstractCardModifier;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.utils.Json;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -90,6 +94,10 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
         card.color = AbstractCard.CardColor.values()[sc.color];
         card.type = AbstractCard.CardType.values()[sc.type];
         card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
+//        AutoplayField.autoplay.set(card,sc.autoplay);
+//        SoulboundField.soulbound.set(card,sc.soulbound);
+//        FleetingField.fleeting.set(card,sc.fleeting);
+//        GraveField.grave.set(card,sc.grave);
         //AbstractCardPatch.setCardModified(card,sc.modified);
 
         for(String modifierId : sc.modifiers) {

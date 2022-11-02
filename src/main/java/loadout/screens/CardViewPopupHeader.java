@@ -1,6 +1,7 @@
 package loadout.screens;
 
 
+import basemod.BaseMod;
 import basemod.cardmods.EtherealMod;
 import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
@@ -11,6 +12,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -24,10 +29,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
-import loadout.cardmods.PlayableMod;
-import loadout.cardmods.UnexhaustMod;
-import loadout.cardmods.UnplayableMod;
-import loadout.cardmods.XCostMod;
+import loadout.cardmods.*;
 import loadout.patches.AbstractCardPatch;
 import loadout.relics.CardModifier;
 import loadout.savables.CardModifications;
@@ -101,7 +103,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus makeExhaustButton;
     private final HeaderButtonPlus makeInnateButton;
     private final HeaderButtonPlus makeRetainButton;
-
+    private final HeaderButtonPlus makeAutoPlayButton;
+    private final HeaderButtonPlus makeSoulBoundButton;
+    private final HeaderButtonPlus makeFleetingButton;
+    private final HeaderButtonPlus makeGraveButton;
 
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
@@ -209,13 +214,20 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         yPosition -= SPACE_Y;
         this.makeXCostButton = new HeaderButtonPlus("X " + clTEXT[3],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
-
-
+        yPosition -= SPACE_Y;
+        this.makeAutoPlayButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("autoplay"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        this.makeSoulBoundButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("soulbound"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        this.makeFleetingButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("fleeting"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        this.makeGraveButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("grave"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
 
 
 
         this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.restoreDefaultButton,
-        this.saveChangesButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton};
+        this.saveChangesButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, /*this.makeAutoPlayButton,*/ this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
 
 
 
@@ -299,7 +311,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = cardViewScreen.card.cost == -2;
                 else if (button == this.makeXCostButton)
                     button.isAscending = cardViewScreen.card.cost == -1;
-
+                else if (button == this.makeAutoPlayButton)
+                    button.isAscending = AutoplayField.autoplay.get(cardViewScreen.card);
+                else if (button == this.makeSoulBoundButton)
+                    button.isAscending = SoulboundField.soulbound.get(cardViewScreen.card);
+                else if (button == this.makeFleetingButton)
+                    button.isAscending = FleetingField.fleeting.get(cardViewScreen.card);
+                else if (button == this.makeGraveButton)
+                    button.isAscending = GraveField.grave.get(cardViewScreen.card);
             }
         }
     }
@@ -317,6 +336,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeRetainButton.isAscending = card.selfRetain;
             this.makeUnplayableButton.isAscending = card.cost == -2;
             this.makeXCostButton.isAscending = card.cost == -1;
+            this.makeAutoPlayButton.isAscending = AutoplayField.autoplay.get(card);
+            this.makeSoulBoundButton.isAscending = SoulboundField.soulbound.get(card);
+            this.makeFleetingButton.isAscending = FleetingField.fleeting.get(card);
+            this.makeGraveButton.isAscending = GraveField.grave.get(card);
         }
 
 
@@ -529,7 +552,39 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.addModifier(cardViewScreen.card, new XCostMod());
             setCardModded(true);
             resetOtherButtons();
-        } else {
+        } else if (button == this.makeAutoPlayButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, AutoplayMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new AutoplayMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if (button == this.makeSoulBoundButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, SoulboundMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new SoulboundMod());
+            setCardModded(true);
+            resetOtherButtons();
+        }else if (button == this.makeFleetingButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, FleetingMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new FleetingMod());
+            setCardModded(true);
+            resetOtherButtons();
+        }else if (button == this.makeGraveButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, GraveMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new GraveMod());
+            setCardModded(true);
+            resetOtherButtons();
+        }else {
             return;
         }
         if (cardViewScreen != null && cardViewScreen.card != null) {

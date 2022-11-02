@@ -2,6 +2,10 @@ package loadout.savables;
 
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
+import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.helper.ModifierLibrary;
@@ -27,6 +31,11 @@ public class SerializableCard implements Serializable {
     public boolean modified;
     public String[] modifiers;
 
+    public boolean autoplay;
+    public boolean soulbound;
+    public boolean fleeting;
+    public boolean grave;
+
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         AbstractCard card = CardLibrary.getCard(sc.id).makeCopy();
         card.cost = sc.cost;
@@ -41,6 +50,10 @@ public class SerializableCard implements Serializable {
         card.type = AbstractCard.CardType.values()[sc.type];
         card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
         AbstractCardPatch.setCardModified(card,sc.modified);
+//        AutoplayField.autoplay.set(card,sc.autoplay);
+//        SoulboundField.soulbound.set(card,sc.soulbound);
+//        FleetingField.fleeting.set(card,sc.fleeting);
+//        GraveField.grave.set(card,sc.grave);
 
         for(String modifierId : sc.modifiers) {
             CardModifierManager.addModifier(card, Objects.requireNonNull(ModifierLibrary.getModifier(modifierId)));
@@ -63,6 +76,11 @@ public class SerializableCard implements Serializable {
         sc.type = card.type.ordinal();
         sc.rarity = card.rarity.ordinal();
         sc.modified = AbstractCardPatch.isCardModified(card);
+//        sc.autoplay = AutoplayField.autoplay.get(card);
+//        sc.soulbound = SoulboundField.soulbound.get(card);
+//        sc.fleeting = FleetingField.fleeting.get(card);
+//        sc.grave = GraveField.grave.get(card);
+
         ArrayList<AbstractCardModifier> cardMods = CardModifierManager.modifiers(card);
         sc.modifiers = new String[cardMods.size()];
         int i = 0;
