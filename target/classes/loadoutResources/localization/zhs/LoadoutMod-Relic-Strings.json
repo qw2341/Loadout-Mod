@@ -118,7 +118,7 @@
   },
   "loadout:TildeKey": {
     "NAME": "波浪键",
-    "FLAVOR": "调试但是不用控制台",
+    "FLAVOR": "叮",
     "DESCRIPTIONS": [
       "右键此遗物来进行调试。"
     ]
