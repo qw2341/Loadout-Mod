@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 
 public class EventSelectScreen implements ScrollBarListener
 {
-    public class EventButton {
+    public static class EventButton {
         public String id;
         public String name;
         public Hitbox hb;
@@ -235,7 +235,7 @@ public class EventSelectScreen implements ScrollBarListener
             }
 
 
-            events.add(new EventSelectScreen.EventButton(eID,0,0,modID, eClass));
+            events.add(new EventButton(eID, 0, 0, modID, eClass));
             //LoadoutMod.logger.info("Added event: " + eID + " from " + modID);
         }
         this.eventsClone = new ArrayList<>(this.events);

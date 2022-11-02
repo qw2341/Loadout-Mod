@@ -79,7 +79,7 @@ public class PowerSelectScreen implements ScrollBarListener
         specialCases.add("TheBomb");
     }
 
-    public class PowerButton {
+    public static class PowerButton {
 
         public Class<? extends AbstractPower> pClass;
         public AbstractPower instance;
