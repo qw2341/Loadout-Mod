@@ -6,6 +6,7 @@ import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
@@ -39,7 +40,7 @@ import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 
-public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePowerRelic, CustomSavable<HashMap<String,String>> {
+public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePowerRelic, OnPlayerDeathRelic, CustomSavable<HashMap<String,String>> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
@@ -398,6 +399,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         return true;
     }
 
+    /**
+    * Used RockBottom code from IsaacModExtend
+    */
     @Override
     public int onReceivePowerStacks(AbstractPower power, AbstractCreature source, int stackAmount) {
         if (isNegatingDebuffs && (power instanceof StrengthPower || power instanceof DexterityPower || power instanceof FocusPower)) {
@@ -405,5 +409,15 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             return Math.max(stackAmount, 0);
         }
         return stackAmount;
+    }
+
+    @Override
+    public boolean onPlayerDeath(AbstractPlayer abstractPlayer, DamageInfo damageInfo) {
+        if(isGodMode) {
+            AbstractDungeon.player.currentHealth = AbstractDungeon.player.maxHealth;
+            return false;
+        }
+
+        return true;
     }
 }

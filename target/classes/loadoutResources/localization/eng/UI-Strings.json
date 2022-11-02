@@ -99,7 +99,8 @@
 			"Always Player Turn",
 			"Draw Cards Till Limit",
 			"Change Seed",
-			"Apply Seed Change"
+			"Apply Seed Change",
+			"Negate All Debuffs"
 		]
 	}
 }
