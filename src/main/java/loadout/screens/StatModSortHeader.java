@@ -27,6 +27,8 @@ public class StatModSortHeader extends SortHeader{
 
     private HeaderButtonPlus drawTillLimitButton;
 
+    private HeaderButtonPlus negateDebuffButton;
+
     private HeaderButtonPlus changeSeedButton;
     private HeaderButtonPlus applySeedButton;
 
@@ -61,6 +63,9 @@ public class StatModSortHeader extends SortHeader{
         this.alwaysPlayerTurnButton = new HeaderButtonPlus(TEXT[4], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.alwaysPlayerTurnButton.isAscending = TildeKey.isAlwaysPlayerTurn;
         yPosition -= SPACE_Y;
+        this.negateDebuffButton = new HeaderButtonPlus(TEXT[8], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.negateDebuffButton.isAscending = TildeKey.isNegatingDebuffs;
+        yPosition -= SPACE_Y;
 
         this.changeSeedButton = new HeaderButtonPlus(TEXT[6], xPosition,yPosition,  this, true, ImageMaster.MAP_NODE_EVENT);
         yPosition -= SPACE_Y;
@@ -71,7 +76,7 @@ public class StatModSortHeader extends SortHeader{
 
 
 
-        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.drawTillLimitButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton, this.changeSeedButton, this.applySeedButton};
+        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.drawTillLimitButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton, this.negateDebuffButton, this.changeSeedButton, this.applySeedButton};
         this.dropdownMenus = new DropdownMenu[] {};
         this.dropdownMenuHeaders = new String[] {};
     }
@@ -96,6 +101,8 @@ public class StatModSortHeader extends SortHeader{
             TildeKey.isAlwaysPlayerTurn = isAscending;
         } else if (button == this.drawTillLimitButton) {
             TildeKey.isDrawCardsTillLimit = isAscending;
+        } else if (button == this.negateDebuffButton) {
+            TildeKey.isNegatingDebuffs = isAscending;
         } else if (button == this.changeSeedButton) {
             ((StatModSelectScreen)selectScreen).seedPanel.show();
         } else if (button == this.applySeedButton) {

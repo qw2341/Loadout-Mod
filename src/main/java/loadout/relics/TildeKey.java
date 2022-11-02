@@ -6,12 +6,14 @@ import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -20,6 +22,10 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.DexterityPower;
+import com.megacrit.cardcrawl.powers.FocusPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
@@ -33,7 +39,7 @@ import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 
-public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavable<HashMap<String,String>> {
+public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePowerRelic, CustomSavable<HashMap<String,String>> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
@@ -77,6 +83,8 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
     private static final String isAlwaysPlayerTurnKey = "isAlwaysPlayerTurn";
     public static boolean isDrawCardsTillLimit = false;
     private static final String isDrawCardsTillLimitKey = "isDrawCardsTillLimit";
+    public static boolean isNegatingDebuffs = false;
+    private static final String isNegatingDebuffsKey = "isNegatingDebuffs";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -267,6 +275,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         isInfiniteEnergy = false;
         isAlwaysPlayerTurn = false;
         isDrawCardsTillLimit = false;
+        isNegatingDebuffs = false;
     }
 
     public static void killAllMonsters() {
@@ -337,6 +346,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
         sav.put(canGoToAnyRoomsKey, String.valueOf(canGoToAnyRooms));
         sav.put(isAlwaysPlayerTurnKey, String.valueOf(isAlwaysPlayerTurn));
         sav.put(isDrawCardsTillLimitKey, String.valueOf(isDrawCardsTillLimit));
+        sav.put(isNegatingDebuffsKey, String.valueOf(isNegatingDebuffs));
         return sav;
     }
 
@@ -360,10 +370,40 @@ public class TildeKey extends CustomRelic implements ClickableRelic, CustomSavab
             canGoToAnyRooms = Boolean.parseBoolean(sav.get(canGoToAnyRoomsKey));
             isAlwaysPlayerTurn = Boolean.parseBoolean(sav.get(isAlwaysPlayerTurnKey));
             isDrawCardsTillLimit = Boolean.parseBoolean(sav.get(isDrawCardsTillLimitKey));
+            isNegatingDebuffs = Boolean.parseBoolean(sav.get(isNegatingDebuffsKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             resetToDefault();
         }
 
+    }
+
+    /**
+     * Used RockBottom code from IsaacModExtend
+     * @param power
+     * @param abstractCreature
+     * @return
+     */
+    @Override
+    public boolean onReceivePower(AbstractPower power, AbstractCreature abstractCreature) {
+        if (isNegatingDebuffs) {
+            if (power.type == AbstractPower.PowerType.DEBUFF) {
+                this.flash();
+                return false;
+            } else {
+                if (power.amount < 0 && power.canGoNegative) this.flash();
+                return power.amount >= 0 || !power.canGoNegative;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int onReceivePowerStacks(AbstractPower power, AbstractCreature source, int stackAmount) {
+        if (isNegatingDebuffs && (power instanceof StrengthPower || power instanceof DexterityPower || power instanceof FocusPower)) {
+            if (stackAmount < 0) this.flash();
+            return Math.max(stackAmount, 0);
+        }
+        return stackAmount;
     }
 }

@@ -15,55 +15,55 @@ import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
-import loadout.relics.EventfulCompass;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
-public abstract class SelectScreen implements ScrollBarListener {
-
+public abstract class SelectScreen<T> implements ScrollBarListener {
 
 
-    private static final float SPACE = 80.0F * Settings.scale;
+
+    protected static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 450.0F * Settings.scale;
-    private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
+    protected static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
     public static final float SPACE_X = 226.0F * Settings.scale;
 
     protected float scrollY = START_Y;
-    private float targetY = this.scrollY;
+    protected float targetY = this.scrollY;
 
-    private int row = 0;
-    private int col = 0;
+    protected int row = 0;
+    protected int col = 0;
 
-    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-    private int scrollTitleCount = 0;
+    protected float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
+    protected float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
+    protected int scrollTitleCount = 0;
 
-    private boolean grabbedScreen = false;
-    private float grabStartY = 0.0F;
+    protected boolean grabbedScreen = false;
+    protected float grabStartY = 0.0F;
 
-    public ArrayList<?> items;
+    public ArrayList<T> items;
 
-    public ArrayList<?> itemsClone;
+    public ArrayList<T> itemsClone;
+
+    public T hoveredItem = null;
 
     protected SortHeader sortHeader;
 
-    private ScrollBar scrollBar;
-    private Hitbox controllerRelicHb = null;
-    private boolean show = false;
+    protected ScrollBar scrollBar;
+    protected Hitbox controllerRelicHb = null;
+    protected boolean show = false;
 
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] gTEXT = gUiStrings.TEXT;
-    private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
+    protected GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
     private boolean doneSelecting = false;
 
     public enum SortOrder {ASCENDING,DESCENDING};
     public EventSelectScreen.SortOrder currentSortOrder = EventSelectScreen.SortOrder.ASCENDING;
 
     public AbstractRelic owner;
-    private boolean isDragSelecting = false;
-    private boolean isTryingToScroll = false;
+    protected boolean isDragSelecting = false;
+    protected boolean isTryingToScroll = false;
 
 
 
@@ -158,7 +158,7 @@ public abstract class SelectScreen implements ScrollBarListener {
             doneSelecting = true;
         }
 
-
+        hoveredItem = null;
 
         boolean isScrollingScrollBar = scrollBar.update();
         if (!isScrollingScrollBar && !isDragSelecting) {
@@ -210,7 +210,7 @@ public abstract class SelectScreen implements ScrollBarListener {
         updateBarPosition();
     }
 
-    private void calculateScrollBounds()
+    protected void calculateScrollBounds()
     {
         int size = items.size();
 
@@ -236,7 +236,7 @@ public abstract class SelectScreen implements ScrollBarListener {
         }
     }
 
-    protected abstract void updateList(ArrayList<?> list);
+    protected abstract void updateList(ArrayList<T> list);
 
     public void close()
     {
