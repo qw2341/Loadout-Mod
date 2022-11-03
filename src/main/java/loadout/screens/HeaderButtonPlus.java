@@ -159,13 +159,13 @@ public class HeaderButtonPlus extends SortHeaderButton {
             FontHelper.renderFontLeft(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, color);
             sb.setColor(color);
             if (isSorting) {
-                sb.draw(ImageMaster.FILTER_ARROW, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
+                sb.draw(ImageMaster.FILTER_ARROW, this.x + this.textWidth + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);
             } else if (isToggle) {
-                sb.draw(ImageMaster.OPTION_TOGGLE, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                sb.draw(ImageMaster.OPTION_TOGGLE, this.x + this.textWidth + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
                 if(isActive)
-                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
+                    sb.draw(ImageMaster.OPTION_TOGGLE_ON, this.x + this.textWidth + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, false);
             } else {
-                sb.draw(this.texture, this.x + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
+                sb.draw(this.texture, this.x + this.textWidth + arrowCenterOffset * Settings.xScale - arrowCenterOffset, this.y - arrowCenterOffset, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, this.texture.getWidth(), this.texture.getHeight(), false, !this.isAscending);
             }
         }
         this.hb.render(sb);

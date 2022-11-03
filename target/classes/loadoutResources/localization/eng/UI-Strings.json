@@ -102,5 +102,11 @@
 			"Apply Seed Change",
 			"Negate All Debuffs"
 		]
+	},
+	"loadout:StatModSelectScreen": {
+		"TEXT": [
+			"Max Health",
+			"Lock"
+		]
 	}
 }

@@ -164,10 +164,11 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
         if (!isScrollingScrollBar && !isDragSelecting) {
             updateScrolling();
         }
+        updateList(items);
         InputHelper.justClickedLeft = false;
         InputHelper.justClickedRight = false;
 
-        updateList(items);
+
 
         if (Settings.isControllerMode && controllerRelicHb != null) {
             Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));

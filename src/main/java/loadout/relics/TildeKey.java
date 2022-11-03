@@ -177,7 +177,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         if (AbstractDungeon.isPlayerInDungeon()) {
             if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
             if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
-            if(isGoldLocked) AbstractDungeon.player.gold = goldLockAmount;
+            if(isGoldLocked) {
+                AbstractDungeon.player.gold = goldLockAmount;
+                AbstractDungeon.player.displayGold = goldLockAmount;
+            }
 
             if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                 if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);

@@ -101,6 +101,13 @@
 			"Appliquer le changement de semence",
 			"Annulez tous les debuffs"
 		]
+	},
+	"loadout:StatModSelectScreen": {
+		"TEXT": [
+			"Santé maximale",
+			"Serrure"
+		]
 	}
+
 
 }

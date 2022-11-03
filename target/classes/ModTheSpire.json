@@ -4,7 +4,7 @@
   "author_list": ["JasonW"],
   "credits": "Basemod, ModTheSpire, #modding",
   "description": "Adds a relic that gives you other relics.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "sts_version": "03-07-2022",
   "mts_version": "3.26.0",
   "dependencies": ["basemod", "stslib"],

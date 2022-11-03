@@ -12,7 +12,9 @@ loadout\relics\PowerGiver$PowerTarget.class
 loadout\relics\TildeKey.class
 loadout\screens\EventSelectScreen$EventButton.class
 loadout\LoadoutMod$1.class
+loadout\relics\BottledMonster.class
 loadout\screens\GCardSelectScreen$CardDisplayMode.class
+loadout\screens\MonsterSelectScreen.class
 loadout\screens\HeaderButtonPlus$Alignment.class
 loadout\screens\StatModSelectScreen$StatModButton.class
 loadout\screens\CombatCardSelectSortHeader.class
@@ -53,6 +55,7 @@ loadout\cardmods\XCostMod.class
 loadout\helper\RelicModComparator.class
 loadout\util\IDCheckDontTouchPls.class
 loadout\screens\GCardSelectScreen$1.class
+loadout\helper\TextInputHelper.class
 loadout\screens\EventSelectScreen$SortOrder.class
 loadout\savables\SerializableCard.class
 loadout\screens\RelicSelectScreen.class
@@ -90,7 +93,9 @@ loadout\ui\LoadoutPointPanel.class
 loadout\helper\PotionModComparator.class
 loadout\screens\EventSelectScreen$1.class
 loadout\screens\HeaderButton.class
+loadout\screens\MonsterSelectScreen$MonsterButton.class
 loadout\savables\Favorites$1.class
+loadout\helper\TextInputReceiver.class
 loadout\screens\GCardSelectScreen.class
 loadout\helper\FieldAccessor.class
 loadout\screens\GCardSelectScreen$SortType.class
