@@ -209,7 +209,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         this.cardSelectScreen = cardSelectScreen;
 
 
-        filterTextHb = new Hitbox(filterBarX,filterBarY - 25.0F * Settings.yScale, 250.0F, 50.0F);
+        filterTextHb = new Hitbox(filterBarX,filterBarY - 25.0F * Settings.yScale, 250.0F * Settings.scale, 50.0F * Settings.yScale);
 
     }
 
@@ -296,7 +296,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         }
         //filterTextHb.resize();
 
-        filterTextHb.update();
+
 
         for (HeaderButtonPlus button : this.buttons) {
             button.update();
@@ -307,6 +307,8 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
                 return;
             }
         }
+
+        filterTextHb.update();
 
         for (DropdownMenu dropdownMenu : this.dropdownMenus)
             dropdownMenu.update();
@@ -469,8 +471,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         //sb.draw(ImageMaster.COLOR_TAB_BAR, 10.0F, -50.0F, 300.0F, 500.0F, 0, 0, 1334, 102, false, false);
         updateScrollPositions();
         if (cardSelectScreen.currentMode == GCardSelectScreen.CardDisplayMode.OBTAIN) {
-            renderButtons(sb);
-            renderSelection(sb);
+
 
 
             filterTextHb.render(sb);
@@ -478,11 +479,13 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             sb.setColor(this.highlightBoxColor);
             float doop = this.filterTextHb.hovered ? 1.0F + (1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L))) / 50.0F : 1.0F ;
             //float doop = 1.0F;
-            sb.draw(this.filterTextBoxImg, this.filterBarX - 50.0F, this.filterBarY - 50.0F, 100.0F, 43.0F, 250.0F, 86.0F, Settings.scale * doop * this.filterTextHb.width / 150.0F / Settings.scale, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
+            sb.draw(this.filterTextBoxImg, this.filterBarX - 50.0F, this.filterBarY - 50.0F, 100.0F, 43.0F, 250.0F, 86.0F, Settings.scale * doop * this.filterTextHb.width / 150.0F / Settings.scale, Settings.yScale * doop, 0.0F, 0, 0, 200, 86, false, false);
             String renderFilterText = filterText.equals("") ? filterTextPlaceholder : filterText;
             Color filterTextColor = isTyping ? Color.CYAN : Settings.GOLD_COLOR;
             FontHelper.renderSmartText(sb, FontHelper.panelNameFont, renderFilterText, filterBarX, filterBarY, 250.0F, 20.0F, filterTextColor);
-
+            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, TEXT[4], filterBarX, filterBarY + 35.0F * Settings.yScale, 250.0F, 20.0F, Settings.GOLD_COLOR);
+            renderButtons(sb);
+            renderSelection(sb);
         }
 
     }

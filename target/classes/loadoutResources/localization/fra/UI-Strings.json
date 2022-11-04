@@ -60,7 +60,8 @@
 			"Tout",
 			"Mode de Sélection",
 			"Main de Cartes",
-			"Rechercher des cartes..."
+			"Entrez le texte ici",
+			"Rechercher"
 		]
 	},
 	"loadout:CardViewPopupHeader": {

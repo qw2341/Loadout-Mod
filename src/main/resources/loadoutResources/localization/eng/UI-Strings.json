@@ -61,7 +61,8 @@
 			"All",
 			"Selection Mode",
 			"Hand",
-			"Search cards..."
+			"Enter text here",
+			"Search"
 		]
 	},
 	"loadout:CardViewPopupHeader": {
