@@ -59,7 +59,8 @@
 		"TEXT": [
 			"全て",
 			"選択モード",
-			"ハンド"
+			"ハンド",
+			"カードを検索..."
 		]
 	},
 	"loadout:CardViewPopupHeader": {

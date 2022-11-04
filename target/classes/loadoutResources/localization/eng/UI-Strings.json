@@ -60,7 +60,8 @@
 		"TEXT": [
 			"All",
 			"Selection Mode",
-			"Hand"
+			"Hand",
+			"Search cards..."
 		]
 	},
 	"loadout:CardViewPopupHeader": {

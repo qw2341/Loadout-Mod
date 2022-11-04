@@ -59,7 +59,8 @@
 		"TEXT": [
 			"모두",
 			"선택 모드",
-			"핸드"
+			"핸드",
+			"카드 검색..."
 		]
 	},
 	"loadout:CardViewPopupHeader": {

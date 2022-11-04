@@ -59,7 +59,8 @@
 		"TEXT": [
 			"全部",
 			"选择模式",
-			"手牌"
+			"手牌",
+			"搜索卡牌。。。"
 		]
 	},
 	"loadout:CardViewPopupHeader": {

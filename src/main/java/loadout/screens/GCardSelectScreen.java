@@ -30,6 +30,7 @@ import com.megacrit.cardcrawl.ui.buttons.PeekButton;
 import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
 import loadout.LoadoutMod;
 import loadout.relics.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -615,6 +616,11 @@ public class GCardSelectScreen
         }
     }
 
+    private boolean testTextFilter(AbstractCard card, String text) {
+        //text = StringUtils.lowerCase(text);
+        return StringUtils.containsIgnoreCase(card.cardID,text) || StringUtils.containsIgnoreCase(card.name,text) || StringUtils.containsIgnoreCase(card.rawDescription,text) ;
+    }
+
     private boolean testFilter(AbstractCard card) {
         boolean costCheck = this.filterCost == -99 || card.cost == filterCost || (filterCost == 4 && card.cost >= 4) || (filterCost == -2 && card.cost <=-2);
         boolean colorCheck = this.filterColor == null || card.color == this.filterColor;
@@ -623,8 +629,9 @@ public class GCardSelectScreen
         boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
         boolean rarityCheck = this.filterRarity == null || card.rarity == this.filterRarity;
         boolean typeCheck = this.filterType == null || card.type == this.filterType;
+        boolean textCheck = this.cardSelectSortHeader.filterText.equals("") || testTextFilter(card, this.cardSelectSortHeader.filterText);
 
-        return costCheck && colorCheck && modCheck && rarityCheck && typeCheck;
+        return costCheck && colorCheck && modCheck && rarityCheck && typeCheck && textCheck;
     }
     public void resetFilters() {
 //        this.targetGroup.group = new ArrayList<>();

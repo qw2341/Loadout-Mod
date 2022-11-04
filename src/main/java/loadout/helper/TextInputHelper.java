@@ -34,7 +34,7 @@ public class TextInputHelper implements InputProcessor {
                 delegate.setTextField(delegate.getTextField() + charStr);
             } else return false;
         } else {
-            if (Character.isDigit(c) || Character.isLetter(c)) {
+            if (Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126)) {
                 delegate.setTextField(delegate.getTextField() + charStr);
             } else return false;
         }

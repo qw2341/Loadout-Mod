@@ -2,10 +2,13 @@ package loadout.screens;
 
 import basemod.BaseMod;
 import basemod.patches.whatmod.WhatMod;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.codedisaster.steamworks.SteamUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -14,6 +17,10 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
+import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
@@ -21,6 +28,8 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
 import loadout.helper.RelicClassComparator;
+import loadout.helper.TextInputHelper;
+import loadout.helper.TextInputReceiver;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -28,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static loadout.LoadoutMod.*;
 
-public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener, TextInputReceiver {
     private static final UIStrings cUIStrings = CardCrawlGame.languagePack.getUIString("CardLibraryScreen");
     public static final String[] cTEXT = cUIStrings.TEXT;
     private static final UIStrings clUIStrings = CardCrawlGame.languagePack.getUIString("CardLibSortHeader");
@@ -83,6 +92,19 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
     private ArrayList<String> cardMods;
     private HashMap<String,String> cardModNames;
 
+    public boolean isTyping = false;
+
+    public float waitTimer = 0.0F;
+    public String filterTextPlaceholder = TEXT[3];
+    public String filterText = "";
+    public Hitbox filterTextHb;
+
+    public float filterBarY = START_Y - 9.0f * 52.0f * Settings.yScale;
+
+    public float filterBarX = 0.0f;
+
+    public Texture filterTextBoxImg = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
+    private Color highlightBoxColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
 
     public CardSelectSortHeader(GCardSelectScreen cardSelectScreen, float startX) {
@@ -186,6 +208,13 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         this.dropdownMenuHeaders = new String[] {TEXT[1],clTEXT[0],clTEXT[1],clTEXT[3],rTEXT[0],"Mod"};
         this.cardSelectScreen = cardSelectScreen;
 
+
+        filterTextHb = new Hitbox(filterBarX,filterBarY - 25.0F * Settings.yScale, 250.0F, 50.0F);
+
+    }
+
+    public float getFilterTextWidth() {
+        return FontHelper.getSmartWidth(FontHelper.panelNameFont,this.filterText,250.0F,20.0F);
     }
 
     public void setToCurrentClass() {
@@ -256,6 +285,19 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
     }
 
     public void update() {
+        if (this.isTyping && Gdx.input.isKeyPressed(67) && !this.filterText.equals("") && this.waitTimer <= 0.0F) {
+
+            this.filterText = this.filterText.substring(0, this.filterText.length() - 1);
+            this.waitTimer = 0.05F;
+        }
+
+        if (this.waitTimer > 0.0F) {
+            this.waitTimer -= Gdx.graphics.getDeltaTime();
+        }
+        //filterTextHb.resize();
+
+        filterTextHb.update();
+
         for (HeaderButtonPlus button : this.buttons) {
             button.update();
         }
@@ -268,6 +310,58 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
 
         for (DropdownMenu dropdownMenu : this.dropdownMenus)
             dropdownMenu.update();
+
+
+        if (this.filterTextHb.justHovered) {
+            CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
+        }
+
+        if (this.filterTextHb.hovered && InputHelper.justClickedLeft) {
+            this.filterTextHb.clickStarted = true;
+        }
+        if(!this.filterTextHb.hovered && (InputHelper.justClickedLeft || InputHelper.justClickedRight) && this.isTyping) {
+            //cancel typing
+            stopTyping();
+            this.cardSelectScreen.updateFilters();
+        }
+        if (this.filterTextHb.clicked || this.filterTextHb.hovered && CInputActionSet.select.isJustPressed()) {
+            CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
+            this.filterTextHb.clicked = false;
+
+            if(!isTyping) {
+                this.isTyping = true;
+
+                this.filterText = "";
+
+                Gdx.input.setInputProcessor(new TextInputHelper(this, false));
+                if (SteamInputHelper.numControllers == 1 && CardCrawlGame.clientUtils != null && CardCrawlGame.clientUtils.isSteamRunningOnSteamDeck()) {
+                    CardCrawlGame.clientUtils.showFloatingGamepadTextInput(SteamUtils.FloatingGamepadTextInputMode.ModeSingleLine, 0, 0, Settings.WIDTH, (int)(Settings.HEIGHT * 0.25F));
+                }
+            }
+
+
+
+
+
+        }
+
+        if(this.isTyping) {
+            if (Gdx.input.isKeyJustPressed(66)) {
+
+                stopTyping();
+                this.cardSelectScreen.updateFilters();
+            }
+            else if (InputHelper.pressedEscape) {
+                InputHelper.pressedEscape = false;
+
+                stopTyping();
+            }
+        }
+    }
+
+    public void stopTyping() {
+        this.isTyping = false;
+        Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
     }
 
     public Hitbox updateControllerInput() {
@@ -336,6 +430,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             }
         }
 
+        this.filterText = "";
     }
 
     @Override
@@ -376,6 +471,18 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         if (cardSelectScreen.currentMode == GCardSelectScreen.CardDisplayMode.OBTAIN) {
             renderButtons(sb);
             renderSelection(sb);
+
+
+            filterTextHb.render(sb);
+            this.highlightBoxColor.a = isTyping ? 0.7F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L)) / 5.0F : 1.0F;
+            sb.setColor(this.highlightBoxColor);
+            float doop = this.filterTextHb.hovered ? 1.0F + (1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L))) / 50.0F : 1.0F ;
+            //float doop = 1.0F;
+            sb.draw(this.filterTextBoxImg, this.filterBarX - 50.0F, this.filterBarY - 50.0F, 100.0F, 43.0F, 250.0F, 86.0F, Settings.scale * doop * this.filterTextHb.width / 150.0F / Settings.scale, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
+            String renderFilterText = filterText.equals("") ? filterTextPlaceholder : filterText;
+            Color filterTextColor = isTyping ? Color.CYAN : Settings.GOLD_COLOR;
+            FontHelper.renderSmartText(sb, FontHelper.panelNameFont, renderFilterText, filterBarX, filterBarY, 250.0F, 20.0F, filterTextColor);
+
         }
 
     }
@@ -487,5 +594,15 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             }
 
         }
+    }
+
+    @Override
+    public void setTextField(String textToSet) {
+        this.filterText = textToSet;
+    }
+
+    @Override
+    public String getTextField() {
+        return this.filterText;
     }
 }

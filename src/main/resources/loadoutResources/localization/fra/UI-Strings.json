@@ -59,7 +59,8 @@
 		"TEXT": [
 			"Tout",
 			"Mode de Sélection",
-			"Main de Cartes"
+			"Main de Cartes",
+			"Rechercher des cartes..."
 		]
 	},
 	"loadout:CardViewPopupHeader": {
