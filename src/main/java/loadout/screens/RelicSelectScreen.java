@@ -124,6 +124,8 @@ public class RelicSelectScreen implements ScrollBarListener
         screenRelics.add(TinyHouse.ID);
         screenRelics.add(EmptyCage.ID);
         screenRelics.add(Orrery.ID);
+        screenRelics.add(Cauldron.ID);
+        screenRelics.add(DollysMirror.ID);
     }
 
     public boolean doneSelecting()
