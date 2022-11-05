@@ -269,7 +269,7 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
         sortHeader.render(sb);
     }
 
-    protected abstract void renderList(SpriteBatch sb, ArrayList<?> list);
+    protected abstract void renderList(SpriteBatch sb, ArrayList<T> list);
 
     @Override
     public void scrolledUsingBar(float newPercent)

@@ -20,7 +20,7 @@ import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
 
-public class PowerSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public class PowerSelectSortHeader extends SortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
 
     private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PotionSelectSortHeader"));
     public static final String[] pTEXT = pUiStrings.TEXT;
@@ -56,15 +56,19 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
 
     public PowerSelectScreen powerSelectScreen;
 
+    public TextSearchBox searchBox;
+
 
 
     public PowerSelectSortHeader(PowerSelectScreen powerSelectScreen) {
+        super(powerSelectScreen);
         this.powerSelectScreen = powerSelectScreen;
 
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         float xPosition = START_X;
         float yPosition = START_Y;
+        this.searchBox = new TextSearchBox(this, 0.0F, Settings.HEIGHT - 200.0F * Settings.scale,false);
 
         this.nameButton = new HeaderButtonPlus(pTEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= SPACE_Y;
@@ -99,10 +103,9 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.dropdownMenuHeaders = new String[] {TEXT[6],TEXT[7]};
 
 
+        }
 
-    }
-
-
+    @Override
     public void update() {
         for (HeaderButtonPlus button : this.buttons) {
             button.update();
@@ -117,6 +120,8 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         for (DropdownMenu dm : this.dropdownMenus) {
             dm.update();
         }
+
+        this.searchBox.update();
     }
 
     public Hitbox updateControllerInput() {
@@ -145,13 +150,14 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         return 0;
     }
 
+    @Override
     public void clearActiveButtons() {
         //does not clear the last 3 buttons
         for (int i = 0;i<this.buttons.length-2;i++) {
             buttons[i].setActive(false);
         }
     }
-
+    @Override
     public void resetOtherButtons() {
         int btnIdx = getHoveredIndex();
         //not resetting the last 3 buttons
@@ -161,6 +167,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
             }
         }
     }
+    @Override
     public void resetAllButtons() {
         //not resetting the last 3 buttons
         for (int i = 0;i<this.buttons.length-2;i++) {
@@ -197,9 +204,11 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
 
     }
 
+    @Override
     public void render(SpriteBatch sb) {
         //sb.draw(ImageMaster.COLOR_TAB_BAR, 10.0F, -50.0F, 300.0F, 500.0F, 0, 0, 1334, 102, false, false);
         updateScrollPositions();
+        this.searchBox.render(sb);
         renderButtons(sb);
         renderSelection(sb);
     }
@@ -208,6 +217,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
 
     }
 
+    @Override
     protected void renderButtons(SpriteBatch sb) {
         for (HeaderButtonPlus b : this.buttons) {
             b.render(sb);
@@ -229,6 +239,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         }
     }
 
+    @Override
     protected void renderSelection(SpriteBatch sb) {
         for (int i = 0; i < this.buttons.length; i++) {
             if (i == this.selectionIndex) {
@@ -256,7 +267,7 @@ public class PowerSelectSortHeader implements HeaderButtonPlusListener, Dropdown
                 this.powerSelectScreen.filterFavorites = false;
             }
             this.powerSelectScreen.filterAll = !this.powerSelectScreen.filterFavorites;
-            this.powerSelectScreen.updateFilters(true);
+            this.powerSelectScreen.updateFilters();
         }
     }
 }

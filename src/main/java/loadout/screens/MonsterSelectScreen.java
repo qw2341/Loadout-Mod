@@ -43,7 +43,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
     }
 
     @Override
-    protected void renderList(SpriteBatch sb, ArrayList<?> list) {
+    protected void renderList(SpriteBatch sb, ArrayList<MonsterButton> list) {
 
     }
 

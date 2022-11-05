@@ -11,6 +11,7 @@ loadout\savables\CardModifications.class
 loadout\relics\PowerGiver$PowerTarget.class
 loadout\relics\TildeKey.class
 loadout\screens\EventSelectScreen$EventButton.class
+loadout\screens\TextSearchBox.class
 loadout\LoadoutMod$1.class
 loadout\relics\BottledMonster.class
 loadout\screens\GCardSelectScreen$CardDisplayMode.class

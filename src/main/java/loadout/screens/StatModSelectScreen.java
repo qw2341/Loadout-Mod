@@ -384,7 +384,7 @@ public class StatModSelectScreen extends SelectScreen<StatModSelectScreen.StatMo
     }
 
     @Override
-    protected void renderList(SpriteBatch sb, ArrayList<?> list) {
+    protected void renderList(SpriteBatch sb, ArrayList<StatModButton> list) {
         row += 1;
         col = 0;
         float curX;

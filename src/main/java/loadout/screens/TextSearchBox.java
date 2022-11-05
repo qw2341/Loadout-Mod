@@ -36,11 +36,11 @@ public class TextSearchBox implements TextInputReceiver {
 
     private boolean digitonly;
 
-    public SelectScreen<?> receiver;
+    public SortHeader receiver;
 
     public String title = CardSelectSortHeader.TEXT[4];
 
-    public TextSearchBox(SelectScreen<?> receiver, float x, float y, boolean digitOnly) {
+    public TextSearchBox(SortHeader receiver, float x, float y, boolean digitOnly) {
         this.receiver = receiver;
         this.filterBarX = x;
         this.filterBarY = y;
@@ -67,7 +67,7 @@ public class TextSearchBox implements TextInputReceiver {
         if(!this.filterTextHb.hovered && (InputHelper.justClickedLeft || InputHelper.justClickedRight) && this.isTyping) {
             //cancel typing
             stopTyping();
-            this.receiver.updateFilters();
+            this.receiver.selectScreen.updateFilters();
         }
         if (this.filterTextHb.clicked || this.filterTextHb.hovered && CInputActionSet.select.isJustPressed()) {
             CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
@@ -94,7 +94,7 @@ public class TextSearchBox implements TextInputReceiver {
             if (Gdx.input.isKeyJustPressed(66)) {
 
                 stopTyping();
-                this.receiver.updateFilters();
+                this.receiver.selectScreen.updateFilters();
             }
             else if (InputHelper.pressedEscape) {
                 InputHelper.pressedEscape = false;

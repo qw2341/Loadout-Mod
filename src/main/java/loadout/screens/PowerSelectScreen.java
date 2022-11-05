@@ -35,6 +35,7 @@ import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -42,7 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PowerSelectScreen implements ScrollBarListener
+public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButton> implements ScrollBarListener
 {
     public static AbstractPlayer dummyPlayer;
     public static AbstractMonster dummyMonster;
@@ -318,6 +319,9 @@ public class PowerSelectScreen implements ScrollBarListener
 
 
 
+
+
+
     public boolean doneSelecting()
     {
         return doneSelecting;
@@ -332,6 +336,7 @@ public class PowerSelectScreen implements ScrollBarListener
 
     public PowerSelectScreen(AbstractRelic owner)
     {
+        super(owner);
         scrollBar = new ScrollBar(this);
 
         //import favorites
@@ -367,10 +372,10 @@ public class PowerSelectScreen implements ScrollBarListener
         return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
     }
 
-    private void sortOnOpen() {
+    protected void sortOnOpen() {
+        this.sortHeader.searchBox.resetText();
 
-
-        updateFilters(true);
+        updateFilters();
 
         this.sortHeader.justSorted = true;
         sortByMod(true);
@@ -446,6 +451,7 @@ public class PowerSelectScreen implements ScrollBarListener
         }
     }
 
+    @Override
     public void open()
     {
         if(AbstractDungeon.isScreenUp) {
@@ -522,6 +528,7 @@ public class PowerSelectScreen implements ScrollBarListener
         }
     }
 
+    @Override
     public void update()
     {
         if (!isOpen()) {
@@ -597,7 +604,7 @@ public class PowerSelectScreen implements ScrollBarListener
                             Favorites.favoritePowers.add(pID);
                         }
                         if(filterFavorites)
-                            updateFilters(false);
+                            updateFilters();
 
                         try {
                             LoadoutMod.favorites.save();
@@ -720,22 +727,31 @@ public class PowerSelectScreen implements ScrollBarListener
         this.powers.addAll(this.powersClone);
     }
 
-    protected boolean testFilter(PowerButton pb) {
-        boolean favCheck = filterAll || (filterFavorites && Favorites.favoritePowers.contains(pb.id));
-        return favCheck;
+    private boolean testTextFilter(PowerButton pb) {
+       if (pb.id != null && StringUtils.containsIgnoreCase(pb.id,sortHeader.searchBox.filterText)) return true;
+       if (pb.name != null && StringUtils.containsIgnoreCase(pb.name,sortHeader.searchBox.filterText)) return true;
+       if (pb.desc != null && StringUtils.containsIgnoreCase(pb.desc,sortHeader.searchBox.filterText)) return true;
+       return false;
     }
 
-    public void updateFilters(boolean resetScroll) {
+    protected boolean testFilter(PowerButton pb) {
+        boolean favCheck = filterAll || (filterFavorites && Favorites.favoritePowers.contains(pb.id));
+        boolean textCheck = sortHeader == null || sortHeader.searchBox.filterText.equals("") || testTextFilter(pb);
+        return favCheck && textCheck;
+    }
+
+    @Override
+    public void updateFilters() {
         resetFilters();
         this.powers = this.powers.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
         sort(true);
 
-        if(resetScroll)
+        if(!filterFavorites)
             scrolledUsingBar(0.0f);
     }
 
-
-    private void calculateScrollBounds()
+    @Override
+    protected void calculateScrollBounds()
     {
         int size = powers.size();
 
@@ -761,7 +777,8 @@ public class PowerSelectScreen implements ScrollBarListener
         }
     }
 
-    private void updateList(ArrayList<PowerButton> list)
+    @Override
+    protected void updateList(ArrayList<PowerButton> list)
     {
         if (this.confirmButton.hb.hovered) return;
 
@@ -777,6 +794,7 @@ public class PowerSelectScreen implements ScrollBarListener
         }
     }
 
+    @Override
     public void render(SpriteBatch sb)
     {
         if (!isOpen()) {
@@ -793,7 +811,8 @@ public class PowerSelectScreen implements ScrollBarListener
             sortHeader.render(sb);
     }
 
-    private void renderList(SpriteBatch sb, ArrayList<PowerButton> list)
+    @Override
+    protected void renderList(SpriteBatch sb, ArrayList<PowerButton> list)
     {
         row += 1;
         col = 0;
