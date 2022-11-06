@@ -147,9 +147,12 @@ public class PotionSelectSortHeader implements HeaderButtonPlusListener {
             AbstractDungeon.player.potionSlots ++;
             AbstractDungeon.player.potions.add(new PotionSlot(AbstractDungeon.player.potionSlots - 1));
         } else if (button == this.slotSubButton) {
-            AbstractDungeon.player.potionSlots --;
+            if(AbstractDungeon.player.potionSlots > 0) {
+                AbstractDungeon.player.potionSlots --;
 //            if(!(AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1) instanceof PotionSlot))
                 AbstractDungeon.player.potions.remove(AbstractDungeon.player.potions.size()-1);
+            }
+
         } else {
             return;
         }
