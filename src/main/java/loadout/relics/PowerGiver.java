@@ -239,6 +239,11 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
 
     @Override
     public void onLoad(HashMap<String, Integer>[] savedPowers) {
+        if(savedPowers == null || savedPowers.length != 2) {
+            this.savedPowersPlayer = new HashMap<>();
+            this.savedPowersMonster = new HashMap<>();
+            return;
+        }
         this.savedPowersPlayer = savedPowers[0];
         this.savedPowersMonster = savedPowers[1];
     }
