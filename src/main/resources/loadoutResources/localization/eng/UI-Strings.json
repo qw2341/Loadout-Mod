@@ -110,5 +110,16 @@
 			"Max Health",
 			"Lock"
 		]
+	},
+	"loadout:MasterDeckViewSortHeader": {
+		"TEXT": [
+			"Save",
+			"Delete",
+			"Starter",
+			"Load",
+			"Saved Decks",
+			"Name Your Loadout"
+
+		]
 	}
 }

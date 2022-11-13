@@ -41,6 +41,7 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
+import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
 import loadout.savables.SerializableCard;
@@ -195,6 +196,7 @@ StartGameSubscriber{
 
     public static CardModifications cardModifications = null;
     public static Favorites favorites = null;
+    public static CardLoadouts cardLoadouts = null;
 
 
 
@@ -328,6 +330,14 @@ StartGameSubscriber{
             logger.error("Error loading favorites");
         }
         logger.info("Done loading favorites");
+
+        logger.info("loading card loadouts");
+        try {
+            cardLoadouts = new CardLoadouts();
+        } catch (IOException e) {
+            logger.error("Error loading card loadouts");
+        }
+        logger.info("Done loading card loadouts");
     }
     
     // ====== NO EDIT AREA ======
