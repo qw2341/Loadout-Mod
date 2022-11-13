@@ -2,6 +2,7 @@ package loadout.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.localization.MonsterStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -32,7 +33,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
     public MonsterSelectScreen(AbstractRelic owner) {
         super(owner);
 
-
+        MonsterHelper.getEncounter()
     }
 
     @Override
