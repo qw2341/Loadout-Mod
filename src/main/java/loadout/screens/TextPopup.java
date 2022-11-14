@@ -1,5 +1,7 @@
 package loadout.screens;
 
+import basemod.interfaces.TextReceiver;
+import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.codedisaster.steamworks.SteamUtils;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -22,12 +25,13 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.mainMenu.SaveSlotScreen;
 import loadout.LoadoutMod;
 import loadout.helper.EnhancedTextInputReceiver;
+import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
 import org.apache.logging.log4j.Logger;
 
 
 
-public class TextPopup
+public class TextPopup implements TextReceiver
 {
     private static final Logger logger = LoadoutMod.logger;
 
@@ -52,12 +56,14 @@ public class TextPopup
 
     private TextInputReceiver receiver;
     public String title;
+    private boolean digitonly;
 
-    public TextPopup(TextInputReceiver receiver, String title) {
+    public TextPopup(TextInputReceiver receiver, String title, boolean digitonly) {
         this.yesHb.move(854.0F * Settings.scale, Settings.OPTION_Y - 120.0F * Settings.scale);
         this.noHb.move(1066.0F * Settings.scale, Settings.OPTION_Y - 120.0F * Settings.scale);
         this.receiver = receiver;
         this.title = title;
+        this.digitonly = digitonly;
     }
 
     public void update() {
@@ -133,10 +139,11 @@ public class TextPopup
             return;
         }
 
-        CardCrawlGame.mainMenuScreen.saveSlotScreen.curPop = SaveSlotScreen.CurrentPopup.NONE;
+        //CardCrawlGame.mainMenuScreen.saveSlotScreen.curPop = SaveSlotScreen.CurrentPopup.NONE;
         this.shown = false;
-        Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
-
+        TextInput.stopTextReceiver(this);
+        //Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        //AbstractDungeon.screen = AbstractDungeon.previousScreen;
         receiver.setTextField(textField);
         if(receiver instanceof EnhancedTextInputReceiver) ((EnhancedTextInputReceiver)receiver).onConfirming();
 
@@ -144,9 +151,11 @@ public class TextPopup
 
 
     public void cancel() {
-        CardCrawlGame.mainMenuScreen.saveSlotScreen.curPop = SaveSlotScreen.CurrentPopup.NONE;
+        //CardCrawlGame.mainMenuScreen.saveSlotScreen.curPop = SaveSlotScreen.CurrentPopup.NONE;
         this.shown = false;
-        Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        TextInput.stopTextReceiver(this);
+        //Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        //AbstractDungeon.screen = AbstractDungeon.previousScreen;
         if(receiver instanceof EnhancedTextInputReceiver) ((EnhancedTextInputReceiver)receiver).onCanceling();
     }
 
@@ -434,7 +443,11 @@ public class TextPopup
     }
 
     public void open() {
-        Gdx.input.setInputProcessor((InputProcessor)new TypeHelper());
+        //AbstractDungeon.previousScreen = AbstractDungeon.screen;
+        //AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NONE;
+        TextInput.startTextReceiver(this);
+
+        //Gdx.input.setInputProcessor((InputProcessor)new TextInputHelper(receiver,false));
 
         if (SteamInputHelper.numControllers == 1 && CardCrawlGame.clientUtils != null && CardCrawlGame.clientUtils.isSteamRunningOnSteamDeck()) {
             CardCrawlGame.clientUtils.showFloatingGamepadTextInput(SteamUtils.FloatingGamepadTextInputMode.ModeSingleLine, 0, 0, Settings.WIDTH, (int)(Settings.HEIGHT * 0.25F));
@@ -443,6 +456,31 @@ public class TextPopup
 
         this.shown = true;
         textField = "";
+    }
+
+    @Override
+    public String getCurrentText() {
+        return textField;
+    }
+
+    @Override
+    public void setText(String s) {
+        textField = s;
+    }
+
+    @Override
+    public boolean isDone() {
+        return !this.shown;
+    }
+
+    @Override
+    public boolean acceptCharacter(char c) {
+        return this.digitonly ? Character.isDigit(c) : Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126);
+    }
+
+    @Override
+    public boolean onPushBackspace() {
+        return TextReceiver.super.onPushBackspace();
     }
 }
 

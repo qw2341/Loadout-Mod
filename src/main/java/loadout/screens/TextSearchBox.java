@@ -1,5 +1,7 @@
 package loadout.screens;
 
+import basemod.interfaces.TextReceiver;
+import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -19,7 +21,7 @@ import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
 import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
 
-public class TextSearchBox implements TextInputReceiver {
+public class TextSearchBox implements TextReceiver {
     public boolean isTyping = false;
 
     public float waitTimer = 0.0F;
@@ -78,7 +80,8 @@ public class TextSearchBox implements TextInputReceiver {
 
                 this.filterText = "";
 
-                Gdx.input.setInputProcessor(new TextInputHelper(this, this.digitonly));
+                //Gdx.input.setInputProcessor(new TextInputHelper(this, this.digitonly));
+                TextInput.startTextReceiver(this);
                 if (SteamInputHelper.numControllers == 1 && CardCrawlGame.clientUtils != null && CardCrawlGame.clientUtils.isSteamRunningOnSteamDeck()) {
                     CardCrawlGame.clientUtils.showFloatingGamepadTextInput(SteamUtils.FloatingGamepadTextInputMode.ModeSingleLine, 0, 0, Settings.WIDTH, (int)(Settings.HEIGHT * 0.25F));
                 }
@@ -108,22 +111,23 @@ public class TextSearchBox implements TextInputReceiver {
 
     public void stopTyping() {
         this.isTyping = false;
-        Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        //Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        TextInput.stopTextReceiver(this);
     }
 
     public void resetText() {
         this.filterText = "";
     }
 
-    @Override
-    public void setTextField(String textToSet) {
-        this.filterText = textToSet;
-    }
-
-    @Override
-    public String getTextField() {
-        return this.filterText;
-    }
+//    @Override
+//    public void setTextField(String textToSet) {
+//        this.filterText = textToSet;
+//    }
+//
+//    @Override
+//    public String getTextField() {
+//        return this.filterText;
+//    }
 
     public void render(SpriteBatch sb) {
         filterTextHb.render(sb);
@@ -137,5 +141,30 @@ public class TextSearchBox implements TextInputReceiver {
         FontHelper.renderSmartText(sb, FontHelper.panelNameFont, renderFilterText, filterBarX, filterBarY, 250.0F, 20.0F, filterTextColor);
         FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, this.title, filterBarX, filterBarY + 35.0F * Settings.yScale, 250.0F, 20.0F, Settings.GOLD_COLOR);
 
+    }
+
+    @Override
+    public String getCurrentText() {
+        return this.filterText;
+    }
+
+    @Override
+    public void setText(String s) {
+        this.filterText = s;
+    }
+
+    @Override
+    public boolean onPushEnter() {
+        return TextReceiver.super.onPushEnter();
+    }
+
+    @Override
+    public boolean isDone() {
+        return !this.isTyping;
+    }
+
+    @Override
+    public boolean acceptCharacter(char c) {
+        return this.digitonly ? Character.isDigit(c) : Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126);
     }
 }
