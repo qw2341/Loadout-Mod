@@ -7,6 +7,7 @@ E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\jav
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\cardmods\XCostMod.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\PotionClassComparator.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\HeaderButtonPlus.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\patches\MasterDeckScreenPatch.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\PinyinFormatter.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\relics\LoadoutBag.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\HanyuPinyinOutputFormat.java
@@ -19,7 +20,9 @@ E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\jav
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\cardmods\FleetingMod.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\CombatCardSelectSortHeader.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\cardmods\GraveMod.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\EnhancedTextInputReceiver.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\patches\OverlayMenuUpdatePatch.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\TextPopup.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\RelicClassComparator.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\patches\AddEventPatch.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\relics\PowerGiver.java
@@ -40,6 +43,7 @@ E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\jav
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\StatModSelectScreen.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\relics\EventfulCompass.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\SelectScreen.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\TextSearchBox.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\actions\AddRelicAction.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\HeaderButtonPlusListener.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\util\PowerFilter.java
@@ -64,7 +68,9 @@ E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\jav
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\RelicModComparator.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\cardmods\UnexhaustMod.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\TextInputReceiver.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\savables\CardLoadouts.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\SortHeader.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\helper\PotionModComparator.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\cardmods\SoulboundMod.java
 E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\relics\CardModifier.java
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\mymod\LoadoutMod\src\main\java\loadout\screens\MDeckViewSortHeader.java

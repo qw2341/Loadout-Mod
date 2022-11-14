@@ -167,4 +167,12 @@ public class TextSearchBox implements TextReceiver {
     public boolean acceptCharacter(char c) {
         return this.digitonly ? Character.isDigit(c) : Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126);
     }
+    @Override
+    public boolean onPushBackspace() {
+        if(this.waitTimer <= 0.0F) {
+            this.waitTimer = 0.09F;
+            return false;
+        }
+        return true;
+    }
 }

@@ -624,7 +624,16 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
 
     }
 
-//    @Override
+    @Override
+    public boolean onPushBackspace() {
+        if(this.waitTimer <= 0.0F) {
+            this.waitTimer = 0.09F;
+            return false;
+        }
+        return true;
+    }
+
+    //    @Override
 //    public void setTextField(String textToSet) {
 //        this.filterText = textToSet;
 //    }

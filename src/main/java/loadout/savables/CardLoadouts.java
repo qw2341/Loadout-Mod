@@ -4,11 +4,9 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -55,7 +53,9 @@ public class CardLoadouts {
     }
 
     public void save() throws IOException {
-        FileWriter fileWriter = new FileWriter(this.filePath);
+        Writer fileWriter = new OutputStreamWriter(new FileOutputStream(this.filePath),StandardCharsets.UTF_8);
+        //FileWriter fileWriter = new FileWriter(this.filePath);
+
 
         //loadouts.put(CARD_LOADOUT_SAVE_KEY, cardLoadout);
 

@@ -480,7 +480,11 @@ public class TextPopup implements TextReceiver
 
     @Override
     public boolean onPushBackspace() {
-        return TextReceiver.super.onPushBackspace();
+        if(this.waitTimer <= 0.0F) {
+            this.waitTimer = 0.09F;
+            return false;
+        }
+        return true;
     }
 }
 

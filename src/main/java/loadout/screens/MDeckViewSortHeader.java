@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import loadout.LoadoutMod;
 import loadout.helper.EnhancedTextInputReceiver;
 import loadout.savables.CardLoadouts;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,7 +128,9 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
 
     @Override
     public void setTextField(String textToSet) {
+
         currentLoadoutName = textToSet;
+        LoadoutMod.logger.info("Entered: " + currentLoadoutName);
     }
 
     @Override

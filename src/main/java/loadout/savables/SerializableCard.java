@@ -7,6 +7,7 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingFie
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
@@ -37,6 +38,10 @@ public class SerializableCard implements Serializable {
     public boolean grave;
 
     public static AbstractCard toAbstractCard(SerializableCard sc) {
+        if(!CardLibrary.isACard(sc.id)) {
+            return new Madness();
+        }
+
         AbstractCard card = CardLibrary.getCard(sc.id).makeCopy();
         card.cost = sc.cost;
         card.costForTurn = card.cost;
