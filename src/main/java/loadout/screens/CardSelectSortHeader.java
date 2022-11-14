@@ -1,6 +1,8 @@
 package loadout.screens;
 
 import basemod.BaseMod;
+import basemod.interfaces.TextReceiver;
+import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -37,7 +39,7 @@ import java.util.stream.Collectors;
 
 import static loadout.LoadoutMod.*;
 
-public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener, TextInputReceiver {
+public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener, TextReceiver {
     private static final UIStrings cUIStrings = CardCrawlGame.languagePack.getUIString("CardLibraryScreen");
     public static final String[] cTEXT = cUIStrings.TEXT;
     private static final UIStrings clUIStrings = CardCrawlGame.languagePack.getUIString("CardLibSortHeader");
@@ -335,7 +337,8 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
 
                 this.filterText = "";
 
-                Gdx.input.setInputProcessor(new TextInputHelper(this, false));
+                //Gdx.input.setInputProcessor(new TextInputHelper(this, false));
+                TextInput.startTextReceiver(this);
                 if (SteamInputHelper.numControllers == 1 && CardCrawlGame.clientUtils != null && CardCrawlGame.clientUtils.isSteamRunningOnSteamDeck()) {
                     CardCrawlGame.clientUtils.showFloatingGamepadTextInput(SteamUtils.FloatingGamepadTextInputMode.ModeSingleLine, 0, 0, Settings.WIDTH, (int)(Settings.HEIGHT * 0.25F));
                 }
@@ -363,7 +366,8 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
 
     public void stopTyping() {
         this.isTyping = false;
-        Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        //Gdx.input.setInputProcessor((InputProcessor)new ScrollInputProcessor());
+        TextInput.stopTextReceiver(this);
     }
 
     public Hitbox updateControllerInput() {
@@ -600,12 +604,34 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
     }
 
     @Override
-    public void setTextField(String textToSet) {
-        this.filterText = textToSet;
+    public String getCurrentText() {
+        return this.filterText;
     }
 
     @Override
-    public String getTextField() {
-        return this.filterText;
+    public void setText(String s) {
+        this.filterText = s;
     }
+
+    @Override
+    public boolean isDone() {
+        return !isTyping;
+    }
+
+    @Override
+    public boolean acceptCharacter(char c) {
+        return Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126);
+
+    }
+
+//    @Override
+//    public void setTextField(String textToSet) {
+//        this.filterText = textToSet;
+//    }
+//
+//    @Override
+//    public String getTextField() {
+//        return this.filterText;
+//    }
+
 }

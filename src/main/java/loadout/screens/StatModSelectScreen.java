@@ -1,5 +1,6 @@
 package loadout.screens;
 
+import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;

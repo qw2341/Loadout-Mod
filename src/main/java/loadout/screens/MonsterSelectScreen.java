@@ -33,7 +33,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
     public MonsterSelectScreen(AbstractRelic owner) {
         super(owner);
 
-        MonsterHelper.getEncounter()
+        //MonsterHelper.getEncounter();
     }
 
     @Override

@@ -109,7 +109,18 @@
 			"Santé maximale",
 			"Serrure"
 		]
+	},
+	"loadout:MasterDeckViewSortHeader": {
+		"TEXT": [
+			"Sauvegarder",
+			"Supprimer",
+			"Démarreur",
+			"Charger",
+			"Decks sauvegardés",
+			"Nommez votre chargement"
+		]
 	}
+
 
 
 }

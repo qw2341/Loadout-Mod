@@ -24,7 +24,7 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
 
     public ArrayList<String> loadouts;
     private HeaderButtonPlus saveButton;
-    private TextPopup namingPopup;
+    public TextPopup namingPopup;
     private HeaderButtonPlus loadButton;
     private DropdownMenu loadoutsButton;
 
@@ -35,13 +35,13 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
     public MDeckViewSortHeader() {
         super(null);
 
-        float xPos = startX;
-        float yPos = START_Y;
+        float xPos = 100.0F * Settings.scale;
+        float yPos = START_Y - 100.0F * Settings.yScale;
 
         this.loadouts = new ArrayList<>();
         loadLoadouts();
 
-        this.loadoutsButton = new DropdownMenu(this, this.loadouts, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+        //this.loadoutsButton = new DropdownMenu(this, this.loadouts, FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
         this.saveButton = new HeaderButtonPlus(TEXT[0], xPos, yPos, this, true, ImageMaster.SETTINGS_ICON);
         yPos -= SPACE_Y;
@@ -56,18 +56,24 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
         this.dropdownMenuHeaders = new String[] { TEXT[4] };
         this.dropdownMenus = new DropdownMenu[] { this.loadoutsButton };
 
-        this.namingPopup = new TextPopup(this,TEXT[5]);
+        this.namingPopup = new TextPopup(this,TEXT[5], false);
     }
 
     private void loadLoadouts() {
         this.loadouts.clear();
         this.loadouts.add(TEXT[2]);
         this.loadouts.addAll(CardLoadouts.loadouts.keySet());
+        this.loadoutsButton = new DropdownMenu(this, this.loadouts, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+        if(this.dropdownMenus != null) dropdownMenus[0] = this.loadoutsButton;
+
+        LoadoutMod.logger.info("Loading card loadouts: " + this.loadouts.toString());
     }
 
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
-
+        if(dropdownMenu == this.loadoutsButton) {
+            this.currentLoadoutName = this.loadouts.get(i);
+        }
     }
 
     private String getCurrentLoadoutName() {
@@ -88,15 +94,16 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
             }
 
         } else if (button == this.deleteButton) {
-            if(this.loadoutsButton.getSelectedIndex() != 0) {
+            if(this.loadoutsButton.getSelectedIndex() > 0) {
                 CardLoadouts.removeLoadout(getCurrentLoadoutName());
                 try {
                     LoadoutMod.cardLoadouts.save();
                 } catch (IOException e) {
                     LoadoutMod.logger.info("Error saving card loadouts");
                 }
+                int tgtIdx = this.loadoutsButton.getSelectedIndex()-1;
                 loadLoadouts();
-                this.loadoutsButton.setSelectedIndex(this.loadoutsButton.getSelectedIndex()-1);
+                this.loadoutsButton.setSelectedIndex(tgtIdx);
             }
         }
     }
@@ -104,6 +111,8 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
     @Override
     public void onConfirming() {
         CardLoadouts.addLoadout(currentLoadoutName, AbstractDungeon.player.masterDeck.group);
+        loadLoadouts();
+        this.loadoutsButton.setSelectedIndex(this.loadouts.indexOf(currentLoadoutName));
         try {
             LoadoutMod.cardLoadouts.save();
         } catch (IOException e) {
@@ -129,7 +138,18 @@ public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInput
     @Override
     public void update() {
         if(!this.namingPopup.shown) {
-            super.update();
+
+            for (DropdownMenu dropdownMenu : this.dropdownMenus) {
+                if (dropdownMenu.isOpen) {
+                    dropdownMenu.update();
+                    return;
+                }
+            }
+            for (HeaderButtonPlus button : this.buttons) {
+                button.update();
+            }
+            for (DropdownMenu dropdownMenu : this.dropdownMenus)
+                dropdownMenu.update();
         } else {
             this.namingPopup.update();
         }

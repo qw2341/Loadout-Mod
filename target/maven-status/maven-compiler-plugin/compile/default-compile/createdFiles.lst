@@ -3,6 +3,7 @@ loadout\actions\MultiUseAction.class
 loadout\helper\FieldAccessor$1.class
 loadout\screens\PotionSelectSortHeader.class
 loadout\helper\RelicClassComparator.class
+loadout\patches\MasterDeckScreenPatch.class
 loadout\relics\EventfulCompass.class
 loadout\cardmods\GraveMod.class
 loadout\screens\PotionSelectScreen$SortType.class
@@ -11,6 +12,7 @@ loadout\savables\CardModifications.class
 loadout\relics\PowerGiver$PowerTarget.class
 loadout\relics\TildeKey.class
 loadout\screens\EventSelectScreen$EventButton.class
+loadout\patches\MasterDeckScreenPatch$ConstructorPatch.class
 loadout\screens\TextSearchBox.class
 loadout\LoadoutMod$1.class
 loadout\relics\BottledMonster.class
@@ -46,6 +48,7 @@ loadout\screens\PowerSelectScreen$SortType.class
 loadout\screens\EventSelectScreen.class
 loadout\screens\SelectScreen.class
 loadout\screens\PowerSelectSortHeader.class
+loadout\screens\TextPopup.class
 loadout\helper\HanyuPinyinOutputFormat.class
 loadout\relics\CardShredder$1.class
 loadout\util\TextureLoader.class
@@ -60,12 +63,14 @@ loadout\helper\TextInputHelper.class
 loadout\screens\EventSelectScreen$SortOrder.class
 loadout\savables\SerializableCard.class
 loadout\screens\RelicSelectScreen.class
+loadout\savables\CardLoadouts.class
 loadout\screens\HeaderButtonPlus.class
 loadout\screens\PotionSelectScreen$SortOrder.class
 loadout\patches\AbstractPlayerPatch.class
 loadout\patches\ExitSavePatch.class
 loadout\helper\PotionNameComparator.class
 loadout\LoadoutMod$2.class
+loadout\savables\CardLoadouts$1.class
 loadout\screens\PotionSelectScreen.class
 loadout\patches\AbstractPlayerPatch$DamageCheckPatch.class
 loadout\helper\RelicNameComparator.class
@@ -77,6 +82,7 @@ loadout\helper\ModifierLibrary.class
 loadout\helper\RelicTierComparator.class
 loadout\patches\AbstractCardPatch$MultiUse$1.class
 loadout\relics\LoadoutCauldron.class
+loadout\patches\MasterDeckScreenPatch$UpdatePatch.class
 loadout\cardmods\SoulboundMod.class
 loadout\helper\PotionTierComparator.class
 loadout\patches\MapRoomNodePatch$ConnectionPatch.class
@@ -93,6 +99,7 @@ loadout\screens\CardViewPopupHeader.class
 loadout\ui\LoadoutPointPanel.class
 loadout\helper\PotionModComparator.class
 loadout\screens\EventSelectScreen$1.class
+loadout\screens\MDeckViewSortHeader.class
 loadout\screens\HeaderButton.class
 loadout\screens\MonsterSelectScreen$MonsterButton.class
 loadout\savables\Favorites$1.class
@@ -107,8 +114,10 @@ loadout\patches\MapRoomNodePatch.class
 loadout\screens\PowerSelectScreen$SortOrder.class
 loadout\screens\CardSelectSortHeader$1.class
 loadout\cardmods\PlayableMod.class
+loadout\patches\MasterDeckScreenPatch$RenderPatch.class
 loadout\relics\CardPrinter.class
 loadout\relics\CardModifier.class
+loadout\helper\EnhancedTextInputReceiver.class
 loadout\screens\SCardViewPopup$1.class
 loadout\cardmods\FleetingMod.class
 loadout\patches\ScreensPatch$GridScreenCloseBool.class
