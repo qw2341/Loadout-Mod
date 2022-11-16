@@ -24,12 +24,12 @@ public class AutoplayMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        AutoplayField.autoplay.set(card,true);
+        AutoplayField.autoplay.set(card,Boolean.valueOf(true));
     }
 
     @Override
     public void onRemove(AbstractCard card) {
-        AutoplayField.autoplay.set(card,false);
+        AutoplayField.autoplay.set(card,Boolean.valueOf(false));
     }
 
 

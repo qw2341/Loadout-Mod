@@ -227,7 +227,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
 
         this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.restoreDefaultButton,
-        this.saveChangesButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, /*this.makeAutoPlayButton,*/ this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
+        this.saveChangesButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
 
 
 
