@@ -49,7 +49,7 @@
     ]
   },
   "loadout:CardShredder": {
-    "NAME": "碎卡机",
+    "NAME": "删卡机",
     "FLAVOR": "并不能帮你移除伤口",
     "DESCRIPTIONS": [
       "右键此遗物来从牌组删除卡牌; 战斗中使用也会同时将其从战斗中删除。",
@@ -128,6 +128,13 @@
     "FLAVOR": "是时候重来了...等等",
     "DESCRIPTIONS": [
       "右键此遗物来进行调试。 左键数值来修改它。"
+    ]
+  },
+  "loadout:BottledMonster": {
+    "NAME": "瓶装怪物",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "右键此遗物来生成任意怪物。"
     ]
   }
 }

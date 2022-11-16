@@ -18,6 +18,7 @@ loadout\LoadoutMod$1.class
 loadout\relics\BottledMonster.class
 loadout\screens\GCardSelectScreen$CardDisplayMode.class
 loadout\screens\MonsterSelectScreen.class
+loadout\screens\MonsterSelectSortHeader.class
 loadout\screens\HeaderButtonPlus$Alignment.class
 loadout\screens\StatModSelectScreen$StatModButton.class
 loadout\screens\CombatCardSelectSortHeader.class
@@ -52,6 +53,7 @@ loadout\screens\TextPopup.class
 loadout\helper\HanyuPinyinOutputFormat.class
 loadout\relics\CardShredder$1.class
 loadout\util\TextureLoader.class
+loadout\util\MonsterFilter.class
 loadout\patches\ScreensPatch$GridScreenOpenBool.class
 loadout\screens\PowerSelectScreen.class
 loadout\relics\LoadoutBag.class
@@ -62,6 +64,7 @@ loadout\screens\GCardSelectScreen$1.class
 loadout\helper\TextInputHelper.class
 loadout\screens\EventSelectScreen$SortOrder.class
 loadout\savables\SerializableCard.class
+loadout\screens\MonsterSelectScreen$1.class
 loadout\screens\RelicSelectScreen.class
 loadout\savables\CardLoadouts.class
 loadout\screens\HeaderButtonPlus.class
@@ -92,6 +95,7 @@ loadout\cardmods\UnexhaustMod.class
 loadout\patches\AddEventPatch.class
 loadout\patches\ScreensPatch.class
 loadout\helper\PinyinFormatter.class
+loadout\screens\MonsterSelectScreen$SortType.class
 loadout\screens\EventSelectScreen$SortType.class
 loadout\screens\SortHeader.class
 loadout\screens\StatModSelectScreen.class
@@ -107,6 +111,7 @@ loadout\helper\TextInputReceiver.class
 loadout\screens\GCardSelectScreen.class
 loadout\helper\FieldAccessor.class
 loadout\screens\GCardSelectScreen$SortType.class
+loadout\screens\MonsterSelectScreen$SortOrder.class
 loadout\helper\HanyuPinyinOutputFormat$HanyuPinyinToneType.class
 loadout\screens\StatModSortHeader.class
 loadout\patches\AbstractCardPatch$CardModApplicatorPatch.class

@@ -5,7 +5,6 @@ import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
-import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,19 +15,18 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
-import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.beyond.*;
 import com.megacrit.cardcrawl.events.city.*;
 import com.megacrit.cardcrawl.events.exordium.*;
 import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.*;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -38,14 +36,13 @@ import com.megacrit.cardcrawl.relics.deprecated.DEPRECATED_DarkCore;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import javassist.CtClass;
-import javassist.NotFoundException;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
-import loadout.savables.SerializableCard;
-import loadout.screens.EventSelectScreen;
+import loadout.screens.MonsterSelectScreen;
+import loadout.util.MonsterFilter;
 import loadout.util.PowerFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -58,8 +55,6 @@ import org.clapper.util.classutil.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -191,6 +186,7 @@ StartGameSubscriber{
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
     public static HashMap<String,Class<? extends AbstractPower>> powersToDisplay = new HashMap<>();
+    public static ArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new ArrayList<>();
 
     public static boolean isScreenUp = false;
 
@@ -920,9 +916,9 @@ StartGameSubscriber{
         logger.info("Initializing base game events");
         createEventList();
         logger.info("Done initializing base game events");
-        logger.info("Initializing powers");
-        createPowerList();
-        logger.info("Done initializing powers");
+        logger.info("Initializing stuffs");
+        createStuffLists();
+        logger.info("Done initializing stuffs");
     }
     
     // =============== / POST-INITIALIZE/ =================
@@ -952,6 +948,7 @@ StartGameSubscriber{
         BaseMod.addRelic(new EventfulCompass(), RelicType.SHARED);
         BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
         BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
+        BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
@@ -1042,6 +1039,8 @@ StartGameSubscriber{
             if(enableCompassStarting&&RelicLibrary.isARelic(EventfulCompass.ID)&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) RelicLibrary.getRelic(EventfulCompass.ID).makeCopy().instantObtain();
             if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
             if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
+            if(RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
+
         }
 
         TildeKey.resetToDefault();
@@ -1132,7 +1131,7 @@ StartGameSubscriber{
         eventsToDisplay.add(new AddEventParams.Builder(eID,eClass).dungeonIDs(acts).create());
     }
 
-    private void createPowerList() {
+    private void createStuffLists() {
         powersToDisplay.clear();
         for (String pid : BaseMod.getPowerKeys()) {
             try {
@@ -1141,17 +1140,81 @@ StartGameSubscriber{
                 logger.error("Failed to instantiate power");
             }
         }
+        monstersToDisplay.clear();
 
-        autoAddPowers();
+        Settings.seed = 0L;
+        AbstractDungeon.generateSeeds();
+        AbstractDungeon.ascensionLevel = 20;
 
+        addBaseGameMonsters();
+        autoAddStuffs();
 
     }
 
-    private void autoAddPowers() {
+    private void addBaseGameMonsters() {
         ClassFinder finder = new ClassFinder();
-        AndClassFilter andClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
+        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter()});
         ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
-        String noID = "Unnamed Power ";
+        try {
+            finder.add(new java.io.File(Loader.STS_JAR));
+            Collection<ClassInfo> foundClasses = new ArrayList<>();
+            finder.findClasses(foundClasses, andMonsterClassFilter);
+            for (ClassInfo classInfo : foundClasses) {
+                try {
+                    CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
+                    boolean isMonster = false;
+                    CtClass superCls = cls;
+                    while (superCls != null) {
+                        superCls = superCls.getSuperclass();
+                        if (superCls == null)
+                            break;
+
+                        if (superCls.getName().equals(AbstractMonster.class.getName())) {
+                            isMonster = true;
+                            break;
+                        }
+                    }
+                    //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
+
+                    if(isMonster) {
+                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
+                        //logger.info("Trying to create monster button for: " + monsterC.getName());
+                        try{
+                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
+                        } catch (Exception e) {
+                            logger.info("Failed to create monster button for: " + monsterC.getName());
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        continue;
+                    }
+
+
+
+                } catch (Exception e) {
+                    logger.info("Failed to initialize for " + classInfo.getClassName());
+                }
+
+            }
+
+
+
+        } catch (Exception e) {
+            logger.info("Failed to initialize base game monsters");
+            e.printStackTrace();
+        }
+    }
+
+
+    private void autoAddStuffs() {
+        ClassFinder finder = new ClassFinder();
+        AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
+        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter()});
+
+
+        ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
+        String noID = "Unnamed Power";
         int count = 0;
 
 
@@ -1160,13 +1223,13 @@ StartGameSubscriber{
                 URL url = mi.jarURL;
                 finder.add(new java.io.File(url.toURI()));
                 Collection<ClassInfo> foundClasses = new ArrayList<>();
-                finder.findClasses(foundClasses, (ClassFilter) andClassFilter);
+                finder.findClasses(foundClasses, (ClassFilter) andPowerClassFilter);
+                finder.findClasses(foundClasses, andMonsterClassFilter);
                 for (ClassInfo classInfo : foundClasses) {
                     try {
                         CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
-//                if (cls.hasAnnotation(CardIgnore.class))
-//                    continue;
                         boolean isPower = false;
+                        boolean isMonster = false;
                         CtClass superCls = cls;
                         while (superCls != null) {
                             superCls = superCls.getSuperclass();
@@ -1176,54 +1239,76 @@ StartGameSubscriber{
                                 isPower = true;
                                 break;
                             }
-                        }
-                        if (!isPower)
-                            continue;
-
-                        //System.out.println(classInfo.getClassName());
-                        Class<?extends AbstractPower> powerC = (Class<? extends AbstractPower>) clazzLoader.loadClass(cls.getName());
-                        //PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
-
-                        try{
-                            Class.forName(powerC.getName(),false,clazzLoader);
-                        } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                            logger.info(powerC.getName() + "does not exist");
-                            continue;
-                        }
-
-                        String pID = null;
-
-                        try {
-                            pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
-                        } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
-
-                        } catch (NoClassDefFoundError ncdfe) {
-                            continue;
-                        }
-
-                        if (pID == null)  {
-
-                            try {
-                                AbstractPower p = powerC.newInstance();
-
-                                pID = p.ID;
-                            } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
-
+                            if (superCls.getName().equals(AbstractMonster.class.getName())) {
+                                isMonster = true;
+                                break;
                             }
+                        }
+                        //logger.info("Class: " + classInfo.getClassName() + (isPower ? " is Power": isMonster ? " is Monster" : " is neither"));
 
-                            if (pID == null) {
-                                //pID = noID + count++;
+                        if (isPower) {
+                            //System.out.println(classInfo.getClassName());
+                            Class<?extends AbstractPower> powerC = (Class<? extends AbstractPower>) clazzLoader.loadClass(cls.getName());
+                            //PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
+
+                            try{
+                                Class.forName(powerC.getName(),false,clazzLoader);
+                            } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
+                                logger.info(powerC.getName() + "does not exist");
                                 continue;
                             }
+
+                            String pID = null;
+
+                            try {
+                                pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
+                            } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
+
+                            } catch (NoClassDefFoundError ncdfe) {
+                                continue;
+                            }
+
+                            if (pID == null)  {
+
+                                try {
+                                    AbstractPower p = powerC.newInstance();
+
+                                    pID = p.ID;
+                                } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
+
+                                }
+
+                                if (pID == null) {
+                                    //pID = noID + count++;
+                                    continue;
+                                }
+                            }
+
+
+                            powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
+                        } else if(isMonster) {
+                            Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
+                            logger.info("Trying to create monster button for: " + monsterC.getName());
+                            try{
+                                monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
+                            } catch (Exception e) {
+                                logger.info("Failed to create monster button for: " + monsterC.getName());
+                            }
+
+                        } else {
+                            continue;
                         }
 
 
-                        powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
+
                     } catch (IllegalAccessException e) {
-                        logger.info("Failed to initialize custom power for " + classInfo.getClassName());
+                        logger.info("Failed to initialize for " + classInfo.getClassName());
                     }
 
                 }
+
+
+
             } catch (Exception e) {
                 logger.info("Failed to initialize custom power for "+ mi.ID);
                 e.printStackTrace();

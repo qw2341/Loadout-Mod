@@ -129,5 +129,12 @@
     "DESCRIPTIONS": [
       "Right-click this relic to select debug powers you want. Left Click fields to edit them."
     ]
+  },
+  "loadout:BottledMonster": {
+    "NAME": "Bottled Monster",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "Right-click this relic to spawn any monster you want."
+    ]
   }
 }

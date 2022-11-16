@@ -228,6 +228,11 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
         }
     }
 
+    public void resetFilters() {
+        this.items.clear();
+        this.items.addAll(this.itemsClone);
+    }
+
     private void resetScrolling()
     {
         if (targetY < scrollLowerBound) {

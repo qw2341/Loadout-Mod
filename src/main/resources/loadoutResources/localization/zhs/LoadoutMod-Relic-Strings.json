@@ -129,5 +129,12 @@
     "DESCRIPTIONS": [
       "右键此遗物来进行调试。 左键数值来修改它。"
     ]
+  },
+  "loadout:BottledMonster": {
+    "NAME": "瓶装怪物",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "右键此遗物来生成任意怪物。"
+    ]
   }
 }

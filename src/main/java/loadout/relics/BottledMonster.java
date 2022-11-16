@@ -1,8 +1,12 @@
 package loadout.relics;
 
 import basemod.abstracts.CustomRelic;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.esotericsoftware.spine.*;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -10,26 +14,32 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
+import loadout.screens.MonsterSelectScreen;
 import loadout.screens.PowerSelectScreen;
 import loadout.util.TextureLoader;
 
+import static com.megacrit.cardcrawl.core.AbstractCreature.sr;
 import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 
 public class BottledMonster extends CustomRelic implements ClickableRelic {
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("BottledMonster");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("powergiver_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("powergiver_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("powergiver_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("powergiver_relic.png"));
+    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
+    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
+
     private boolean monsterSelected = true;
-    public PowerSelectScreen monsterSelectScreen;
+    public MonsterSelectScreen monsterSelectScreen;
     private boolean fakeHover = false;
 
     public static boolean isSelectionScreenUp = false;
+
 
     public BottledMonster() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -43,6 +53,8 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+
         }
     }
 
@@ -90,17 +102,17 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
             AbstractDungeon.previousScreen = AbstractDungeon.screen;
         }
 
-        openPowerSelect();
+        openMonsterSelect();
     }
 
 
 
-    private void openPowerSelect()
+    private void openMonsterSelect()
     {
         monsterSelected = false;
         isSelectionScreenUp = true;
         try {
-            if (this.monsterSelectScreen == null) monsterSelectScreen = new PowerSelectScreen(this);
+            if (this.monsterSelectScreen == null) monsterSelectScreen = new MonsterSelectScreen(this);
         } catch (NoClassDefFoundError e) {
             logger.info("Error: PowerSelectScreen Class not found while opening potion select for Potion of Powers!");
         }
@@ -139,6 +151,7 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
             super.renderTip(sb);
         }
     }
+
 
     @Override
     public void renderInTopPanel(SpriteBatch sb)
