@@ -62,6 +62,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static basemod.BaseMod.gson;
+import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
 //TODO: DON'T MASS RENAME/REFACTOR
 //TODO: DON'T MASS RENAME/REFACTOR
@@ -1145,9 +1146,12 @@ StartGameSubscriber{
         Settings.seed = 0L;
         AbstractDungeon.generateSeeds();
         AbstractDungeon.ascensionLevel = 20;
+        AbstractDungeon.player = dummyPlayer;
 
         addBaseGameMonsters();
         autoAddStuffs();
+
+
 
     }
 
@@ -1222,10 +1226,12 @@ StartGameSubscriber{
             try {
                 URL url = mi.jarURL;
                 finder.add(new java.io.File(url.toURI()));
-                Collection<ClassInfo> foundClasses = new ArrayList<>();
+                ArrayList<ClassInfo> foundClasses = new ArrayList<>();
                 finder.findClasses(foundClasses, (ClassFilter) andPowerClassFilter);
-                finder.findClasses(foundClasses, andMonsterClassFilter);
-                for (ClassInfo classInfo : foundClasses) {
+                //finder.findClasses(foundClasses, andMonsterClassFilter);
+                int len = foundClasses.size();
+                for (int i = 0; i< len; i++) {
+                    ClassInfo classInfo = foundClasses.get(i);
                     try {
                         CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
                         boolean isPower = false;
@@ -1286,13 +1292,17 @@ StartGameSubscriber{
 
 
                             powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
-                        } else if(isMonster) {
+                        } else if (isMonster) {
                             Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                            logger.info("Trying to create monster button for: " + monsterC.getName());
+                            //logger.info("Trying to create monster button for: " + monsterC.getName());
+                            if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
                             try{
                                 monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
                             } catch (Exception e) {
                                 logger.info("Failed to create monster button for: " + monsterC.getName());
+                                continue;
+                            } catch (NoClassDefFoundError noClassDefFoundError) {
+                                continue;
                             }
 
                         } else {

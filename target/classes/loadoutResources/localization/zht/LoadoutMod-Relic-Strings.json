@@ -129,7 +129,22 @@
     "DESCRIPTIONS": [
       "右鍵此遺物來進行調試。 左鍵數值來修改它。"
     ]
+  },
+  "loadout:BottledMonster": {
+    "NAME": "瓶裝怪物",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來生成任意怪物。"
+    ]
+  },
+  "loadout:BottledMonsterAlt": {
+    "NAME": "瓶装怪物",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "右键此遗物来生成任意怪物。"
+    ]
   }
+}
 
 
 }

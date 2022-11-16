@@ -130,7 +130,22 @@
     "DESCRIPTIONS": [
       "이 유물을 마우스 오른쪽 버튼으로 클릭하여 원하는 디버그 기능을 선택합니다. 필드를 왼쪽 클릭하여 편집합니다."
     ]
+  },
+  "loadout:BottledMonster": {
+    "NAME": "병에 든 몬스터",
+    "FLAVOR": "코코아!",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하면 원하는 몬스터를 생성할 수 있습니다."
+    ]
+  },
+  "loadout:BottledMonsterAlt": {
+    "NAME": "병에 든 몬스터",
+    "FLAVOR": "코코아!",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하면 원하는 몬스터를 생성할 수 있습니다."
+    ]
   }
+
 
 
 

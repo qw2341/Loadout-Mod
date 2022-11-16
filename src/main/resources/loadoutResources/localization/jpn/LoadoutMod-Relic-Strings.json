@@ -136,6 +136,13 @@
     "DESCRIPTIONS": [
       "この遺物を右クリックして、必要なモンスターをスポーンします。"
     ]
+  },
+  "loadout:BottledMonsterAlt": {
+    "NAME": "ボトル入りモンスター",
+    "FLAVOR": "ココア！",
+    "DESCRIPTIONS": [
+      "この遺物を右クリックして、必要なモンスターをスポーンします。"
+    ]
   }
 
 

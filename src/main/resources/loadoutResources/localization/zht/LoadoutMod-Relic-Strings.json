@@ -136,7 +136,15 @@
     "DESCRIPTIONS": [
       "右鍵此遺物來生成任意怪物。"
     ]
+  },
+  "loadout:BottledMonsterAlt": {
+    "NAME": "瓶装怪物",
+    "FLAVOR": "Kakaa!",
+    "DESCRIPTIONS": [
+      "右键此遗物来生成任意怪物。"
+    ]
   }
+}
 
 
 }

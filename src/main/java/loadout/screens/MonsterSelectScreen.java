@@ -1,25 +1,19 @@
 package loadout.screens;
 
-import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.Skeleton;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.MonsterStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -33,17 +27,13 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
-import loadout.savables.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.megacrit.cardcrawl.core.AbstractCreature.sr;
+import static loadout.screens.PowerSelectScreen.dummyMonster;
 
 public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.MonsterButton>{
 
@@ -73,6 +63,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
 
         public MonsterStrings monsterStrings;
         public AbstractMonster instance;
+        public Class<? extends AbstractMonster> mClass;
         public ArrayList<PowerTip> tips;
 
 
@@ -83,18 +74,28 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
             this.y = 0.0f;
             if (this.modID == null) this.modID = "Slay the Spire";
             this.tips = new ArrayList<>();
+            this.mClass = amClass;
             try {
-                this.monsterStrings = ReflectionHacks.getPrivateStatic(amClass, "monsterStrings");
+                try{
+                    this.name = (String) amClass.getField("NAME").get(null);
 
-                this.name = this.monsterStrings.NAME;
+                } catch(NoSuchFieldException nsfe) {
 
-                if (this.name == null || this.name.length() == 0) this.name = "Unnamed Monster";
+                    if(doesClassContainField(amClass,"monsterStrings")) {
+                        this.monsterStrings = ReflectionHacks.getPrivateStatic(amClass, "monsterStrings");
+                        this.name = this.monsterStrings.NAME;
+                    }
+                } catch (Exception e) {
+
+                }
+
 
                 this.instance = createMonster(amClass);
 
                 this.id = this.instance.id;
                 this.type = this.instance.type;
-
+                if(this.name == null|| this.name.length() == 0) this.name = this.instance.name;
+                if (this.name == null || this.name.length() == 0) this.name = "Unnamed Monster";
                 //this.img = ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"img");
                 //this.atlas =  ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"atlas");
                 //this.skeleton = ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"skeleton");
@@ -109,6 +110,8 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
 
 
             }
+            this.instance.dispose();
+            this.instance = null;
 
             if(this.id == null) this.id = "Unnamed Monster";
             if (this.name == null) this.name = "Unnamed Monster";
@@ -121,17 +124,25 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
             this.amount = 0;
         }
 
+        public static boolean doesClassContainField(Class clazz, String fieldName) {
+            return Arrays.stream(clazz.getFields())
+                    .anyMatch(f -> f.getName().equals(fieldName));
+        }
+
         public static AbstractMonster createMonster(Class<? extends AbstractMonster> amClass) {
             //Exceptions
             if(amClass.equals(AcidSlime_S.class)) {
                 return new AcidSlime_S(0,0,0);
             } else if(amClass.equals(SpikeSlime_S.class)) {
                 return new SpikeSlime_S(0,0,0);
+            } else if(amClass.getName().equals("monsters.pet.ScapeGoatPet")) {
+                return new ApologySlime();
             }
 
 
             Constructor<?>[] con = amClass.getDeclaredConstructors();
-            for(Constructor c : con) {
+            if(con.length > 0) {
+                Constructor<?> c = con[0];
                 try {
                     int paramCt = c.getParameterCount();
                     Class[] params = c.getParameterTypes();
@@ -145,6 +156,8 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
                             paramz[i] = true;
                         } else if (float.class.isAssignableFrom(param)) {
                             paramz[i] = 0.0F;
+                        } else if (AbstractMonster.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyMonster;
                         }
                     }
                     //LoadoutMod.logger.info("Class: " + pClass.getName() + " with parameter: " + Arrays.toString(paramz));
@@ -152,7 +165,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
                     return (AbstractMonster) c.newInstance(paramz);
                 } catch (Exception e) {
                     LoadoutMod.logger.info("Error occurred while trying to instantiate class: " + c.getName());
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     LoadoutMod.logger.info("Reverting to Apology Slime");
                     return new ApologySlime();
                 }
@@ -164,10 +177,29 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
         public void update() {
             //this.hb.move(x,y);
             this.hb.update();
-            this.instance.hb.move(x,y);
-            this.instance.drawX = x;
-            this.instance.drawY = y;
-            if(this.hb.hovered) this.instance.update();
+
+            if(this.hb.justHovered && this.instance == null) {
+                //LoadoutMod.logger.info("just hovered, creating class");
+                try{
+                    this.instance = createMonster(this.mClass);
+                } catch (Exception|Error e) {
+                    LoadoutMod.logger.info("just hovered, failed to create class");
+                }
+
+            }
+
+            if(!this.hb.hovered && this.instance != null) {
+                this.instance.dispose();
+                this.instance = null;
+            }
+
+            if(this.instance != null) {
+                this.instance.hb.move(x,y);
+                this.instance.drawX = x;
+                this.instance.drawY = y;
+                if(this.hb.hovered) this.instance.update();
+            }
+
 
             if(this.hb.clicked) {
                 this.hb.clicked = false;
@@ -182,7 +214,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
                         monsterDX = lastMonster.drawX ;
                         monsterDY = lastMonster.drawY;
                     }
-                    AbstractMonster m = createMonster(this.instance.getClass());
+                    AbstractMonster m = createMonster(this.mClass);
                     m.drawX = monsterDX - (lastMonster != null ? calculateSmartDistance(lastMonster,m) : 200.0F) * Settings.scale;
                     m.drawY = monsterDY;
                     if(m.drawX < AbstractDungeon.player.drawX) {
@@ -268,7 +300,11 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
                     sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+40.0F,y-64.0F, 64.0F, 64.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 256, 256, false, false);
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.GOLD_COLOR);
                     sb.setBlendFunction(770, 771);
-                    this.instance.render(sb);
+                    try {
+                        if(this.instance != null) this.instance.render(sb);
+                    } catch (Exception ignored) {
+
+                    }
                     TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
