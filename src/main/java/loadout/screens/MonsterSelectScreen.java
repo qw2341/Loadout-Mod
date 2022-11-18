@@ -348,7 +348,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
         this.sortHeader = new MonsterSelectSortHeader(this);
 
         this.currentSortOrder = SortOrder.ASCENDING;
-        this.currentSortType = SortType.NAME;
+        this.currentSortType = SortType.MOD;
     }
 
     @Override
@@ -358,7 +358,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
         updateFilters();
 
         this.sortHeader.justSorted = true;
-        sortAlphabetically(true);
+        sortByMod(true);
         this.sortHeader.resetAllButtons();
         this.sortHeader.clearActiveButtons();
 
