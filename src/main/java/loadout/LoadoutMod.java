@@ -138,6 +138,9 @@ StartGameSubscriber{
     public static final String ENABLE_STARTING_LOADOUT_TILDE = "enableTildeKeyStarting";
     public static boolean enableTildeStarting = true;
 
+    public static final String ENABLE_STARTING_LOADOUT_BOTTLE = "enableBottleMonsterStarting";
+    public static boolean enableBottleStarting = true;
+
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
     public static final String ENABLE_STARTER_POOL = "enableStarterPool";
@@ -257,6 +260,7 @@ StartGameSubscriber{
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_COMPASS,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BOTTLE,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -288,6 +292,7 @@ StartGameSubscriber{
             enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
             enablePowerStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
             enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
+            enableBottleStarting = config.getBool(ENABLE_STARTING_LOADOUT_BOTTLE);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -511,9 +516,8 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enablePrinterAsStartingButton);
+        settingXPos += xSpacing;
 
-        settingXPos = startingXPos + 100.0f;
-        settingYPos -= lineSpacing;
 
         ModLabeledToggleButton enableShredderAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardShredder.ID).name,
         settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -533,7 +537,8 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enableShredderAsStartingButton);
-        settingXPos += xSpacing;
+        settingXPos = startingXPos + 100.0f;
+        settingYPos -= lineSpacing;
 
         ModLabeledToggleButton enableModifierAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardModifier.ID).name,
         settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -613,6 +618,26 @@ StartGameSubscriber{
                 });
 
         settingsPanel.addUIElement(enableTildeAsStartingButton);
+        settingXPos += xSpacing;
+
+        ModLabeledToggleButton enableBottleAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BottledMonster.ID).name,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableBottleStarting, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+
+                    enableBottleStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+                    try {
+                        // And based on that boolean, set the settings and save them
+                        config.setBool(ENABLE_STARTING_LOADOUT_BOTTLE, enableBottleStarting);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        settingsPanel.addUIElement(enableBottleAsStartingButton);
         settingXPos += xSpacing;
 
         settingXPos = startingXPos;
@@ -1040,7 +1065,7 @@ StartGameSubscriber{
             if(enableCompassStarting&&RelicLibrary.isARelic(EventfulCompass.ID)&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) RelicLibrary.getRelic(EventfulCompass.ID).makeCopy().instantObtain();
             if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
             if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
-            if(RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
+            if(enableBottleStarting&&RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
 
         }
 
@@ -1157,7 +1182,7 @@ StartGameSubscriber{
 
     private void addBaseGameMonsters() {
         ClassFinder finder = new ClassFinder();
-        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter()});
+        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter(false)});
         ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
         try {
             finder.add(new java.io.File(Loader.STS_JAR));
@@ -1214,7 +1239,7 @@ StartGameSubscriber{
     private void autoAddStuffs() {
         ClassFinder finder = new ClassFinder();
         AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
-        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter()});
+        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter(true)});
 
 
         ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();

@@ -29,8 +29,8 @@ import static loadout.relics.LoadoutBag.isIsaacMode;
 public class BottledMonster extends CustomRelic implements ClickableRelic {
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("BottledMonster");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
+    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
+    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
 

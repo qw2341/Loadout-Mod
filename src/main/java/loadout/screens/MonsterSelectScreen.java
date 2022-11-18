@@ -113,7 +113,13 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
             this.instance.dispose();
             this.instance = null;
 
-            if(this.id == null) this.id = "Unnamed Monster";
+            try {
+                this.id = (String) amClass.getField("ID").get(null);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                this.id = "Unnamed Monster";
+            }
+
+            if(this.id == null || this.id.length() == 0) this.id = "Unnamed Monster";
             if (this.name == null) this.name = "Unnamed Monster";
             if (this.modID == null) this.modID = "Slay the Spire";
             if (this.type == null) this.type = AbstractMonster.EnemyType.NORMAL;
