@@ -139,8 +139,8 @@
     ]
   },
   "loadout:BottledMonsterAlt": {
-    "NAME": "Monstre en Bouteille",
-    "FLAVOR": "Cacao!",
+  "NAME": "Bal amical",
+  "FLAVOR": "Je vais tous les chercher! Attendre... ce n’est pas convivial",
     "DESCRIPTIONS": [
       "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez."
     ]

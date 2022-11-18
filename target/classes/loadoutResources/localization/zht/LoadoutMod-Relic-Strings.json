@@ -138,8 +138,8 @@
     ]
   },
   "loadout:BottledMonsterAlt": {
-    "NAME": "瓶装怪物",
-    "FLAVOR": "Kakaa!",
+    "NAME": "友好球",
+    "FLAVOR": "收服所有怪物吧！等等...這並不對用戶友好",
     "DESCRIPTIONS": [
       "右键此遗物来生成任意怪物。"
     ]

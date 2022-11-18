@@ -138,8 +138,8 @@
     ]
   },
   "loadout:BottledMonsterAlt": {
-    "NAME": "Bottled Monster",
-    "FLAVOR": "Kakaa!",
+    "NAME": "Friendly Ball",
+    "FLAVOR": "Gotta fetch 'em all! Wait... it is not user-friendly",
     "DESCRIPTIONS": [
       "Right-click this relic to spawn any monster you want."
     ]
