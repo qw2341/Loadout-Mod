@@ -27,6 +27,7 @@ public class AbstractCardPatch {
             card.rarity = __instance.rarity;
             card.type = __instance.type;
             card.color = __instance.color;
+            card.magicNumber = __instance.baseMagicNumber;
         }
     }
 

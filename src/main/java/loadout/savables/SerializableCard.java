@@ -29,6 +29,7 @@ public class SerializableCard implements Serializable {
     public int color;
     public int type;
     public int rarity;
+    public int misc = 0;
     public boolean modified;
     public String[] modifiers;
 
@@ -48,9 +49,11 @@ public class SerializableCard implements Serializable {
         card.baseDamage = sc.baseDamage;
         card.baseBlock = sc.baseBlock;
         card.baseMagicNumber = sc.baseMagicNumber;
+        card.magicNumber = card.baseMagicNumber;
         card.baseHeal = sc.baseHeal;
         card.baseDraw = sc.baseDraw;
         card.baseDiscard = sc.baseDiscard;
+        card.misc = sc.misc;
         card.color = AbstractCard.CardColor.values()[sc.color];
         card.type = AbstractCard.CardType.values()[sc.type];
         card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
@@ -80,6 +83,7 @@ public class SerializableCard implements Serializable {
         sc.color = card.color.ordinal();
         sc.type = card.type.ordinal();
         sc.rarity = card.rarity.ordinal();
+        sc.misc = card.misc;
         sc.modified = AbstractCardPatch.isCardModified(card);
 //        sc.autoplay = AutoplayField.autoplay.get(card);
 //        sc.soulbound = SoulboundField.soulbound.get(card);

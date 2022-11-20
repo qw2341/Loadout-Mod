@@ -205,7 +205,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
             for (int i = 0; i<len; i++) {
                 AbstractCard card = AbstractDungeon.player.masterDeck.group.get(i);
                 if (AbstractCardPatch.isCardModified(card)) {
-                    Integer[] cardStat = new Integer[11];
+                    Integer[] cardStat = new Integer[12];
                     cardStat[0] = i;
                     cardStat[1] = card.cost;
                     cardStat[2] = card.baseDamage;
@@ -217,6 +217,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
                     cardStat[8] = card.color.ordinal();
                     cardStat[9] = card.type.ordinal();
                     cardStat[10] = card.rarity.ordinal();
+                    cardStat[11] = card.misc;
                     ret.add(cardStat);
                 }
 
@@ -233,7 +234,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
     public void onLoad(Integer[][] ret) {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
-            if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 11) {
+            if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 12) {
                 for (int i = 0; i<ret.length; i++) {
                     AbstractCard card = AbstractDungeon.player.masterDeck.group.get(ret[i][0]);
                     card.cost = ret[i][1];
@@ -241,12 +242,14 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
                     card.baseDamage = ret[i][2];
                     card.baseBlock = ret[i][3];
                     card.baseMagicNumber = ret[i][4];
+                    card.magicNumber = card.baseMagicNumber;
                     card.baseHeal = ret[i][5];
                     card.baseDraw = ret[i][6];
                     card.baseDiscard = ret[i][7];
                     card.color = AbstractCard.CardColor.values()[ret[i][8]];
                     card.type = AbstractCard.CardType.values()[ret[i][9]];
                     card.rarity = AbstractCard.CardRarity.values()[ret[i][10]];
+                    card.misc = ret[i][11];
                     AbstractCardPatch.setCardModified(card,true);
                 }
             }
