@@ -45,7 +45,7 @@
     "FLAVOR": "Printer go brrrrr",
     "DESCRIPTIONS": [
       "Right-click this relic to obtain any card you want; use during combat will also add it to your hand.",
-      "Obtain any cards."
+      "Obtain any cards. Hold Shift for x10, Ctrl for x5."
     ]
   },
   "loadout:CardShredder": {
