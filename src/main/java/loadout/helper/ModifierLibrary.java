@@ -6,10 +6,7 @@ import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
 import loadout.LoadoutMod;
-import loadout.cardmods.PlayableMod;
-import loadout.cardmods.UnexhaustMod;
-import loadout.cardmods.UnplayableMod;
-import loadout.cardmods.XCostMod;
+import loadout.cardmods.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -26,6 +23,11 @@ public class ModifierLibrary {
         modifiers.put(UnexhaustMod.ID,UnexhaustMod.class);
         modifiers.put(UnplayableMod.ID,UnplayableMod.class);
         modifiers.put(XCostMod.ID,XCostMod.class);
+
+        modifiers.put(AutoplayMod.ID, AutoplayMod.class);
+        modifiers.put(FleetingMod.ID, FleetingMod.class);
+        modifiers.put(GraveMod.ID, GraveMod.class);
+        modifiers.put(SoulboundMod.ID,SoulboundMod.class);
     }
 
     public static AbstractCardModifier getModifier(String id) {
