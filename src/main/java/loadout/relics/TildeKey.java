@@ -174,7 +174,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     {
         super.update();
 
-        if (AbstractDungeon.isPlayerInDungeon()) {
+        if (AbstractDungeon.isPlayerInDungeon() && this.isObtained) {
             if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
             if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
             if(isGoldLocked) {
