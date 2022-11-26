@@ -32,6 +32,7 @@ public class SerializableCard implements Serializable {
     public int misc = 0;
 
     public boolean upgraded = false;
+    public int timesUpgraded = 0;
     public boolean modified;
     public String[] modifiers;
 
@@ -46,6 +47,11 @@ public class SerializableCard implements Serializable {
         }
 
         AbstractCard card = CardLibrary.getCard(sc.id).makeCopy();
+        if (sc.upgraded)  {
+            card.timesUpgraded = sc.timesUpgraded - 1;
+            card.upgrade();
+        }
+
         card.cost = sc.cost;
         card.costForTurn = card.cost;
         card.baseDamage = sc.baseDamage;
@@ -56,7 +62,7 @@ public class SerializableCard implements Serializable {
         card.baseDraw = sc.baseDraw;
         card.baseDiscard = sc.baseDiscard;
         card.misc = sc.misc;
-        card.upgraded = sc.upgraded;
+
         card.color = AbstractCard.CardColor.values()[sc.color];
         card.type = AbstractCard.CardType.values()[sc.type];
         card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
@@ -88,6 +94,7 @@ public class SerializableCard implements Serializable {
         sc.rarity = card.rarity.ordinal();
         sc.misc = card.misc;
         sc.upgraded = card.upgraded;
+        sc.timesUpgraded = card.timesUpgraded;
         sc.modified = AbstractCardPatch.isCardModified(card);
 //        sc.autoplay = AutoplayField.autoplay.get(card);
 //        sc.soulbound = SoulboundField.soulbound.get(card);

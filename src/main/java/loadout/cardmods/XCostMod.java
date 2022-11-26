@@ -24,10 +24,10 @@ public class XCostMod extends AbstractCardModifier {
         return super.isInherent(card);
     }
 
-    @Override
-    public boolean shouldApply(AbstractCard card) {
-        return card.cost != -1;
-    }
+//    @Override
+//    public boolean shouldApply(AbstractCard card) {
+//        return card.cost != -1;
+//    }
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
