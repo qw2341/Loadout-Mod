@@ -1,6 +1,8 @@
 package loadout.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -8,6 +10,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -17,8 +20,9 @@ import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public abstract class SelectScreen<T> implements ScrollBarListener {
+public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
 
 
@@ -44,10 +48,12 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
     public ArrayList<T> items;
 
     public ArrayList<T> itemsClone;
+    public ArrayList<T> selectedItems;
 
     public T hoveredItem = null;
+    protected T clickStartedItem = null;
 
-    protected SortHeader sortHeader;
+    protected AbstractSortHeader sortHeader;
 
     protected ScrollBar scrollBar;
     protected Hitbox controllerRelicHb = null;
@@ -56,15 +62,21 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] gTEXT = gUiStrings.TEXT;
     protected GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    private boolean doneSelecting = false;
+    protected boolean doneSelecting = false;
 
     public enum SortOrder {ASCENDING,DESCENDING};
-    public EventSelectScreen.SortOrder currentSortOrder = EventSelectScreen.SortOrder.ASCENDING;
-
+    public SortOrder currentSortOrder = SortOrder.ASCENDING;
+    public enum SortType {TYPE,NAME,MOD,COST,RARITY};
+    public SortType currentSortType = null;
     public AbstractRelic owner;
     protected boolean isDragSelecting = false;
     protected boolean isTryingToScroll = false;
+    public static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
 
+    public static int selectMult = 1;
+    private InputAction shiftKey;
+    private InputAction ctrlKey;
+    protected SortType defaultSortType;
 
 
 
@@ -73,16 +85,38 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
         return doneSelecting;
     }
 
-    public SelectScreen(AbstractRelic owner) {
+    public AbstractSelectScreen(AbstractRelic owner) {
         scrollBar = new ScrollBar(this);
 
         this.owner = owner;
 
+        this.items = new ArrayList<>();
+        this.itemsClone = new ArrayList<>(this.items);
+        this.selectedItems =  new ArrayList<>();
+
+        this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
+        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
     }
 
-    protected abstract void sortOnOpen();
+    protected void sortOnOpen() {
+        if(this.sortHeader.searchBox != null) this.sortHeader.searchBox.resetText();
 
-    public abstract void updateFilters();
+        updateFilters();
+
+        this.sortHeader.justSorted = true;
+        this.currentSortType = this.defaultSortType;
+        sort(true);
+        this.sortHeader.resetAllButtons();
+        this.sortHeader.clearActiveButtons();
+    }
+
+    protected abstract boolean testFilter(T item);
+
+    public void updateFilters() {
+        resetFilters();
+        this.items = this.items.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
+        sort(true);
+    }
 
     public abstract void sort(boolean isAscending);
 
@@ -90,6 +124,8 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
     {
         return show;
     }
+
+    protected abstract void callOnOpen();
 
     public void open() {
         if(AbstractDungeon.isScreenUp) {
@@ -112,12 +148,27 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
         confirmButton.show();
         controllerRelicHb = null;
 
-        this.currentSortOrder = EventSelectScreen.SortOrder.ASCENDING;
+        callOnOpen();
 
         sortOnOpen();
 
         calculateScrollBounds();
+
+        this.selectedItems.clear();
     }
+
+    protected void updateHotkeyControls() {
+        if (this.shiftKey.isPressed() && this.ctrlKey.isPressed()) {
+            selectMult = 50;
+        } else if (this.shiftKey.isPressed()) {
+            selectMult = 10;
+        } else if (this.ctrlKey.isPressed()) {
+            selectMult = 5;
+        } else {
+            selectMult = 1;
+        }
+    }
+    protected abstract void updateItemClickLogic();
 
     public void update()
     {
@@ -149,6 +200,9 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
                 }
             }
         }
+
+        updateHotkeyControls();
+
         confirmButton.update();
         this.sortHeader.update();
 
@@ -157,6 +211,8 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
             confirmButton.hb.clicked = false;
             doneSelecting = true;
         }
+
+        updateItemClickLogic();
 
         hoveredItem = null;
 
@@ -289,5 +345,15 @@ public abstract class SelectScreen<T> implements ScrollBarListener {
     {
         float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
         scrollBar.parentScrolledToPercent(percent);
+    }
+
+    protected boolean shouldSortById() {
+        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
+    }
+
+    public ArrayList<T> getSelectedItems() {
+        ArrayList<T> ret = new ArrayList<>(selectedItems);
+        selectedItems.clear();
+        return ret;
     }
 }

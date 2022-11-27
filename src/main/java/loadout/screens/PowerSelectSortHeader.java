@@ -13,14 +13,13 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.potions.PotionSlot;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
 
-public class PowerSelectSortHeader extends SortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public class PowerSelectSortHeader extends AbstractSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
 
     private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PotionSelectSortHeader"));
     public static final String[] pTEXT = pUiStrings.TEXT;
@@ -54,15 +53,15 @@ public class PowerSelectSortHeader extends SortHeader implements HeaderButtonPlu
     private static Texture img;
     private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
-    public PowerSelectScreen powerSelectScreen;
+    public PowerSelectScreen selectScreen;
 
-    public TextSearchBox searchBox;
+    //public TextSearchBox searchBox;
 
 
 
     public PowerSelectSortHeader(PowerSelectScreen powerSelectScreen) {
         super(powerSelectScreen);
-        this.powerSelectScreen = powerSelectScreen;
+        this.selectScreen = powerSelectScreen;
 
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
@@ -178,18 +177,18 @@ public class PowerSelectSortHeader extends SortHeader implements HeaderButtonPlu
     public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
         if (button == this.nameButton) {
             clearActiveButtons();
-            this.powerSelectScreen.sortAlphabetically(isAscending);
+            this.selectScreen.sortAlphabetically(isAscending);
             resetOtherButtons();
         } else if (button == this.modButton) {
             clearActiveButtons();
-            this.powerSelectScreen.sortByMod(isAscending);
+            this.selectScreen.sortByMod(isAscending);
             resetOtherButtons();
         } else if (button == this.resetAllButton) {
-            this.powerSelectScreen.resetPowerAmounts();
+            this.selectScreen.resetPowerAmounts();
         } else if (button == this.clearAllEffectsButton) {
-            if(this.powerSelectScreen.currentTarget == PowerGiver.PowerTarget.PLAYER)
+            if(this.selectScreen.currentTarget == PowerGiver.PowerTarget.PLAYER)
                 AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
-            else if (this.powerSelectScreen.currentTarget == PowerGiver.PowerTarget.MONSTER) {
+            else if (this.selectScreen.currentTarget == PowerGiver.PowerTarget.MONSTER) {
                 for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
                     AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(am,false));
                 }
@@ -255,19 +254,19 @@ public class PowerSelectSortHeader extends SortHeader implements HeaderButtonPlu
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
         if (dropdownMenu == this.targetSelectMenu) {
-            this.powerSelectScreen.currentTarget = PowerGiver.PowerTarget.values()[i];
-            this.powerSelectScreen.refreshPowersForTarget();
+            this.selectScreen.currentTarget = PowerGiver.PowerTarget.values()[i];
+            this.selectScreen.refreshPowersForTarget();
         }
         if(dropdownMenu == this.typeButton) {
             if(i == 1) {
-                this.powerSelectScreen.filterFavorites = true;
+                this.selectScreen.filterFavorites = true;
 
 
             } else if (i==0) {
-                this.powerSelectScreen.filterFavorites = false;
+                this.selectScreen.filterFavorites = false;
             }
-            this.powerSelectScreen.filterAll = !this.powerSelectScreen.filterFavorites;
-            this.powerSelectScreen.updateFilters();
+            this.selectScreen.filterAll = !this.selectScreen.filterFavorites;
+            this.selectScreen.updateFilters();
         }
     }
 }

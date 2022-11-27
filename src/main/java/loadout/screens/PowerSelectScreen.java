@@ -2,7 +2,6 @@ package loadout.screens;
 
 import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,9 +28,7 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.TheBombPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
-import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
@@ -41,9 +38,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButton> implements ScrollBarListener
+public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.PowerButton> implements ScrollBarListener
 {
     public static AbstractPlayer dummyPlayer;
     public static AbstractMonster dummyMonster;
@@ -252,50 +248,14 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
     public static final float SPACE_X = 300.0F * Settings.yScale;
 
-    private PowerSelectSortHeader sortHeader;
-
-    protected float scrollY = START_Y;
-    private float targetY = this.scrollY;
-    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-    private int scrollTitleCount = 0;
-    private int row = 0;
-    private int col = 0;
-    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
-    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
-    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
-    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
-    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
+    //private PowerSelectSortHeader sortHeader;
 
     private static final Color GOLD_BACKGROUND = new Color(-2686721);
     static {
         GOLD_BACKGROUND.a = 0.5f;
     }
 
-
-    private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
-    private PowerButton hoveredPower = null;
-    private PowerButton clickStartedPower = null;
-    private boolean grabbedScreen = false;
-    private float grabStartY = 0.0F;
-    private ScrollBar scrollBar;
-    private Hitbox controllerRelicHb = null;
-
-    private ArrayList<PowerButton> powers;
-    private ArrayList<PowerButton> powersClone;
-    private boolean show = false;
     public static int selectMult = 1;
-    private ArrayList<PowerButton> selectedPowers = new ArrayList<>();
-
-    private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    private boolean doneSelecting = false;
-    public boolean isDeleteMode;
-
-    public enum SortType {TYPE,NAME,MOD};
-
-    public SortType currentSortType = null;
-    public enum SortOrder {ASCENDING,DESCENDING};
-    public SortOrder currentSortOrder = SortOrder.ASCENDING;
 
     private static final Comparator<PowerButton> BY_TYPE = Comparator.comparing(p -> p.type);
     private static final Comparator<PowerButton> BY_NAME = Comparator.comparing(p -> p.name);
@@ -303,10 +263,8 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
     private static final Comparator<PowerButton> BY_ID = Comparator.comparing(p -> p.id);
 
-    private AbstractRelic owner;
 
-    private InputAction shiftKey;
-    private InputAction ctrlKey;
+
 
     private InputAction altKey;
 
@@ -317,7 +275,7 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
     public boolean filterFavorites = false;
     public boolean filterAll = true;
 
-
+    private boolean isFaving;
 
 
 
@@ -327,39 +285,28 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
         return doneSelecting;
     }
 
-    public ArrayList<PowerButton> getSelectedPowers()
-    {
-        ArrayList<PowerButton> ret = new ArrayList<>(selectedPowers);
-        selectedPowers.clear();
-        return ret;
-    }
+
 
     public PowerSelectScreen(AbstractRelic owner)
     {
         super(owner);
-        scrollBar = new ScrollBar(this);
 
         //import favorites
 
 
-
-        this.owner = owner;
-        this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
-        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
         this.altKey = new InputAction(Input.Keys.ALT_LEFT);
 
-        this.powers = new ArrayList<>();
-        this.powersClone = new ArrayList<>();
 
         this.currentSortType = SortType.MOD;
+        this.defaultSortType = SortType.MOD;
 
 
         for (String pID : LoadoutMod.powersToDisplay.keySet()) {
             if(pID == null) continue;
             Class<? extends AbstractPower> pClass = LoadoutMod.powersToDisplay.get(pID);
             PowerButton pb = new PowerButton(pID, pClass);
-            this.powers.add(pb);
-            this.powersClone.add(pb);
+            this.items.add(pb);
+            this.itemsClone.add(pb);
         }
 
 
@@ -368,29 +315,14 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
     }
 
-    private boolean shouldSortById() {
-        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
-    }
 
-    protected void sortOnOpen() {
-        this.sortHeader.searchBox.resetText();
-
-        updateFilters();
-
-        this.sortHeader.justSorted = true;
-        sortByMod(true);
-        this.sortHeader.resetAllButtons();
-        this.sortHeader.clearActiveButtons();
-
-
-    }
     public void sortByType(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.powers.sort(BY_TYPE.thenComparing(BY_NAME));
+            this.items.sort(BY_TYPE.thenComparing(BY_NAME));
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.powers.sort(BY_TYPE.reversed().thenComparing(BY_NAME));
+            this.items.sort(BY_TYPE.reversed().thenComparing(BY_NAME));
         }
         this.currentSortType = SortType.TYPE;
         scrolledUsingBar(0.0F);
@@ -399,12 +331,12 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
     public void sortAlphabetically(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            if (shouldSortById()) this.powers.sort(BY_ID);
-            else this.powers.sort(BY_NAME);
+            if (shouldSortById()) this.items.sort(BY_ID);
+            else this.items.sort(BY_NAME);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            if (shouldSortById()) this.powers.sort(BY_ID.reversed());
-            else this.powers.sort(BY_NAME.reversed());
+            if (shouldSortById()) this.items.sort(BY_ID.reversed());
+            else this.items.sort(BY_NAME.reversed());
         }
         this.currentSortType = SortType.NAME;
         scrolledUsingBar(0.0F);
@@ -412,10 +344,10 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
     public void sortByMod(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.powers.sort(BY_MOD.thenComparing(BY_ID));
+            this.items.sort(BY_MOD.thenComparing(BY_ID));
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.powers.sort(BY_MOD.reversed().thenComparing(BY_ID));
+            this.items.sort(BY_MOD.reversed().thenComparing(BY_ID));
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
@@ -437,7 +369,7 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
     public void refreshPowersForTarget() {
         PowerGiver o = ((PowerGiver)owner);
-        for(PowerButton pb : this.powersClone) {
+        for(PowerButton pb : this.itemsClone) {
             pb.amount = 0;
             if (currentTarget == PowerGiver.PowerTarget.PLAYER) {
                 if(o.savedPowersPlayer.containsKey(pb.id)) {
@@ -451,52 +383,16 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
         }
     }
 
-    @Override
-    public void open()
-    {
-        if(AbstractDungeon.isScreenUp) {
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            AbstractDungeon.overlayMenu.proceedButton.hide();
-            AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NO_INTERACT;
-        }
-
-        AbstractDungeon.isScreenUp = true;
-        AbstractDungeon.overlayMenu.showBlackScreen(0.5f);
-
-        show = true;
-        doneSelecting = false;
-
-        confirmButton.isDisabled = false;
-        confirmButton.show();
-        controllerRelicHb = null;
-
-        refreshPowersForTarget();
-
-        targetY = scrollLowerBound;
-        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
-        sortOnOpen();
-        calculateScrollBounds();
-        selectedPowers.clear();
-    }
 
     public void close()
     {
-        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.FTUE;
-        confirmButton.isDisabled = true;
-        confirmButton.hide();
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-        AbstractDungeon.closeCurrentScreen();
-        show = false;
+        super.close();
         PowerGiver.isSelectionScreenUp = false;
-        if (isDeleteMode) {
-            this.powers.clear();
-        }
+
     }
 
     public void resetPowerAmounts() {
-        for (PowerButton pb : this.powers) {
+        for (PowerButton pb : this.items) {
             pb.amount = 0;
         }
         if (currentTarget == PowerGiver.PowerTarget.PLAYER)
@@ -505,9 +401,12 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
             ((PowerGiver)this.owner).savedPowersMonster.clear();
     }
 
-    public boolean isOpen()
-    {
-        return show;
+    @Override
+    protected void callOnOpen() {
+        refreshPowersForTarget();
+
+        targetY = scrollLowerBound;
+        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
     }
 
     private boolean isCombat() {
@@ -529,74 +428,30 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
     }
 
     @Override
-    public void update()
-    {
-        if (!isOpen()) {
-            return;
-        }
-        if (InputHelper.pressedEscape) {
-            close();
-            InputHelper.pressedEscape = false;
-            return;
-        }
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            close();
-            return;
-        }
-
-        updateControllerInput();
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
-                targetY += Settings.SCROLL_SPEED;
-                if (targetY > scrollUpperBound) {
-                    targetY = scrollUpperBound;
-                }
-            } else if (Gdx.input.getY() < Settings.HEIGHT * 0.3F) {
-                targetY -= Settings.SCROLL_SPEED;
-                if (targetY < scrollLowerBound) {
-                    targetY = scrollLowerBound;
-                }
-            }
-        }
-
-        if (this.shiftKey.isPressed() && this.ctrlKey.isPressed()) {
-            selectMult = 50;
-        } else if (this.shiftKey.isPressed()) {
-            selectMult = 10;
-        } else if (this.ctrlKey.isPressed()) {
-            selectMult = 5;
-        } else {
-            selectMult = 1;
-        }
-
-        boolean isFaving;
+    protected void updateHotkeyControls() {
+        super.updateHotkeyControls();
 
         if(this.altKey.isPressed()) {
             isFaving = true;
         } else {
             isFaving = false;
         }
+    }
 
-        confirmButton.update();
-        this.sortHeader.update();
-
-        if (confirmButton.hb.clicked) {
-            CInputActionSet.select.unpress();
-            confirmButton.hb.clicked = false;
-            doneSelecting = true;
-        }
-        if (hoveredPower != null) {
+    @Override
+    protected void updateItemClickLogic() {
+        if (hoveredItem != null) {
             if (InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed()) {
-                clickStartedPower = hoveredPower;
+                clickStartedItem = hoveredItem;
                 //logger.info("Pressed Left");
             }
             if (InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustPressed())
             {
                 CInputActionSet.select.unpress();
-                if (hoveredPower == clickStartedPower)
+                if (hoveredItem == clickStartedItem)
                 {
                     if(isFaving) {
-                        String pID = hoveredPower.id;
+                        String pID = hoveredItem.id;
                         //Add to fav
                         if(Favorites.favoritePowers.contains(pID)) {
                             Favorites.favoritePowers.remove(pID);
@@ -612,18 +467,18 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
                             LoadoutMod.logger.info("Failed to save favorites");
                         }
                     } else {
-                        clickStartedPower.amount += selectMult;
+                        clickStartedItem.amount += selectMult;
                         if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                            ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, +selectMult);
+                            ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, +selectMult);
                         else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-                            ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, +selectMult);
+                            ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, +selectMult);
 
                         if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                             if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, +selectMult);
+                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, +selectMult);
                             else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
                                 for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                                    ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, +selectMult, am);
+                                    ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, +selectMult, am);
                                 }
                             }
                         }
@@ -631,7 +486,7 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
                         this.owner.flash();
                     }
 
-                    clickStartedPower = null;
+                    clickStartedItem = null;
 
                     if (doneSelecting()) {
                         close();
@@ -640,92 +495,41 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
             }
 
             if (InputHelper.justClickedRight || CInputActionSet.select.isJustPressed()) {
-                clickStartedPower = hoveredPower;
+                clickStartedItem = hoveredItem;
 
             }
             if (InputHelper.justReleasedClickRight || CInputActionSet.select.isJustPressed())
             {
                 CInputActionSet.select.unpress();
-                if (hoveredPower == clickStartedPower)
+                if (hoveredItem == clickStartedItem)
                 {
-                    clickStartedPower.amount -= selectMult;
+                    clickStartedItem.amount -= selectMult;
                     if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedPower.id, -selectMult);
+                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, -selectMult);
                     else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-                        ((PowerGiver)owner).modifyAmountMonster(clickStartedPower.id, -selectMult);
+                        ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, -selectMult);
 
                     if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                         if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedPower.id, -selectMult);
+                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, -selectMult);
                         else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
                             for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                                ((PowerGiver)owner).applyPowerToMonster(clickStartedPower.id, -selectMult, am);
+                                ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, -selectMult, am);
                             }
                         }
                     }
 
                     this.owner.flash();
 
-                    clickStartedPower = null;
+                    clickStartedItem = null;
                 }
             }
 
         } else {
-            clickStartedPower = null;
+            clickStartedItem = null;
         }
-        boolean isScrollingScrollBar = scrollBar.update();
-        if (!isScrollingScrollBar) {
-            updateScrolling();
-        }
-        InputHelper.justClickedLeft = false;
-        InputHelper.justClickedRight = false;
-
-        hoveredPower = null;
-        updateList(powers);
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
-        }
-        if(doneSelecting) close();
     }
 
-    private void updateControllerInput()
-    {
-        // TODO
-    }
-
-    private void updateScrolling()
-    {
-        int y = InputHelper.mY;
-        if (!grabbedScreen)
-        {
-            if (InputHelper.scrolledDown) {
-                targetY += Settings.SCROLL_SPEED;
-            } else if (InputHelper.scrolledUp) {
-                targetY -= Settings.SCROLL_SPEED;
-            }
-            if (InputHelper.justClickedLeft)
-            {
-                grabbedScreen = true;
-                grabStartY = (y - targetY);
-            }
-        }
-        else if (InputHelper.isMouseDown)
-        {
-            targetY = (y - grabStartY);
-        }
-        else
-        {
-            grabbedScreen = false;
-        }
-        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
-        resetScrolling();
-        updateBarPosition();
-    }
-
-    public void resetFilters() {
-        this.powers.clear();
-        this.powers.addAll(this.powersClone);
-    }
 
     private boolean testTextFilter(PowerButton pb) {
        if (pb.id != null && StringUtils.containsIgnoreCase(pb.id,sortHeader.searchBox.filterText)) return true;
@@ -742,40 +546,12 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
     @Override
     public void updateFilters() {
-        resetFilters();
-        this.powers = this.powers.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
-        sort(true);
+        super.updateFilters();
 
         if(!filterFavorites)
             scrolledUsingBar(0.0f);
     }
 
-    @Override
-    protected void calculateScrollBounds()
-    {
-        int size = powers.size();
-
-        int scrollTmp = 0;
-        if (size > 5) {
-            scrollTmp = size / 5;
-            scrollTmp += 5;
-            if (size % 5 != 0) {
-                ++scrollTmp;
-            }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 175.0f * Settings.scale;
-        } else {
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
-        }
-    }
-
-    private void resetScrolling()
-    {
-        if (targetY < scrollLowerBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
-        } else if (targetY > scrollUpperBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
-        }
-    }
 
     @Override
     protected void updateList(ArrayList<PowerButton> list)
@@ -789,27 +565,11 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
 
             if (p.hb.hovered)
             {
-                hoveredPower = p;
+                hoveredItem = p;
             }
         }
     }
 
-    @Override
-    public void render(SpriteBatch sb)
-    {
-        if (!isOpen()) {
-            return;
-        }
-
-        row = -1;
-        col = 0;
-        renderList(sb, powers);
-
-        scrollBar.render(sb);
-        confirmButton.render(sb);
-        if (!isDeleteMode)
-            sortHeader.render(sb);
-    }
 
     @Override
     protected void renderList(SpriteBatch sb, ArrayList<PowerButton> list)
@@ -827,9 +587,6 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
         boolean isRelicLocked = false;
         Color outlineColor;
 
-        if(isDeleteMode) {
-            FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, TEXT[7], START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * (this.row-1), 99999.0F, 0.0F, Settings.GOLD_COLOR);
-        }
 
         for (Iterator<PowerButton> it = list.iterator(); it.hasNext(); ) {
             PowerButton p = it.next();
@@ -916,18 +673,4 @@ public class PowerSelectScreen extends SelectScreen<PowerSelectScreen.PowerButto
         calculateScrollBounds();
     }
 
-    @Override
-    public void scrolledUsingBar(float newPercent)
-    {
-        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
-        scrollY = newPosition;
-        targetY = newPosition;
-        updateBarPosition();
-    }
-
-    private void updateBarPosition()
-    {
-        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
-        scrollBar.parentScrolledToPercent(percent);
-    }
 }

@@ -3,7 +3,6 @@ package loadout.screens;
 import basemod.interfaces.TextReceiver;
 import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,10 +15,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
-import loadout.helper.TextInputHelper;
-import loadout.helper.TextInputReceiver;
 
 public class TextSearchBox implements TextReceiver {
     public boolean isTyping = false;
@@ -38,11 +34,11 @@ public class TextSearchBox implements TextReceiver {
 
     private boolean digitonly;
 
-    public SortHeader receiver;
+    public AbstractSortHeader receiver;
 
     public String title = CardSelectSortHeader.TEXT[4];
 
-    public TextSearchBox(SortHeader receiver, float x, float y, boolean digitOnly) {
+    public TextSearchBox(AbstractSortHeader receiver, float x, float y, boolean digitOnly) {
         this.receiver = receiver;
         this.filterBarX = x;
         this.filterBarY = y;

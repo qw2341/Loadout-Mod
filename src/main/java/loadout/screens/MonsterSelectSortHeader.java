@@ -6,17 +6,11 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
-import com.megacrit.cardcrawl.screens.runHistory.RunHistoryPath;
-import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
-import loadout.LoadoutMod;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static loadout.screens.PowerSelectSortHeader.cTEXT;
 import static loadout.screens.PowerSelectSortHeader.pTEXT;
 
-public class MonsterSelectSortHeader extends SortHeader{
+public class MonsterSelectSortHeader extends AbstractSortHeader {
 
 
     public final TextSearchBox searchBox;
@@ -25,7 +19,7 @@ public class MonsterSelectSortHeader extends SortHeader{
     private final DropdownMenu typeFilterButton;
     private final String[] rhTEXT = CardCrawlGame.languagePack.getUIString("RunHistoryPathNodes").TEXT;
 
-    public MonsterSelectSortHeader(SelectScreen<MonsterSelectScreen.MonsterButton> ss) {
+    public MonsterSelectSortHeader(AbstractSelectScreen<MonsterSelectScreen.MonsterButton> ss) {
         super(ss);
 
         float xPosition = 300.0F * Settings.scale;
@@ -54,10 +48,10 @@ public class MonsterSelectSortHeader extends SortHeader{
         if(dropdownMenu == this.typeFilterButton) {
             switch (i) {
                 case 0:
-                    ((MonsterSelectScreen)selectScreen).filterType = null;
+                    ((MonsterSelectScreen) selectScreen).filterType = null;
                     break;
                 case 1: case 2: case 3:
-                    ((MonsterSelectScreen)selectScreen).filterType = AbstractMonster.EnemyType.values()[i-1];
+                    ((MonsterSelectScreen) selectScreen).filterType = AbstractMonster.EnemyType.values()[i-1];
                     break;
             }
             selectScreen.updateFilters();

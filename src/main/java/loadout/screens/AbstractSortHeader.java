@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 
-public abstract class SortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public abstract class AbstractSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
     public boolean justSorted = false;
 
     public float startX = 650.0F * Settings.xScale;
@@ -27,9 +27,10 @@ public abstract class SortHeader implements HeaderButtonPlusListener, DropdownMe
     private static Texture img;
     private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
-    public SelectScreen selectScreen;
+    public AbstractSelectScreen selectScreen;
+    public TextSearchBox searchBox;
 
-    public SortHeader(SelectScreen ss) {
+    public AbstractSortHeader(AbstractSelectScreen ss) {
 
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");

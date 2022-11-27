@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 import static loadout.screens.PowerSelectScreen.dummyMonster;
 
-public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.MonsterButton>{
+public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScreen.MonsterButton> {
 
     public static HashSet<String> noBGMBossList = new HashSet<>();
     static {
@@ -321,11 +321,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
         }
     }
 
-    public enum SortType {TYPE,NAME,MOD}
-    private SortType currentSortType;
 
-    public enum SortOrder {ASCENDING,DESCENDING};
-    public SortOrder currentSortOrder = SortOrder.ASCENDING;
 
     private static final Comparator<MonsterButton> BY_TYPE = Comparator.comparing(m -> m.type);
     private static final Comparator<MonsterButton> BY_NAME = Comparator.comparing(m -> m.name);
@@ -343,27 +339,15 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
     public MonsterSelectScreen(AbstractRelic owner) {
         super(owner);
 
-        this.items = new ArrayList<>(LoadoutMod.monstersToDisplay);
+        this.items.addAll(LoadoutMod.monstersToDisplay);
         this.itemsClone = LoadoutMod.monstersToDisplay;
         this.sortHeader = new MonsterSelectSortHeader(this);
 
         this.currentSortOrder = SortOrder.ASCENDING;
         this.currentSortType = SortType.MOD;
+        this.defaultSortType = SortType.MOD;
     }
 
-    @Override
-    protected void sortOnOpen() {
-        ((MonsterSelectSortHeader)this.sortHeader).searchBox.resetText();
-
-        updateFilters();
-
-        this.sortHeader.justSorted = true;
-        sortByMod(true);
-        this.sortHeader.resetAllButtons();
-        this.sortHeader.clearActiveButtons();
-
-        LoadoutMod.logger.info("Opened! Monsters in the list: " + items.size());
-    }
 
     private boolean testTextFilter(MonsterButton mb) {
         if (mb.id != null && StringUtils.containsIgnoreCase(mb.id,((MonsterSelectSortHeader)this.sortHeader).searchBox.filterText)) return true;
@@ -381,9 +365,7 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
 
     @Override
     public void updateFilters() {
-        resetFilters();
-        this.items = this.items.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
-        sort(true);
+        super.updateFilters();
 
         if(!filterFavorites)
             scrolledUsingBar(0.0f);
@@ -402,6 +384,16 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
                 sortByType(isAscending);
                 break;
         }
+    }
+
+    @Override
+    protected void callOnOpen() {
+
+    }
+
+    @Override
+    protected void updateItemClickLogic() {
+
     }
 
     public void sortByType(boolean isAscending) {
@@ -549,7 +541,5 @@ public class MonsterSelectScreen extends SelectScreen<MonsterSelectScreen.Monste
 
 }
 
-    private boolean shouldSortById() {
-        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
-    }
+
     }

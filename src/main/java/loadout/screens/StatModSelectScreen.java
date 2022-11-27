@@ -1,6 +1,5 @@
 package loadout.screens;
 
-import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -31,7 +30,7 @@ import loadout.relics.TildeKey;
 import java.util.ArrayList;
 
 
-public class StatModSelectScreen extends SelectScreen<StatModSelectScreen.StatModButton>{
+public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScreen.StatModButton> {
     protected enum ModType {
         HEALTH, MAX_HEALTH, MONEY
     }
@@ -318,7 +317,6 @@ public class StatModSelectScreen extends SelectScreen<StatModSelectScreen.StatMo
     public StatModSelectScreen(AbstractRelic owner) {
         super(owner);
         if (sortHeader == null) this.sortHeader = new StatModSortHeader(this);
-        this.items = new ArrayList<StatModButton>();
 
         this.items.add(new StatModButton(ModType.HEALTH));
         this.items.add(new StatModButton(ModType.MAX_HEALTH));
@@ -332,10 +330,15 @@ public class StatModSelectScreen extends SelectScreen<StatModSelectScreen.StatMo
     }
 
     @Override
-    public void open() {
-        super.open();
+    protected boolean testFilter(StatModButton item) {
+        return false;
+    }
+
+    @Override
+    protected void updateItemClickLogic() {
 
     }
+
     @Override
     public void close() {
         super.close();
@@ -364,6 +367,11 @@ public class StatModSelectScreen extends SelectScreen<StatModSelectScreen.StatMo
 
     @Override
     public void sort(boolean isAscending) {
+
+    }
+
+    @Override
+    protected void callOnOpen() {
 
     }
 

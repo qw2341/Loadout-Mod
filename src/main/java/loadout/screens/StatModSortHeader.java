@@ -1,18 +1,14 @@
 package loadout.screens;
 
-import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
-import com.megacrit.cardcrawl.ui.panels.SeedPanel;
 import loadout.LoadoutMod;
 import loadout.relics.TildeKey;
 
-public class StatModSortHeader extends SortHeader{
+public class StatModSortHeader extends AbstractSortHeader {
 
     private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("StatModSortHeader"));
     public static final String[] TEXT = uiStrings.TEXT;
@@ -35,7 +31,7 @@ public class StatModSortHeader extends SortHeader{
 
 
 
-    public StatModSortHeader(SelectScreen ss) {
+    public StatModSortHeader(AbstractSelectScreen ss) {
         super(ss);
         float xPosition = this.startX - 75.0f;
         float yPosition = START_Y;
@@ -104,7 +100,7 @@ public class StatModSortHeader extends SortHeader{
         } else if (button == this.negateDebuffButton) {
             TildeKey.isNegatingDebuffs = isAscending;
         } else if (button == this.changeSeedButton) {
-            ((StatModSelectScreen)selectScreen).seedPanel.show();
+            ((StatModSelectScreen) selectScreen).seedPanel.show();
         } else if (button == this.applySeedButton) {
             AbstractDungeon.generateSeeds();
         }

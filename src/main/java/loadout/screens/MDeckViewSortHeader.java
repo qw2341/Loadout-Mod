@@ -12,13 +12,12 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import loadout.LoadoutMod;
 import loadout.helper.EnhancedTextInputReceiver;
 import loadout.savables.CardLoadouts;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class MDeckViewSortHeader extends SortHeader implements EnhancedTextInputReceiver {
+public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedTextInputReceiver {
 
     private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("MasterDeckViewSortHeader"));
     public static final String[] TEXT = uiStrings.TEXT;
