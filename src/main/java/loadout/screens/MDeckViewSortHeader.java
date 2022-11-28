@@ -46,8 +46,9 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
     public MDeckViewSortHeader() {
         super(null);
 
-        float xPos = 100.0F * Settings.scale;
+        float xPos = 10.0F * Settings.scale;
         float yPos = START_Y - 100.0F * Settings.yScale;
+        float spaceY = 50.0f * Settings.yScale;
 
         this.loadouts = new ArrayList<>();
         loadLoadouts();
@@ -55,16 +56,20 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
         //this.loadoutsButton = new DropdownMenu(this, this.loadouts, FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
         this.saveButton = new HeaderButtonPlus(TEXT[0], xPos, yPos, this, true, ImageMaster.SETTINGS_ICON);
-        yPos -= SPACE_Y;
+        this.saveButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPos -= spaceY;
         this.loadButton = new HeaderButtonPlus(TEXT[3], xPos, yPos, this, true, ImageMaster.DECK_BTN_BASE);
-        yPos -= SPACE_Y;
+        this.loadButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPos -= spaceY;
 
         this.deleteButton = new HeaderButtonPlus(TEXT[1], xPos, yPos, this, true, ImageMaster.PROFILE_DELETE);
-        yPos -= SPACE_Y;
+        this.deleteButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPos -= spaceY;
         this.copyToClipButton = new HeaderButtonPlus(TEXT[6], xPos, yPos, this, true, ImageMaster.PROFILE_RENAME);
-        yPos -= SPACE_Y;
+        this.copyToClipButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPos -= spaceY;
         this.loadFromClipButton = new HeaderButtonPlus(TEXT[7], xPos, yPos, this, true, ImageMaster.PROFILE_A);
-
+        this.loadFromClipButton.alignment = HeaderButtonPlus.Alignment.LEFT;
 
         this.buttons = new HeaderButtonPlus[] { this.saveButton, this.loadButton ,this.deleteButton, this.copyToClipButton, this.loadFromClipButton};
         this.dropdownMenuHeaders = new String[] { TEXT[4] };
