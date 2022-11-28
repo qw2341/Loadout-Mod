@@ -1,6 +1,7 @@
 package loadout.savables;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.patches.AbstractCardPatch;
 
@@ -42,10 +43,17 @@ public class SerializableDeck implements Serializable {
                 for (int i = 0; i< numCards; i++) {
                     deck.add(CardLibrary.getCard(id).makeCopy());
                 }
+            } else {
+                for (int i = 0; i< numCards; i++) deck.add(new Madness());
             }
         }
         for(SerializableCard sc : sDeck.moddedDeck) {
-            deck.add(SerializableCard.toAbstractCard(sc));
+            try{
+                deck.add(SerializableCard.toAbstractCard(sc));
+            } catch (Exception e) {
+                deck.add(new Madness());
+            }
+
         }
         return deck;
     }
