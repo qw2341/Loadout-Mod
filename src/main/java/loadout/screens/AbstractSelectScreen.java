@@ -66,7 +66,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
     public enum SortOrder {ASCENDING,DESCENDING};
     public SortOrder currentSortOrder = SortOrder.ASCENDING;
-    public enum SortType {TYPE,NAME,MOD,COST,RARITY};
+    public enum SortType {TYPE,NAME,MOD,COST,RARITY,CLASS};
     public SortType currentSortType = null;
     public AbstractRelic owner;
     protected boolean isDragSelecting = false;
@@ -77,6 +77,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     private InputAction shiftKey;
     private InputAction ctrlKey;
     protected SortType defaultSortType;
+    protected float itemHeight = 420.0F;
 
 
 
@@ -110,11 +111,11 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         this.sortHeader.clearActiveButtons();
     }
 
-    protected abstract boolean testFilter(T item);
+    protected abstract boolean testFilters(T item);
 
     public void updateFilters() {
         resetFilters();
-        this.items = this.items.stream().filter(this::testFilter).collect(Collectors.toCollection(ArrayList::new));
+        this.items = this.items.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
         sort(true);
     }
 
@@ -238,7 +239,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     }
 
 
-    private void updateScrolling()
+    protected void updateScrolling()
     {
         int y = InputHelper.mY;
         if (!grabbedScreen)
@@ -278,7 +279,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
             if (size % 5 != 0) {
                 ++scrollTmp;
             }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 420.0f * Settings.scale;
+            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * itemHeight * Settings.scale;
         } else {
             scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
         }

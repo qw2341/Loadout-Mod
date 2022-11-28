@@ -24,7 +24,7 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
     public DropdownMenu[] dropdownMenus;
     public int selectionIndex = -1;
 
-    private static Texture img;
+    protected static Texture img;
     private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
     public AbstractSelectScreen selectScreen;
@@ -54,6 +54,10 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
 
         for (DropdownMenu dropdownMenu : this.dropdownMenus)
             dropdownMenu.update();
+
+        if (this.searchBox != null) {
+            this.searchBox.update();
+        }
     }
 
     public Hitbox updateControllerInput() {
@@ -114,6 +118,7 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
 
     public void render(SpriteBatch sb) {
         updateScrollPositions();
+        if(this.searchBox != null) this.searchBox.render(sb);
         renderButtons(sb);
         renderSelection(sb);
     }

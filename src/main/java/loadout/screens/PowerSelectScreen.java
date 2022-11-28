@@ -312,7 +312,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
         this.sortHeader = new PowerSelectSortHeader(this);
 
-
+        this.itemHeight = 150.0F;
     }
 
 
@@ -538,7 +538,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
        return false;
     }
 
-    protected boolean testFilter(PowerButton pb) {
+    protected boolean testFilters(PowerButton pb) {
         boolean favCheck = filterAll || (filterFavorites && Favorites.favoritePowers.contains(pb.id));
         boolean textCheck = sortHeader == null || sortHeader.searchBox.filterText.equals("") || testTextFilter(pb);
         return favCheck && textCheck;

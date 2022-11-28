@@ -346,6 +346,8 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         this.currentSortOrder = SortOrder.ASCENDING;
         this.currentSortType = SortType.MOD;
         this.defaultSortType = SortType.MOD;
+
+        this.itemHeight = 150.0F;
     }
 
 
@@ -355,7 +357,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         return false;
     }
 
-    protected boolean testFilter(MonsterButton mb) {
+    protected boolean testFilters(MonsterButton mb) {
 
         boolean favCheck = filterAll || (filterFavorites);
         boolean textCheck = sortHeader == null || ((MonsterSelectSortHeader)this.sortHeader).searchBox.filterText.equals("") || testTextFilter(mb);

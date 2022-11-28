@@ -330,7 +330,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
     }
 
     @Override
-    protected boolean testFilter(StatModButton item) {
+    protected boolean testFilters(StatModButton item) {
         return false;
     }
 

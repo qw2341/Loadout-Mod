@@ -5,10 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
@@ -20,7 +20,6 @@ import com.megacrit.cardcrawl.relics.*;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
-import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
 import loadout.helper.RelicClassComparator;
@@ -29,10 +28,10 @@ import loadout.helper.RelicNameComparator;
 import loadout.helper.RelicTierComparator;
 import loadout.relics.LoadoutBag;
 import loadout.relics.TrashBin;
+import org.apache.commons.lang3.StringUtils;
 //import net.sourceforge.pinyin4j.PinyinHelper;
 
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
  * Class from Hubris Mod
  * <a href="https://github.com/kiooeht/Hubris/blob/master/src/main/java/com/evacipated/cardcrawl/mod/hubris/screens/select/RelicSelectScreen.java">https://github.com/kiooeht/Hubris/blob/master/src/main/java/com/evacipated/cardcrawl/mod/hubris/screens/select/RelicSelectScreen.java</a>
  */
-public class RelicSelectScreen implements ScrollBarListener
+public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> implements ScrollBarListener
 {
     private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString("RelicViewScreen");
     public static final String[] rTEXT = rUiStrings.TEXT;
@@ -55,61 +54,57 @@ public class RelicSelectScreen implements ScrollBarListener
 
     private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
-    private static final float SPACE = 80.0F * Settings.scale;
+    //private static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 750.0F * Settings.scale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
-    public static final float SPACE_X = 226.0F * Settings.yScale;
+    //public static final float SPACE_X = 226.0F * Settings.yScale;
 
-    private RelicSelectSortHeader sortHeader;
+    //private RelicSelectSortHeader sortHeader;
 
-    protected float scrollY = START_Y;
-    private float targetY = this.scrollY;
-    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-    private int scrollTitleCount = 0;
-    private int row = 0;
-    private int col = 0;
-    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
-    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
-    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
-    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
-    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
+    //protected float scrollY = START_Y;
+    //private float targetY = this.scrollY;
+//    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
+//    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
+//    private int scrollTitleCount = 0;
+    //private int row = 0;
+    //private int col = 0;
+//    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
+//    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
+//    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
+//    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
+//    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
 
-    private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
-    private AbstractRelic hoveredRelic = null;
-    private AbstractRelic clickStartedRelic = null;
-    private boolean grabbedScreen = false;
-    private float grabStartY = 0.0F;
-    private ScrollBar scrollBar;
-    private Hitbox controllerRelicHb = null;
+    //private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
+    //private AbstractRelic hoveredItem = null;
+    //private AbstractRelic clickStartedItem = null;
+//    private boolean grabbedScreen = false;
+//    private float grabStartY = 0.0F;
+    //private ScrollBar scrollBar;
+    //private Hitbox controllerRelicHb = null;
 
-    private ArrayList<AbstractRelic> relics;
-    private ArrayList<AbstractRelic> relicsClone;
+    //private ArrayList<AbstractRelic> items;
+    //private ArrayList<AbstractRelic> itemsClone;
     //private ArrayList<AbstractRelic> relicsClass;
     //private ArrayList<AbstractRelic> relicsClassReverse;
-    private boolean show = false;
-    public static int selectMult = 1;
-    private ArrayList<AbstractRelic> selectedRelics = new ArrayList<>();
+    //private boolean show = false;
+    //public static int selectMult = 1;
+    //private ArrayList<AbstractRelic> selectedItems = new ArrayList<>();
 
-    private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    private boolean doneSelecting = false;
+    //private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
+    //private boolean doneSelecting = false;
     public boolean isDeleteMode;
 
-    public enum SortType {CLASS,RARITY,NAME,MOD};
+    //public enum SortType {CLASS,RARITY,NAME,MOD};
 
-    public SortType currentSortType = null;
-    public enum SortOrder {ASCENDING,DESCENDING};
-    public SortOrder currentSortOrder = SortOrder.ASCENDING;
 
     private final Comparator<AbstractRelic> relicTierComparator = RelicTierComparator.INSTANCE;
     private final Comparator<AbstractRelic> relicClassComparator = new RelicClassComparator();
     private final Comparator<AbstractRelic> relicNameComparator = RelicNameComparator.INSTANCE;
     private final Comparator<AbstractRelic> relicModComparator = RelicModComparator.INSTANCE;
 
-    private AbstractRelic owner;
-    private boolean isDragSelecting = false;
-    private boolean isTryingToScroll = false;
+    //private boolean isDragSelecting = false;
+    //private boolean isTryingToScroll = false;
 
     protected AbstractCard.CardColor filterColor = null;
     protected AbstractRelic.RelicTier filterRarity = null;
@@ -135,34 +130,35 @@ public class RelicSelectScreen implements ScrollBarListener
 
     public ArrayList<AbstractRelic> getSelectedRelics()
     {
-        ArrayList<AbstractRelic> ret = new ArrayList<>(selectedRelics);
-        selectedRelics.clear();
+        ArrayList<AbstractRelic> ret = new ArrayList<>(selectedItems);
+        selectedItems.clear();
         if (isDeleteMode)
-            relics.forEach(r->r.isObtained=true);
+            items.forEach(r->r.isObtained=true);
         return ret;
     }
 
     public HashSet<Integer> getRemovingRelics() {
-        int numRelics = this.relics.size();
+        int numRelics = this.items.size();
         HashSet<Integer> ret = new HashSet<>();
         for (int i=0; i<numRelics;i++) {
-            AbstractRelic r = this.relics.get(i);
-            if(selectedRelics.contains(r)) ret.add(i);
+            AbstractRelic r = this.items.get(i);
+            if(selectedItems.contains(r)) ret.add(i);
         }
         return ret;
     }
 
     public RelicSelectScreen(boolean isDeleteMode, AbstractRelic owner)
     {
-        scrollBar = new ScrollBar(this);
+        super(owner);
+        //scrollBar = new ScrollBar(this);
         sortHeader = new RelicSelectSortHeader(this);
         this.isDeleteMode = isDeleteMode;
-        this.owner = owner;
 
-
+        this.itemHeight = 75.0F;
     }
 
-    private void sortOnOpen() {
+    @Override
+    protected void sortOnOpen() {
         if(!isDeleteMode) {
             this.sortHeader.justSorted = true;
             sortByRarity(true);
@@ -175,10 +171,10 @@ public class RelicSelectScreen implements ScrollBarListener
 
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.relics.sort(relicTierComparator);
+            this.items.sort(relicTierComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.relics.sort(relicTierComparator.reversed());
+            this.items.sort(relicTierComparator.reversed());
         }
         this.currentSortType = SortType.RARITY;
         scrolledUsingBar(0.0F);
@@ -226,7 +222,7 @@ public class RelicSelectScreen implements ScrollBarListener
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
             if (true) {
-                this.relics.sort(relicClassComparator);
+                this.items.sort(relicClassComparator);
             } else {
                 //this.relics = this.relicsClass;
             }
@@ -235,7 +231,7 @@ public class RelicSelectScreen implements ScrollBarListener
 
             this.currentSortOrder = SortOrder.DESCENDING;
             if (true) {
-                this.relics.sort(relicClassComparator.reversed());
+                this.items.sort(relicClassComparator.reversed());
             } else {
                 //this.relics = this.relicsClassReverse;
 
@@ -249,10 +245,10 @@ public class RelicSelectScreen implements ScrollBarListener
 
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.relics.sort(relicNameComparator);
+            this.items.sort(relicNameComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.relics.sort(relicNameComparator.reversed());
+            this.items.sort(relicNameComparator.reversed());
         }
         this.currentSortType = SortType.NAME;
         scrolledUsingBar(0.0F);
@@ -261,30 +257,38 @@ public class RelicSelectScreen implements ScrollBarListener
 
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.relics.sort(relicModComparator);
+            this.items.sort(relicModComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.relics.sort(relicModComparator.reversed());
+            this.items.sort(relicModComparator.reversed());
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
     }
 
-    private boolean testFilters(AbstractRelic ar) {
+    private boolean testTextFilter(AbstractRelic ar) {
+        if (ar.relicId != null && StringUtils.containsIgnoreCase(ar.relicId,sortHeader.searchBox.filterText)) return true;
+        if (ar.name != null && StringUtils.containsIgnoreCase(ar.name,sortHeader.searchBox.filterText)) return true;
+        if (ar.description != null && StringUtils.containsIgnoreCase(ar.description,sortHeader.searchBox.filterText)) return true;
+        return false;
+    }
+
+    @Override
+    protected boolean testFilters(AbstractRelic ar) {
         boolean colorCheck = this.filterColor == null || RelicClassComparator.getRelicCardColor(ar.relicId) == this.filterColor;
         String modID = WhatMod.findModID(ar.getClass());
         if (modID == null) modID = "Slay the Spire";
         boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
         boolean rarityCheck = this.filterRarity == null || ar.tier == this.filterRarity;
+        boolean textCheck = sortHeader == null || sortHeader.searchBox.filterText.equals("") || testTextFilter(ar);
 
-
-        return colorCheck && modCheck && rarityCheck ;
+        return colorCheck && modCheck && rarityCheck && textCheck ;
     }
 
     public void updateFilters() {
-        this.relics = new ArrayList<>(this.relicsClone);
+        this.items = new ArrayList<>(this.itemsClone);
 
-        this.relics = this.relics.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
+        this.items = this.items.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
 
         sort(currentSortOrder == SortOrder.ASCENDING);
 
@@ -334,9 +338,9 @@ public class RelicSelectScreen implements ScrollBarListener
         controllerRelicHb = null;
 
         if (isDeleteMode)
-            this.relics = relics;
+            this.items = relics;
         else {
-            this.relicsClone = relics;
+            this.itemsClone = relics;
 
             this.currentSortOrder = SortOrder.ASCENDING;
             this.currentSortType = SortType.RARITY;
@@ -355,7 +359,7 @@ public class RelicSelectScreen implements ScrollBarListener
 
         calculateScrollBounds();
 
-        selectedRelics.clear();
+        selectedItems.clear();
         selectMult = selectionMult;
 
     }
@@ -387,6 +391,17 @@ public class RelicSelectScreen implements ScrollBarListener
         return show;
     }
 
+    @Override
+    protected void callOnOpen() {
+
+    }
+
+    @Override
+    protected void updateItemClickLogic() {
+
+    }
+
+    @Override
     public void update()
     {
         if (!isOpen()) {
@@ -429,43 +444,43 @@ public class RelicSelectScreen implements ScrollBarListener
             doneSelecting = true;
         }
 
-        if (isDeleteMode && this.relics.size() != AbstractDungeon.player.relics.size()) {
+        if (isDeleteMode && this.items.size() != AbstractDungeon.player.relics.size()) {
             ArrayList<AbstractRelic> relics1 = new ArrayList<>();
             for (AbstractRelic r : AbstractDungeon.player.relics)
                 relics1.add(r.makeCopy());
-            this.relics = relics1;
+            this.items = relics1;
         }
 
-        if ((InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed())&&hoveredRelic==null) {
+        if ((InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed())&& hoveredItem ==null) {
             isTryingToScroll = true;
         }
         if(InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustReleased()) {
             isTryingToScroll = false;
         }
 
-        if (hoveredRelic != null && !isTryingToScroll) {
+        if (hoveredItem != null && !isTryingToScroll) {
             if (LoadoutMod.enableDrag) {
                 if (InputHelper.isMouseDown || CInputActionSet.select.isPressed()) {
                     isDragSelecting = true;
-                    if (hoveredRelic == clickStartedRelic) {
+                    if (hoveredItem == clickStartedItem) {
 
                     } else {
-                        clickStartedRelic = hoveredRelic;
-                        if(selectedRelics.contains(hoveredRelic)) {
+                        clickStartedItem = hoveredItem;
+                        if(selectedItems.contains(hoveredItem)) {
                             if(isDeleteMode)
-                                selectedRelics.removeIf(r->(r==hoveredRelic));
+                                selectedItems.removeIf(r->(r== hoveredItem));
                             else
-                                selectedRelics.removeIf(r->(r.equals(hoveredRelic)));
+                                selectedItems.removeIf(r->(r.equals(hoveredItem)));
                         } else {
-                            selectedRelics.add(hoveredRelic);
+                            selectedItems.add(hoveredItem);
                         }
                     }
                 } else if (InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustReleased()) {
                     CInputActionSet.select.unpress();
                     isDragSelecting = false;
-                    if (hoveredRelic == clickStartedRelic) {
+                    if (hoveredItem == clickStartedItem) {
 
-                        clickStartedRelic = null;
+                        clickStartedItem = null;
 
                         if (doneSelecting()) {
                             close();
@@ -476,12 +491,12 @@ public class RelicSelectScreen implements ScrollBarListener
                 //click to obtain mode
                 if (InputHelper.isMouseDown || CInputActionSet.select.isPressed()) {
                     isDragSelecting = true;
-                    if (hoveredRelic == clickStartedRelic) {
+                    if (hoveredItem == clickStartedItem) {
                     } else {
-                        clickStartedRelic = hoveredRelic;
+                        clickStartedItem = hoveredItem;
                         if (!isDeleteMode) {
-                            if (screenRelics.contains(hoveredRelic.relicId)) close();
-                            for (int i = 0; i < LoadoutMod.relicObtainMultiplier; i++) LoadoutMod.relicsToAdd.add(clickStartedRelic.makeCopy());
+                            if (screenRelics.contains(hoveredItem.relicId)) close();
+                            for (int i = 0; i < LoadoutMod.relicObtainMultiplier; i++) LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
 
                         }
 
@@ -489,11 +504,11 @@ public class RelicSelectScreen implements ScrollBarListener
                 } else if (InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustReleased()) {
                     CInputActionSet.select.unpress();
                     isDragSelecting = false;
-                    if (hoveredRelic == clickStartedRelic) {
+                    if (hoveredItem == clickStartedItem) {
                         if (isDeleteMode) {
-                            LoadoutMod.relicsToRemove.add(this.relics.indexOf(clickStartedRelic));
+                            LoadoutMod.relicsToRemove.add(this.items.indexOf(clickStartedItem));
                         }
-                        clickStartedRelic = null;
+                        clickStartedItem = null;
                     }
 
                 }
@@ -502,10 +517,10 @@ public class RelicSelectScreen implements ScrollBarListener
 
             if (InputHelper.justReleasedClickRight)
             {
-                    CardCrawlGame.relicPopup.open(hoveredRelic, relics);
+                    CardCrawlGame.relicPopup.open(hoveredItem, items);
             }
         } else {
-            clickStartedRelic = null;
+            clickStartedItem = null;
             isDragSelecting = false;
         }
         boolean isScrollingScrollBar = scrollBar.update();
@@ -515,8 +530,8 @@ public class RelicSelectScreen implements ScrollBarListener
         InputHelper.justClickedLeft = false;
         InputHelper.justClickedRight = false;
 
-        hoveredRelic = null;
-        updateList(relics);
+        hoveredItem = null;
+        updateList(items);
         if (Settings.isControllerMode && controllerRelicHb != null) {
             Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
         }
@@ -528,62 +543,63 @@ public class RelicSelectScreen implements ScrollBarListener
         // TODO
     }
 
-    private void updateScrolling()
-    {
-        int y = InputHelper.mY;
-        if (!grabbedScreen)
-        {
-            if (InputHelper.scrolledDown) {
-                targetY += Settings.SCROLL_SPEED;
-            } else if (InputHelper.scrolledUp) {
-                targetY -= Settings.SCROLL_SPEED;
-            }
-            if (InputHelper.justClickedLeft)
-            {
-                grabbedScreen = true;
-                grabStartY = (y - targetY);
-            }
-        }
-        else if (InputHelper.isMouseDown)
-        {
-            targetY = (y - grabStartY);
-        }
-        else
-        {
-            grabbedScreen = false;
-        }
-        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
-        resetScrolling();
-        updateBarPosition();
-    }
+//    private void updateScrolling()
+//    {
+//        int y = InputHelper.mY;
+//        if (!grabbedScreen)
+//        {
+//            if (InputHelper.scrolledDown) {
+//                targetY += Settings.SCROLL_SPEED;
+//            } else if (InputHelper.scrolledUp) {
+//                targetY -= Settings.SCROLL_SPEED;
+//            }
+//            if (InputHelper.justClickedLeft)
+//            {
+//                grabbedScreen = true;
+//                grabStartY = (y - targetY);
+//            }
+//        }
+//        else if (InputHelper.isMouseDown)
+//        {
+//            targetY = (y - grabStartY);
+//        }
+//        else
+//        {
+//            grabbedScreen = false;
+//        }
+//        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
+//        resetScrolling();
+//        updateBarPosition();
+//    }
 
-    private void calculateScrollBounds()
-    {
-        int size = relics.size();
+//    private void calculateScrollBounds()
+//    {
+//        int size = items.size();
+//
+//        int scrollTmp = 0;
+//        if (size > 10) {
+//            scrollTmp = size / 5;
+//            scrollTmp += 5;
+//            if (size % 5 != 0) {
+//                ++scrollTmp;
+//            }
+//            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 75.0f * Settings.scale;
+//        } else {
+//            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
+//        }
+//    }
 
-        int scrollTmp = 0;
-        if (size > 10) {
-            scrollTmp = size / 5;
-            scrollTmp += 5;
-            if (size % 5 != 0) {
-                ++scrollTmp;
-            }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 75.0f * Settings.scale;
-        } else {
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
-        }
-    }
+//    private void resetScrolling()
+//    {
+//        if (targetY < scrollLowerBound) {
+//            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
+//        } else if (targetY > scrollUpperBound) {
+//            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
+//        }
+//    }
 
-    private void resetScrolling()
-    {
-        if (targetY < scrollLowerBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
-        } else if (targetY > scrollUpperBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
-        }
-    }
-
-    private void updateList(ArrayList<AbstractRelic> list)
+    @Override
+    protected void updateList(ArrayList<AbstractRelic> list)
     {
         for (AbstractRelic r : list)
         {
@@ -591,11 +607,12 @@ public class RelicSelectScreen implements ScrollBarListener
             r.update();
             if (r.hb.hovered)
             {
-                hoveredRelic = r;
+                hoveredItem = r;
             }
         }
     }
 
+    @Override
     public void render(SpriteBatch sb)
     {
         if (!isOpen()) {
@@ -609,7 +626,7 @@ public class RelicSelectScreen implements ScrollBarListener
         col = 0;
 
 
-        renderList(sb, relics, LoadoutMod.ignoreUnlock);
+        renderList(sb, items);
 
         scrollBar.render(sb);
         confirmButton.render(sb);
@@ -617,7 +634,8 @@ public class RelicSelectScreen implements ScrollBarListener
             sortHeader.render(sb);
     }
 
-    private void renderList(SpriteBatch sb, ArrayList<AbstractRelic> list, boolean ignoreLocks)
+    @Override
+    protected void renderList(SpriteBatch sb, ArrayList<AbstractRelic> list)
     {
         row += 1;
         col = 0;
@@ -830,16 +848,16 @@ public class RelicSelectScreen implements ScrollBarListener
             r.currentX = curX;
             r.currentY = curY;
 
-            if(ignoreLocks) {
+            if(LoadoutMod.ignoreUnlock) {
                 r.isSeen = true;
             } else {
                 r.isSeen = UnlockTracker.isRelicSeen(r.relicId);
             }
-            if (!isDeleteMode) isRelicLocked = UnlockTracker.isRelicLocked(r.relicId)&&!ignoreLocks;
+            if (!isDeleteMode) isRelicLocked = UnlockTracker.isRelicLocked(r.relicId)&&!LoadoutMod.ignoreUnlock;
 
             if(isDeleteMode) {
 
-                if(selectedRelics.contains(r)) {
+                if(selectedItems.contains(r)) {
                     sb.setColor(new Color(1.0F, 0.8F, 0.2F, 0.2F + (
                             MathUtils.cosDeg((float)(System.currentTimeMillis() / 4L % 360L)) + 1.25F) / 5.0F));
                     sb.draw(ImageMaster.FILTER_GLOW_BG, curX-64.0F, curY-64.0F, 64.0F, 64.0F, 128.0f, 128.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 128, 128, false, false);
@@ -849,7 +867,7 @@ public class RelicSelectScreen implements ScrollBarListener
                     r.render(sb, false, outlineColor);
                 }
             } else {
-                if(selectedRelics.contains(r)) {
+                if(selectedItems.contains(r)) {
                     sb.setColor(new Color(1.0F, 0.8F, 0.2F, 0.5F + (
                             MathUtils.cosDeg((float)(System.currentTimeMillis() / 4L % 360L)) + 1.25F) / 5.0F));
                     sb.draw(ImageMaster.FILTER_GLOW_BG, curX-64.0F, curY-64.0F, 64.0F, 64.0F, 128.0f, 128.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 128, 128, false, false);
@@ -873,18 +891,18 @@ public class RelicSelectScreen implements ScrollBarListener
         calculateScrollBounds();
     }
 
-    @Override
-    public void scrolledUsingBar(float newPercent)
-    {
-        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
-        scrollY = newPosition;
-        targetY = newPosition;
-        updateBarPosition();
-    }
-
-    private void updateBarPosition()
-    {
-        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
-        scrollBar.parentScrolledToPercent(percent);
-    }
+//    @Override
+//    public void scrolledUsingBar(float newPercent)
+//    {
+//        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
+//        scrollY = newPosition;
+//        targetY = newPosition;
+//        updateBarPosition();
+//    }
+//
+//    private void updateBarPosition()
+//    {
+//        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
+//        scrollBar.parentScrolledToPercent(percent);
+//    }
 }
