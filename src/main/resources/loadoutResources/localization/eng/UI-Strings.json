@@ -118,7 +118,10 @@
 			"Starter",
 			"Load",
 			"Saved Decks",
-			"Name Your Loadout"
+			"Name Your Loadout",
+			"Copy to Clipboard",
+			"Paste from Clipboard",
+			"If you want to use this deck, go to Slay the Spire workshop, subscribe to Loadout Mod, and paste it in the Deck screen"
 
 		]
 	}

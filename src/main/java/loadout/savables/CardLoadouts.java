@@ -3,6 +3,10 @@ package loadout.savables;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.saveAndContinue.SaveFileObfuscator;
+import loadout.LoadoutMod;
+import loadout.screens.MDeckViewSortHeader;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -11,34 +15,36 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static basemod.abstracts.CustomSavable.saveFileGson;
 
 public class CardLoadouts {
 
+    public static final String OBFUSCATION_KEY = "loadout";
+    public static final String CLIPBOARD_STRING_PREFIX = "### LOADOUT MOD DECK PRESET ***";
+    public static final String CLIPBOARD_STRING_SUFFIX = "***###";
     private File file;
     private String filePath;
 
-    Type favType;
+    Type saveMapType;
 
     public static HashMap<String, ArrayList<SerializableCard>> loadouts = new HashMap<>();
-
+    static Type saveDeckType = new TypeToken<SerializableDeck>() {}.getType();
 
 
     public CardLoadouts() throws IOException {
         this.filePath = SpireConfig.makeFilePath("loadoutMod","CardLoadouts","json");
         this.file = new File(this.filePath);
         this.file.createNewFile();
-        this.favType = new TypeToken<HashMap<String, ArrayList<SerializableCard>>>() { }.getType();
+        this.saveMapType = new TypeToken<HashMap<String, ArrayList<SerializableCard>>>() { }.getType();
         this.load();
     }
 
     public void load() throws IOException {
         Reader reader = Files.newBufferedReader(Paths.get(this.filePath));
 
-        HashMap<String, ArrayList<SerializableCard>> cMap = saveFileGson.fromJson(reader, favType);
+        HashMap<String, ArrayList<SerializableCard>> cMap = saveFileGson.fromJson(reader, saveMapType);
         if (cMap != null) {
             loadouts.clear();
             loadouts.putAll(cMap);
@@ -59,7 +65,7 @@ public class CardLoadouts {
 
         //loadouts.put(CARD_LOADOUT_SAVE_KEY, cardLoadout);
 
-        saveFileGson.toJson(loadouts, favType, fileWriter);
+        saveFileGson.toJson(loadouts, saveMapType, fileWriter);
         fileWriter.flush();
         fileWriter.close();
     }
@@ -78,5 +84,23 @@ public class CardLoadouts {
 
     public static void removeLoadout(String key) {
         loadouts.remove(key);
+    }
+
+    public static String exportEncodedLoadout(ArrayList<AbstractCard> cards) {
+        //ArrayList<SerializableCard> scards = cards.stream().map(SerializableCard::toSerializableCard).collect(Collectors.toCollection(ArrayList::new));
+        SerializableDeck sDeck = new SerializableDeck(cards);
+        return CLIPBOARD_STRING_PREFIX + SaveFileObfuscator.encode(saveFileGson.toJson(sDeck),OBFUSCATION_KEY) + CLIPBOARD_STRING_SUFFIX;
+    }
+
+    public static ArrayList<AbstractCard> importEncodedLoadout(String cardString) {
+        if(cardString == null || cardString.length() < CLIPBOARD_STRING_PREFIX.length() + CLIPBOARD_STRING_SUFFIX.length() || !StringUtils.startsWith(cardString,CLIPBOARD_STRING_PREFIX) || !StringUtils.endsWith(cardString,CLIPBOARD_STRING_SUFFIX)) throw new IllegalArgumentException();
+        String decodedCards = SaveFileObfuscator.decode(cardString.substring(CLIPBOARD_STRING_PREFIX.length(), cardString.length() - CLIPBOARD_STRING_SUFFIX.length()),OBFUSCATION_KEY);
+        try {
+            SerializableDeck sDeck = saveFileGson.fromJson(decodedCards, saveDeckType);
+            return SerializableDeck.toAbstractCardDeck(sDeck);
+        } catch (Exception e) {
+            LoadoutMod.logger.info("Failed to import card presets!");
+            throw new IllegalArgumentException();
+        }
     }
 }

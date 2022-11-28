@@ -1,6 +1,7 @@
 package loadout.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -13,6 +14,11 @@ import loadout.LoadoutMod;
 import loadout.helper.EnhancedTextInputReceiver;
 import loadout.savables.CardLoadouts;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -30,7 +36,12 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
 
     private HeaderButtonPlus deleteButton;
 
+    private HeaderButtonPlus copyToClipButton;
+    private HeaderButtonPlus loadFromClipButton;
+
     private String currentLoadoutName = "";
+
+    private static final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
     public MDeckViewSortHeader() {
         super(null);
@@ -49,10 +60,13 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
         yPos -= SPACE_Y;
 
         this.deleteButton = new HeaderButtonPlus(TEXT[1], xPos, yPos, this, true, ImageMaster.PROFILE_DELETE);
+        yPos -= SPACE_Y;
+        this.copyToClipButton = new HeaderButtonPlus(TEXT[6], xPos, yPos, this, true, ImageMaster.PROFILE_RENAME);
+        yPos -= SPACE_Y;
+        this.loadFromClipButton = new HeaderButtonPlus(TEXT[7], xPos, yPos, this, true, ImageMaster.PROFILE_A);
 
 
-
-        this.buttons = new HeaderButtonPlus[] { this.saveButton, this.loadButton ,this.deleteButton};
+        this.buttons = new HeaderButtonPlus[] { this.saveButton, this.loadButton ,this.deleteButton, this.copyToClipButton, this.loadFromClipButton};
         this.dropdownMenuHeaders = new String[] { TEXT[4] };
         this.dropdownMenus = new DropdownMenu[] { this.loadoutsButton };
 
@@ -105,6 +119,17 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
                 loadLoadouts();
                 this.loadoutsButton.setSelectedIndex(tgtIdx);
             }
+        } else if (button == this.copyToClipButton) {
+            setClipboardString(CardLoadouts.exportEncodedLoadout(AbstractDungeon.player.masterDeck.group));
+        }else if (button == this.loadFromClipButton) {
+            try {
+                ArrayList<AbstractCard> cardsToImport = CardLoadouts.importEncodedLoadout(getClipboardString());
+
+                AbstractDungeon.player.masterDeck.group = cardsToImport;
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Failed to import from clipboard!");
+            }
+
         }
     }
 
@@ -129,7 +154,7 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
     public void setTextField(String textToSet) {
 
         currentLoadoutName = textToSet;
-        LoadoutMod.logger.info("Entered: " + currentLoadoutName);
+        //LoadoutMod.logger.info("Entered: " + currentLoadoutName);
     }
 
     @Override
@@ -166,5 +191,20 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
             this.namingPopup.render(sb);
         }
 
+    }
+
+    public static void setClipboardString(String content) {
+        StringSelection selection = new StringSelection(content);
+        clipboard.setContents(selection,selection);
+    }
+
+    public static String getClipboardString() {
+        try {
+            return (String) clipboard.getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            LoadoutMod.logger.info("Failed to import deck preset from Clipboard");
+            e.printStackTrace();
+        }
+        return "";
     }
 }
