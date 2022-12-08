@@ -31,6 +31,8 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
     private String filePath;
     Type cardMapType;
 
+    public static boolean isGettingUnmoddedCopy = false;
+
     public static HashMap<String,SerializableCard> cardMap = new HashMap<>();
 
     public CardModifications() throws IOException {
@@ -83,27 +85,32 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
     }
 
     public static void modifyCard(AbstractCard card, SerializableCard sc) {
-        card.cost = sc.cost;
-        card.costForTurn = card.cost;
-        card.baseDamage = sc.baseDamage;
-        card.baseBlock = sc.baseBlock;
-        card.baseMagicNumber = sc.baseMagicNumber;
-        card.baseHeal = sc.baseHeal;
-        card.baseDraw = sc.baseDraw;
-        card.baseDiscard = sc.baseDiscard;
-        card.color = AbstractCard.CardColor.values()[sc.color];
-        card.type = AbstractCard.CardType.values()[sc.type];
-        card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
-//        AutoplayField.autoplay.set(card,sc.autoplay);
-//        SoulboundField.soulbound.set(card,sc.soulbound);
-//        FleetingField.fleeting.set(card,sc.fleeting);
-//        GraveField.grave.set(card,sc.grave);
-        //AbstractCardPatch.setCardModified(card,sc.modified);
+        if(!isGettingUnmoddedCopy) {
+            card.cost = sc.cost;
+            card.costForTurn = card.cost;
+            card.baseDamage = sc.baseDamage;
+            card.baseBlock = sc.baseBlock;
+            card.baseMagicNumber = sc.baseMagicNumber;
+            card.baseHeal = sc.baseHeal;
+            card.baseDraw = sc.baseDraw;
+            card.baseDiscard = sc.baseDiscard;
+            card.color = AbstractCard.CardColor.values()[sc.color];
+            card.type = AbstractCard.CardType.values()[sc.type];
+            card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
 
-        for(String modifierId : sc.modifiers) {
-            AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);
-            if (acm != null)
-                CardModifierManager.addModifier(card, acm);
+            for(String modifierId : sc.modifiers) {
+                AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);
+                if (acm != null)
+                    CardModifierManager.addModifier(card, acm);
+            }
         }
+
+    }
+
+    public static AbstractCard getUnmoddedCopy(AbstractCard card) {
+        isGettingUnmoddedCopy = true;
+        AbstractCard unmoddedCopy = card.makeCopy();
+        isGettingUnmoddedCopy = false;
+        return unmoddedCopy;
     }
 }

@@ -27,8 +27,12 @@ public class SerializableCard implements Serializable {
     public int baseDraw;
     public int baseDiscard;
     public int color;
+
+    public String colorString = null;
     public int type;
+    public String typeString = null;
     public int rarity;
+    public String rarityString = null;
     public int misc = 0;
 
     public boolean upgraded = false;
@@ -63,9 +67,9 @@ public class SerializableCard implements Serializable {
         card.baseDiscard = sc.baseDiscard;
         card.misc = sc.misc;
 
-        card.color = AbstractCard.CardColor.values()[sc.color];
-        card.type = AbstractCard.CardType.values()[sc.type];
-        card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
+        card.color = sc.colorString != null ? AbstractCard.CardColor.valueOf(sc.colorString) : AbstractCard.CardColor.values()[sc.color];
+        card.type = sc.typeString != null ? AbstractCard.CardType.valueOf(sc.typeString) : AbstractCard.CardType.values()[sc.type];
+        card.rarity = sc.rarityString != null ? AbstractCard.CardRarity.valueOf(sc.rarityString) : AbstractCard.CardRarity.values()[sc.rarity];
         AbstractCardPatch.setCardModified(card,sc.modified);
 //        AutoplayField.autoplay.set(card,sc.autoplay);
 //        SoulboundField.soulbound.set(card,sc.soulbound);
@@ -90,8 +94,11 @@ public class SerializableCard implements Serializable {
         sc.baseDraw = card.baseDraw;
         sc.baseDiscard = card.baseDiscard;
         sc.color = card.color.ordinal();
+        sc.colorString = String.valueOf(card.color);
         sc.type = card.type.ordinal();
+        sc.typeString = String.valueOf(card.type);
         sc.rarity = card.rarity.ordinal();
+        sc.rarityString = String.valueOf(card.rarity);
         sc.misc = card.misc;
         sc.upgraded = card.upgraded;
         sc.timesUpgraded = card.timesUpgraded;

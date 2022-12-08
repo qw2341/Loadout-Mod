@@ -96,9 +96,11 @@ public class CardLoadouts {
         if(cardString == null || cardString.length() < CLIPBOARD_STRING_PREFIX.length() + CLIPBOARD_STRING_SUFFIX.length() || !StringUtils.startsWith(cardString,CLIPBOARD_STRING_PREFIX) || !StringUtils.endsWith(cardString,CLIPBOARD_STRING_SUFFIX)) throw new IllegalArgumentException();
         String decodedCards = SaveFileObfuscator.decode(cardString.substring(CLIPBOARD_STRING_PREFIX.length(), cardString.length() - CLIPBOARD_STRING_SUFFIX.length()),OBFUSCATION_KEY);
         try {
+            //LoadoutMod.logger.info(decodedCards);
             SerializableDeck sDeck = saveFileGson.fromJson(decodedCards, saveDeckType);
             return SerializableDeck.toAbstractCardDeck(sDeck);
         } catch (Exception e) {
+            e.printStackTrace();
             LoadoutMod.logger.info("Failed to import card presets!");
             throw new IllegalArgumentException();
         }

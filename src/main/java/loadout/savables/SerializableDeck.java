@@ -12,7 +12,9 @@ import java.util.HashMap;
 public class SerializableDeck implements Serializable {
 
     public HashMap<String,Integer> simpleDeck;
-    public ArrayList<SerializableCard> moddedDeck;
+    public ArrayList<Object[]> moddedDeck;
+
+    private static final String textSeparator = "-";
 
     public SerializableDeck() {
         simpleDeck = new HashMap<>();
@@ -23,10 +25,14 @@ public class SerializableDeck implements Serializable {
         this();
         for(AbstractCard ac : deck) {
             if(AbstractCardPatch.isCardModified(ac)){
-                moddedDeck.add(SerializableCard.toSerializableCard(ac));
+                moddedDeck.add(SerializableCardLite.toObjectArray(ac));
             } else {
                 //unmodded
-                simpleDeck.merge(ac.cardID,1,Integer::sum);
+                int timesUpgraded = ac.upgraded ? Math.max(ac.timesUpgraded, 1) : 0;
+                //edit id
+                String id = timesUpgraded + textSeparator + ac.cardID;
+
+                simpleDeck.merge( id,1,Integer::sum);
             }
         }
     }
@@ -39,18 +45,27 @@ public class SerializableDeck implements Serializable {
         ArrayList<AbstractCard> deck = new ArrayList<>();
         for (String id: sDeck.simpleDeck.keySet()) {
             int numCards = sDeck.simpleDeck.get(id);
+            //edit id back to normal form
+            String[] splitId = id.split(textSeparator,2);
+            id = splitId[1];
+            int timesUpgraded = Integer.parseInt(splitId[0]);
             if(CardLibrary.isACard(id)) {
                 for (int i = 0; i< numCards; i++) {
-                    deck.add(CardLibrary.getCard(id).makeCopy());
+                    AbstractCard ac = CardLibrary.getCard(id).makeCopy();
+                    for(int j = 0; j< timesUpgraded; j++) {
+                        ac.upgrade();
+                    }
+                    deck.add(ac);
                 }
             } else {
                 for (int i = 0; i< numCards; i++) deck.add(new Madness());
             }
         }
-        for(SerializableCard sc : sDeck.moddedDeck) {
+        for(Object[] sc : sDeck.moddedDeck) {
             try{
-                deck.add(SerializableCard.toAbstractCard(sc));
+                deck.add(SerializableCardLite.toAbstractCard(sc));
             } catch (Exception e) {
+                e.printStackTrace();
                 deck.add(new Madness());
             }
 
