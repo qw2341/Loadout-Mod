@@ -1,5 +1,5 @@
 # Loadout-Mod
-### A Slay the Spire mod
+### A Slay the Spire mod - [Workshop Page](https://steamcommunity.com/sharedfiles/filedetails/?id=2814267979)
 
 ### This mod gives you several starting items:
 - The Bag, a relic that gets you any relic anytime anywhere.
