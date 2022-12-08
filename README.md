@@ -1,4 +1,4 @@
-# Loadout-Mod
+# Loadout Mod
 ### A Slay the Spire mod - [Workshop Page](https://steamcommunity.com/sharedfiles/filedetails/?id=2814267979)
 
 ### This mod gives you several starting items:
