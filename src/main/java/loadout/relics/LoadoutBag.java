@@ -31,12 +31,12 @@ public class LoadoutBag extends CustomRelic implements ClickableRelic {
     // ID, images, text.
     public static final boolean isIsaacMode = enableIsaacIcons || Loader.isModLoadedOrSideloaded("IsaacMod")||Loader.isModLoadedOrSideloaded("IsaacModExtend");
     public static final String ID = LoadoutMod.makeID("LoadoutBag");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("loadout_relic.png"));
+    public static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("loadout_relic.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
     private boolean relicSelected = true;
-    private RelicSelectScreen relicSelectScreen;
+    public RelicSelectScreen relicSelectScreen;
     private boolean fakeHover = false;
 
     public static boolean isSelectionScreenUp = false;

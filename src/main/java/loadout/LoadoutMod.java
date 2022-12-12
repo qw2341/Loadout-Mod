@@ -7,7 +7,11 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -42,6 +46,7 @@ import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
 import loadout.screens.MonsterSelectScreen;
+import loadout.screens.SidePanel;
 import loadout.util.MonsterFilter;
 import loadout.util.PowerFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +104,7 @@ public class LoadoutMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber{
     // Make sure to implement the subscribers *you* are using (read basemod wiki). Editing cards? EditCardsSubscriber.
     // Making relics? EditRelicsSubscriber. etc., etc., for a full list and how to make your own, visit the basemod wiki.
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
@@ -197,6 +202,8 @@ StartGameSubscriber{
     public static CardModifications cardModifications = null;
     public static Favorites favorites = null;
     public static CardLoadouts cardLoadouts = null;
+
+    public static SidePanel sidePanel = null;
 
 
 
@@ -945,6 +952,9 @@ StartGameSubscriber{
         logger.info("Initializing stuffs");
         createStuffLists();
         logger.info("Done initializing stuffs");
+
+        //init top
+        //BaseMod.addTopPanelItem();
     }
     
     // =============== / POST-INITIALIZE/ =================
@@ -1055,6 +1065,8 @@ StartGameSubscriber{
             }
         }
 
+
+
         if(enableStarting) {
             if(enableBagStarting&&RelicLibrary.isARelic(LoadoutBag.ID)&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) RelicLibrary.getRelic(LoadoutBag.ID).makeCopy().instantObtain();
             if(enableBinStarting&&RelicLibrary.isARelic(TrashBin.ID)&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) RelicLibrary.getRelic(TrashBin.ID).makeCopy().instantObtain();
@@ -1069,6 +1081,7 @@ StartGameSubscriber{
 
         }
 
+
         TildeKey.resetToDefault();
 
     }
@@ -1080,6 +1093,7 @@ StartGameSubscriber{
         createPotionList();
         createCardList();
 
+        //if(!enableStarting) sidePanel = new SidePanel(50.0F * Settings.scale, Settings.HEIGHT - 200.0F * Settings.yScale);
     }
 
     private void createEventList() {
@@ -1515,6 +1529,17 @@ StartGameSubscriber{
                     if(!AbstractDungeon.shopRelicPool.remove(relicId))
                         if(!AbstractDungeon.bossRelicPool.remove(relicId))
                             return;
+    }
+
+
+    @Override
+    public void receivePrePlayerUpdate() {
+        if(sidePanel != null) sidePanel.update();
+    }
+
+    @Override
+    public void receiveRender(SpriteBatch spriteBatch) {
+        if(sidePanel != null) sidePanel.render(spriteBatch);
     }
 
 
