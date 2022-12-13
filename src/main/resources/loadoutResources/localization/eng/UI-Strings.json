@@ -124,5 +124,9 @@
 			"If you want to use this deck, go to Slay the Spire workshop, subscribe to Loadout Mod, and paste it in the Deck screen"
 
 		]
+	},"loadout:MonsterSelectSortHeader": {
+		"TEXT": [
+			"Duplicate Monsters"
+		]
 	}
 }

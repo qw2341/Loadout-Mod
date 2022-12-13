@@ -122,7 +122,13 @@
 			"클립 보드에서 붙여 넣기",
 			"이 덱을 사용하려면 Slay the Spi"
 		]
+	},
+	"loadout:MonsterSelectSortHeader": {
+		"TEXT": [
+			"중복 몬스터"
+		]
 	}
+
 
 
 

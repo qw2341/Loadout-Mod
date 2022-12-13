@@ -261,7 +261,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 }
             }
         }
-        private static float calculateSmartDistance(AbstractMonster m1, AbstractMonster m2) {
+        public static float calculateSmartDistance(AbstractMonster m1, AbstractMonster m2) {
             return (m1.hb_w + m2.hb_w)/2.0F;
         }
 
@@ -538,10 +538,44 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
             m.render(sb);
             col += 1;
+        }
+
+
+    }
+    public static AbstractMonster spawnMonster(Class<? extends AbstractMonster> monsterClass, float x, float y) {
+
+        AbstractMonster m = MonsterButton.createMonster(monsterClass);
+        m.drawX = x;
+        m.drawY = y;
+
+        m.hb.move(m.drawX,m.drawY);
+
+        m.init();
+        m.applyPowers();
+
+        if (ModHelper.isModEnabled("Lethality")) {
+            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new StrengthPower((AbstractCreature)m, 3), 3));
+        }
+
+        if (ModHelper.isModEnabled("Time Dilation")) {
+            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new SlowPower((AbstractCreature)m, 0)));
+        }
+        m.showHealthBar();
+        m.createIntent();
+        if(m.type == AbstractMonster.EnemyType.BOSS && !noBGMBossList.contains(m.id)) {
+
+            CardCrawlGame.music.silenceTempBgmInstantly();
+            CardCrawlGame.music.silenceBGMInstantly();
+        }
+        m.usePreBattleAction();
+
+        for (AbstractRelic r : AbstractDungeon.player.relics) {
+            r.onSpawnMonster(m);
+        }
+
+        return m;
     }
 
-
-}
 
 
     }

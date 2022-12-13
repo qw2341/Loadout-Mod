@@ -122,6 +122,11 @@
 			"Coller à partir du presse-papiers",
 			"Si vous voulez utiliser ce deck, allez à Slay the Spi"
 		]
+	},
+	"loadout:MonsterSelectSortHeader": {
+		"TEXT": [
+			"Monstres en double"
+		]
 	}
 
 

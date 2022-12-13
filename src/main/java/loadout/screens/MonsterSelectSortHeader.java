@@ -3,9 +3,16 @@ package loadout.screens;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
+import loadout.LoadoutMod;
+
+import java.util.ArrayList;
 
 import static loadout.screens.PowerSelectSortHeader.cTEXT;
 import static loadout.screens.PowerSelectSortHeader.pTEXT;
@@ -16,8 +23,10 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
     public final TextSearchBox searchBox;
     private final HeaderButtonPlus nameButton;
     private final HeaderButtonPlus modButton;
+    private final HeaderButtonPlus dupeButton;
     private final DropdownMenu typeFilterButton;
     private final String[] rhTEXT = CardCrawlGame.languagePack.getUIString("RunHistoryPathNodes").TEXT;
+    public final String[] TEXT = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("MonsterSelectSortHeader")).TEXT;
 
     public MonsterSelectSortHeader(AbstractSelectScreen<MonsterSelectScreen.MonsterButton> ss) {
         super(ss);
@@ -29,9 +38,11 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
         this.nameButton = new HeaderButtonPlus(pTEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= SPACE_Y;
         this.modButton = new HeaderButtonPlus(pTEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
+        yPosition -= SPACE_Y;
+        this.dupeButton = new HeaderButtonPlus(TEXT[0],xPosition,yPosition,this,false, ImageMaster.PROFILE_B);
+        this.dupeButton.alignment = HeaderButtonPlus.Alignment.RIGHT;
 
-
-        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton};
+        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton, this.dupeButton};
 
 //        ArrayList<String> a = new ArrayList<>();
 //        a.add(cTEXT[0]);
@@ -68,6 +79,18 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
             clearActiveButtons();
             ((MonsterSelectScreen)this.selectScreen).sortByMod(isAscending);
             resetOtherButtons();
+        } else if (button == this.dupeButton) {
+            AbstractRoom ar = AbstractDungeon.getCurrRoom();
+            if(ar!=null && ar.monsters!= null) {
+                ArrayList<AbstractMonster> monsterTemp = new ArrayList<>();
+                for (AbstractMonster am: ar.monsters.monsters) {
+
+                    AbstractMonster m = MonsterSelectScreen.spawnMonster(am.getClass(),am.drawX - MonsterSelectScreen.MonsterButton.calculateSmartDistance(am, am) + 30.0F * (float) Math.random(), am.drawY + 20.0F * (float) Math.random());
+                    m.flipHorizontal = am.flipHorizontal;
+                    monsterTemp.add(m);
+                }
+                ar.monsters.monsters.addAll(monsterTemp);
+            }
         }
     }
 
