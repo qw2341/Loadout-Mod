@@ -38,6 +38,8 @@ import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDDodecahedron;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATED_DarkCore;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
+import com.megacrit.cardcrawl.rewards.RewardItem;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import javassist.CtClass;
 import loadout.helper.ModifierLibrary;
@@ -104,7 +106,7 @@ public class LoadoutMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostBattleSubscriber{
     // Make sure to implement the subscribers *you* are using (read basemod wiki). Editing cards? EditCardsSubscriber.
     // Making relics? EditRelicsSubscriber. etc., etc., for a full list and how to make your own, visit the basemod wiki.
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
@@ -1543,4 +1545,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber{
     }
 
 
+    @Override
+    public void receivePostBattle(AbstractRoom abstractRoom) {
+
+    }
 }

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScreen.StatModButton> {
     protected enum ModType {
-        HEALTH, MAX_HEALTH, MONEY
+        HEALTH, MAX_HEALTH, MONEY, REWARD_MULTIPLIER
     }
 
     public static class StatModButton implements HeaderButtonPlusListener, TextInputReceiver {
@@ -76,6 +76,11 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                     this.text = TopPanel.LABEL[4];
                     this.isLocked = TildeKey.isGoldLocked;
                     break;
+                case REWARD_MULTIPLIER:
+                    this.text = TEXT[2];
+                    this.isLocked = TildeKey.isRewardDuped;
+                    break;
+
             }
             this.text += ": ";
             this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, Float.MAX_VALUE, 0.0F);
@@ -173,6 +178,9 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                     case MONEY:
                         this.amount = String.valueOf(AbstractDungeon.player.gold);
                         break;
+                    case REWARD_MULTIPLIER:
+                        this.amount = String.valueOf(TildeKey.rewardMultiplier);
+                        break;
                 }
             }
 
@@ -210,6 +218,9 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                     TildeKey.goldLockAmount = amtToSet;
                     AbstractDungeon.player.displayGold = amtToSet;
                     AbstractDungeon.player.gold = amtToSet;
+                    break;
+                case REWARD_MULTIPLIER:
+                    TildeKey.rewardMultiplier = amtToSet;
                     break;
             }
             this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text + amount, Float.MAX_VALUE, 0.0F);
@@ -260,6 +271,18 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
 
                             this.text + this.amount, x + GOLD_NUM_OFFSET_X, y,  (this.isTyping) ? Color.CYAN : Settings.GOLD_COLOR);
                     break;
+                case REWARD_MULTIPLIER:
+                    if (this.hb.hovered) {
+                        sb.draw(ImageMaster.INTENT_BUFF, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
+                    }
+                    else {
+                        sb.draw(ImageMaster.INTENT_BUFF, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
+                    }
+                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
+
+
+                            this.text + this.amount, x + GOLD_NUM_OFFSET_X, y,  (this.isTyping) ? Color.CYAN : Settings.GOLD_COLOR);
+                    break;
 
             }
             this.lockButton.render(sb);
@@ -288,6 +311,10 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                 case MONEY:
                     TildeKey.isGoldLocked = boolToChange;
                     if(boolToChange) TildeKey.goldLockAmount = Integer.parseInt(this.amount);
+                    break;
+                case REWARD_MULTIPLIER:
+                    TildeKey.isRewardDuped = boolToChange;
+                default:
                     break;
             }
         }
@@ -321,6 +348,9 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         this.items.add(new StatModButton(ModType.HEALTH));
         this.items.add(new StatModButton(ModType.MAX_HEALTH));
         this.items.add(new StatModButton(ModType.MONEY));
+        StatModButton rewardButton = new StatModButton(ModType.REWARD_MULTIPLIER);
+        rewardButton.lockButton.text = TEXT[3];
+        this.items.add(rewardButton);
     }
 
 

@@ -101,13 +101,16 @@
 			"Tirez des cartes jusqu'à la limite",
 			"Changer de graine",
 			"Appliquer le changement de semence",
-			"Annulez tous les debuffs"
+			"Annulez tous les debuffs",
+			"Intention de l’ennemi de la force"
 		]
 	},
 	"loadout:StatModSelectScreen": {
 		"TEXT": [
 			"Santé maximale",
-			"Serrure"
+			"Serrure",
+			"Multiplicateur de récompense",
+			"Dupes seulement"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

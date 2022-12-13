@@ -74,8 +74,8 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     public static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
 
     public static int selectMult = 1;
-    private InputAction shiftKey;
-    private InputAction ctrlKey;
+    private final InputAction shiftKey;
+    private final InputAction ctrlKey;
     protected SortType defaultSortType;
     protected float itemHeight = 420.0F;
 

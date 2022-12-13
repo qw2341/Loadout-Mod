@@ -21,7 +21,7 @@ public class HeaderButtonPlus extends SortHeaderButton {
     public boolean isActive;
     public float x;
     public float y;
-    private String text;
+    public String text;
     public HeaderButtonPlusListener delegate;
     private final float ARROW_SIZE;
     public float textWidth;

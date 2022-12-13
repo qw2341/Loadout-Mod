@@ -102,13 +102,16 @@
 			"Draw Cards Till Limit",
 			"Change Seed",
 			"Apply Seed Change",
-			"Negate All Debuffs"
+			"Negate All Debuffs",
+			"Force Enemy Intent"
 		]
 	},
 	"loadout:StatModSelectScreen": {
 		"TEXT": [
 			"Max Health",
-			"Lock"
+			"Lock",
+			"Reward Multiplier",
+			"Dupes Only"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

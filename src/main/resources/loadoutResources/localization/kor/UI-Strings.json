@@ -101,13 +101,16 @@
 			"한도까지 카드 뽑기",
 			"시드 변경",
 			"시드 변경 적용",
-			"모든 디버프 무효화"
+			"모든 디버프 무효화",
+			"적의 의도 강제"
 		]
 	},
 	"loadout:StatModSelectScreen": {
 		"TEXT": [
 			"최대 건강",
-			"자물쇠"
+			"자물쇠",
+			"보상 승수",
+			"속임수 전용"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

@@ -255,7 +255,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
         GOLD_BACKGROUND.a = 0.5f;
     }
 
-    public static int selectMult = 1;
+    //public static int selectMult = 1;
 
     private static final Comparator<PowerButton> BY_TYPE = Comparator.comparing(p -> p.type);
     private static final Comparator<PowerButton> BY_NAME = Comparator.comparing(p -> p.name);

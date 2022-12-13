@@ -23,12 +23,14 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.DexterityPower;
 import com.megacrit.cardcrawl.powers.FocusPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import loadout.LoadoutMod;
 import loadout.screens.StatModSelectScreen;
@@ -86,6 +88,14 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     private static final String isDrawCardsTillLimitKey = "isDrawCardsTillLimit";
     public static boolean isNegatingDebuffs = false;
     private static final String isNegatingDebuffsKey = "isNegatingDebuffs";
+    public static AbstractMonster.Intent setIntent = null;
+    public static final String setIntentKey = "setIntent";
+
+    public static int rewardMultiplier = 1;
+    public static final String rewardMultiplierKey = "rewardMultiplier";
+
+    public static boolean isRewardDuped = false;
+    private static final String isRewardDupedKey = "isRewardDuped";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -280,6 +290,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         isAlwaysPlayerTurn = false;
         isDrawCardsTillLimit = false;
         isNegatingDebuffs = false;
+        setIntent = null;
+        rewardMultiplier = 1;
+        isRewardDuped = false;
     }
 
     public static void killAllMonsters() {
@@ -295,6 +308,13 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             this.flash();
             killAllMonsters();
         }
+
+        if(setIntent != null) {
+            this.flash();
+            for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) {
+                am.setMove((byte) 1, setIntent);
+            }
+        }
     }
 
     @Override
@@ -304,6 +324,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             this.flash();
             AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
         }
+
+        if(setIntent != null) {
+            this.flash();
+            monster.setMove((byte) 1, setIntent);
+
+        }
     }
 
     @Override
@@ -311,6 +337,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         if(isKillAllMode) {
             this.flash();
             killAllMonsters();
+        }
+        if(setIntent != null) {
+            this.flash();
+            for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) {
+                am.setMove((byte) 1, setIntent);
+            }
         }
     }
 
@@ -351,6 +383,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         sav.put(isAlwaysPlayerTurnKey, String.valueOf(isAlwaysPlayerTurn));
         sav.put(isDrawCardsTillLimitKey, String.valueOf(isDrawCardsTillLimit));
         sav.put(isNegatingDebuffsKey, String.valueOf(isNegatingDebuffs));
+        if(setIntent != null) sav.put(setIntentKey, String.valueOf(setIntent));
+        else sav.put(setIntentKey,"ALL");
+        sav.put(rewardMultiplierKey, String.valueOf(rewardMultiplier));
+        sav.put(isRewardDupedKey, String.valueOf(isRewardDuped));
         return sav;
     }
 
@@ -375,8 +411,16 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             isAlwaysPlayerTurn = Boolean.parseBoolean(sav.get(isAlwaysPlayerTurnKey));
             isDrawCardsTillLimit = Boolean.parseBoolean(sav.get(isDrawCardsTillLimitKey));
             isNegatingDebuffs = Boolean.parseBoolean(sav.get(isNegatingDebuffsKey));
+
+            String intent = sav.get(setIntentKey);
+            if (intent.equals("ALL")) setIntent = null;
+            else setIntent = AbstractMonster.Intent.valueOf(intent);
+
+            rewardMultiplier = Integer.parseInt(sav.get(rewardMultiplierKey));
+            isRewardDuped = Boolean.parseBoolean(sav.get(isRewardDupedKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
+            e.printStackTrace();
             resetToDefault();
         }
 

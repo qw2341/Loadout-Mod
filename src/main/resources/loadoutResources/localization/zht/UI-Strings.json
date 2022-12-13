@@ -101,13 +101,16 @@
 			"抽牌到上限",
 			"更改種子",
 			"應用種子更改",
-			"免疫所有負面效果"
+			"免疫所有負面效果",
+			"設置敵人意圖"
 		]
 	},
 	"loadout:StatModSelectScreen": {
 		"TEXT": [
 			"最大生命值",
-			"鎖定"
+			"鎖定",
+			"獎勵倍數",
+			"複制"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

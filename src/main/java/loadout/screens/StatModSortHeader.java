@@ -1,12 +1,19 @@
 package loadout.screens;
 
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import loadout.LoadoutMod;
 import loadout.relics.TildeKey;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class StatModSortHeader extends AbstractSortHeader {
 
@@ -27,6 +34,9 @@ public class StatModSortHeader extends AbstractSortHeader {
 
     private HeaderButtonPlus changeSeedButton;
     private HeaderButtonPlus applySeedButton;
+
+    private DropdownMenu setIntentButton;
+
 
 
 
@@ -73,13 +83,27 @@ public class StatModSortHeader extends AbstractSortHeader {
 
 
         this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.drawTillLimitButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton, this.negateDebuffButton, this.changeSeedButton, this.applySeedButton};
-        this.dropdownMenus = new DropdownMenu[] {};
-        this.dropdownMenuHeaders = new String[] {};
+
+        ArrayList<String> b = new ArrayList<>();
+        b.add(CardSelectSortHeader.TEXT[0]);
+        b.addAll(Arrays.stream(AbstractMonster.Intent.values()).map(String::valueOf).collect(Collectors.toCollection(ArrayList::new)));
+
+        this.setIntentButton = new DropdownMenu(this,b, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+
+        this.dropdownMenus = new DropdownMenu[] {this.setIntentButton};
+        this.dropdownMenuHeaders = new String[] {TEXT[9]};
     }
 
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
-
+        if(dropdownMenu == this.setIntentButton) {
+            if(i==0) {
+                //if all
+                TildeKey.setIntent = null;
+            } else if (i>0) {
+                TildeKey.setIntent = AbstractMonster.Intent.values()[i-1];
+            }
+        }
     }
 
     @Override
