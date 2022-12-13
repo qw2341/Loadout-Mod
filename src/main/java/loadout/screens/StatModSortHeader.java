@@ -89,6 +89,7 @@ public class StatModSortHeader extends AbstractSortHeader {
         b.addAll(Arrays.stream(AbstractMonster.Intent.values()).map(String::valueOf).collect(Collectors.toCollection(ArrayList::new)));
 
         this.setIntentButton = new DropdownMenu(this,b, FontHelper.panelNameFont, Settings.CREAM_COLOR);
+        this.setIntentButton.setSelectedIndex((TildeKey.setIntent == null) ? 0 : TildeKey.setIntent.ordinal() + 1);
 
         this.dropdownMenus = new DropdownMenu[] {this.setIntentButton};
         this.dropdownMenuHeaders = new String[] {TEXT[9]};
