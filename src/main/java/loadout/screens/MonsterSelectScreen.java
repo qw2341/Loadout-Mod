@@ -184,7 +184,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             //this.hb.move(x,y);
             this.hb.update();
 
-            if(this.hb.justHovered && this.instance == null) {
+            if((this.hb.justHovered || MonsterSelectScreen.showPreviews) && this.instance == null) {
                 //LoadoutMod.logger.info("just hovered, creating class");
                 try{
                     this.instance = createMonster(this.mClass);
@@ -194,7 +194,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
             }
 
-            if(!this.hb.hovered && this.instance != null) {
+            if(!this.hb.hovered && this.instance != null && !MonsterSelectScreen.showPreviews) {
                 this.instance.dispose();
                 this.instance = null;
             }
@@ -203,7 +203,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 this.instance.hb.move(x,y);
                 this.instance.drawX = x;
                 this.instance.drawY = y;
-                if(this.hb.hovered) this.instance.update();
+                if(this.hb.hovered || MonsterSelectScreen.showPreviews) this.instance.update();
             }
 
 
@@ -299,18 +299,20 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 //                        sb.setBlendFunction(770, 771);
 //                    }
 //                }
+                if(this.hb.hovered || MonsterSelectScreen.showPreviews) {
+                    try {
+                        if(this.instance != null) this.instance.render(sb);
+                    } catch (Exception ignored) {
 
+                    }
+                }
                 if (this.hb.hovered) {
                     sb.setBlendFunction(770, 1);
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
                     sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+40.0F,y-64.0F, 64.0F, 64.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 256, 256, false, false);
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.GOLD_COLOR);
                     sb.setBlendFunction(770, 771);
-                    try {
-                        if(this.instance != null) this.instance.render(sb);
-                    } catch (Exception ignored) {
 
-                    }
                     TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
@@ -333,6 +335,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
     public boolean filterAll = true;
     public boolean filterFavorites = false;
 
+    public static boolean showPreviews = false;
 
 
 
@@ -466,6 +469,12 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         char prevFirst = '\0';
         String prevMod = "";
 
+        itemsPerLine = showPreviews ? 4 : 5;
+
+
+        float spaceX = (SPACE_X + (showPreviews ? 125.0F * Settings.scale : 0.0F));
+        float spaceY = (SPACE + (showPreviews ? 150.0F * Settings.yScale : 0.0F));
+
         for (Iterator<MonsterButton> it = list.iterator(); it.hasNext(); ) {
             MonsterButton m = it.next();
             if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
@@ -526,12 +535,14 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                     }
                 }
             }
-            if (col == 5) {
+
+
+            if (col == itemsPerLine) {
                 col = 0;
                 row += 1;
             }
-            curX = (START_X + SPACE_X * col);
-            curY = (scrollY - SPACE * row);
+            curX = (START_X + spaceX * col);
+            curY = (scrollY - spaceY * row);
 
             m.x = curX;
             m.y = curY;

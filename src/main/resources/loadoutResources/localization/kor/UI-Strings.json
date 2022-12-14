@@ -128,7 +128,8 @@
 	},
 	"loadout:MonsterSelectSortHeader": {
 		"TEXT": [
-			"중복 몬스터"
+			"중복 몬스터",
+			"미리보기 표시"
 		]
 	}
 

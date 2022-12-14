@@ -111,6 +111,9 @@ public class HeaderButtonPlus extends SortHeaderButton {
                 if (this.delegate instanceof RelicSelectSortHeader) ((RelicSelectSortHeader)this.delegate).clearActiveButtons();
                 else if (this.delegate instanceof PotionSelectSortHeader) ((PotionSelectSortHeader)this.delegate).clearActiveButtons();
                 else if (this.delegate instanceof CardSelectSortHeader) ((CardSelectSortHeader)this.delegate).clearActiveButtons();
+                else if (this.delegate instanceof AbstractSortHeader) {
+                    ((AbstractSortHeader)this.delegate).clearActiveButtons();
+                }
             } else if (this.isToggle) {
                 this.isAscending = !this.isAscending;
             }

@@ -38,6 +38,8 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     protected int row = 0;
     protected int col = 0;
 
+    protected int itemsPerLine = 5;
+
     protected float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
     protected float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
     protected int scrollTitleCount = 0;
@@ -117,6 +119,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         resetFilters();
         this.items = this.items.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
         sort(true);
+        calculateScrollBounds();
     }
 
     public abstract void sort(boolean isAscending);

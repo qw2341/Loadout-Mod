@@ -128,7 +128,8 @@
 	},
 	"loadout:MonsterSelectSortHeader": {
 		"TEXT": [
-			"複製モンスター"
+			"複製モンスター",
+			"プレビューを表示"
 		]
 	}
 

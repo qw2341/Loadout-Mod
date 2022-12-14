@@ -129,7 +129,8 @@
 		]
 	},"loadout:MonsterSelectSortHeader": {
 		"TEXT": [
-			"Duplicate Monsters"
+			"Duplicate Monsters",
+			"Show Previews"
 		]
 	}
 }

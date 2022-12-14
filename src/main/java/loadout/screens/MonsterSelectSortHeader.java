@@ -24,6 +24,9 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
     private final HeaderButtonPlus nameButton;
     private final HeaderButtonPlus modButton;
     private final HeaderButtonPlus dupeButton;
+    private final HeaderButtonPlus showPreviewButton;
+
+
     private final DropdownMenu typeFilterButton;
     private final String[] rhTEXT = CardCrawlGame.languagePack.getUIString("RunHistoryPathNodes").TEXT;
     public final String[] TEXT = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("MonsterSelectSortHeader")).TEXT;
@@ -41,8 +44,11 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
         yPosition -= SPACE_Y;
         this.dupeButton = new HeaderButtonPlus(TEXT[0],xPosition,yPosition,this,false, ImageMaster.PROFILE_B);
         this.dupeButton.alignment = HeaderButtonPlus.Alignment.RIGHT;
+        yPosition -= SPACE_Y;
+        this.showPreviewButton = new HeaderButtonPlus(TEXT[1], xPosition, yPosition, this, false, true, HeaderButtonPlus.Alignment.RIGHT);
+        this.showPreviewButton.isAscending = MonsterSelectScreen.showPreviews;
 
-        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton, this.dupeButton};
+        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton, this.dupeButton, this.showPreviewButton};
 
 //        ArrayList<String> a = new ArrayList<>();
 //        a.add(cTEXT[0]);
@@ -91,6 +97,11 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
                 }
                 ar.monsters.monsters.addAll(monsterTemp);
             }
+        } else if (button == this.showPreviewButton) {
+            MonsterSelectScreen.showPreviews = isAscending;
+            selectScreen.itemHeight = isAscending ? 570.0F : 420.0F;
+
+            selectScreen.updateFilters();
         }
     }
 
@@ -105,5 +116,37 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
         this.searchBox.render(sb);
         super.render(sb);
 
+    }
+
+    @Override
+    public void clearActiveButtons() {
+        for (int i = 0;i<this.buttons.length;i++) {
+            HeaderButtonPlus button = buttons[i];
+            if(button != this.showPreviewButton) button.setActive(false);
+        }
+    }
+
+    @Override
+    public void resetOtherButtons() {
+        int btnIdx = getHoveredIndex();
+        for (int i = 0;i<this.buttons.length;i++) {
+            if (i!= btnIdx) {
+                HeaderButtonPlus button = buttons[i];
+
+                if(button != this.showPreviewButton) button.reset();
+
+            }
+        }
+    }
+
+    @Override
+    public void resetAllButtons() {
+        for (int i = 0;i<this.buttons.length;i++) {
+            HeaderButtonPlus button = buttons[i];
+            if (button != this.showPreviewButton) button.reset();
+        }
+        for (DropdownMenu ddm : dropdownMenus) {
+            ddm.setSelectedIndex(0);
+        }
     }
 }

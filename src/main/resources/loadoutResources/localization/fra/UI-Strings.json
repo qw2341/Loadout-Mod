@@ -128,7 +128,8 @@
 	},
 	"loadout:MonsterSelectSortHeader": {
 		"TEXT": [
-			"Monstres en double"
+			"Monstres en double",
+			"Afficher les aperçus"
 		]
 	}
 
