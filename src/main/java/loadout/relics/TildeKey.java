@@ -302,6 +302,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         }
     }
 
+    public static void setMonsterIntent(AbstractMonster am, AbstractMonster.Intent intent) {
+        am.setMove((byte) 1, intent);
+    }
+
     @Override
     public void atBattleStart() {
         if(isKillAllMode) {
@@ -312,7 +316,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         if(setIntent != null) {
             this.flash();
             for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) {
-                am.setMove((byte) 1, setIntent);
+                setMonsterIntent(am,setIntent);
             }
         }
     }
@@ -327,8 +331,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
         if(setIntent != null) {
             this.flash();
-            monster.setMove((byte) 1, setIntent);
-
+            setMonsterIntent(monster,setIntent);
         }
     }
 
@@ -341,7 +344,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         if(setIntent != null) {
             this.flash();
             for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) {
-                am.setMove((byte) 1, setIntent);
+                setMonsterIntent(am,setIntent);
             }
         }
     }
