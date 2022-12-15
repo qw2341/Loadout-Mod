@@ -103,7 +103,8 @@
 			"Change Seed",
 			"Apply Seed Change",
 			"Negate All Debuffs",
-			"Force Enemy Intent"
+			"Force Enemy Intent",
+			"Scroll Edit Relic Counter"
 		]
 	},
 	"loadout:StatModSelectScreen": {

@@ -31,6 +31,7 @@ public class StatModSortHeader extends AbstractSortHeader {
     private HeaderButtonPlus drawTillLimitButton;
 
     private HeaderButtonPlus negateDebuffButton;
+    private HeaderButtonPlus modifyRelicCounterButton;
 
     private HeaderButtonPlus changeSeedButton;
     private HeaderButtonPlus applySeedButton;
@@ -72,6 +73,10 @@ public class StatModSortHeader extends AbstractSortHeader {
         this.negateDebuffButton = new HeaderButtonPlus(TEXT[8], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.negateDebuffButton.isAscending = TildeKey.isNegatingDebuffs;
         yPosition -= SPACE_Y;
+        this.modifyRelicCounterButton = new HeaderButtonPlus(TEXT[10], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
+        this.modifyRelicCounterButton.isAscending = TildeKey.enableRelicCounterEdit;
+        yPosition -= SPACE_Y;
+
 
         this.changeSeedButton = new HeaderButtonPlus(TEXT[6], xPosition,yPosition,  this, true, ImageMaster.MAP_NODE_EVENT);
         yPosition -= SPACE_Y;
@@ -82,7 +87,7 @@ public class StatModSortHeader extends AbstractSortHeader {
 
 
 
-        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.drawTillLimitButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton, this.negateDebuffButton, this.changeSeedButton, this.applySeedButton};
+        this.buttons = new HeaderButtonPlus[] { this.killAllButton, this.godModeButton, this.infEnergyButton, this.drawTillLimitButton, this.canGoToAnyRoomButton, this.alwaysPlayerTurnButton, this.negateDebuffButton, this.modifyRelicCounterButton, this.changeSeedButton, this.applySeedButton};
 
         ArrayList<String> b = new ArrayList<>();
         b.add(CardSelectSortHeader.TEXT[0]);
@@ -124,6 +129,8 @@ public class StatModSortHeader extends AbstractSortHeader {
             TildeKey.isDrawCardsTillLimit = isAscending;
         } else if (button == this.negateDebuffButton) {
             TildeKey.isNegatingDebuffs = isAscending;
+        } else if (button == this.modifyRelicCounterButton) {
+            TildeKey.enableRelicCounterEdit = isAscending;
         } else if (button == this.changeSeedButton) {
             ((StatModSelectScreen) selectScreen).seedPanel.show();
         } else if (button == this.applySeedButton) {

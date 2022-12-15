@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -37,6 +38,7 @@ import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
@@ -96,6 +98,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
     public static boolean isRewardDuped = false;
     private static final String isRewardDupedKey = "isRewardDuped";
+
+    public static boolean enableRelicCounterEdit = false;
+    private static final String enableRelicCounterEditKey = "enableRelicCounterEdit";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -210,6 +215,21 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             }
 
 
+
+            if(enableRelicCounterEdit) {
+                Iterator<AbstractRelic> it = AbstractDungeon.player.relics.iterator();
+                AbstractRelic r = null;
+                while(it.hasNext()) {
+                    r = it.next();
+                    if (r.hb.hovered) {
+                        break;
+                    }
+                }
+                if(r != null) {
+                    if(InputHelper.scrolledUp) r.counter++;
+                    if(InputHelper.scrolledDown) r.counter--;
+                }
+            }
         }
 
 
@@ -293,6 +313,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         setIntent = null;
         rewardMultiplier = 1;
         isRewardDuped = false;
+        enableRelicCounterEdit = false;
     }
 
     public static void killAllMonsters() {
@@ -390,6 +411,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         else sav.put(setIntentKey,"ALL");
         sav.put(rewardMultiplierKey, String.valueOf(rewardMultiplier));
         sav.put(isRewardDupedKey, String.valueOf(isRewardDuped));
+        sav.put(enableRelicCounterEditKey, String.valueOf(enableRelicCounterEdit));
         return sav;
     }
 
@@ -421,6 +443,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
             rewardMultiplier = Integer.parseInt(sav.get(rewardMultiplierKey));
             isRewardDuped = Boolean.parseBoolean(sav.get(isRewardDupedKey));
+            enableRelicCounterEdit = Boolean.parseBoolean(sav.get(enableRelicCounterEditKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
