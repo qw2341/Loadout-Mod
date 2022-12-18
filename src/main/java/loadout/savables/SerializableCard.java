@@ -118,4 +118,9 @@ public class SerializableCard implements Serializable {
 
         return sc;
     }
+
+    @Override
+    public String toString() {
+        return "[CardID: " + this.id + "; Cost: " + this.cost + "; Damage: " + this.baseDamage + "; Block: " + this.baseBlock;
+    }
 }
