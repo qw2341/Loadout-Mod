@@ -106,7 +106,7 @@ public class LoadoutMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostBattleSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber{
     // Make sure to implement the subscribers *you* are using (read basemod wiki). Editing cards? EditCardsSubscriber.
     // Making relics? EditRelicsSubscriber. etc., etc., for a full list and how to make your own, visit the basemod wiki.
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
@@ -1546,7 +1546,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostBattleSubs
 
 
     @Override
-    public void receivePostBattle(AbstractRoom abstractRoom) {
-
+    public boolean receivePostCampfire() {
+        return !TildeKey.infiniteCampfireActions;
     }
 }

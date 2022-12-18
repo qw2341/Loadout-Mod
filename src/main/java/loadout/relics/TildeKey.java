@@ -102,6 +102,9 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     public static boolean enableRelicCounterEdit = false;
     private static final String enableRelicCounterEditKey = "enableRelicCounterEdit";
 
+    public static boolean infiniteCampfireActions = false;
+    public static final String infiniteCampfireActionsKey = "infiniteCampfireActions";
+
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
 
@@ -307,6 +310,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         isKillAllMode = false;
         isGodMode = false;
         isInfiniteEnergy = false;
+        canGoToAnyRooms = false;
         isAlwaysPlayerTurn = false;
         isDrawCardsTillLimit = false;
         isNegatingDebuffs = false;
@@ -314,6 +318,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         rewardMultiplier = 1;
         isRewardDuped = false;
         enableRelicCounterEdit = false;
+        infiniteCampfireActions = false;
     }
 
     public static void killAllMonsters() {
@@ -412,6 +417,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         sav.put(rewardMultiplierKey, String.valueOf(rewardMultiplier));
         sav.put(isRewardDupedKey, String.valueOf(isRewardDuped));
         sav.put(enableRelicCounterEditKey, String.valueOf(enableRelicCounterEdit));
+        sav.put(infiniteCampfireActionsKey, String.valueOf(infiniteCampfireActions));
         return sav;
     }
 
@@ -444,6 +450,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             rewardMultiplier = Integer.parseInt(sav.get(rewardMultiplierKey));
             isRewardDuped = Boolean.parseBoolean(sav.get(isRewardDupedKey));
             enableRelicCounterEdit = Boolean.parseBoolean(sav.get(enableRelicCounterEditKey));
+            infiniteCampfireActions = Boolean.parseBoolean(sav.get(infiniteCampfireActionsKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
