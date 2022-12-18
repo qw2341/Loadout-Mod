@@ -205,7 +205,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
             for (int i = 0; i<len; i++) {
                 AbstractCard card = AbstractDungeon.player.masterDeck.group.get(i);
                 if (AbstractCardPatch.isCardModified(card)) {
-                    Integer[] cardStat = new Integer[12];
+                    Integer[] cardStat = new Integer[13];
                     cardStat[0] = i;
                     cardStat[1] = card.cost;
                     cardStat[2] = card.baseDamage;
@@ -218,6 +218,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
                     cardStat[9] = card.type.ordinal();
                     cardStat[10] = card.rarity.ordinal();
                     cardStat[11] = card.misc;
+                    cardStat[12] = card.timesUpgraded;
                     ret.add(cardStat);
                 }
 
@@ -234,9 +235,10 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
     public void onLoad(Integer[][] ret) {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
-            if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 12) {
+            if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 13) {
                 for (int i = 0; i<ret.length; i++) {
                     AbstractCard card = AbstractDungeon.player.masterDeck.group.get(ret[i][0]);
+                    for (int j = 0; j < ret[i][12]; j++) {card.upgrade();}
                     card.cost = ret[i][1];
                     card.costForTurn = card.cost;
                     card.baseDamage = ret[i][2];

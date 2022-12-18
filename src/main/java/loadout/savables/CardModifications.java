@@ -13,6 +13,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
@@ -24,7 +25,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class CardModifications implements CustomSavable<HashMap<String,SerializableCard>> {
+public class CardModifications
+        //implements CustomSavable<HashMap<String,SerializableCard>>
+{
 
     public static final String KEY = "Modified Cards";
     private File file;
@@ -43,13 +46,13 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
         this.load();
     }
 
-    @Override
+    //@Override
     public HashMap<String,SerializableCard> onSave() {
 
         return cardMap;
     }
 
-    @Override
+    //@Override
     public void onLoad(HashMap<String,SerializableCard> s) {
 
         if (s == null) return;
@@ -61,7 +64,7 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
 
     public void load() throws IOException {
         Reader reader = Files.newBufferedReader(Paths.get(this.filePath));
-        HashMap<String, SerializableCard> cMap = saveFileGson.fromJson(reader, cardMapType);
+        HashMap<String, SerializableCard> cMap = CustomSavable.saveFileGson.fromJson(reader, cardMapType);
         if (cMap != null) {
             cardMap.clear();
             cardMap.putAll(cMap);
@@ -72,7 +75,7 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
 
     public void save() throws IOException {
         FileWriter fileWriter = new FileWriter(this.filePath);
-        saveFileGson.toJson(cardMap, cardMapType, fileWriter);
+        CustomSavable.saveFileGson.toJson(cardMap, cardMapType, fileWriter);
         fileWriter.flush();
         fileWriter.close();
     }
@@ -85,12 +88,16 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
     }
 
     public static void modifyCard(AbstractCard card, SerializableCard sc) {
+
         if(!isGettingUnmoddedCopy) {
+
+            for (int i = 0; i < sc.timesUpgraded; i++) {card.upgrade();}
             card.cost = sc.cost;
             card.costForTurn = card.cost;
             card.baseDamage = sc.baseDamage;
             card.baseBlock = sc.baseBlock;
             card.baseMagicNumber = sc.baseMagicNumber;
+            card.magicNumber = sc.baseMagicNumber;
             card.baseHeal = sc.baseHeal;
             card.baseDraw = sc.baseDraw;
             card.baseDiscard = sc.baseDiscard;
@@ -103,6 +110,9 @@ public class CardModifications implements CustomSavable<HashMap<String,Serializa
                 if (acm != null)
                     CardModifierManager.addModifier(card, acm);
             }
+//            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
+//                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "
+//                    + AbstractCardPatch.isCardModified(card));
         }
 
     }

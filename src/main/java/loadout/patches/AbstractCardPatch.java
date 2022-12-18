@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.ChemicalX;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
@@ -18,6 +19,7 @@ import javassist.expr.MethodCall;
 import loadout.actions.MultiUseAction;
 import loadout.cardmods.XCostMod;
 import loadout.savables.CardModifications;
+import loadout.savables.SerializableCard;
 
 public class AbstractCardPatch {
     @SpirePatch(clz = AbstractCard.class, method = "makeStatEquivalentCopy")
@@ -108,5 +110,25 @@ public class AbstractCardPatch {
                 CardModifications.modifyCard(__instance,CardModifications.cardMap.get(__instance.cardID));
             }
         }
+    }
+    @SpirePatch(clz = CardLibrary.class, method = "getCopy", paramtypez = {String.class, int.class, int.class})
+    public static class CardLibraryGetCopyMethodPatch {
+        @SpirePostfixPatch
+        public static AbstractCard PostFix(AbstractCard __result, String key, int upgradeTime, int misc) {
+            if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(__result.cardID)) {
+                AbstractCard ret = SerializableCard.toAbstractCard(CardModifications.cardMap.get(__result.cardID)) ;
+                if(ret.timesUpgraded < upgradeTime) {
+                    int upgradesNeeded = upgradeTime - ret.timesUpgraded;
+                    for (int i = 0; i < upgradesNeeded; i++) {ret.upgrade();}
+                }
+                if(ret.misc != misc) {
+                    ret.misc = misc;
+                }
+
+                return ret;
+            }
+            return __result;
+        }
+
     }
 }

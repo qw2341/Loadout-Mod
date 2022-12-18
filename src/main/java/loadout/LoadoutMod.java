@@ -955,6 +955,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         createStuffLists();
         logger.info("Done initializing stuffs");
 
+        logger.info("Loading Custom Card Modifications into CardLib");
+        CardModifications.modifyCards();
+        logger.info("Done Loading Custom Card Modifications");
+
         //init top
         //BaseMod.addTopPanelItem();
     }
