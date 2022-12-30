@@ -3,6 +3,7 @@ package loadout.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.codedisaster.steamworks.SteamUtils;
 import com.megacrit.cardcrawl.actions.unique.RemoveDebuffsAction;
@@ -31,12 +32,16 @@ import java.util.ArrayList;
 
 
 public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScreen.StatModButton> {
-    protected enum ModType {
-        HEALTH, MAX_HEALTH, MONEY, REWARD_MULTIPLIER
+
+    public interface StatModActions {
+        int getAmount();
+
+        void setAmount(int amountToSet);
+
+        void onBoolChange(boolean boolToChange, int amount);
     }
 
     public static class StatModButton implements HeaderButtonPlusListener, TextInputReceiver {
-        public ModType modType;
 
         public Hitbox hb;
 
@@ -56,38 +61,30 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         private InputProcessor prevInputProcessor;
         private float waitTimer = 0.0F;
 
-        public StatModButton(ModType mt) {
-            this.modType = mt;
+        private StatModActions actions;
+
+        private Texture icon;
+        private float iconOffset;
+        private Color textColor;
+        public StatModButton(String text, boolean isLocked, Texture icon, float iconOffset, Color textColor, StatModActions actions) {
+            //this.modType = mt;
 
             this.x = 0;
             this.y = 0;
 
-            switch (mt) {
+            this.text = text;
+            this.isLocked = isLocked;
 
-                case HEALTH:
-                    this.text = TopPanel.LABEL[3];
-                    this.isLocked = TildeKey.isHealthLocked;
-                    break;
-                case MAX_HEALTH:
-                    this.text = StatModSelectScreen.TEXT[0];
-                    this.isLocked = TildeKey.isMaxHealthLocked;
-                    break;
-                case MONEY:
-                    this.text = TopPanel.LABEL[4];
-                    this.isLocked = TildeKey.isGoldLocked;
-                    break;
-                case REWARD_MULTIPLIER:
-                    this.text = TEXT[2];
-                    this.isLocked = TildeKey.isRewardDuped;
-                    break;
-
-            }
             this.text += ": ";
             this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, Float.MAX_VALUE, 0.0F);
 
-            this.hb = new Hitbox(x + this.textWidth/2 ,y,this.textWidth + HP_NUM_OFFSET_X,75);
+            this.hb = new Hitbox(x + this.textWidth/2 ,y,this.textWidth + iconOffset,75.0f * Settings.yScale);
             this.amount = "0";
 
+            this.icon = icon;
+            this.iconOffset = iconOffset;
+            this.textColor = textColor;
+            this.actions = actions;
 
             this.lockButton = new HeaderButtonPlus(StatModSelectScreen.TEXT[1],this.x + HP_NUM_OFFSET_X + this.textWidth + 100.0f,this.y, this, false, true, HeaderButtonPlus.Alignment.LEFT);
             this.lockButton.isAscending = this.isLocked;
@@ -168,20 +165,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
 
             if(!this.isTyping) {
-                switch (this.modType) {
-                    case HEALTH:
-                        this.amount = String.valueOf(AbstractDungeon.player.currentHealth);
-                        break;
-                    case MAX_HEALTH:
-                        this.amount = String.valueOf(AbstractDungeon.player.maxHealth);
-                        break;
-                    case MONEY:
-                        this.amount = String.valueOf(AbstractDungeon.player.gold);
-                        break;
-                    case REWARD_MULTIPLIER:
-                        this.amount = String.valueOf(TildeKey.rewardMultiplier);
-                        break;
-                }
+                this.amount = String.valueOf(this.actions.getAmount());
             }
 
         }
@@ -205,86 +189,25 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
 
 
-            switch (this.modType) {
-                case HEALTH:
-                    TildeKey.healthLockAmount = amtToSet;
-                    AbstractDungeon.player.currentHealth = amtToSet;
-                    break;
-                case MAX_HEALTH:
-                    TildeKey.maxHealthLockAmount = amtToSet;
-                    AbstractDungeon.player.maxHealth = amtToSet;
-                    break;
-                case MONEY:
-                    TildeKey.goldLockAmount = amtToSet;
-                    AbstractDungeon.player.displayGold = amtToSet;
-                    AbstractDungeon.player.gold = amtToSet;
-                    break;
-                case REWARD_MULTIPLIER:
-                    TildeKey.rewardMultiplier = amtToSet;
-                    break;
-            }
+            this.actions.setAmount(amtToSet);
             this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text + amount, Float.MAX_VALUE, 0.0F);
 
         }
 
         public void render(SpriteBatch sb) {
-//            if (this.isTyping) {
-//                sb.setColor(Color.GRAY);
-//            } else {
-                sb.setColor(Color.WHITE);
-//            }
-            switch (this.modType) {
-                case HEALTH:
+            sb.setColor(Color.WHITE);
 
-                    if (this.hb.hovered) {
-                        sb.draw(ImageMaster.TP_HP, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    else {
-                        sb.draw(ImageMaster.TP_HP, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
-
-
-                            this.text + this.amount, x + HP_NUM_OFFSET_X, y, (this.isTyping) ? Color.CYAN : Color.SALMON);
-                    break;
-                case MAX_HEALTH:
-                    if (this.hb.hovered) {
-                        sb.draw(ImageMaster.TP_HP, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    else {
-                        sb.draw(ImageMaster.TP_HP, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
-
-
-                            this.text + this.amount, x + HP_NUM_OFFSET_X, y, (this.isTyping) ? Color.CYAN :  Color.SCARLET);
-                    break;
-                case MONEY:
-                    if (this.hb.hovered) {
-                        sb.draw(ImageMaster.TP_GOLD, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    else {
-                        sb.draw(ImageMaster.TP_GOLD, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
-
-
-                            this.text + this.amount, x + GOLD_NUM_OFFSET_X, y,  (this.isTyping) ? Color.CYAN : Settings.GOLD_COLOR);
-                    break;
-                case REWARD_MULTIPLIER:
-                    if (this.hb.hovered) {
-                        sb.draw(ImageMaster.INTENT_BUFF, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    else {
-                        sb.draw(ImageMaster.INTENT_BUFF, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
-                    }
-                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
-
-
-                            this.text + this.amount, x + GOLD_NUM_OFFSET_X, y,  (this.isTyping) ? Color.CYAN : Settings.GOLD_COLOR);
-                    break;
-
+            if (this.hb.hovered) {
+                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
+            } else {
+                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
             }
+            FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
+
+
+                    this.text + this.amount, x + this.iconOffset, y, (this.isTyping) ? Color.CYAN : this.textColor);
+
+
             this.lockButton.render(sb);
             this.hb.render(sb);
         }
@@ -298,25 +221,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         
         private void changeBool(boolean boolToChange) {
             this.isLocked = boolToChange;
-            switch (this.modType) {
-
-                case HEALTH:
-                    TildeKey.isHealthLocked = boolToChange;
-                    if(boolToChange) TildeKey.healthLockAmount = Integer.parseInt(this.amount);
-                    break;
-                case MAX_HEALTH:
-                    TildeKey.isMaxHealthLocked = boolToChange;
-                    if(boolToChange) TildeKey.maxHealthLockAmount = Integer.parseInt(this.amount);
-                    break;
-                case MONEY:
-                    TildeKey.isGoldLocked = boolToChange;
-                    if(boolToChange) TildeKey.goldLockAmount = Integer.parseInt(this.amount);
-                    break;
-                case REWARD_MULTIPLIER:
-                    TildeKey.isRewardDuped = boolToChange;
-                default:
-                    break;
-            }
+            this.actions.onBoolChange(boolToChange, Integer.parseInt(this.amount));
         }
 
         @Override
@@ -344,13 +249,84 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
     public StatModSelectScreen(AbstractRelic owner) {
         super(owner);
         if (sortHeader == null) this.sortHeader = new StatModSortHeader(this);
+        this.items.add(new StatModButton(TopPanel.LABEL[3], TildeKey.isHealthLocked, ImageMaster.TP_HP, HP_NUM_OFFSET_X, Color.SALMON, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.currentHealth;
+            }
 
-        this.items.add(new StatModButton(ModType.HEALTH));
-        this.items.add(new StatModButton(ModType.MAX_HEALTH));
-        this.items.add(new StatModButton(ModType.MONEY));
-        StatModButton rewardButton = new StatModButton(ModType.REWARD_MULTIPLIER);
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.healthLockAmount = amountToSet;
+                AbstractDungeon.player.currentHealth = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isHealthLocked = boolToChange;
+                if(boolToChange) TildeKey.healthLockAmount = amount;
+            }
+        }));
+
+        this.items.add(new StatModButton(StatModSelectScreen.TEXT[0], TildeKey.isMaxHealthLocked, ImageMaster.TP_HP, HP_NUM_OFFSET_X, Color.SALMON, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.maxHealth;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.maxHealthLockAmount = amountToSet;
+                AbstractDungeon.player.maxHealth = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isMaxHealthLocked = boolToChange;
+                if(boolToChange) TildeKey.maxHealthLockAmount = amount;
+            }
+        }));
+
+        this.items.add(new StatModButton(TopPanel.LABEL[4], TildeKey.isGoldLocked, ImageMaster.TP_GOLD, GOLD_NUM_OFFSET_X, Color.GOLD, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.gold;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.goldLockAmount = amountToSet;
+                AbstractDungeon.player.displayGold = amountToSet;
+                AbstractDungeon.player.gold = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isGoldLocked = boolToChange;
+                if(boolToChange) TildeKey.goldLockAmount = amount;
+            }
+        }));
+
+        StatModButton rewardButton = new StatModButton(TEXT[2], TildeKey.isRewardDuped, ImageMaster.INTENT_BUFF, GOLD_NUM_OFFSET_X, Color.BLUE, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return TildeKey.rewardMultiplier;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.rewardMultiplier = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isRewardDuped = boolToChange;
+            }
+        });
         rewardButton.lockButton.text = TEXT[3];
         this.items.add(rewardButton);
+
+
     }
 
 
