@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
+import loadout.relics.PowerGiver;
 import loadout.relics.TildeKey;
 
 public class AbstractPlayerPatch {
@@ -48,6 +49,14 @@ public class AbstractPlayerPatch {
             }
 
             return SpireReturn.Continue();
+        }
+    }
+
+    @SpirePatch(clz = AbstractPlayer.class,
+    method = "applyPreCombatLogic")
+    public static class PreCombatHookPatch {
+        public static void Prefix(AbstractPlayer __instance) {
+            if(__instance.hasRelic(PowerGiver.ID)) ((PowerGiver)(__instance.getRelic(PowerGiver.ID))).battleStartPreDraw();
         }
     }
 }
