@@ -111,7 +111,9 @@
 			"Santé maximale",
 			"Serrure",
 			"Multiplicateur de récompense",
-			"Dupes seulement"
+			"Dupes seulement",
+			"Énergie maximale",
+			"Multiplicateur de dégâts ennemis %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

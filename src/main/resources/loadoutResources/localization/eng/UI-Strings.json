@@ -112,7 +112,9 @@
 			"Max Health",
 			"Lock",
 			"Reward Multiplier",
-			"Dupes Only"
+			"Dupes Only",
+			"Max Energy",
+			"Enemy Damage Mult %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

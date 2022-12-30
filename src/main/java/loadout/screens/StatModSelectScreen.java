@@ -1,5 +1,7 @@
 package loadout.screens;
 
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -17,10 +19,15 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
+import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.ui.panels.SeedPanel;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import loadout.LoadoutMod;
@@ -198,9 +205,9 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             sb.setColor(Color.WHITE);
 
             if (this.hb.hovered) {
-                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, 64, 64, false, false);
+                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, icon.getWidth(), icon.getHeight(), false, false);
             } else {
-                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
+                sb.draw(this.icon, this.x - 32.0F + 32.0F * Settings.scale, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, icon.getWidth(), icon.getHeight(), false, false);
             }
             FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont,
 
@@ -307,7 +314,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
-        StatModButton rewardButton = new StatModButton(TEXT[2], TildeKey.isRewardDuped, ImageMaster.INTENT_BUFF, GOLD_NUM_OFFSET_X, Color.BLUE, new StatModActions() {
+        StatModButton rewardButton = new StatModButton(TEXT[2], TildeKey.isRewardDuped, ImageMaster.INTENT_BUFF, GOLD_NUM_OFFSET_X, Color.FOREST, new StatModActions() {
             @Override
             public int getAmount() {
                 return TildeKey.rewardMultiplier;
@@ -326,6 +333,85 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         rewardButton.lockButton.text = TEXT[3];
         this.items.add(rewardButton);
 
+        this.items.add(new StatModButton(((OrbStrings) ReflectionHacks.getPrivateStatic(EmptyOrbSlot.class, "orbString")).NAME,
+                TildeKey.isOrbLocked, ImageMaster.ORB_LIGHTNING, GOLD_NUM_OFFSET_X, Color.GOLD, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.maxOrbs;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+
+                TildeKey.orbLockAmount = amountToSet;
+                int diff = amountToSet - AbstractDungeon.player.maxOrbs;
+
+                AbstractDungeon.player.masterMaxOrbs = amountToSet;
+
+                TildeKey.modifyPlayerOrbs(diff);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isOrbLocked = boolToChange;
+                if(boolToChange) TildeKey.orbLockAmount = amount;
+            }
+        }));
+
+        this.items.add(new StatModButton(EnergyPanel.LABEL[0], TildeKey.isEnergyLocked, ImageMaster.ORB_PLASMA, GOLD_NUM_OFFSET_X, Color.FIREBRICK, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return EnergyPanel.getCurrentEnergy();
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                EnergyPanel.setEnergy(amountToSet);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isEnergyLocked = boolToChange;
+                if(boolToChange) TildeKey.energyLockAmount = amount;
+            }
+        }));
+
+        this.items.add(new StatModButton(TEXT[4], TildeKey.isMaxEnergyLocked, ImageMaster.ORB_PLASMA, GOLD_NUM_OFFSET_X, Color.FIREBRICK, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.energy.energy;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                AbstractDungeon.player.energy.energy = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isMaxEnergyLocked = boolToChange;
+                if(boolToChange) TildeKey.maxEnergyLockAmount = amount;
+            }
+        }));
+
+        this.items.add(new StatModButton(TEXT[5], false, ImageMaster.RUN_HISTORY_MAP_ICON_BOSS, GOLD_NUM_OFFSET_X, Color.SCARLET, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return TildeKey.enemyAttackMult;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.enemyAttackMult = amountToSet;
+                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters)
+                    TildeKey.setMonsterDamage(am, amountToSet);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }));
 
     }
 

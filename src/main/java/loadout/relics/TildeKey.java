@@ -12,6 +12,8 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
+import com.megacrit.cardcrawl.actions.defect.DecreaseMaxOrbAction;
+import com.megacrit.cardcrawl.actions.defect.IncreaseMaxOrbAction;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -25,6 +27,8 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.exordium.Cultist;
+import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.DexterityPower;
 import com.megacrit.cardcrawl.powers.FocusPower;
@@ -37,6 +41,7 @@ import loadout.LoadoutMod;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -104,6 +109,24 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
     public static boolean infiniteCampfireActions = false;
     public static final String infiniteCampfireActionsKey = "infiniteCampfireActions";
+
+    public static boolean isOrbLocked = false;
+    private static final String isOrbLockedKey = "isOrbLocked";
+    public static int orbLockAmount = 100;
+
+    private static final String orbLockAmountKey = "orbLockAmount";
+
+    public static boolean isEnergyLocked = false;
+    private static final String isEnergyLockedKey = "isEnergyLocked";
+    public static int energyLockAmount = 100;
+    private static final String energyLockAmountKey = "energyLockAmount";
+    public static boolean isMaxEnergyLocked = false;
+    private static final String isMaxEnergyLockedKey = "isMaxEnergyLocked";
+    public static int maxEnergyLockAmount = 100;
+    private static final String maxEnergyLockAmountKey = "maxEnergyLockAmount";
+
+    public static int enemyAttackMult = 100;
+    private static final String enemyAttackMultKey = "enemyAttackMult";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -202,6 +225,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
             if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                 if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
+                if(!isInfiniteEnergy) {
+                    if(isEnergyLocked) EnergyPanel.totalCount = energyLockAmount;
+                    if(isMaxEnergyLocked) AbstractDungeon.player.energy.energy = maxEnergyLockAmount;
+                }
                 if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
 
 
@@ -319,6 +346,13 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         isRewardDuped = false;
         enableRelicCounterEdit = false;
         infiniteCampfireActions = false;
+        orbLockAmount = 1;
+        isOrbLocked = false;
+        isEnergyLocked = false;
+        energyLockAmount = 3;
+        isMaxEnergyLocked = false;
+        maxEnergyLockAmount = 3;
+        enemyAttackMult = 100;
     }
 
     public static void killAllMonsters() {
@@ -332,6 +366,17 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         am.setMove((byte) 1, intent);
     }
 
+    public static void setMonsterDamage(AbstractMonster am, int damagePercent) {
+        //float mult = (damagePercent / 100.0f);
+//        for(DamageInfo di : am.damage) {
+//            di.output *= ;
+//        }
+        am.createIntent();
+
+    }
+
+
+
     @Override
     public void atBattleStart() {
         if(isKillAllMode) {
@@ -344,6 +389,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) {
                 setMonsterIntent(am,setIntent);
             }
+        }
+
+        if(enemyAttackMult != 100) {
+            for (AbstractMonster am: AbstractDungeon.getCurrRoom().monsters.monsters) setMonsterDamage(am, enemyAttackMult);
         }
     }
 
@@ -359,6 +408,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             this.flash();
             setMonsterIntent(monster,setIntent);
         }
+
+        if(enemyAttackMult != 100) {
+            setMonsterDamage(monster, enemyAttackMult);
+        }
     }
 
     @Override
@@ -373,6 +426,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                 setMonsterIntent(am,setIntent);
             }
         }
+
     }
 
 
@@ -390,6 +444,41 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                 flash();
                 addToTop((AbstractGameAction)new RelicAboveCreatureAction((AbstractCreature)AbstractDungeon.player, this));
                 addToBot((AbstractGameAction)new DrawCardAction((AbstractCreature)AbstractDungeon.player, BaseMod.MAX_HAND_SIZE - AbstractDungeon.player.hand.size()));
+            }
+        }
+        if(isOrbLocked && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp ) {
+            if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player.maxOrbs != orbLockAmount) {
+                flash();
+                addToTop((AbstractGameAction)new RelicAboveCreatureAction((AbstractCreature)AbstractDungeon.player, this));
+                modifyPlayerOrbs(orbLockAmount - AbstractDungeon.player.maxOrbs);
+            }
+        }
+
+    }
+
+    public static void modifyPlayerOrbs(int diff) {
+        AbstractDungeon.player.maxOrbs += diff;
+        if(diff >0) {
+
+            int i;
+            for(i = 0; i < diff; ++i) {
+                AbstractDungeon.player.orbs.add(new EmptyOrbSlot());
+            }
+
+            for(i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
+                ((AbstractOrb)AbstractDungeon.player.orbs.get(i)).setSlot(i, AbstractDungeon.player.maxOrbs);
+            }
+        } else if (diff < 0) {
+            if (AbstractDungeon.player.maxOrbs < 0) {
+                AbstractDungeon.player.maxOrbs = 0;
+            }
+
+            if (!AbstractDungeon.player.orbs.isEmpty()) {
+                AbstractDungeon.player.orbs = new ArrayList<>(AbstractDungeon.player.orbs.subList(0, AbstractDungeon.player.maxOrbs));
+            }
+
+            for(int i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
+                ((AbstractOrb)AbstractDungeon.player.orbs.get(i)).setSlot(i, AbstractDungeon.player.maxOrbs);
             }
         }
     }
@@ -418,6 +507,13 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         sav.put(isRewardDupedKey, String.valueOf(isRewardDuped));
         sav.put(enableRelicCounterEditKey, String.valueOf(enableRelicCounterEdit));
         sav.put(infiniteCampfireActionsKey, String.valueOf(infiniteCampfireActions));
+        sav.put(orbLockAmountKey, String.valueOf(orbLockAmount));
+        sav.put(isOrbLockedKey, String.valueOf(isOrbLocked));
+        sav.put(isEnergyLockedKey, String.valueOf(isEnergyLocked));
+        sav.put(energyLockAmountKey, String.valueOf(energyLockAmount));
+        sav.put(isMaxEnergyLockedKey, String.valueOf(isMaxEnergyLocked));
+        sav.put(maxEnergyLockAmountKey, String.valueOf(maxEnergyLockAmount));
+        sav.put(enemyAttackMultKey, String.valueOf(enemyAttackMult));
         return sav;
     }
 
@@ -451,6 +547,13 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             isRewardDuped = Boolean.parseBoolean(sav.get(isRewardDupedKey));
             enableRelicCounterEdit = Boolean.parseBoolean(sav.get(enableRelicCounterEditKey));
             infiniteCampfireActions = Boolean.parseBoolean(sav.get(infiniteCampfireActionsKey));
+            orbLockAmount = Integer.parseInt(sav.get(orbLockAmountKey));
+            isOrbLocked = Boolean.parseBoolean(sav.get(isOrbLockedKey));
+            isEnergyLocked = Boolean.parseBoolean(sav.get(isEnergyLockedKey));
+            energyLockAmount = Integer.parseInt(sav.get(energyLockAmountKey));
+            isMaxEnergyLocked = Boolean.parseBoolean(sav.get(isMaxEnergyLockedKey));
+            maxEnergyLockAmount = Integer.parseInt(sav.get(maxEnergyLockAmountKey));
+            enemyAttackMult = Integer.parseInt(sav.get(enemyAttackMultKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
@@ -500,4 +603,6 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
         return true;
     }
+
+
 }
