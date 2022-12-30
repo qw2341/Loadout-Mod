@@ -1,5 +1,6 @@
 package loadout.relics;
 
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,9 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
-import com.megacrit.cardcrawl.powers.TheBombPower;
+import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.PowerSelectScreen;
@@ -26,6 +25,7 @@ import loadout.util.TextureLoader;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
@@ -55,6 +55,14 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
 
     public enum PowerTarget {
         PLAYER, MONSTER
+    }
+
+    public static HashSet<String> buggedPowers;
+    static {
+        buggedPowers = new HashSet<>();
+        buggedPowers.add(WeakPower.POWER_ID);
+        buggedPowers.add(FrailPower.POWER_ID);
+        buggedPowers.add(VulnerablePower.POWER_ID);
     }
 
     public PowerGiver() {
@@ -281,6 +289,9 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
                 powerToApply = (AbstractPower) con[0].newInstance(paramz);
             }
 
+            if(powerToApply.ID != null && buggedPowers.contains(powerToApply.ID) ) {
+                ReflectionHacks.setPrivate(powerToApply,powerClassToApply,"justApplied",false);
+            }
 
             return powerToApply;
 
@@ -300,8 +311,8 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
         AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(monster,monster, getPower(id, amount, monster, placeholderCard), amount));
     }
 
-    @Override
-    public void atBattleStart() {
+
+    public void battleStartPreDraw() {
         savedPowersPlayer.keySet().forEach(id -> {
             int amount = savedPowersPlayer.get(id);
             applyPowerToPlayer(id, amount);
