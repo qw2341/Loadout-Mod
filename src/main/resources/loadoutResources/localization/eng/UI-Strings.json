@@ -114,7 +114,9 @@
 			"Reward Multiplier",
 			"Dupes Only",
 			"Max Energy",
-			"Enemy Damage Mult %"
+			"Enemy Damage Mult %",
+			"Hand Size",
+			"Draw Per Turn"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

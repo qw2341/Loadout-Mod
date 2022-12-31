@@ -112,21 +112,28 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
     public static boolean isOrbLocked = false;
     private static final String isOrbLockedKey = "isOrbLocked";
-    public static int orbLockAmount = 100;
+    public static int orbLockAmount = 0;
 
     private static final String orbLockAmountKey = "orbLockAmount";
 
     public static boolean isEnergyLocked = false;
     private static final String isEnergyLockedKey = "isEnergyLocked";
-    public static int energyLockAmount = 100;
+    public static int energyLockAmount = 3;
     private static final String energyLockAmountKey = "energyLockAmount";
     public static boolean isMaxEnergyLocked = false;
     private static final String isMaxEnergyLockedKey = "isMaxEnergyLocked";
-    public static int maxEnergyLockAmount = 100;
+    public static int maxEnergyLockAmount = 3;
     private static final String maxEnergyLockAmountKey = "maxEnergyLockAmount";
 
     public static int enemyAttackMult = 100;
     private static final String enemyAttackMultKey = "enemyAttackMult";
+    public static int maxHandSize = 10;
+    private static final String maxHandSizeKey = "maxHandSize";
+    public static int drawPerTurn = 5;
+    private static final String drawPerTurnKey = "drawPerTurn";
+    public static boolean isDrawPerTurnLocked = false;
+    private static final String isDrawPerTurnLockedKey = "isDrawPerTurnLocked";
+
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -353,6 +360,11 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         isMaxEnergyLocked = false;
         maxEnergyLockAmount = 3;
         enemyAttackMult = 100;
+        maxHandSize = 10;
+        BaseMod.MAX_HAND_SIZE = BaseMod.DEFAULT_MAX_HAND_SIZE;
+
+        isDrawPerTurnLocked = false;
+        drawPerTurn = 5;
     }
 
     public static void killAllMonsters() {
@@ -515,6 +527,11 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         sav.put(isMaxEnergyLockedKey, String.valueOf(isMaxEnergyLocked));
         sav.put(maxEnergyLockAmountKey, String.valueOf(maxEnergyLockAmount));
         sav.put(enemyAttackMultKey, String.valueOf(enemyAttackMult));
+        sav.put(maxHandSizeKey, String.valueOf(maxHandSize));
+        sav.put(isDrawPerTurnLockedKey, String.valueOf(isDrawPerTurnLocked));
+
+        drawPerTurn = AbstractDungeon.player.masterHandSize;
+        sav.put(drawPerTurnKey, String.valueOf(drawPerTurn));
         return sav;
     }
 
@@ -555,6 +572,15 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
             isMaxEnergyLocked = Boolean.parseBoolean(sav.get(isMaxEnergyLockedKey));
             maxEnergyLockAmount = Integer.parseInt(sav.get(maxEnergyLockAmountKey));
             enemyAttackMult = Integer.parseInt(sav.get(enemyAttackMultKey));
+            maxHandSize = Integer.parseInt(sav.get(maxHandSizeKey));
+            BaseMod.MAX_HAND_SIZE = maxHandSize;
+
+            isDrawPerTurnLocked = Boolean.parseBoolean(sav.get(isDrawPerTurnLockedKey));
+            drawPerTurn = Integer.parseInt(sav.get(drawPerTurnKey));
+
+            int diff = AbstractDungeon.player.gameHandSize - AbstractDungeon.player.masterHandSize;
+            AbstractDungeon.player.masterHandSize = drawPerTurn;
+            AbstractDungeon.player.gameHandSize = drawPerTurn + diff;
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
@@ -604,6 +630,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
 
         return true;
     }
+
+    public void battleStartPreDraw() {
+
+    }
+
+
 
 
 }

@@ -57,6 +57,7 @@ public class AbstractPlayerPatch {
     public static class PreCombatHookPatch {
         public static void Prefix(AbstractPlayer __instance) {
             if(__instance.hasRelic(PowerGiver.ID)) ((PowerGiver)(__instance.getRelic(PowerGiver.ID))).battleStartPreDraw();
+
         }
     }
 }

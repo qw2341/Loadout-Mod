@@ -49,6 +49,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
     }
 
     public static class StatModButton implements HeaderButtonPlusListener, TextInputReceiver {
+        public static final float HITBOX_HEIGHT = 75.0f * Settings.yScale;
 
         public Hitbox hb;
 
@@ -85,7 +86,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             this.text += ": ";
             this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, Float.MAX_VALUE, 0.0F);
 
-            this.hb = new Hitbox(x + this.textWidth/2 ,y,this.textWidth + iconOffset,75.0f * Settings.yScale);
+            this.hb = new Hitbox(x + this.textWidth/2 ,y,this.textWidth + iconOffset,HITBOX_HEIGHT);
             this.amount = "0";
 
             this.icon = icon;
@@ -256,6 +257,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
     public StatModSelectScreen(AbstractRelic owner) {
         super(owner);
         if (sortHeader == null) this.sortHeader = new StatModSortHeader(this);
+        itemHeight = StatModButton.HITBOX_HEIGHT;
         this.items.add(new StatModButton(TopPanel.LABEL[3], TildeKey.isHealthLocked, ImageMaster.TP_HP, HP_NUM_OFFSET_X, Color.SALMON, new StatModActions() {
             @Override
             public int getAmount() {
@@ -410,6 +412,45 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             @Override
             public void onBoolChange(boolean boolToChange, int amount) {
 
+            }
+        }));
+
+        this.items.add(new StatModButton(TEXT[6], false, ImageMaster.DECK_BTN_BASE, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return BaseMod.MAX_HAND_SIZE;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.maxHandSize = amountToSet;
+                BaseMod.MAX_HAND_SIZE = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }));
+
+        this.items.add(new StatModButton(TEXT[7], TildeKey.isDrawPerTurnLocked, ImageMaster.INTENT_DEFEND_BUFF, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.player.masterHandSize;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.drawPerTurn = amountToSet;
+                int diff = AbstractDungeon.player.gameHandSize - AbstractDungeon.player.masterHandSize;
+                AbstractDungeon.player.masterHandSize = amountToSet;
+                AbstractDungeon.player.gameHandSize = amountToSet + diff;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+                TildeKey.isDrawPerTurnLocked = boolToChange;
+                if (boolToChange) TildeKey.drawPerTurn = amount;
             }
         }));
 

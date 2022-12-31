@@ -113,7 +113,9 @@
 			"Multiplicateur de récompense",
 			"Dupes seulement",
 			"Énergie maximale",
-			"Multiplicateur de dégâts ennemis %"
+			"Multiplicateur de dégâts ennemis %",
+			"Taille de la main",
+			"Tirage Au Sort Par Tour"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {
