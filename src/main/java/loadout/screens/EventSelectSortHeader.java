@@ -59,6 +59,8 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
     private ArrayList<String> eventMods;
     private HashMap<String,String> eventModNames;
 
+    private TextSearchBox textSearchBox;
+
 
 
     public EventSelectSortHeader(EventSelectScreen eventSelectScreen, float startX) {
@@ -102,6 +104,7 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.dropdownMenus = new DropdownMenu[] {this.modNameDropdown};
         this.dropdownMenuHeaders = new String[] {"Mod"};
 
+        //this.textSearchBox = new TextSearchBox(this, xPosition, START_Y - 250.0f * Settings.yScale);
     }
 
     private HashSet<String> findEventAddingMods() {

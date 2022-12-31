@@ -367,10 +367,11 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     }
 
     public static void setMonsterDamage(AbstractMonster am, int damagePercent) {
-        //float mult = (damagePercent / 100.0f);
-//        for(DamageInfo di : am.damage) {
-//            di.output *= ;
-//        }
+        float mult = (damagePercent / 100.0f);
+        for(DamageInfo di : am.damage) {
+            di.output = di.base;
+            di.output *= mult;
+        }
         am.createIntent();
 
     }
