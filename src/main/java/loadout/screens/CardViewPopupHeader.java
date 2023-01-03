@@ -504,7 +504,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             clearActiveButtons();
 
             for (int i = 0; i < multiplier; i++) {
-                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(cardViewScreen.card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+                AbstractCard cardCopy = cardViewScreen.card.makeStatEquivalentCopy();
+                AbstractCardPatch.CardModificationFields.isCardModifiedByModifier.set(cardCopy,AbstractCardPatch.CardModificationFields.isCardModifiedByModifier.get(cardViewScreen.card));
+                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(cardCopy, Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
             }
 
             resetOtherButtons();
