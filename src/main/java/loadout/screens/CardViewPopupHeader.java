@@ -483,8 +483,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             cardViewScreen.group.group.remove(idx);
             cardViewScreen.group.group.add(idx,freshCopy);
 
-
-
             setCardModded(false);
             resetOtherButtons();
         } else if (button == this.saveChangesButton) {

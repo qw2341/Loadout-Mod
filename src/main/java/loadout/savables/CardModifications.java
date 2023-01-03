@@ -123,4 +123,16 @@ public class CardModifications
         isGettingUnmoddedCopy = false;
         return unmoddedCopy;
     }
+
+    public static void restoreACardInLibrary(AbstractCard card) {
+        CardLibrary.cards.put(card.cardID, getUnmoddedCopy(card));
+    }
+
+    public static void restoreACardInLibrary(String cardID) {
+        CardLibrary.cards.put(cardID, getUnmoddedCopy(CardLibrary.getCard(cardID)));
+    }
+
+    public static void restoreAllCardsInLibrary() {
+        cardMap.keySet().forEach(CardModifications::restoreACardInLibrary);
+    }
 }

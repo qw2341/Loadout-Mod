@@ -928,6 +928,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,
                 (button) -> {
+                    //restore the changes in CardLib
+                    CardModifications.restoreAllCardsInLibrary();
+
                     CardModifications.cardMap.clear();
 
                     try {
