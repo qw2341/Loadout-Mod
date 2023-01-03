@@ -1456,11 +1456,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         if (LoadoutMod.enableEventPool)
             relics.addAll(RelicLibrary.specialList);
         if(LoadoutMod.enableDeprecatedPool) {
-            try {relics.add(new DEPRECATED_DarkCore());
+            try {
+                //relics.add(new DEPRECATED_DarkCore());
                 relics.add(new DerpRock());
                 relics.add(new DEPRECATEDDodecahedron());
                 relics.add(new DEPRECATEDYin());
             } catch (Exception e) {
+                //e.printStackTrace();
                 logger.info("Error occurred while adding deprecated relics");
             }
 

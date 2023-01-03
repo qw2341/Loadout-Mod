@@ -54,57 +54,16 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
 
     private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
-    //private static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 750.0F * Settings.scale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
-    //public static final float SPACE_X = 226.0F * Settings.yScale;
-
-    //private RelicSelectSortHeader sortHeader;
-
-    //protected float scrollY = START_Y;
-    //private float targetY = this.scrollY;
-//    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-//    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-//    private int scrollTitleCount = 0;
-    //private int row = 0;
-    //private int col = 0;
-//    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
-//    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
-//    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
-//    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
-//    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
-
-    //private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
-    //private AbstractRelic hoveredItem = null;
-    //private AbstractRelic clickStartedItem = null;
-//    private boolean grabbedScreen = false;
-//    private float grabStartY = 0.0F;
-    //private ScrollBar scrollBar;
-    //private Hitbox controllerRelicHb = null;
-
-    //private ArrayList<AbstractRelic> items;
-    //private ArrayList<AbstractRelic> itemsClone;
-    //private ArrayList<AbstractRelic> relicsClass;
-    //private ArrayList<AbstractRelic> relicsClassReverse;
-    //private boolean show = false;
-    //public static int selectMult = 1;
-    //private ArrayList<AbstractRelic> selectedItems = new ArrayList<>();
-
-    //private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    //private boolean doneSelecting = false;
     public boolean isDeleteMode;
-
-    //public enum SortType {CLASS,RARITY,NAME,MOD};
-
 
     private final Comparator<AbstractRelic> relicTierComparator = RelicTierComparator.INSTANCE;
     private final Comparator<AbstractRelic> relicClassComparator = new RelicClassComparator();
     private final Comparator<AbstractRelic> relicNameComparator = RelicNameComparator.INSTANCE;
     private final Comparator<AbstractRelic> relicModComparator = RelicModComparator.INSTANCE;
 
-    //private boolean isDragSelecting = false;
-    //private boolean isTryingToScroll = false;
 
     protected AbstractCard.CardColor filterColor = null;
     protected AbstractRelic.RelicTier filterRarity = null;
@@ -180,43 +139,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         scrolledUsingBar(0.0F);
     }
 
-//    private void initClassList() {
-//        this.relicsClass = new ArrayList<>();
-//        this.relicsClass.addAll(RelicLibrary.redList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClass.addAll(RelicLibrary.greenList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClass.addAll(RelicLibrary.blueList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClass.addAll(RelicLibrary.whiteList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        for (HashMap<String, AbstractRelic> rPool : RelicClassComparator.customRelicPools) {
-//            this.relicsClass.addAll(rPool.values().stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        }
-//
-//        try {
-//            Field f = RelicLibrary.class.getDeclaredField("sharedRelics");
-//            f.setAccessible(true);
-//            HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) f.get(null);
-//            this.relicsClass.addAll(sharedRelics.values().stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        } catch (Exception e) {
-//            LoadoutMod.logger.error("Failed to retrieve shared relics from the pool");
-//        }
-//
-//        this.relicsClassReverse = new ArrayList<>();
-//        try {
-//            Field f = RelicLibrary.class.getDeclaredField("sharedRelics");
-//            f.setAccessible(true);
-//            HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) f.get(null);
-//            this.relicsClassReverse.addAll(sharedRelics.values().stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        } catch (Exception e) {
-//            LoadoutMod.logger.error("Failed to retrieve shared relics from the pool");
-//        }
-//
-//        for (int i = RelicClassComparator.customRelicPools.size() - 1; i >= 0 ; i --) {
-//            this.relicsClassReverse.addAll(RelicClassComparator.customRelicPools.get(i).values().stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        }
-//        this.relicsClassReverse.addAll(RelicLibrary.whiteList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClassReverse.addAll(RelicLibrary.blueList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClassReverse.addAll(RelicLibrary.greenList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//        this.relicsClassReverse.addAll(RelicLibrary.redList.stream().sorted(relicNameComparator).collect(Collectors.toCollection(ArrayList::new)));
-//    }
 
     public void sortByClass(boolean isAscending){
         if (isAscending) {
@@ -543,61 +465,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         // TODO
     }
 
-//    private void updateScrolling()
-//    {
-//        int y = InputHelper.mY;
-//        if (!grabbedScreen)
-//        {
-//            if (InputHelper.scrolledDown) {
-//                targetY += Settings.SCROLL_SPEED;
-//            } else if (InputHelper.scrolledUp) {
-//                targetY -= Settings.SCROLL_SPEED;
-//            }
-//            if (InputHelper.justClickedLeft)
-//            {
-//                grabbedScreen = true;
-//                grabStartY = (y - targetY);
-//            }
-//        }
-//        else if (InputHelper.isMouseDown)
-//        {
-//            targetY = (y - grabStartY);
-//        }
-//        else
-//        {
-//            grabbedScreen = false;
-//        }
-//        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
-//        resetScrolling();
-//        updateBarPosition();
-//    }
-
-//    private void calculateScrollBounds()
-//    {
-//        int size = items.size();
-//
-//        int scrollTmp = 0;
-//        if (size > 10) {
-//            scrollTmp = size / 5;
-//            scrollTmp += 5;
-//            if (size % 5 != 0) {
-//                ++scrollTmp;
-//            }
-//            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 75.0f * Settings.scale;
-//        } else {
-//            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
-//        }
-//    }
-
-//    private void resetScrolling()
-//    {
-//        if (targetY < scrollLowerBound) {
-//            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
-//        } else if (targetY > scrollUpperBound) {
-//            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
-//        }
-//    }
-
     @Override
     protected void updateList(ArrayList<AbstractRelic> list)
     {
@@ -891,18 +758,4 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         calculateScrollBounds();
     }
 
-//    @Override
-//    public void scrolledUsingBar(float newPercent)
-//    {
-//        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
-//        scrollY = newPosition;
-//        targetY = newPosition;
-//        updateBarPosition();
-//    }
-//
-//    private void updateBarPosition()
-//    {
-//        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
-//        scrollBar.parentScrolledToPercent(percent);
-//    }
 }
