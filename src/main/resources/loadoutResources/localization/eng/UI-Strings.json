@@ -76,7 +76,8 @@
 			"Make Playable",
 			"Make Un-curse",
 			"Make Curse",
-			"Save For All Future Cards"
+			"Save For All Future Cards",
+			"Copy Card"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

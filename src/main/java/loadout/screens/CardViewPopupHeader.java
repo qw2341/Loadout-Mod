@@ -29,10 +29,12 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
 import loadout.patches.AbstractCardPatch;
 import loadout.relics.CardModifier;
+import loadout.relics.CardPrinter;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 import org.apache.commons.lang3.StringUtils;
@@ -108,6 +110,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
+    private final HeaderButtonPlus getCopyButton;
 
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
@@ -190,6 +193,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
         yPosition -= SPACE_Y;
         this.saveChangesButton = new HeaderButtonPlus(TEXT[9], xPosition, yPosition, this, true, ImageMaster.SETTINGS_ICON);
+        yPosition -= SPACE_Y;
+        this.getCopyButton = new HeaderButtonPlus(TEXT[10], xPosition, yPosition, this, true, ImageMaster.PROFILE_B);
 
 
         yPosition = START_Y;
@@ -236,7 +241,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
 
         this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.miscIncreaseButton, this.miscDecreaseButton, this.restoreDefaultButton,
-        this.saveChangesButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
+        this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
 
 
 
@@ -495,6 +500,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 logger.error("Error saving card mods");
             }
             //CardModifications.modifyCards();
+
+            resetOtherButtons();
+        } else if (button == this.getCopyButton) {
+            clearActiveButtons();
+
+            for (int i = 0; i < multiplier; i++) {
+                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(cardViewScreen.card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+            }
 
             resetOtherButtons();
         } else if (button == this.rarityIncreaseButton) {
