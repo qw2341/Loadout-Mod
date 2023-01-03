@@ -117,12 +117,12 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
                     for (int i = 0 ; i< paramCt; i++) {
                         Class param = params[i];
-                        if (AbstractCreature.class.isAssignableFrom(param)) {
-                            paramz[i] = dummyPlayer;
-                        } else if (AbstractPlayer.class.isAssignableFrom(param)) {
+                        if (AbstractPlayer.class.isAssignableFrom(param)) {
                             paramz[i] = dummyPlayer;
                         } else if (AbstractMonster.class.isAssignableFrom(param)) {
                             paramz[i] = dummyMonster;
+                        } else if (AbstractCreature.class.isAssignableFrom(param)) {
+                            paramz[i] = dummyPlayer;
                         } else if (int.class.isAssignableFrom(param)) {
                             paramz[i] = 0;
                         } else if (AbstractCard.class.isAssignableFrom(param)) {
