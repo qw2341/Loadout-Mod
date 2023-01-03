@@ -117,7 +117,8 @@
 			"Max Energy",
 			"Enemy Damage Mult %",
 			"Hand Size",
-			"Draw Per Turn"
+			"Draw Per Turn",
+			"Potion Potency"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

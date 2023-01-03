@@ -454,6 +454,23 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
+//        this.items.add(new StatModButton(TEXT[8], false, ImageMaster.POTION_FAIRY_CONTAINER, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }));
+
     }
 
 
