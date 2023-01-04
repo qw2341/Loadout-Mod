@@ -22,6 +22,7 @@ import com.megacrit.cardcrawl.vfx.cardManip.PurgeCardEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 import loadout.LoadoutMod;
 import loadout.patches.AbstractCardPatch;
+import loadout.savables.CardModifications;
 import loadout.screens.GCardSelectScreen;
 import loadout.util.TextureLoader;
 
@@ -266,5 +267,21 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
             logger.info("Error obtaining a new copy for card: " + id);
         }
         return null;
+    }
+
+    @Override
+    public void onPreviewObtainCard(AbstractCard c) {
+        onObtainCard(c);
+    }
+
+    @Override
+    public void onObtainCard(AbstractCard c) {
+        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(c.cardID)) {
+            try {
+                CardModifications.modifyCard(c,CardModifications.cardMap.get(c.cardID));
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Failed to modify: " + c.cardID + " when obtaining");
+            }
+        }
     }
 }
