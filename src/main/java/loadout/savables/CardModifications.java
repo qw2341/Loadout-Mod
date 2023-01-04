@@ -129,10 +129,15 @@ public class CardModifications
     }
 
     public static void restoreACardInLibrary(String cardID) {
-        CardLibrary.cards.put(cardID, getUnmoddedCopy(CardLibrary.getCard(cardID)));
+        AbstractCard unmod = getUnmoddedCopy(CardLibrary.getCard(cardID));
+        //unmod.initializeDescription();
+        CardLibrary.cards.put(cardID, unmod);
     }
 
     public static void restoreAllCardsInLibrary() {
-        cardMap.keySet().forEach(CardModifications::restoreACardInLibrary);
+        for (String id:cardMap.keySet()) {
+            LoadoutMod.logger.info("Resetting card: " + id);
+            CardModifications.restoreACardInLibrary(id);
+        }
     }
 }
