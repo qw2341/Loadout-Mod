@@ -76,7 +76,11 @@
 			"Faire Un-malédiction",
 			"Faire Malédiction",
 			"Économisez Pour Toutes Les Futures Cartes",
-			"Carte de Copie"
+			"Carte de Copie",
+			"Gagnez de l'or en tuant",
+			"Gain MaxHP sur Tuer",
+			"Gagnez de l'or en jouant",
+			"Soigner les PV en jeu"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

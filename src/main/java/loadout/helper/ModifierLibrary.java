@@ -28,6 +28,11 @@ public class ModifierLibrary {
         modifiers.put(FleetingMod.ID, FleetingMod.class);
         modifiers.put(GraveMod.ID, GraveMod.class);
         modifiers.put(SoulboundMod.ID,SoulboundMod.class);
+
+        modifiers.put(GainGoldOnKillMod.ID, GainGoldOnKillMod.class);
+        modifiers.put(GainHpOnKillMod.ID,GainHpOnKillMod.class);
+        modifiers.put(GainGoldOnPlayMod.ID, GainGoldOnPlayMod.class);
+        modifiers.put(HealOnPlayMod.ID, HealOnPlayMod.class);
     }
 
     public static AbstractCardModifier getModifier(String id) {

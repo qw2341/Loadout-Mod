@@ -42,6 +42,10 @@ import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import javassist.CtClass;
+import loadout.cardmods.GainGoldOnKillMod;
+import loadout.cardmods.GainGoldOnPlayMod;
+import loadout.cardmods.GainHpOnKillMod;
+import loadout.cardmods.HealOnPlayMod;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.savables.CardLoadouts;
@@ -959,6 +963,11 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         logger.info("Done initializing stuffs");
 
         logger.info("Loading Custom Card Modifications into CardLib");
+        GainGoldOnKillMod.onLoad();
+        GainHpOnKillMod.onLoad();
+        GainGoldOnPlayMod.onLoad();
+        HealOnPlayMod.onLoad();
+
         CardModifications.modifyCards();
         logger.info("Done Loading Custom Card Modifications");
 

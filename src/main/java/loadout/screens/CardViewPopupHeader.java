@@ -108,6 +108,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus makeFleetingButton;
     private final HeaderButtonPlus makeGraveButton;
 
+    private final HeaderButtonPlus makeGainGoldOnKillButton;
+    private final HeaderButtonPlus makeGainHPOnKillButton;
+
+    private final HeaderButtonPlus makeGainGoldOnPlayButton;
+    private final HeaderButtonPlus makeHealOnPlayButton;
+
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
     private final HeaderButtonPlus getCopyButton;
@@ -137,59 +143,59 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         this.costIncreaseButton = new HeaderButtonPlus(clTEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.costIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        //yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.costDecreaseButton = new HeaderButtonPlus(clTEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         this.damageIncreaseButton = new HeaderButtonPlus(TEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.damageIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.damageDecreaseButton = new HeaderButtonPlus(TEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         this.blockIncreaseButton = new HeaderButtonPlus(StringUtils.capitalize(TEXT_BLOCK), xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.blockIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.blockDecreaseButton = new HeaderButtonPlus(StringUtils.capitalize(TEXT_BLOCK), xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
-
+        xPosition -= SPACE_X;
 
         this.magicNumberIncButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.magicNumberIncButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.magicNumberDecButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         this.healIncreaseButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.healIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.healDecreaseButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
-
+        xPosition -= SPACE_X;
         this.drawIncreaseButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.drawIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.drawDecreaseButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
-
+        xPosition -= SPACE_X;
 
         this.discardIncreaseButton = new HeaderButtonPlus(TEXT_DISCARD, xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.discardIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.discardDecreaseButton = new HeaderButtonPlus(TEXT_DISCARD, xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
         this.miscIncreaseButton = new HeaderButtonPlus("Misc", xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.miscIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.miscDecreaseButton = new HeaderButtonPlus("Misc", xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
-//        this.makeXCostButton = new HeaderButtonPlus("X Cost", xPosition, yPosition, this, false, true, HeaderButtonPlus.Alignment.CENTER);
-//        this.makeXCostButton.isActive = this.cardViewScreen.card.cost == -1;
-//        yPosition -= SPACE_Y;
-//        this.makeUnplayableButton = new HeaderButtonPlus("Make the card unplayable", xPosition, yPosition, this,false, true, HeaderButtonPlus.Alignment.CENTER);
-//        this.makeUnplayableButton.isActive = this.cardViewScreen.card.cost == -2;
-//        yPosition -= SPACE_Y;
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
         yPosition -= SPACE_Y;
         this.saveChangesButton = new HeaderButtonPlus(TEXT[9], xPosition, yPosition, this, true, ImageMaster.SETTINGS_ICON);
@@ -198,50 +204,70 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
 
         yPosition = START_Y;
-        xPosition = Settings.WIDTH - xPosition;
+        xPosition = Settings.WIDTH - 2 * xPosition;
 
         this.rarityIncreaseButton = new HeaderButtonPlus(clTEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.rarityIncreaseButton.isAscending = false;
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.rarityDecreaseButton = new HeaderButtonPlus(clTEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         //this.makeUnplayableButton = new HeaderButtonPlus(TEXT[5], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/muzzle.png"));
         this.makeUnplayableButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.UNPLAYABLE.NAMES[0]), xPosition, yPosition, this, false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeExhaustButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition -= SPACE_X;
         yPosition -= SPACE_Y;
         //this.makePlayableButton = new HeaderButtonPlus(TEXT[6], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/ancient.png"));
         //yPosition -= SPACE_Y;
         this.makeUncurseButton = new HeaderButtonPlus(TEXT[7], xPosition, yPosition, this, true, ImageMaster.loadImage("images/relics/omamori.png"));
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.makeCurseButton = new HeaderButtonPlus(TEXT[8], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/accursed.png"));
         yPosition -= SPACE_Y;
-        this.makeExhaustButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition -= SPACE_X;
 
-        yPosition -= SPACE_Y;
         this.makeEtherealButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.ETHEREAL.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
-
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.makeInnateButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.INNATE.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
-
+        xPosition -= SPACE_X;
         yPosition -= SPACE_Y;
-        this.makeRetainButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.RETAIN.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
 
-        yPosition -= SPACE_Y;
         this.makeXCostButton = new HeaderButtonPlus("X " + clTEXT[3],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeRetainButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.RETAIN.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition -= SPACE_X;
         yPosition -= SPACE_Y;
+
+        this.makeGraveButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("grave"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
         this.makeAutoPlayButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("autoplay"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
+
         this.makeSoulBoundButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("soulbound"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
-        yPosition -= SPACE_Y;
+        xPosition += SPACE_X;
         this.makeFleetingButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("fleeting"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
-        this.makeGraveButton = new HeaderButtonPlus(BaseMod.getKeywordTitle("grave"),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition -= SPACE_X;
+
         yPosition -= SPACE_Y;
 
+        this.makeGainGoldOnKillButton = new HeaderButtonPlus(TEXT[11],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeGainHPOnKillButton = new HeaderButtonPlus(TEXT[12],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
+        this.makeGainGoldOnPlayButton = new HeaderButtonPlus(TEXT[13],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeHealOnPlayButton = new HeaderButtonPlus(TEXT[14],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.miscIncreaseButton, this.miscDecreaseButton, this.restoreDefaultButton,
-        this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton};
+        this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
+        this.makeHealOnPlayButton};
 
 
 
@@ -333,6 +359,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = FleetingField.fleeting.get(cardViewScreen.card);
                 else if (button == this.makeGraveButton)
                     button.isAscending = GraveField.grave.get(cardViewScreen.card);
+                else if(button == this.makeGainGoldOnKillButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainGoldOnKillMod.ID);
+                else if(button == this.makeGainHPOnKillButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainHpOnKillMod.ID);
+                else if(button == this.makeGainGoldOnPlayButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainGoldOnPlayMod.ID);
+                else if(button == this.makeHealOnPlayButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, HealOnPlayMod.ID);
             }
         }
     }
@@ -354,6 +388,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeSoulBoundButton.isAscending = SoulboundField.soulbound.get(card);
             this.makeFleetingButton.isAscending = FleetingField.fleeting.get(card);
             this.makeGraveButton.isAscending = GraveField.grave.get(card);
+            this.makeGainGoldOnKillButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainGoldOnKillMod.ID);
+            this.makeGainHPOnKillButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainHpOnKillMod.ID);
+            this.makeGainGoldOnPlayButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainGoldOnPlayMod.ID);
+            this.makeHealOnPlayButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, HealOnPlayMod.ID);
         }
 
 
@@ -637,7 +675,39 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.addModifier(cardViewScreen.card, new GraveMod());
             setCardModded(true);
             resetOtherButtons();
-        }else {
+        } else if(button == this.makeGainGoldOnKillButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnKillMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new GainGoldOnKillMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeGainHPOnKillButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, GainHpOnKillMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new GainHpOnKillMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeGainGoldOnPlayButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnPlayMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new GainGoldOnPlayMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeHealOnPlayButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, HealOnPlayMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new HealOnPlayMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else {
             return;
         }
         if (cardViewScreen != null && cardViewScreen.card != null) {

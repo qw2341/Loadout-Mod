@@ -77,7 +77,11 @@
 			"Make Un-curse",
 			"Make Curse",
 			"Save For All Future Cards",
-			"Copy Card"
+			"Copy Card",
+			"Gain Gold on Kill",
+			"Gain MaxHP on Kill",
+			"Gain Gold on Play",
+			"Heal HP on Play"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -117,8 +121,7 @@
 			"Max Energy",
 			"Enemy Damage Mult %",
 			"Hand Size",
-			"Draw Per Turn",
-			"Potion Potency"
+			"Draw Per Turn"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {
