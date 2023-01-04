@@ -5,6 +5,7 @@ import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
+import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.DynamicTextBlocks;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -48,6 +49,8 @@ import loadout.cardmods.GainHpOnKillMod;
 import loadout.cardmods.HealOnPlayMod;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
+import loadout.helper.dynamicvariables.HealVariable;
+import loadout.helper.dynamicvariables.MiscVariable;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
@@ -1558,6 +1561,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receiveEditCards() {
         logger.info("loading card modifications");
+
+        //BaseMod.addDynamicVariable(new HealVariable());
+        //BaseMod.addDynamicVariable(new MiscVariable());
 
         try {
             ModifierLibrary.initialize();
