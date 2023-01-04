@@ -11,6 +11,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 
+import java.util.Arrays;
+
 public class GainHpOnKillMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GainHpOnKillModifier");
@@ -38,6 +40,6 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION.split(LocalizedStrings.PERIOD)[1];
+        description = CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION.split("[" + LocalizedStrings.PERIOD + "]")[1];
     }
 }
