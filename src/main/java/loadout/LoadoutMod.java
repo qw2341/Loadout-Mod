@@ -106,7 +106,7 @@ import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
 @SpireInitializer
 public class LoadoutMod implements
-        EditRelicsSubscriber,
+        EditRelicsSubscriber, EditCardsSubscriber,
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
@@ -327,16 +327,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
         logger.info("Done adding mod settings");
 
-        logger.info("loading card modifications");
 
-        try {
-            ModifierLibrary.initialize();
-            cardModifications = new CardModifications();
-        } catch (IOException e) {
-            logger.error("Error loading card modifications");
-        }
-
-        logger.info("Done loading card modifications");
 
         logger.info("loading favorites");
         try {
@@ -962,14 +953,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         createStuffLists();
         logger.info("Done initializing stuffs");
 
-        logger.info("Loading Custom Card Modifications into CardLib");
-        GainGoldOnKillMod.onLoad();
-        GainHpOnKillMod.onLoad();
-        GainGoldOnPlayMod.onLoad();
-        HealOnPlayMod.onLoad();
 
-        CardModifications.modifyCards();
-        logger.info("Done Loading Custom Card Modifications");
+
+        //CardModifications.modifyCards();
+
 
         //init top
         //BaseMod.addTopPanelItem();
@@ -1566,5 +1553,19 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public boolean receivePostCampfire() {
         return !TildeKey.infiniteCampfireActions;
+    }
+
+    @Override
+    public void receiveEditCards() {
+        logger.info("loading card modifications");
+
+        try {
+            ModifierLibrary.initialize();
+            cardModifications = new CardModifications();
+        } catch (IOException e) {
+            logger.error("Error loading card modifications");
+        }
+
+        logger.info("Done loading card modifications");
     }
 }

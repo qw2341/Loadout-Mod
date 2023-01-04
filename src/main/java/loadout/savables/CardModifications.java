@@ -12,8 +12,13 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
+import loadout.cardmods.GainGoldOnKillMod;
+import loadout.cardmods.GainGoldOnPlayMod;
+import loadout.cardmods.GainHpOnKillMod;
+import loadout.cardmods.HealOnPlayMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
@@ -81,10 +86,37 @@ public class CardModifications
     }
 
     public static void modifyCards() {
+        LoadoutMod.logger.info("Loading Custom Card Modifications into CardLib");
+        GainGoldOnKillMod.onLoad();
+        GainHpOnKillMod.onLoad();
+        GainGoldOnPlayMod.onLoad();
+        HealOnPlayMod.onLoad();
         for (String cardId:cardMap.keySet()) {
+            AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
             if(cardId != null && CardLibrary.cards.containsKey(cardId))
-                CardLibrary.cards.put(cardId,SerializableCard.toAbstractCard(cardMap.get(cardId)));
+                CardLibrary.cards.put(cardId,moddedCard);
+//            switch (moddedCard.rarity) {
+//
+//                case BASIC:
+//                    break;
+//                case SPECIAL:
+//                    break;
+//                case COMMON:
+//                    if(AbstractDungeon.commonCardPool.removeCard(cardId))
+//                        AbstractDungeon.commonCardPool.addToBottom(moddedCard);
+//                    if(AbstractDungeon.srcCommonCardPool.removeCard(cardId))
+//                        AbstractDungeon.srcCommonCardPool.addToBottom(moddedCard);
+//                    break;
+//                case UNCOMMON:
+//                    break;
+//                case RARE:
+//                    break;
+//                case CURSE:
+//                    break;
+//            }
+
         }
+        LoadoutMod.logger.info("Done Loading Custom Card Modifications");
     }
 
     public static void modifyCard(AbstractCard card, SerializableCard sc) {
