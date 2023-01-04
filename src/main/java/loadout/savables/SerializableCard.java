@@ -40,11 +40,6 @@ public class SerializableCard implements Serializable {
     public boolean modified;
     public String[] modifiers;
 
-    public boolean autoplay;
-    public boolean soulbound;
-    public boolean fleeting;
-    public boolean grave;
-
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         if(!CardLibrary.isACard(sc.id)) {
             return new Madness();
@@ -71,13 +66,11 @@ public class SerializableCard implements Serializable {
         card.type = sc.typeString != null ? AbstractCard.CardType.valueOf(sc.typeString) : AbstractCard.CardType.values()[sc.type];
         card.rarity = sc.rarityString != null ? AbstractCard.CardRarity.valueOf(sc.rarityString) : AbstractCard.CardRarity.values()[sc.rarity];
         AbstractCardPatch.setCardModified(card,sc.modified);
-//        AutoplayField.autoplay.set(card,sc.autoplay);
-//        SoulboundField.soulbound.set(card,sc.soulbound);
-//        FleetingField.fleeting.set(card,sc.fleeting);
-//        GraveField.grave.set(card,sc.grave);
 
         for(String modifierId : sc.modifiers) {
-            CardModifierManager.addModifier(card, Objects.requireNonNull(ModifierLibrary.getModifier(modifierId)));
+            AbstractCardModifier cardModifier = ModifierLibrary.getModifier(modifierId);
+            if(cardModifier == null) continue;
+            CardModifierManager.addModifier(card, cardModifier);
         }
 
         return card;
@@ -103,10 +96,6 @@ public class SerializableCard implements Serializable {
         sc.upgraded = card.upgraded;
         sc.timesUpgraded = card.timesUpgraded;
         sc.modified = AbstractCardPatch.isCardModified(card);
-//        sc.autoplay = AutoplayField.autoplay.get(card);
-//        sc.soulbound = SoulboundField.soulbound.get(card);
-//        sc.fleeting = FleetingField.fleeting.get(card);
-//        sc.grave = GraveField.grave.get(card);
 
         ArrayList<AbstractCardModifier> cardMods = CardModifierManager.modifiers(card);
         sc.modifiers = new String[cardMods.size()];
