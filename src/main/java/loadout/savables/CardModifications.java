@@ -119,7 +119,7 @@ public class CardModifications
         LoadoutMod.logger.info("Done Loading Custom Card Modifications");
     }
 
-    public static void modifyCard(AbstractCard card, SerializableCard sc) {
+    public static void modifyCard(AbstractCard card, SerializableCard sc) throws Exception {
 
         if(!isGettingUnmoddedCopy) {
 

@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import loadout.LoadoutMod;
 import loadout.actions.MultiUseAction;
 import loadout.cardmods.XCostMod;
 import loadout.savables.CardModifications;
@@ -104,7 +105,11 @@ public class AbstractCardPatch {
         @SpirePostfixPatch
         public static void PostFix(AbstractCard __instance, String id, String name, String imgUrl, int cost, String rawDescription, AbstractCard.CardType type, AbstractCard.CardColor color, AbstractCard.CardRarity rarity, AbstractCard.CardTarget target, DamageInfo.DamageType dType) {
             if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(__instance.cardID)) {
-                CardModifications.modifyCard(__instance,CardModifications.cardMap.get(__instance.cardID));
+                try {
+                    CardModifications.modifyCard(__instance,CardModifications.cardMap.get(__instance.cardID));
+                } catch (Exception e) {
+                    LoadoutMod.logger.info("Failed to modify: " + id + " during its constructor call");
+                }
             }
         }
     }
