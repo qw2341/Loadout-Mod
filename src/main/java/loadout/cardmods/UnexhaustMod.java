@@ -12,9 +12,16 @@ public class UnexhaustMod  extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("UnexhaustMod");
 
+    public UnexhaustMod() {
+        super();
+        this.priority = 5;
+    }
+
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return StringUtils.remove(rawDescription, "NL " + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD);
+
+        String regEx = "NL" + "\\s*" + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD;
+        return StringUtils.replacePattern(rawDescription, regEx, "");
     }
 
     @Override
