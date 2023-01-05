@@ -28,7 +28,7 @@ public class HealOnPlayMod extends AbstractCardModifier {
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
-        AbstractDungeon.actionManager.addToBottom(new HealAction(AbstractDungeon.player,AbstractDungeon.player,card.magicNumber));
+        AbstractDungeon.actionManager.addToBottom(new HealAction(AbstractDungeon.player,AbstractDungeon.player,card.misc));
     }
 
     @Override
@@ -37,6 +37,7 @@ public class HealOnPlayMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("Bandage Up").DESCRIPTION.split("NL")[0];
+        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("Bandage Up").DESCRIPTION.split("NL")[0];
+        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }

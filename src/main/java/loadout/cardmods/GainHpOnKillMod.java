@@ -31,7 +31,7 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
-        AbstractDungeon.actionManager.addToBottom(new FeedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.magicNumber));
+        AbstractDungeon.actionManager.addToBottom(new FeedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.misc));
     }
 
     @Override
@@ -40,6 +40,7 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION.split("[" + LocalizedStrings.PERIOD + "]")[1];
+        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION.split("[" + LocalizedStrings.PERIOD + "]")[1];
+        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }

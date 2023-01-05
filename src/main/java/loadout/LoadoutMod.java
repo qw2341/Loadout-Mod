@@ -1562,8 +1562,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receiveEditCards() {
         logger.info("loading card modifications");
 
-        //BaseMod.addDynamicVariable(new HealVariable());
-        //BaseMod.addDynamicVariable(new MiscVariable());
+        BaseMod.addDynamicVariable(new HealVariable());
+        BaseMod.addDynamicVariable(new MiscVariable());
 
         try {
             ModifierLibrary.initialize();

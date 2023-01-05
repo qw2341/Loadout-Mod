@@ -33,7 +33,7 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
-        AbstractDungeon.actionManager.addToBottom(new GreedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.magicNumber));
+        AbstractDungeon.actionManager.addToBottom(new GreedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.misc));
     }
 
     @Override
@@ -42,6 +42,7 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION.split("NL")[1];
+        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION.split("NL")[1];
+        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }

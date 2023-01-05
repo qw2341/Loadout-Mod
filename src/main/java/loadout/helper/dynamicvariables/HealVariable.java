@@ -12,12 +12,12 @@ public class HealVariable extends DynamicVariable {
 
     @Override
     public boolean isModified(AbstractCard abstractCard) {
-        return abstractCard.baseHeal != abstractCard.heal;
+        return false;
     }
 
     @Override
     public int value(AbstractCard abstractCard) {
-        return abstractCard.heal;
+        return abstractCard.baseHeal;
     }
 
     @Override

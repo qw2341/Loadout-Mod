@@ -29,8 +29,8 @@ public class GainGoldOnPlayMod extends AbstractCardModifier {
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        AbstractDungeon.effectList.add(new RainingGoldEffect(card.magicNumber * 2, true));
-        AbstractDungeon.actionManager.addToBottom(new GainGoldAction(card.magicNumber));
+        AbstractDungeon.effectList.add(new RainingGoldEffect(card.misc * 2, true));
+        AbstractDungeon.actionManager.addToBottom(new GainGoldAction(card.misc));
     }
 
     @Override
@@ -39,6 +39,7 @@ public class GainGoldOnPlayMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("FameAndFortune").DESCRIPTION;
+        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("FameAndFortune").DESCRIPTION;
+        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }
