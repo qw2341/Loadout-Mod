@@ -92,28 +92,15 @@ public class CardModifications
         GainGoldOnPlayMod.onLoad();
         HealOnPlayMod.onLoad();
         for (String cardId:cardMap.keySet()) {
-            AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
-            if(cardId != null && CardLibrary.cards.containsKey(cardId))
-                CardLibrary.cards.put(cardId,moddedCard);
-//            switch (moddedCard.rarity) {
-//
-//                case BASIC:
-//                    break;
-//                case SPECIAL:
-//                    break;
-//                case COMMON:
-//                    if(AbstractDungeon.commonCardPool.removeCard(cardId))
-//                        AbstractDungeon.commonCardPool.addToBottom(moddedCard);
-//                    if(AbstractDungeon.srcCommonCardPool.removeCard(cardId))
-//                        AbstractDungeon.srcCommonCardPool.addToBottom(moddedCard);
-//                    break;
-//                case UNCOMMON:
-//                    break;
-//                case RARE:
-//                    break;
-//                case CURSE:
-//                    break;
-//            }
+            try{
+                AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
+                if(cardId != null && CardLibrary.cards.containsKey(cardId))
+                    CardLibrary.cards.put(cardId,moddedCard);
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Exception occurred while modding card with id = " + cardId);
+                e.printStackTrace();
+            }
+
 
         }
         LoadoutMod.logger.info("Done Loading Custom Card Modifications");
@@ -136,12 +123,37 @@ public class CardModifications
             card.color = AbstractCard.CardColor.values()[sc.color];
             card.type = AbstractCard.CardType.values()[sc.type];
             card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
+            card.misc = sc.misc;
 
             for(String modifierId : sc.modifiers) {
                 AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);
                 if (acm != null)
                     CardModifierManager.addModifier(card, acm);
             }
+//            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
+//                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "
+//                    + AbstractCardPatch.isCardModified(card));
+        }
+
+    }
+
+    public static void modifyCardNumberOnly(AbstractCard card, SerializableCard sc) throws Exception {
+
+        if(!isGettingUnmoddedCopy) {
+
+            for (int i = 0; i < sc.timesUpgraded; i++) {card.upgrade();}
+            card.cost = sc.cost;
+            card.costForTurn = card.cost;
+            card.baseDamage = sc.baseDamage;
+            card.baseBlock = sc.baseBlock;
+            card.baseMagicNumber = sc.baseMagicNumber;
+            card.magicNumber = sc.baseMagicNumber;
+            card.baseHeal = sc.baseHeal;
+            card.baseDraw = sc.baseDraw;
+            card.baseDiscard = sc.baseDiscard;
+
+            card.misc = sc.misc;
+
 //            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
 //                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "
 //                    + AbstractCardPatch.isCardModified(card));
@@ -170,6 +182,26 @@ public class CardModifications
         for (String id:cardMap.keySet()) {
             LoadoutMod.logger.info("Resetting card: " + id);
             CardModifications.restoreACardInLibrary(id);
+        }
+    }
+
+    public static void modifyIfExist(AbstractCard card) {
+        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID)) {
+            try {
+                CardModifications.modifyCard(card,CardModifications.cardMap.get(card.cardID));
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Failed to modify: " + card.cardID + " during its constructor call");
+            }
+        }
+    }
+
+    public static void modifyOnlyNumberIfExist(AbstractCard card) {
+        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID)) {
+            try {
+                CardModifications.modifyCardNumberOnly(card,CardModifications.cardMap.get(card.cardID));
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Failed to modify: " + card.cardID + " during its constructor call");
+            }
         }
     }
 }
