@@ -613,10 +613,15 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if (button == this.makeEtherealButton) {
             clearActiveButtons();
-            if (!button.isAscending)
+            if (!button.isAscending) {
                 CardModifierManager.removeModifiersById(cardViewScreen.card, EtherealMod.ID, true);
-            else
+                CardModifierManager.addModifier(cardViewScreen.card, new UnetherealMod());
+            }
+            else {
+                CardModifierManager.removeModifiersById(cardViewScreen.card, UnetherealMod.ID, true);
                 CardModifierManager.addModifier(cardViewScreen.card, new EtherealMod());
+            }
+
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.makeInnateButton) {

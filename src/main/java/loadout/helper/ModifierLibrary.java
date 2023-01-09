@@ -23,6 +23,7 @@ public class ModifierLibrary {
         modifiers.put(UnexhaustMod.ID,UnexhaustMod.class);
         modifiers.put(UnplayableMod.ID,UnplayableMod.class);
         modifiers.put(XCostMod.ID,XCostMod.class);
+        modifiers.put(UnetherealMod.ID,UnetherealMod.class);
 
         modifiers.put(AutoplayMod.ID, AutoplayMod.class);
         modifiers.put(FleetingMod.ID, FleetingMod.class);
