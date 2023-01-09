@@ -76,6 +76,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static basemod.BaseMod.gson;
+import static loadout.screens.PowerSelectScreen.TEXT;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
 //TODO: DON'T MASS RENAME/REFACTOR
@@ -547,7 +548,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         settingXPos = startingXPos + 100.0f;
         settingYPos -= lineSpacing;
 
-        ModLabeledToggleButton enableModifierAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardModifier.ID).name,
+        ModLabeledToggleButton enableModifierAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardModifier.ID).name, SettingText[16],
         settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
                 enableModifierStarting, // Boolean it uses
                 settingsPanel, // The mod panel in which this button will be in
