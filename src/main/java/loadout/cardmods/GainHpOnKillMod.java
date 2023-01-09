@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class GainHpOnKillMod extends AbstractCardModifier {
 
@@ -40,7 +41,13 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION.split("[" + LocalizedStrings.PERIOD + "]")[1];
+        String desc= CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION;
+        String txtToAdd;
+        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
+            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
+        } else {
+            txtToAdd = desc.split("NL")[1];
+        }
         description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }
