@@ -40,6 +40,7 @@ public class ModifierLibrary {
         GainHpOnKillMod.onLoad();
         GainGoldOnPlayMod.onLoad();
         HealOnPlayMod.onLoad();
+        RandomUpgradeOnKillMod.onLoad();
     }
 
     public static AbstractCardModifier getModifier(String id) {
