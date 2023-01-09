@@ -80,7 +80,8 @@
 			"Gagnez de l'or en tuant",
 			"Gain MaxHP sur Tuer",
 			"Gagnez de l'or en jouant",
-			"Soigner les PV en jeu"
+			"Soigner les PV en jeu",
+			"Mise à niveau aléatoire sur Tuer"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

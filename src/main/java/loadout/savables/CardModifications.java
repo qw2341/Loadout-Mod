@@ -87,20 +87,16 @@ public class CardModifications
 
     public static void modifyCards() {
         LoadoutMod.logger.info("Loading Custom Card Modifications into CardLib");
-        GainGoldOnKillMod.onLoad();
-        GainHpOnKillMod.onLoad();
-        GainGoldOnPlayMod.onLoad();
-        HealOnPlayMod.onLoad();
         for (String cardId:cardMap.keySet()) {
-            try{
-                AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
-                if(cardId != null && CardLibrary.cards.containsKey(cardId))
-                    CardLibrary.cards.put(cardId,moddedCard);
-            } catch (Exception e) {
-                LoadoutMod.logger.info("Exception occurred while modding card with id = " + cardId);
-                e.printStackTrace();
-            }
-
+//            try{
+//                AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
+//                if(cardId != null && CardLibrary.cards.containsKey(cardId))
+//                    CardLibrary.cards.put(cardId,moddedCard);
+//            } catch (Exception e) {
+//                LoadoutMod.logger.info("Exception occurred while modding card with id = " + cardId);
+//                e.printStackTrace();
+//            }
+            if(CardLibrary.isACard(cardId)) modifyOnlyNumberIfExist(CardLibrary.getCard(cardId));
 
         }
         LoadoutMod.logger.info("Done Loading Custom Card Modifications");
