@@ -25,7 +25,7 @@ import java.util.*;
 
 import static loadout.LoadoutMod.*;
 
-public class EventSelectSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public class EventSelectSortHeader extends AbstractSortHeader {
 
     private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectSortHeader"));
     public static final String[] rTEXT = rUiStrings.TEXT;
@@ -36,10 +36,10 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
 
     public boolean justSorted = false;
 
-    public float startX = 650.0F * Settings.xScale;
-    public static final float SPACE_X = 226.0F * Settings.xScale;
-    private static final float START_Y = Settings.HEIGHT - 200.0F * Settings.yScale;
-    public static final float SPACE_Y = 75.0F * Settings.yScale;
+//    public float startX = 650.0F * Settings.xScale;
+//    public static final float SPACE_X = 226.0F * Settings.xScale;
+//    private static final float START_Y = Settings.HEIGHT - 200.0F * Settings.yScale;
+//    public static final float SPACE_Y = 75.0F * Settings.yScale;
 
     private HeaderButtonPlus modButton;
     private HeaderButtonPlus nameButton;
@@ -47,30 +47,31 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
     private DropdownMenu modNameDropdown;
 
 
-    private String[] dropdownMenuHeaders;
-    public HeaderButtonPlus[] buttons;
-    public DropdownMenu[] dropdownMenus;
-    public int selectionIndex = -1;
-
-    private static Texture img;
-    private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
-
-    public EventSelectScreen eventSelectScreen;
+//    private String[] dropdownMenuHeaders;
+//    public HeaderButtonPlus[] buttons;
+//    public DropdownMenu[] dropdownMenus;
+//    public int selectionIndex = -1;
+//
+//    private static Texture img;
+//    private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
+//
+//    public EventSelectScreen eventSelectScreen;
     private ArrayList<String> eventMods;
     private HashMap<String,String> eventModNames;
 
-    private TextSearchBox textSearchBox;
+    //private TextSearchBox textSearchBox;
 
 
 
     public EventSelectSortHeader(EventSelectScreen eventSelectScreen, float startX) {
-        if (img == null)
-            img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
+        super(eventSelectScreen);
+//        if (img == null)
+//            img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         this.startX = startX;
         float xPosition = this.startX - 75.0f;
         float yPosition = START_Y - 450.0f * Settings.yScale;
 
-        this.eventSelectScreen = eventSelectScreen;
+        //this.selectScreen = eventSelectScreen;
 
         this.nameButton = new HeaderButtonPlus(rTEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= SPACE_Y;
@@ -104,96 +105,96 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         this.dropdownMenus = new DropdownMenu[] {this.modNameDropdown};
         this.dropdownMenuHeaders = new String[] {"Mod"};
 
-        //this.textSearchBox = new TextSearchBox(this, xPosition, START_Y - 250.0f * Settings.yScale);
+        this.searchBox = new TextSearchBox(this, 0.0f, START_Y - 250.0f * Settings.yScale, false);
     }
 
     private HashSet<String> findEventAddingMods() {
 
-        eventModNames = this.eventSelectScreen.eventModNames;
+        eventModNames = ((EventSelectScreen)this.selectScreen).eventModNames;
 
-        return this.eventSelectScreen.eventAddingMods;
+        return ((EventSelectScreen)this.selectScreen).eventAddingMods;
     }
 
-    public void update() {
-        for (HeaderButtonPlus button : this.buttons) {
-            button.update();
-        }
-        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
-            if (dropdownMenu.isOpen) {
-                dropdownMenu.update();
-                return;
-            }
-        }
+//    public void update() {
+//        for (HeaderButtonPlus button : this.buttons) {
+//            button.update();
+//        }
+//        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
+//            if (dropdownMenu.isOpen) {
+//                dropdownMenu.update();
+//                return;
+//            }
+//        }
+//
+//        for (DropdownMenu dropdownMenu : this.dropdownMenus)
+//            dropdownMenu.update();
+//    }
 
-        for (DropdownMenu dropdownMenu : this.dropdownMenus)
-            dropdownMenu.update();
-    }
+//    public Hitbox updateControllerInput() {
+//        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
+//            Hitbox hb = dropdownMenu.getHitbox();
+//            if (hb.hovered) {
+//                return hb;
+//            }
+//        }
+//        for (HeaderButtonPlus button : this.buttons) {
+//            if (button.hb.hovered) {
+//                return button.hb;
+//            }
+//        }
+//
+//        return null;
+//    }
 
-    public Hitbox updateControllerInput() {
-        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
-            Hitbox hb = dropdownMenu.getHitbox();
-            if (hb.hovered) {
-                return hb;
-            }
-        }
-        for (HeaderButtonPlus button : this.buttons) {
-            if (button.hb.hovered) {
-                return button.hb;
-            }
-        }
+//    public int getHoveredIndex() {
+//        int retVal = 0;
+//        for (HeaderButtonPlus button : this.buttons) {
+//            if (button.hb.hovered) {
+//                return retVal;
+//            }
+//            retVal++;
+//        }
+//        return 0;
+//    }
+//
+//    public void clearActiveButtons() {
+//        for (int i = 0;i<this.buttons.length;i++) {
+//            HeaderButtonPlus button = buttons[i];
+//            button.setActive(false);
+//        }
+//    }
 
-        return null;
-    }
-
-    public int getHoveredIndex() {
-        int retVal = 0;
-        for (HeaderButtonPlus button : this.buttons) {
-            if (button.hb.hovered) {
-                return retVal;
-            }
-            retVal++;
-        }
-        return 0;
-    }
-
-    public void clearActiveButtons() {
-        for (int i = 0;i<this.buttons.length;i++) {
-            HeaderButtonPlus button = buttons[i];
-            button.setActive(false);
-        }
-    }
-
-    public void resetOtherButtons() {
-        int btnIdx = getHoveredIndex();
-        for (int i = 0;i<this.buttons.length;i++) {
-            if (i!= btnIdx) {
-                HeaderButtonPlus button = buttons[i];
-
-                button.reset();
-
-            }
-        }
-    }
-    public void resetAllButtons() {
-        for (int i = 0;i<this.buttons.length;i++) {
-            HeaderButtonPlus button = buttons[i];
-            button.reset();
-        }
-        for (DropdownMenu ddm : dropdownMenus) {
-            ddm.setSelectedIndex(0);
-        }
-
-    }
+//    public void resetOtherButtons() {
+//        int btnIdx = getHoveredIndex();
+//        for (int i = 0;i<this.buttons.length;i++) {
+//            if (i!= btnIdx) {
+//                HeaderButtonPlus button = buttons[i];
+//
+//                button.reset();
+//
+//            }
+//        }
+//    }
+//    public void resetAllButtons() {
+//        for (int i = 0;i<this.buttons.length;i++) {
+//            HeaderButtonPlus button = buttons[i];
+//            button.reset();
+//        }
+//        for (DropdownMenu ddm : dropdownMenus) {
+//            ddm.setSelectedIndex(0);
+//        }
+//
+//    }
 
     @Override
     public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
         if (button == this.nameButton) {
             clearActiveButtons();
-            this.eventSelectScreen.sortAlphabetically(isAscending);
+            ((EventSelectScreen)this.selectScreen).sortAlphabetically(isAscending);
             resetOtherButtons();
         } else if (button == this.modButton) {
             clearActiveButtons();
-            this.eventSelectScreen.sortByMod(isAscending);
+            ((EventSelectScreen)this.selectScreen).sortByMod(isAscending);
             resetOtherButtons();
         } else {
             return;
@@ -203,49 +204,49 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
 
     }
 
-    public void render(SpriteBatch sb) {
-        updateScrollPositions();
-        renderButtons(sb);
-        renderSelection(sb);
-    }
+//    public void render(SpriteBatch sb) {
+//        updateScrollPositions();
+//        renderButtons(sb);
+//        renderSelection(sb);
+//    }
 
-    protected void updateScrollPositions() {
+//    protected void updateScrollPositions() {
+//
+//    }
 
-    }
+//    protected void renderButtons(SpriteBatch sb) {
+//        for (HeaderButtonPlus b : this.buttons) {
+//            b.render(sb);
+//        }
+//
+//        float spaceY = 52.0f * Settings.yScale;
+//        float yPos = START_Y;
+//
+//        float xPos = 0.0f;
+//
+//        for (int i = 0; i< this.dropdownMenus.length ; i++) {
+//
+//            DropdownMenu ddm = this.dropdownMenus[i];
+//
+//            ddm.render(sb,xPos,yPos);
+//            yPos += 0.5f * spaceY;
+//            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, dropdownMenuHeaders[i], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
+//            yPos += spaceY;
+//        }
+//
+//    }
 
-    protected void renderButtons(SpriteBatch sb) {
-        for (HeaderButtonPlus b : this.buttons) {
-            b.render(sb);
-        }
-
-        float spaceY = 52.0f * Settings.yScale;
-        float yPos = START_Y;
-
-        float xPos = 0.0f;
-
-        for (int i = 0; i< this.dropdownMenus.length ; i++) {
-
-            DropdownMenu ddm = this.dropdownMenus[i];
-
-            ddm.render(sb,xPos,yPos);
-            yPos += 0.5f * spaceY;
-            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, dropdownMenuHeaders[i], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
-            yPos += spaceY;
-        }
-
-    }
-
-    protected void renderSelection(SpriteBatch sb) {
-        for (int i = 0; i < this.buttons.length; i++) {
-            if (i == this.selectionIndex) {
-                this.selectionColor.a = 0.7F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L)) / 5.0F;
-                sb.setColor(this.selectionColor);
-                float doop = 1.0F + (1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L))) / 50.0F;
-
-                sb.draw(img, (this.buttons[this.selectionIndex]).hb.cX - 80.0F - (this.buttons[this.selectionIndex]).textWidth / 2.0F * Settings.scale, (this.buttons[this.selectionIndex]).hb.cY - 43.0F, 100.0F, 43.0F, 160.0F + (this.buttons[this.selectionIndex]).textWidth, 86.0F, Settings.scale * doop, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
-            }
-        }
-    }
+//    protected void renderSelection(SpriteBatch sb) {
+//        for (int i = 0; i < this.buttons.length; i++) {
+//            if (i == this.selectionIndex) {
+//                this.selectionColor.a = 0.7F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L)) / 5.0F;
+//                sb.setColor(this.selectionColor);
+//                float doop = 1.0F + (1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L))) / 50.0F;
+//
+//                sb.draw(img, (this.buttons[this.selectionIndex]).hb.cX - 80.0F - (this.buttons[this.selectionIndex]).textWidth / 2.0F * Settings.scale, (this.buttons[this.selectionIndex]).hb.cY - 43.0F, 100.0F, 43.0F, 160.0F + (this.buttons[this.selectionIndex]).textWidth, 86.0F, Settings.scale * doop, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
+//            }
+//        }
+//    }
 
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
@@ -253,13 +254,13 @@ public class EventSelectSortHeader implements HeaderButtonPlusListener, Dropdown
         if (dropdownMenu == this.modNameDropdown) {
             if (i == 0) {
                 //if showing all
-                eventSelectScreen.filterMod = null;
+                ((EventSelectScreen)this.selectScreen).filterMod = null;
             } else if (i == (eventMods.size() + 2) - 1) {
-                eventSelectScreen.filterMod = "Slay the Spire";
+                ((EventSelectScreen)this.selectScreen).filterMod = "Slay the Spire";
             } else {
-                eventSelectScreen.filterMod = eventMods.get(i - 1);
+                ((EventSelectScreen)this.selectScreen).filterMod = eventMods.get(i - 1);
             }
-            eventSelectScreen.updateFilters();
+            ((EventSelectScreen)this.selectScreen).updateFilters();
         }
     }
 }

@@ -1,53 +1,30 @@
 package loadout.screens;
 
-import basemod.BaseMod;
 import basemod.CustomEventRoom;
 import basemod.ReflectionHacks;
 import basemod.eventUtil.AddEventParams;
-import basemod.eventUtil.EventUtils;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.events.RoomEventDialog;
-import com.megacrit.cardcrawl.events.beyond.*;
-import com.megacrit.cardcrawl.events.city.*;
-import com.megacrit.cardcrawl.events.exordium.*;
-import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.EventRoom;
-import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
-import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
-import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
-import loadout.helper.RelicClassComparator;
-import loadout.helper.RelicModComparator;
-import loadout.helper.RelicNameComparator;
-import loadout.helper.RelicTierComparator;
 import loadout.relics.EventfulCompass;
-import loadout.relics.LoadoutBag;
-import loadout.relics.TrashBin;
+import org.apache.commons.lang3.StringUtils;
 //import net.sourceforge.pinyin4j.PinyinHelper;
 
 
@@ -55,7 +32,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EventSelectScreen implements ScrollBarListener
+public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.EventButton>
 {
     public static class EventButton {
         public String id;
@@ -134,48 +111,10 @@ public class EventSelectScreen implements ScrollBarListener
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectionScreen"));
     public static final String[] TEXT = UiStrings.TEXT;
 
-    private static final float SPACE = 80.0F * Settings.scale;
-    protected static final float START_X = 450.0F * Settings.scale;
-    private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
-
-    public static final float SPACE_X = 226.0F * Settings.scale;
-
-    private EventSelectSortHeader sortHeader;
-
-    protected float scrollY = START_Y;
-    private float targetY = this.scrollY;
-    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-    private int scrollTitleCount = 0;
-    private int row = 0;
-    private int col = 0;
-
-    private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
-    private EventButton hoveredEvent = null;
-    private boolean grabbedScreen = false;
-    private float grabStartY = 0.0F;
-    private ScrollBar scrollBar;
-    private Hitbox controllerRelicHb = null;
-    private boolean show = false;
-
-    private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    private boolean doneSelecting = false;
-
-    public enum SortType {NAME,MOD};
-
-    public SortType currentSortType = null;
-    public enum SortOrder {ASCENDING,DESCENDING};
-    public SortOrder currentSortOrder = SortOrder.ASCENDING;
-
-    public ArrayList<EventButton> events;
-    private ArrayList<EventButton> eventsClone;
 
     public HashSet<String> eventAddingMods;
     public HashMap<String,String> eventModNames;
 
-    private AbstractRelic owner;
-    private boolean isDragSelecting = false;
-    private boolean isTryingToScroll = false;
 
 
     private static final Comparator<EventButton> BY_NAME;
@@ -203,11 +142,12 @@ public class EventSelectScreen implements ScrollBarListener
 
     public EventSelectScreen(AbstractRelic owner)
     {
+        super(owner);
         scrollBar = new ScrollBar(this);
 
         this.owner = owner;
 
-        this.events = new ArrayList<>();
+        this.items = new ArrayList<>();
         this.eventAddingMods = new HashSet<>();
         this.eventModNames = new HashMap<>();
 
@@ -235,12 +175,13 @@ public class EventSelectScreen implements ScrollBarListener
             }
 
 
-            events.add(new EventButton(eID, 0, 0, modID, eClass));
+            items.add(new EventButton(eID, 0, 0, modID, eClass));
             //LoadoutMod.logger.info("Added event: " + eID + " from " + modID);
         }
-        this.eventsClone = new ArrayList<>(this.events);
+        this.itemsClone = new ArrayList<>(this.items);
 
         if (sortHeader == null) sortHeader = new EventSelectSortHeader(this, START_X);
+        this.defaultSortType = SortType.MOD;
     }
 
 //    private void addBaseGameEvents() {
@@ -251,27 +192,16 @@ public class EventSelectScreen implements ScrollBarListener
 //    }
 
 
-    private void sortOnOpen() {
-            this.sortHeader.justSorted = true;
-            sortByMod(true);
-            this.sortHeader.resetAllButtons();
-            this.sortHeader.clearActiveButtons();
-    }
-
-    private boolean shouldSortById() {
-        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
-    }
-
     public void sortAlphabetically(boolean isAscending){
 
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            if (shouldSortById()) this.events.sort(BY_ID);
-            else this.events.sort(BY_NAME);
+            if (shouldSortById()) this.items.sort(BY_ID);
+            else this.items.sort(BY_NAME);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            if (shouldSortById()) this.events.sort(BY_ID.reversed());
-            else this.events.sort(BY_NAME.reversed());
+            if (shouldSortById()) this.items.sort(BY_ID.reversed());
+            else this.items.sort(BY_NAME.reversed());
         }
         this.currentSortType = SortType.NAME;
         scrolledUsingBar(0.0F);
@@ -280,28 +210,36 @@ public class EventSelectScreen implements ScrollBarListener
 
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            if (shouldSortById()) this.events.sort(BY_MOD.thenComparing(BY_ID));
-            else this.events.sort(BY_MOD.thenComparing(BY_NAME));
+            if (shouldSortById()) this.items.sort(BY_MOD.thenComparing(BY_ID));
+            else this.items.sort(BY_MOD.thenComparing(BY_NAME));
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            if (shouldSortById()) this.events.sort(BY_MOD.reversed().thenComparing(BY_ID));
-            else this.events.sort(BY_MOD.reversed().thenComparing(BY_NAME));
+            if (shouldSortById()) this.items.sort(BY_MOD.reversed().thenComparing(BY_ID));
+            else this.items.sort(BY_MOD.reversed().thenComparing(BY_NAME));
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
     }
 
-    private boolean testFilters(EventButton eb) {
+    private boolean testTextFilter(EventButton eventButton) {
+        if (eventButton.id != null && StringUtils.containsIgnoreCase(eventButton.id,sortHeader.searchBox.filterText)) return true;
+        if (eventButton.name != null && StringUtils.containsIgnoreCase(eventButton.name,sortHeader.searchBox.filterText)) return true;
+        //if (eventButton. != null && StringUtils.containsIgnoreCase(eventButton.description,sortHeader.searchBox.filterText)) return true;
+        return false;
+    }
+
+    protected boolean testFilters(EventButton eb) {
         String modID = eb.modID;
         if (modID == null) modID = "Slay the Spire";
         boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
+        boolean textCheck = sortHeader == null || sortHeader.searchBox.filterText.equals("") || testTextFilter(eb);
 
-        return  modCheck;
+        return  modCheck && textCheck;
     }
 
     public void updateFilters() {
 
-        this.events = this.eventsClone.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
+        this.items = this.itemsClone.stream().filter(this::testFilters).collect(Collectors.toCollection(ArrayList::new));
 
         sort(currentSortOrder == SortOrder.ASCENDING);
 
@@ -309,7 +247,8 @@ public class EventSelectScreen implements ScrollBarListener
     }
 
     public void sort(boolean isAscending) {
-        switch (this.currentSortType) {
+        SortType st = this.currentSortType == null ? this.defaultSortType : this.currentSortType;
+        switch (st) {
             case NAME:
                 sortAlphabetically(isAscending);
                 break;
@@ -320,187 +259,31 @@ public class EventSelectScreen implements ScrollBarListener
     }
 
 
-
-    public void open()
-    {
-        if(AbstractDungeon.isScreenUp) {
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            AbstractDungeon.overlayMenu.proceedButton.hide();
-            //AbstractDungeon.closeCurrentScreen();
-            LoadoutMod.isScreenUp = false;
-            AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NO_INTERACT;
+    @Override
+    protected void updateItemClickLogic() {
+        if (hoveredItem != null && InputHelper.justClickedLeft) {
+            executeEvent(hoveredItem);
         }
-
-        AbstractDungeon.isScreenUp = true;
-        AbstractDungeon.overlayMenu.showBlackScreen(0.5f);
-
-
-
-        show = true;
-        doneSelecting = false;
-
-        confirmButton.isDisabled = false;
-        confirmButton.show();
-        controllerRelicHb = null;
-
-
-
-        this.currentSortOrder = SortOrder.ASCENDING;
-        this.currentSortType = SortType.NAME;
-        updateFilters();
-
-        targetY = scrollLowerBound;
-        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
-
-        sortOnOpen();
-        sortHeader.resetAllButtons();
-
-        calculateScrollBounds();
-
     }
 
     public void close()
     {
-        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.FTUE;
-        confirmButton.isDisabled = true;
-        confirmButton.hide();
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-        AbstractDungeon.closeCurrentScreen();
-
-        show = false;
+        super.close();
         EventfulCompass.isSelectionScreenUp = false;
     }
 
-    public boolean isOpen()
-    {
-        return show;
+    @Override
+    protected void callOnOpen() {
+        this.currentSortOrder = SortOrder.ASCENDING;
+        this.currentSortType = SortType.MOD;
+        updateFilters();
+
+        targetY = scrollLowerBound;
+        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
     }
 
-    public void update()
-    {
-        if (!isOpen()) {
-            return;
-        }
 
-        if (InputHelper.pressedEscape) {
-            close();
-            InputHelper.pressedEscape = false;
-            return;
-        }
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            close();
-            return;
-        }
-
-        updateControllerInput();
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
-                targetY += Settings.SCROLL_SPEED;
-                if (targetY > scrollUpperBound) {
-                    targetY = scrollUpperBound;
-                }
-            } else if (Gdx.input.getY() < Settings.HEIGHT * 0.3F) {
-                targetY -= Settings.SCROLL_SPEED;
-                if (targetY < scrollLowerBound) {
-                    targetY = scrollLowerBound;
-                }
-            }
-        }
-        confirmButton.update();
-        this.sortHeader.update();
-
-        if (confirmButton.hb.clicked) {
-            CInputActionSet.select.unpress();
-            confirmButton.hb.clicked = false;
-            doneSelecting = true;
-        }
-
-        if (hoveredEvent != null && InputHelper.justClickedLeft) {
-            executeEvent(hoveredEvent);
-        }
-
-
-
-        hoveredEvent = null;
-
-        boolean isScrollingScrollBar = scrollBar.update();
-        if (!isScrollingScrollBar && !isDragSelecting) {
-            updateScrolling();
-        }
-        InputHelper.justClickedLeft = false;
-        InputHelper.justClickedRight = false;
-
-        updateList(events);
-
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
-        }
-        if(doneSelecting) close();
-    }
-
-    private void updateControllerInput()
-    {
-        // TODO
-    }
-
-    private void updateScrolling()
-    {
-        int y = InputHelper.mY;
-        if (!grabbedScreen)
-        {
-            if (InputHelper.scrolledDown) {
-                targetY += Settings.SCROLL_SPEED;
-            } else if (InputHelper.scrolledUp) {
-                targetY -= Settings.SCROLL_SPEED;
-            }
-            if (InputHelper.justClickedLeft)
-            {
-                grabbedScreen = true;
-                grabStartY = (y - targetY);
-            }
-        }
-        else if (InputHelper.isMouseDown)
-        {
-            targetY = (y - grabStartY);
-        }
-        else
-        {
-            grabbedScreen = false;
-        }
-        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
-        resetScrolling();
-        updateBarPosition();
-    }
-
-    private void calculateScrollBounds()
-    {
-        int size = events.size();
-
-        int scrollTmp = 0;
-        if (size > 5) {
-            scrollTmp = size / 5;
-            scrollTmp += 5;
-            if (size % 5 != 0) {
-                ++scrollTmp;
-            }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 420.0f * Settings.scale;
-        } else {
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
-        }
-    }
-
-    private void resetScrolling()
-    {
-        if (targetY < scrollLowerBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
-        } else if (targetY > scrollUpperBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
-        }
-    }
-
-    private void updateList(ArrayList<EventButton> list)
+    protected void updateList(ArrayList<EventButton> list)
     {
         for (EventButton e : list)
         {
@@ -508,11 +291,11 @@ public class EventSelectScreen implements ScrollBarListener
             e.update();
             if (e.hb.hovered)
             {
-                hoveredEvent = e;
+                hoveredItem = e;
             }
             if (e.hb.clicked) {
                 e.hb.clicked = false;
-                if(hoveredEvent == e) {
+                if(hoveredItem == e) {
                     //executeEvent(e);
                     break;
                 }
@@ -602,7 +385,7 @@ public class EventSelectScreen implements ScrollBarListener
         col = 0;
 
 
-        renderList(sb, events, LoadoutMod.ignoreUnlock);
+        renderList(sb, items);
 
         scrollBar.render(sb);
         confirmButton.render(sb);
@@ -610,7 +393,9 @@ public class EventSelectScreen implements ScrollBarListener
         sortHeader.render(sb);
     }
 
-    private void renderList(SpriteBatch sb, ArrayList<EventButton> list, boolean ignoreLocks)
+
+
+    protected void renderList(SpriteBatch sb, ArrayList<EventButton> list)
     {
         row += 1;
         col = 0;
@@ -702,19 +487,5 @@ public class EventSelectScreen implements ScrollBarListener
         calculateScrollBounds();
     }
 
-    @Override
-    public void scrolledUsingBar(float newPercent)
-    {
-        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
-        scrollY = newPosition;
-        targetY = newPosition;
-        updateBarPosition();
-    }
-
-    private void updateBarPosition()
-    {
-        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
-        scrollBar.parentScrolledToPercent(percent);
-    }
 }
 
