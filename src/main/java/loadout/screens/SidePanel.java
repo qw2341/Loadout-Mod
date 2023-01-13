@@ -38,12 +38,15 @@ public class SidePanel {
     }
 
     public void update() {
+        if(!shown) return;
         for(ClickableUIElement r : relics) {
             r.update();
         }
     }
 
     public void render(SpriteBatch sb) {
+        if(!shown) return;
+
         for(ClickableUIElement r : relics) {
             r.render(sb);
         }

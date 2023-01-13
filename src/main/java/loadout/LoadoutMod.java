@@ -114,9 +114,7 @@ public class LoadoutMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber{
-    // Make sure to implement the subscribers *you* are using (read basemod wiki). Editing cards? EditCardsSubscriber.
-    // Making relics? EditRelicsSubscriber. etc., etc., for a full list and how to make your own, visit the basemod wiki.
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
 
@@ -190,6 +188,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     //show isaac icons regardless of isaac mod installation?
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
     public static boolean enableIsaacIcons = false;
+    public static final String ENABLE_SIDE_PANEL = "eSidePanel";
+    public static boolean enableSidePanel = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
 
@@ -293,7 +293,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(RELIC_OBTAIN_AMOUNT,"1");
         theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
         theDefaultDefaultSettings.setProperty(USE_ISAAC_ICONS,"FALSE");
-
+        theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "FALSE");
 
         try {
             config = new SpireConfig("loadoutMod", "theLoadoutConfig", theDefaultDefaultSettings); // ...right here
@@ -325,7 +325,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             relicObtainMultiplier = config.getInt(RELIC_OBTAIN_AMOUNT);
             enableRemoveFromPool = config.getBool(REMOVE_RELIC_FROM_POOLS);
             enableIsaacIcons = config.getBool(USE_ISAAC_ICONS);
-
+            enableSidePanel = config.getBool(ENABLE_SIDE_PANEL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -923,6 +923,24 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         settingsPanel.addUIElement(enableIsaacIconsButton);
 
         settingYPos -= lineSpacing;
+
+        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableSidePanel, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+                    enableSidePanel = button.enabled;
+                    try {
+                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        settingsPanel.addUIElement(enableSidePanelButton);
+
+        settingYPos -= lineSpacing;
         settingXPos += 800.0f;
 
         ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,
@@ -1102,7 +1120,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         createPotionList();
         createCardList();
 
-        //if(!enableStarting) sidePanel = new SidePanel(50.0F * Settings.scale, Settings.HEIGHT - 200.0F * Settings.yScale);
+        if(enableSidePanel && sidePanel == null) sidePanel = new SidePanel(50.0F * Settings.scale, Settings.HEIGHT - 200.0F * Settings.yScale);
+        else if(enableSidePanel) sidePanel.shown = true;
     }
 
     private void createEventList() {
@@ -1574,5 +1593,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
 
         logger.info("Done loading card modifications");
+    }
+
+    @Override
+    public void receivePreUpdate() {
+        if(sidePanel != null && !AbstractDungeon.isPlayerInDungeon() && sidePanel.shown) sidePanel.shown = false;
     }
 }
