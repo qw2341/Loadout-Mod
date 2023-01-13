@@ -924,23 +924,23 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableSidePanel, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableSidePanel = button.enabled;
-                    try {
-                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableSidePanelButton);
-
-        settingYPos -= lineSpacing;
+//        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableSidePanel, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//                    enableSidePanel = button.enabled;
+//                    try {
+//                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//        settingsPanel.addUIElement(enableSidePanelButton);
+//
+//        settingYPos -= lineSpacing;
         settingXPos += 800.0f;
 
         ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,
