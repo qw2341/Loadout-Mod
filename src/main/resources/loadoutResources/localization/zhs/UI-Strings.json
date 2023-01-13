@@ -144,6 +144,12 @@
 			"复制怪物",
 			"显示预览"
 		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"阶段",
+			"前往"
+		]
 	}
 
 }

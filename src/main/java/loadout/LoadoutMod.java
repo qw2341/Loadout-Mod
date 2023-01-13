@@ -1026,30 +1026,16 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receiveEditStrings() {
         logger.info("Beginning to edit strings for mod with ID: " + getModID());
-        loadLocStrings("eng");
+
         if (!languageSupport().equals("eng"))
             loadLocStrings(languageSupport());
-
-        // RelicStrings
-        BaseMod.loadCustomStringsFile(RelicStrings.class,
-                getModID() + "Resources/localization/"+languageSupport()+"/LoadoutMod-Relic-Strings.json");
+        else
+            loadLocStrings("eng");
         
-        logger.info("Done edittting strings");
+        logger.info("Done editing strings");
     }
     
     // ================ /LOAD THE TEXT/ ===================
-
-    /**
-     * Add Starting Relics
-     * Currently NOT using it
-     */
-//    public void receivePostCreateStartingRelics(AbstractPlayer.PlayerClass pclass, ArrayList<String> relicslist) {
-//        if(enableStarting) {
-//            relicslist.add("loadout:LoadoutBag");
-//            relicslist.add("loadout:TheBin");
-//        }
-//    }
-
 
 
     // this adds "ModName:" before the ID of any card/relic/power etc.
@@ -1078,6 +1064,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     private void loadLocStrings(String language) {
         BaseMod.loadCustomStringsFile(UIStrings.class, getModID() + "Resources/localization/" + language + "/UI-Strings.json");
+        // RelicStrings
+        BaseMod.loadCustomStringsFile(RelicStrings.class,
+                getModID() + "Resources/localization/"+languageSupport()+"/LoadoutMod-Relic-Strings.json");
     }
 
     /**

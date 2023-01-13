@@ -143,5 +143,11 @@
 		"複制怪物",
 		"顯示預覽"
 	]
-}
+},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"階段",
+			"前往"
+		]
+	}
 }

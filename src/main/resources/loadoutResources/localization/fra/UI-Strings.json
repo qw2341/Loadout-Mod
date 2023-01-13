@@ -144,6 +144,12 @@
 			"Monstres en double",
 			"Afficher les aperçus"
 		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"étape",
+			"Aller à"
+		]
 	}
 
 

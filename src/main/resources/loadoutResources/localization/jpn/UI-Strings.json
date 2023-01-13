@@ -144,6 +144,12 @@
 			"複製モンスター",
 			"プレビューを表示"
 		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"ステージ",
+			"へ行く"
+		]
 	}
 
 

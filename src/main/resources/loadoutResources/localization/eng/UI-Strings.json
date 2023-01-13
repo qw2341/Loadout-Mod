@@ -145,5 +145,11 @@
 			"Duplicate Monsters",
 			"Show Previews"
 		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"Act",
+			"Go to"
+		]
 	}
 }

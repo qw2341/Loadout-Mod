@@ -144,6 +144,12 @@
 			"중복 몬스터",
 			"미리보기 표시"
 		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"단계",
+			"이동"
+		]
 	}
 
 
