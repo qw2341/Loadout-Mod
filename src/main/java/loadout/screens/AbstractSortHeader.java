@@ -42,16 +42,16 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
     }
 
     public void update() {
-        for (HeaderButtonPlus button : this.buttons) {
-            button.update();
-        }
+
         for (DropdownMenu dropdownMenu : this.dropdownMenus) {
             if (dropdownMenu.isOpen) {
                 dropdownMenu.update();
                 return;
             }
         }
-
+        for (HeaderButtonPlus button : this.buttons) {
+            button.update();
+        }
         for (DropdownMenu dropdownMenu : this.dropdownMenus)
             dropdownMenu.update();
 
