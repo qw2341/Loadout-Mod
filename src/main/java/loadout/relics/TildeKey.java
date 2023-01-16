@@ -3,17 +3,20 @@ package loadout.relics;
 import basemod.BaseMod;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.defect.DecreaseMaxOrbAction;
 import com.megacrit.cardcrawl.actions.defect.IncreaseMaxOrbAction;
+import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -22,6 +25,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -37,6 +41,8 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
@@ -133,11 +139,11 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     private static final String drawPerTurnKey = "drawPerTurn";
     public static boolean isDrawPerTurnLocked = false;
     private static final String isDrawPerTurnLockedKey = "isDrawPerTurnLocked";
-
+    private final InputAction ctrlKey;
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
-
+        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
 
 
 
@@ -189,6 +195,10 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                 isSelectionScreenUp = false;
                 statSelectScreen.close();
             }
+            return;
+        }
+        if(this.ctrlKey.isPressed()) {
+            killAllMonsters();
             return;
         }
 
@@ -368,9 +378,15 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     }
 
     public static void killAllMonsters() {
+        if(AbstractDungeon.getMonsters()== null) return;
         for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
-            AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
-            //monster.isDead = true;
+            if (monster != null) {
+                AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
+                if(!isKillAllMode) {
+                    AbstractDungeon.actionManager.addToTop((AbstractGameAction)new WaitAction(0.8F));
+                    AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(monster.hb.cX, monster.hb.cY)));
+                }
+            }
         }
     }
 
