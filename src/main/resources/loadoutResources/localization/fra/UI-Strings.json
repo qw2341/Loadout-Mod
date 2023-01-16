@@ -84,7 +84,9 @@
 			"Gagnez de l'or en jouant",
 			"Soigner les PV en jeu",
 			"Mise à niveau aléatoire sur Tuer",
-			"Augmente les dégâts lors de la mise à mort"
+			"Augmente les dégâts lors de la mise à mort",
+			"Ajouter un numéro magique sur Tuer",
+			" NL Si cette carte tue un ennemi, ses nombre magique augmentent de !loadout:Misc!"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

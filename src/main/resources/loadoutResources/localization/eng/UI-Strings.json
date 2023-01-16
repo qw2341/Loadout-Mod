@@ -85,7 +85,9 @@
 			"Gain Gold on Play",
 			"Heal HP on Play",
 			"Random Upgrade on Kill",
-			"Increase Damage on Kill"
+			"Increase Damage on Kill",
+			"Add Magic Number on Kill",
+			" NL If Fatal, permanently increase this card's magic number by !loadout:Misc!"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
