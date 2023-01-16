@@ -35,12 +35,14 @@ public class ModifierLibrary {
         modifiers.put(GainGoldOnPlayMod.ID, GainGoldOnPlayMod.class);
         modifiers.put(HealOnPlayMod.ID, HealOnPlayMod.class);
         modifiers.put(RandomUpgradeOnKillMod.ID, RandomUpgradeOnKillMod.class);
+        modifiers.put(GainDamageOnKill.ID, GainDamageOnKill.class);
 
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();
         GainGoldOnPlayMod.onLoad();
         HealOnPlayMod.onLoad();
         RandomUpgradeOnKillMod.onLoad();
+        GainDamageOnKill.onLoad();
     }
 
     public static AbstractCardModifier getModifier(String id) {

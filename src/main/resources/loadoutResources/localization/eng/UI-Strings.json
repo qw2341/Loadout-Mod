@@ -84,7 +84,8 @@
 			"Gain MaxHP on Kill",
 			"Gain Gold on Play",
 			"Heal HP on Play",
-			"Random Upgrade on Kill"
+			"Random Upgrade on Kill",
+			"Increase Damage on Kill"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

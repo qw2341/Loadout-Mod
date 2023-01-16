@@ -83,7 +83,8 @@
 			"Gain MaxHP sur Tuer",
 			"Gagnez de l'or en jouant",
 			"Soigner les PV en jeu",
-			"Mise à niveau aléatoire sur Tuer"
+			"Mise à niveau aléatoire sur Tuer",
+			"Augmente les dégâts lors de la mise à mort"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
