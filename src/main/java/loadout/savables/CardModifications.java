@@ -106,7 +106,7 @@ public class CardModifications
 
         if(!isGettingUnmoddedCopy) {
 
-            for (int i = 0; i < sc.timesUpgraded; i++) {card.upgrade();}
+            for (int i = card.timesUpgraded; i < sc.timesUpgraded; i++) {card.upgrade();}
             card.cost = sc.cost;
             card.costForTurn = card.cost;
             card.baseDamage = sc.baseDamage;
@@ -137,7 +137,7 @@ public class CardModifications
 
         if(!isGettingUnmoddedCopy) {
 
-            for (int i = 0; i < sc.timesUpgraded; i++) {card.upgrade();}
+            for (int i = card.timesUpgraded; i < sc.timesUpgraded; i++) {card.upgrade();}
             card.cost = sc.cost;
             card.costForTurn = card.cost;
             card.baseDamage = sc.baseDamage;
