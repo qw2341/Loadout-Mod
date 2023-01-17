@@ -239,7 +239,7 @@ public class CardModifier extends CustomRelic implements ClickableRelic, CustomS
             if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 13) {
                 for (int i = 0; i<ret.length; i++) {
                     AbstractCard card = AbstractDungeon.player.masterDeck.group.get(ret[i][0]);
-                    for (int j = 0; j < ret[i][12]; j++) {card.upgrade();}
+                    for (int j = card.timesUpgraded; j < ret[i][12]; j++) {card.upgrade();}
                     card.cost = ret[i][1];
                     card.costForTurn = card.cost;
                     card.baseDamage = ret[i][2];
