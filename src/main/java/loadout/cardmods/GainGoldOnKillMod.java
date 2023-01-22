@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.CardStrings;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,7 +50,12 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     public static void onLoad() {
         String txtToAdd;
         String desc = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION;
-        txtToAdd = desc.split("NL")[1];
+        if(desc.contains("NL")) {
+            txtToAdd = desc.split("NL")[1];
+        } else {
+            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
+        }
+
         description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }
