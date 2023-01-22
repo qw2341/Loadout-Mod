@@ -42,13 +42,15 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
 
     public static boolean isSelectionScreenUp = false;
 
+    private static final String XGGG_NAME = "瓶装星光";
+
 
     public BottledMonster() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
 
-        if (CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine")) {
+        if (CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine") && Math.random() < 0.2) {
             this.img = IMG_XGGG_ALT;
-            this.tips.get(0).header = "瓶装星光";
+            this.tips.get(0).header = XGGG_NAME;
         }
 
         if(isIsaacMode) {
@@ -132,6 +134,13 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
     {
         super.update();
 
+//        if(hb.hovered) {
+//
+//        } else if (this.img.equals(IMG_XGGG_ALT)) {
+//            this.img = IMG;
+//            this.tips.get(0).header = this.name;
+//        }
+
         if (!monsterSelected && monsterSelectScreen != null) {
             if (monsterSelectScreen.doneSelecting()) {
                 monsterSelected = true;
@@ -144,6 +153,7 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
                 hb.hovered = true;
             }
         }
+
     }
 
     @Override
