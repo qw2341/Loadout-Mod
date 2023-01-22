@@ -29,7 +29,9 @@ import static loadout.relics.LoadoutBag.isIsaacMode;
 public class BottledMonster extends CustomRelic implements ClickableRelic {
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("BottledMonster");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
+    private static final Texture IMG =  (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
+
+    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("bottle_relic_xggg.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
@@ -43,6 +45,12 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
 
     public BottledMonster() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+
+        if (CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine")) {
+            this.img = IMG_XGGG_ALT;
+            this.tips.get(0).header = "瓶装星光";
+        }
+
         if(isIsaacMode) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
