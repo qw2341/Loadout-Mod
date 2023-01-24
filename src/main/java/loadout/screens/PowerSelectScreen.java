@@ -148,18 +148,6 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                 this.region48 = this.instance.region48;
                 this.region128 = this.instance.region128;
 
-                //TextureAtlas ta = (TextureAtlas) pClass.getField("atlas").get(null);
-//                CtClass cc = ClassPool.getDefault().get(pClass.getName());
-                //cc.getDeclaredMethod("<init>");
-//                ClassFile cf = cc.getClassFile();
-//                MethodInfo mi = cf.getMethod("<init>");
-//                CodeIterator ci = mi.getCodeAttribute().iterator();
-//
-//                while (ci.hasNext()) {
-//                    int idx = ci.next();
-//                    int op = ci.byteAt(idx);
-//                    LoadoutMod.logger.info(Mnemonic.OPCODE[op]);
-//                }
 
             } catch (Exception e) {
 
@@ -167,7 +155,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                 e.printStackTrace();
             }
             if(this.id == null) this.id = "Unnamed Power";
-            if (this.name == null) this.name = "Unnamed Power";
+            if (this.name == null) this.name = this.id;
             if (this.modID == null) this.modID = "Slay the Spire";
 
             if(desc != null && desc.length() > 0) {
