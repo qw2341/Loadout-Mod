@@ -207,6 +207,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static HashMap<String,Class<? extends AbstractPower>> powersToDisplay = new HashMap<>();
     public static ArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new ArrayList<>();
 
+    public static HashSet<String> monsterIDS = new HashSet<>();
+
     public static boolean isScreenUp = false;
 
     public static CardModifications cardModifications = null;
@@ -1284,7 +1286,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 finder.add(new java.io.File(url.toURI()));
                 ArrayList<ClassInfo> foundClasses = new ArrayList<>();
                 finder.findClasses(foundClasses, (ClassFilter) andPowerClassFilter);
-                //finder.findClasses(foundClasses, andMonsterClassFilter);
+                finder.findClasses(foundClasses, andMonsterClassFilter);
                 int len = foundClasses.size();
                 for (int i = 0; i< len; i++) {
                     ClassInfo classInfo = foundClasses.get(i);
@@ -1322,38 +1324,46 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
                             String pID = null;
 
-                            try {
-                                pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
-                            } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
-
-                            } catch (NoClassDefFoundError ncdfe) {
+//                            try {
+//                                pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
+//                            } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
+//
+//                            } catch (NoClassDefFoundError ncdfe) {
+//                                continue;
+//                            }
+//
+//                            if (pID == null)  {
+//
+//                                try {
+//                                    AbstractPower p = powerC.newInstance();
+//
+//                                    pID = p.ID;
+//                                } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
+//
+//                                }
+//
+//                                if (pID == null) {
+//                                    //pID = noID + count++;
+//                                    continue;
+//                                }
+//                            }
+                            pID = powerC.getName();
+                            if(powersToDisplay.containsKey(pID)) {
                                 continue;
                             }
 
-                            if (pID == null)  {
-
-                                try {
-                                    AbstractPower p = powerC.newInstance();
-
-                                    pID = p.ID;
-                                } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
-
-                                }
-
-                                if (pID == null) {
-                                    //pID = noID + count++;
-                                    continue;
-                                }
-                            }
-
-
                             powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
                         } else if (isMonster) {
+                            if(monsterIDS.contains(cls.getName())) continue;
+
+                            monsterIDS.add(cls.getName());
+
+
                             Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
                             //logger.info("Trying to create monster button for: " + monsterC.getName());
                             if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
                             try{
-                                monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
+                                monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
                             } catch (Exception e) {
                                 logger.info("Failed to create monster button for: " + monsterC.getName());
                                 continue;
@@ -1367,7 +1377,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
 
-                    } catch (IllegalAccessException e) {
+                    } catch (Exception e) {
                         logger.info("Failed to initialize for " + classInfo.getClassName());
                     }
 

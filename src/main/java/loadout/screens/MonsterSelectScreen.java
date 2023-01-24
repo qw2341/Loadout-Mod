@@ -67,9 +67,9 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         public ArrayList<PowerTip> tips;
 
 
-        public MonsterButton(Class<?extends AbstractMonster> amClass) {
+        public MonsterButton(Class<?extends AbstractMonster> amClass, boolean isModded) {
             this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
-            this.modID = WhatMod.findModID(amClass);
+            if(isModded) this.modID = WhatMod.findModID(amClass);
             this.x = 0.0f;
             this.y = 0.0f;
             if (this.modID == null) this.modID = "Slay the Spire";
@@ -89,28 +89,38 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
                 }
 
+                if(!isModded) {
+                    this.instance = createMonster(amClass);
 
-                this.instance = createMonster(amClass);
+                    this.id = this.instance.id;
+                    this.type = this.instance.type;
+                    if(this.name == null|| this.name.length() == 0) this.name = this.instance.name;
+                    if (this.name == null || this.name.length() == 0) this.name = "ERROR - Unnamed Monster";
+                    this.tips.add(new PowerTip(this.name, "HP: " + this.instance.maxHealth));
+                } else {
+                    try{
+                        this.id = (String) amClass.getField("ID").get(null);
 
-                this.id = this.instance.id;
-                this.type = this.instance.type;
-                if(this.name == null|| this.name.length() == 0) this.name = this.instance.name;
-                if (this.name == null || this.name.length() == 0) this.name = "Unnamed Monster";
-                //this.img = ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"img");
-                //this.atlas =  ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"atlas");
-                //this.skeleton = ReflectionHacks.getPrivate(this.instance,AbstractCreature.class,"skeleton");
-                this.tips.add(new PowerTip(this.name, "HP: " + this.instance.maxHealth));
+                    } catch(NoSuchFieldException nsfe) {
+                        this.id = amClass.getSimpleName();
+                    }
+                    this.type = AbstractMonster.EnemyType.NORMAL;
+                    if (this.name == null || this.name.length() == 0) this.name = "ERROR - Unnamed Modded Monster";
+                }
+
+
+
             } catch (Exception e) {
                 LoadoutMod.logger.info("Failed to create monster button for : " + amClass.getName() + " Defaulting to sorry slime");
                 this.instance = new ApologySlime();
-                this.name = ApologySlime.NAME;
+                this.name = "ERROR " + ApologySlime.NAME;
                 this.id = this.instance.id;
                 this.type = AbstractMonster.EnemyType.NORMAL;
 
 
 
             }
-            this.instance.dispose();
+            if(this.instance != null) this.instance.dispose();
             this.instance = null;
 
             try {
@@ -128,6 +138,10 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
 
             this.amount = 0;
+        }
+
+        public MonsterButton(Class<?extends AbstractMonster> amClass) {
+            this(amClass, false);
         }
 
         public static boolean doesClassContainField(Class clazz, String fieldName) {
