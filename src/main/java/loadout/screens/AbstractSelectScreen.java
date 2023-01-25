@@ -121,12 +121,11 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
     protected void sortOnOpen() {
         if(this.sortHeader.searchBox != null) this.sortHeader.searchBox.resetText();
-
+        this.currentSortType = this.defaultSortType;
         updateFilters();
 
         this.sortHeader.justSorted = true;
-        this.currentSortType = this.defaultSortType;
-        sort(true);
+
         this.sortHeader.resetAllButtons();
         this.sortHeader.clearActiveButtons();
     }
