@@ -19,12 +19,10 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
-import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
-import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
-import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
 import loadout.helper.*;
 import loadout.relics.LoadoutBag;
+import loadout.relics.LoadoutCauldron;
 import loadout.relics.TrashBin;
 
 import java.util.ArrayList;
@@ -35,111 +33,59 @@ import java.util.Iterator;
  * Class from Hubris Mod
  * <a href="https://github.com/kiooeht/Hubris/blob/master/src/main/java/com/evacipated/cardcrawl/mod/hubris/screens/select/RelicSelectScreen.java">https://github.com/kiooeht/Hubris/blob/master/src/main/java/com/evacipated/cardcrawl/mod/hubris/screens/select/RelicSelectScreen.java</a>
  */
-public class PotionSelectScreen implements ScrollBarListener
+public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
 {
-    private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString("RelicViewScreen");
-    public static final String[] rTEXT = rUiStrings.TEXT;
-    private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
-    public static final String[] gTEXT = gUiStrings.TEXT;
-    private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString("PotionViewScreen");
-    public static final String[] pTEXT = pUiStrings.TEXT;
+
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectionScreen"));
     public static final String[] TEXT = UiStrings.TEXT;
-    private static final CharacterStrings redStrings = CardCrawlGame.languagePack.getCharacterString("Ironclad");
-    private static final CharacterStrings greenStrings = CardCrawlGame.languagePack.getCharacterString("Silent");
-    private static final CharacterStrings blueStrings = CardCrawlGame.languagePack.getCharacterString("Defect");
-    private static final CharacterStrings purpleStrings = CardCrawlGame.languagePack.getCharacterString("Watcher");
 
-    private static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
-
-    private static final float SPACE = 80.0F * Settings.scale;
     protected static final float START_X = 750.0F * Settings.scale;
-    private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
-
-    public static final float SPACE_X = 226.0F * Settings.yScale;
-
-    private PotionSelectSortHeader sortHeader;
-
-    protected float scrollY = START_Y;
-    private float targetY = this.scrollY;
-    private float scrollLowerBound = Settings.HEIGHT - 200.0F * Settings.scale;
-    private float scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;//2600.0F * Settings.scale;
-    private int scrollTitleCount = 0;
-    private int row = 0;
-    private int col = 0;
-    private static final Color RED_OUTLINE_COLOR = new Color(-10132568);
-    private static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
-    private static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
-    private static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
-    private static final Color BLACK_OUTLINE_COLOR = new Color(168);
-
-    private static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
-    private AbstractPotion hoveredPotion = null;
-    private AbstractPotion clickStartedPotion = null;
-    private boolean grabbedScreen = false;
-    private float grabStartY = 0.0F;
-    private ScrollBar scrollBar;
-    private Hitbox controllerRelicHb = null;
-
-    private ArrayList<AbstractPotion> potions;
-    private boolean show = false;
-    public static int selectMult = 1;
-    private ArrayList<AbstractPotion> selectedPotions = new ArrayList<>();
-
-    private GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
-    private boolean doneSelecting = false;
-    public boolean isDeleteMode;
-
-    public enum SortType {CLASS,RARITY,NAME,MOD};
-
-    public SortType currentSortType = null;
-    public enum SortOrder {ASCENDING,DESCENDING};
-    public SortOrder currentSortOrder = SortOrder.ASCENDING;
-
     private final Comparator<AbstractPotion> potionTierComparator = new PotionTierComparator();
     private final Comparator<AbstractPotion> potionClassComparator = new PotionClassComparator();
     private final Comparator<AbstractPotion> potionNameComparator = new PotionNameComparator();
     private final Comparator<AbstractPotion> potionModComparator = new PotionModComparator();
-    private AbstractRelic owner;
 
-    public boolean doneSelecting()
-    {
-        return doneSelecting;
-    }
 
-    public ArrayList<AbstractPotion> getSelectedPotions()
-    {
-        ArrayList<AbstractPotion> ret = new ArrayList<>(selectedPotions);
-        selectedPotions.clear();
-        if (isDeleteMode)
-            potions.forEach(p->p.isObtained=true);
-        return ret;
-    }
 
-    public PotionSelectScreen(boolean isDeleteMode, AbstractRelic owner)
+    public PotionSelectScreen(AbstractRelic owner)
     {
-        scrollBar = new ScrollBar(this);
+        super(owner);
+        this.defaultSortType = SortType.RARITY;
         sortHeader = new PotionSelectSortHeader(this);
-        this.isDeleteMode = isDeleteMode;
-        this.owner = owner;
     }
 
-    private void sortOnOpen() {
-        if(!isDeleteMode) {
-            this.sortHeader.justSorted = true;
-            sortByRarity(true);
-            this.sortHeader.resetAllButtons();
-            this.sortHeader.clearActiveButtons();
+
+    @Override
+    protected boolean testFilters(AbstractPotion item) {
+        return true;
+    }
+
+    @Override
+    public void sort(boolean isAscending) {
+        switch (this.currentSortType) {
+
+            case NAME:
+                sortAlphabetically(isAscending);
+                break;
+            case MOD:
+                sortByMod(isAscending);
+                break;
+            case RARITY:
+                sortByRarity(isAscending);
+                break;
+            case CLASS:
+                sortByClass(isAscending);
+                break;
         }
     }
 
     public void sortByRarity(boolean isAscending) {
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.potions.sort(potionTierComparator);
+            this.items.sort(potionTierComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.potions.sort(potionTierComparator.reversed());
+            this.items.sort(potionTierComparator.reversed());
         }
         this.currentSortType = SortType.RARITY;
         scrolledUsingBar(0.0F);
@@ -148,10 +94,10 @@ public class PotionSelectScreen implements ScrollBarListener
     public void sortByClass(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.potions.sort(potionClassComparator);
+            this.items.sort(potionClassComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.potions.sort(potionClassComparator.reversed());
+            this.items.sort(potionClassComparator.reversed());
         }
         this.currentSortType = SortType.CLASS;
         scrolledUsingBar(0.0F);
@@ -159,10 +105,10 @@ public class PotionSelectScreen implements ScrollBarListener
     public void sortAlphabetically(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.potions.sort(potionNameComparator);
+            this.items.sort(potionNameComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.potions.sort(potionNameComparator.reversed());
+            this.items.sort(potionNameComparator.reversed());
         }
         this.currentSortType = SortType.NAME;
         scrolledUsingBar(0.0F);
@@ -170,115 +116,44 @@ public class PotionSelectScreen implements ScrollBarListener
     public void sortByMod(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            this.potions.sort(potionModComparator);
+            this.items.sort(potionModComparator);
         } else {
             this.currentSortOrder = SortOrder.DESCENDING;
-            this.potions.sort(potionModComparator.reversed());
+            this.items.sort(potionModComparator.reversed());
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
     }
 
-    public void open(ArrayList<AbstractPotion> potions)
-    {
-        if(AbstractDungeon.isScreenUp) {
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            AbstractDungeon.overlayMenu.proceedButton.hide();
-            AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NO_INTERACT;
-        }
-
-        AbstractDungeon.isScreenUp = true;
-        AbstractDungeon.overlayMenu.showBlackScreen(0.5f);
-
-        show = true;
-        doneSelecting = false;
-
-        confirmButton.isDisabled = false;
-        confirmButton.show();
-        controllerRelicHb = null;
-        this.potions = potions;
-
-        targetY = scrollLowerBound;
-        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
-        sortOnOpen();
-        calculateScrollBounds();
-        selectedPotions.clear();
-    }
-
+    @Override
     public void close()
     {
-        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.FTUE;
-        confirmButton.isDisabled = true;
-        confirmButton.hide();
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-        AbstractDungeon.closeCurrentScreen();
-        show = false;
-        LoadoutBag.isSelectionScreenUp = false;
-        TrashBin.isSelectionScreenUp = false;
-        //LoadoutMod.justReorganized = false;
-        if (isDeleteMode) {
-            this.potions.clear();
-        }
+        super.close();
+        LoadoutCauldron.isSelectionScreenUp = false;
     }
 
-    public boolean isOpen()
-    {
-        return show;
+    @Override
+    protected void callOnOpen() {
+        this.itemsClone = LoadoutMod.potionsToDisplay;
+        this.items = new ArrayList<>(itemsClone);
     }
 
-    public void update()
-    {
-        if (!isOpen()) {
-            return;
-        }
-        if (InputHelper.pressedEscape) {
-            close();
-            InputHelper.pressedEscape = false;
-            return;
-        }
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            close();
-            return;
-        }
-
-        updateControllerInput();
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
-                targetY += Settings.SCROLL_SPEED;
-                if (targetY > scrollUpperBound) {
-                    targetY = scrollUpperBound;
-                }
-            } else if (Gdx.input.getY() < Settings.HEIGHT * 0.3F) {
-                targetY -= Settings.SCROLL_SPEED;
-                if (targetY < scrollLowerBound) {
-                    targetY = scrollLowerBound;
-                }
-            }
-        }
-        confirmButton.update();
-        this.sortHeader.update();
-
-        if (confirmButton.hb.clicked) {
-            CInputActionSet.select.unpress();
-            confirmButton.hb.clicked = false;
-            doneSelecting = true;
-        }
-        if (hoveredPotion != null) {
+    @Override
+    protected void updateItemClickLogic() {
+        if (hoveredItem != null) {
             if (InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed()) {
-                clickStartedPotion = hoveredPotion;
+                clickStartedItem = hoveredItem;
                 //logger.info("Pressed Left");
             }
             if (InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustPressed())
             {
                 CInputActionSet.select.unpress();
-                if (hoveredPotion == clickStartedPotion)
+                if (hoveredItem == clickStartedItem)
                 {
-                    AbstractDungeon.player.obtainPotion(hoveredPotion.makeCopy());
+                    AbstractDungeon.player.obtainPotion(hoveredItem.makeCopy());
                     AbstractPotion.playPotionSound();
                     this.owner.flash();
-                    clickStartedPotion = null;
+                    clickStartedItem = null;
 
                     if (doneSelecting()) {
                         close();
@@ -287,127 +162,129 @@ public class PotionSelectScreen implements ScrollBarListener
             }
 
             if (InputHelper.justClickedRight || CInputActionSet.select.isJustPressed()) {
-                clickStartedPotion = hoveredPotion;
+                clickStartedItem = hoveredItem;
 
             }
             if (InputHelper.justReleasedClickRight || CInputActionSet.select.isJustPressed())
             {
                 CInputActionSet.select.unpress();
-                if (hoveredPotion == clickStartedPotion)
+                if (hoveredItem == clickStartedItem)
                 {
-                    clickStartedPotion = null;
+                    clickStartedItem = null;
                 }
             }
         } else {
-            clickStartedPotion = null;
-        }
-        boolean isScrollingScrollBar = scrollBar.update();
-        if (!isScrollingScrollBar) {
-            updateScrolling();
-        }
-        InputHelper.justClickedLeft = false;
-        InputHelper.justClickedRight = false;
-
-        hoveredPotion = null;
-        updateList(potions);
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
-        }
-        if(doneSelecting) close();
-    }
-
-    private void updateControllerInput()
-    {
-        // TODO
-    }
-
-    private void updateScrolling()
-    {
-        int y = InputHelper.mY;
-        if (!grabbedScreen)
-        {
-            if (InputHelper.scrolledDown) {
-                targetY += Settings.SCROLL_SPEED;
-            } else if (InputHelper.scrolledUp) {
-                targetY -= Settings.SCROLL_SPEED;
-            }
-            if (InputHelper.justClickedLeft)
-            {
-                grabbedScreen = true;
-                grabStartY = (y - targetY);
-            }
-        }
-        else if (InputHelper.isMouseDown)
-        {
-            targetY = (y - grabStartY);
-        }
-        else
-        {
-            grabbedScreen = false;
-        }
-        scrollY = MathHelper.scrollSnapLerpSpeed(scrollY, targetY);
-        resetScrolling();
-        updateBarPosition();
-    }
-
-    private void calculateScrollBounds()
-    {
-        int size = potions.size();
-
-        int scrollTmp = 0;
-        if (size > 10) {
-            scrollTmp = size / 5-2;
-            scrollTmp += 5;
-            if (size % 5 != 0) {
-                ++scrollTmp;
-            }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * 75.0f * Settings.scale;
-        } else {
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
+            clickStartedItem = null;
         }
     }
 
-    private void resetScrolling()
-    {
-        if (targetY < scrollLowerBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollLowerBound);
-        } else if (targetY > scrollUpperBound) {
-            targetY = MathHelper.scrollSnapLerpSpeed(targetY, scrollUpperBound);
-        }
-    }
+//    public void update()
+//    {
+//        if (!isOpen()) {
+//            return;
+//        }
+//        if (InputHelper.pressedEscape) {
+//            close();
+//            InputHelper.pressedEscape = false;
+//            return;
+//        }
+//        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
+//            close();
+//            return;
+//        }
+//
+//        updateControllerInput();
+//        if (Settings.isControllerMode && controllerRelicHb != null) {
+//            if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
+//                targetY += Settings.SCROLL_SPEED;
+//                if (targetY > scrollUpperBound) {
+//                    targetY = scrollUpperBound;
+//                }
+//            } else if (Gdx.input.getY() < Settings.HEIGHT * 0.3F) {
+//                targetY -= Settings.SCROLL_SPEED;
+//                if (targetY < scrollLowerBound) {
+//                    targetY = scrollLowerBound;
+//                }
+//            }
+//        }
+//        confirmButton.update();
+//        this.sortHeader.update();
+//
+//        if (confirmButton.hb.clicked) {
+//            CInputActionSet.select.unpress();
+//            confirmButton.hb.clicked = false;
+//            doneSelecting = true;
+//        }
+//        if (hoveredItem != null) {
+//            if (InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed()) {
+//                clickStartedItem = hoveredItem;
+//                //logger.info("Pressed Left");
+//            }
+//            if (InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustPressed())
+//            {
+//                CInputActionSet.select.unpress();
+//                if (hoveredItem == clickStartedItem)
+//                {
+//                    AbstractDungeon.player.obtainPotion(hoveredItem.makeCopy());
+//                    AbstractPotion.playPotionSound();
+//                    this.owner.flash();
+//                    clickStartedItem = null;
+//
+//                    if (doneSelecting()) {
+//                        close();
+//                    }
+//                }
+//            }
+//
+//            if (InputHelper.justClickedRight || CInputActionSet.select.isJustPressed()) {
+//                clickStartedItem = hoveredItem;
+//
+//            }
+//            if (InputHelper.justReleasedClickRight || CInputActionSet.select.isJustPressed())
+//            {
+//                CInputActionSet.select.unpress();
+//                if (hoveredItem == clickStartedItem)
+//                {
+//                    clickStartedItem = null;
+//                }
+//            }
+//        } else {
+//            clickStartedItem = null;
+//        }
+//        boolean isScrollingScrollBar = scrollBar.update();
+//        if (!isScrollingScrollBar) {
+//            updateScrolling();
+//        }
+//        InputHelper.justClickedLeft = false;
+//        InputHelper.justClickedRight = false;
+//
+//        hoveredItem = null;
+//        updateList(items);
+//        if (Settings.isControllerMode && controllerRelicHb != null) {
+//            Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
+//        }
+//        if(doneSelecting) close();
+//    }
 
-    private void updateList(ArrayList<AbstractPotion> list)
+
+
+    protected void updateList(ArrayList<AbstractPotion> list)
     {
         for (AbstractPotion p : list)
         {
             p.hb.update();
             p.hb.move(p.posX, p.posY);
-            if(!isDeleteMode)
-                p.update();
+
+            p.update();
             if (p.hb.hovered)
             {
-                hoveredPotion = p;
+                hoveredItem = p;
             }
         }
     }
 
-    public void render(SpriteBatch sb)
-    {
-        if (!isOpen()) {
-            return;
-        }
 
-        row = -1;
-        col = 0;
-        renderList(sb, potions);
-
-        scrollBar.render(sb);
-        confirmButton.render(sb);
-        if (!isDeleteMode)
-            sortHeader.render(sb);
-    }
-
-    private void renderList(SpriteBatch sb, ArrayList<AbstractPotion> list)
+    protected void renderList(SpriteBatch sb, ArrayList<AbstractPotion> list)
     {
         row += 1;
         col = 0;
@@ -422,13 +299,9 @@ public class PotionSelectScreen implements ScrollBarListener
         boolean isRelicLocked = false;
         Color outlineColor;
 
-        if(isDeleteMode) {
-            FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, TEXT[7], START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * (this.row-1), 99999.0F, 0.0F, Settings.GOLD_COLOR);
-        }
 
         for (Iterator<AbstractPotion> it = list.iterator(); it.hasNext(); ) {
             AbstractPotion p = it.next();
-            if (isDeleteMode) p.isObtained = false;
             if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.RARITY) {
                     if (p.rarity != prevRarity) {
@@ -598,7 +471,7 @@ public class PotionSelectScreen implements ScrollBarListener
 
             p.posX = curX;
             p.posY = curY;
-                if(selectedPotions.contains(p)) {
+                if(selectedItems.contains(p)) {
                     sb.setColor(new Color(1.0F, 0.8F, 0.2F, 0.5F + (
                             MathUtils.cosDeg((float)(System.currentTimeMillis() / 4L % 360L)) + 1.25F) / 5.0F));
                     sb.draw(ImageMaster.FILTER_GLOW_BG, curX-60.0F*Settings.scale, curY-64.0F*Settings.yScale, 64.0F, 64.0F, 80.0f*1.5f, 80.0f*1.5f, Settings.scale, Settings.scale, 0.0F, 0, 0, 128, 128, false, false);
@@ -616,18 +489,4 @@ public class PotionSelectScreen implements ScrollBarListener
         calculateScrollBounds();
     }
 
-    @Override
-    public void scrolledUsingBar(float newPercent)
-    {
-        float newPosition = MathHelper.valueFromPercentBetween(scrollLowerBound, scrollUpperBound, newPercent);
-        scrollY = newPosition;
-        targetY = newPosition;
-        updateBarPosition();
-    }
-
-    private void updateBarPosition()
-    {
-        float percent = MathHelper.percentFromValueBetween(scrollLowerBound, scrollUpperBound, scrollY);
-        scrollBar.parentScrolledToPercent(percent);
-    }
 }

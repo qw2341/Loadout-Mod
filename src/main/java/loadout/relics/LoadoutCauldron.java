@@ -110,16 +110,12 @@ public class LoadoutCauldron extends CustomRelic implements ClickableRelic {
     {
         potionSelected = false;
         isSelectionScreenUp = true;
-        //ArrayList<AbstractRelic> relics = relicsToDisplay;
-        //sort if relic filter is enabled
-        //boolean isSorting = Loader.isModLoadedOrSideloaded("RelicFilter")||Loader.isModLoadedOrSideloaded("Relic Filter")||Loader.isModLoadedOrSideloaded("RelicFilterMod");
-        //logger.info("Relic Filter mod is installed: " + isSorting);
         try {
-            if (this.potionSelectScreen == null) potionSelectScreen = new PotionSelectScreen(false,this);
+            if (this.potionSelectScreen == null) potionSelectScreen = new PotionSelectScreen(this);
         } catch (NoClassDefFoundError e) {
         logger.info("Error: PotionSelectScreen Class not found while opening potion select for cauldron!");
     }
-        if (this.potionSelectScreen != null) potionSelectScreen.open(potionsToDisplay);
+        if (this.potionSelectScreen != null) potionSelectScreen.open();
     }
 
     @Override
