@@ -106,22 +106,10 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
         this.selectionModeButton = new DropdownMenu(this,b,FontHelper.panelNameFont, Settings.CREAM_COLOR);
         this.selectionModeButton.setSelectedIndex(LoadoutMod.enableDrag ? 0 : 1);
 
-        ArrayList<String> aa = new ArrayList<>();
+        this.colorFilterDropdown = new DropdownMenu(this,playerClasses,FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
-        for (AbstractPlayer ap : allCharacters) {
-            aa.add(ap.getLoadout().name);
-        }
 
-        aa.add(0,CardSelectSortHeader.TEXT[0]);//All
-        aa.add(removeLastChar(RelicSelectScreen.TEXT[4]));//Shared
-        this.colorFilterDropdown = new DropdownMenu(this,aa,FontHelper.panelNameFont, Settings.CREAM_COLOR);
-
-        ArrayList<String> e = new ArrayList<>();
-        for (AbstractRelic.RelicTier rt : AbstractRelic.RelicTier.values()) {
-            e.add(toLocalTier(rt));
-        }
-        e.add(0,CardSelectSortHeader.TEXT[0]);
-        this.rarityFilterDropdown = new DropdownMenu(this,e,FontHelper.panelNameFont, Settings.CREAM_COLOR);
+        this.rarityFilterDropdown = new DropdownMenu(this,relicTiers,FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
         relicMods = new ArrayList<>(findRelicAddingMods());
         relicMods.sort(Comparator.naturalOrder());
@@ -167,40 +155,12 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
         return modIDs;
     }
 
-    private String toLocalTier(AbstractRelic.RelicTier rt) {
-        switch (rt) {
-            case DEPRECATED:
-                return removeLastChar(RelicSelectScreen.TEXT[0]);
-            case STARTER:
-                return removeLastChar(RelicSelectScreen.rTEXT[1]);
-            case COMMON:
-                return removeLastChar(RelicSelectScreen.rTEXT[3]);
-            case UNCOMMON:
-                return removeLastChar(RelicSelectScreen.rTEXT[5]);
-            case RARE:
-                return removeLastChar(RelicSelectScreen.rTEXT[7]);
-            case SPECIAL:
-                return removeLastChar(RelicSelectScreen.rTEXT[11]);
-            case BOSS:
-                return removeLastChar(RelicSelectScreen.rTEXT[9]);
-            case SHOP:
-                return removeLastChar(RelicSelectScreen.rTEXT[13]);
-            default:
-                return toWordCase(rt.toString());
-        }
-    }
+
 
     //Use to remove the colon
-    private String removeLastChar(String str) {
-        return str.substring(0,str.length()-1);
-    }
 
-    private String toWordCase(String str) {
-        if (str.length() > 1)
-            return str.toUpperCase().charAt(0) + str.toLowerCase().substring(1);
-        else
-            return String.valueOf(str.toUpperCase().charAt(0));
-    }
+
+
 
 @Override
     public void clearActiveButtons() {

@@ -4,19 +4,27 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
+
+import java.util.ArrayList;
+
+import static loadout.LoadoutMod.allCharacters;
 
 public abstract class AbstractSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
     public boolean justSorted = false;
 
     public float startX = 650.0F * Settings.xScale;
+    public static final float START_X = 650.0F * Settings.xScale;
     public static final float SPACE_X = 226.0F * Settings.xScale;
-    protected static final float START_Y = Settings.HEIGHT - 200.0F * Settings.yScale;
+    protected float startY = Settings.HEIGHT - 200.0F * Settings.yScale;
+    public static final float START_Y = Settings.HEIGHT - 200.0F * Settings.yScale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
 
     protected String[] dropdownMenuHeaders;
@@ -30,13 +38,29 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
     public AbstractSelectScreen selectScreen;
     public TextSearchBox searchBox;
 
+    public ArrayList<String> playerClasses;
+    public ArrayList<String> relicTiers;
+
     public AbstractSortHeader(AbstractSelectScreen ss) {
 
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
 
         this.selectScreen = ss;
+        if (allCharacters != null) {
+            playerClasses = new ArrayList<>();
+            for (AbstractPlayer ap : allCharacters) {
+                playerClasses.add(ap.getLoadout().name);
+            }
+            playerClasses.add(0,CardSelectSortHeader.TEXT[0]);//All
+            playerClasses.add(removeLastChar(RelicSelectScreen.TEXT[4]));//Shared
+        }
 
+        relicTiers = new ArrayList<>();
+        for (AbstractRelic.RelicTier rt : AbstractRelic.RelicTier.values()) {
+            relicTiers.add(toLocalTier(rt.toString()));
+        }
+        relicTiers.add(0,CardSelectSortHeader.TEXT[0]);
     }
 
     public void update() {
@@ -131,7 +155,7 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
         }
 
         float spaceY = 52.0f * Settings.yScale;
-        float yPos = START_Y;
+        float yPos = startY;
 
         float xPos = 0.0f;
 
@@ -157,6 +181,40 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
                 sb.draw(img, (this.buttons[this.selectionIndex]).hb.cX - 80.0F - (this.buttons[this.selectionIndex]).textWidth / 2.0F * Settings.scale, (this.buttons[this.selectionIndex]).hb.cY - 43.0F, 100.0F, 43.0F, 160.0F + (this.buttons[this.selectionIndex]).textWidth, 86.0F, Settings.scale * doop, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
             }
         }
+    }
+
+    protected static String removeLastChar(String str) {
+        return str.substring(0,str.length()-1);
+    }
+
+    protected static String toLocalTier(String rt) {
+        switch (rt) {
+            case "DEPRECATED":
+                return removeLastChar(RelicSelectScreen.TEXT[0]);
+            case "STARTER":
+                return removeLastChar(RelicSelectScreen.rTEXT[1]);
+            case "COMMON":
+                return removeLastChar(RelicSelectScreen.rTEXT[3]);
+            case "UNCOMMON":
+                return removeLastChar(RelicSelectScreen.rTEXT[5]);
+            case "RARE":
+                return removeLastChar(RelicSelectScreen.rTEXT[7]);
+            case "SPECIAL":
+                return removeLastChar(RelicSelectScreen.rTEXT[11]);
+            case "BOSS":
+                return removeLastChar(RelicSelectScreen.rTEXT[9]);
+            case "SHOP":
+                return removeLastChar(RelicSelectScreen.rTEXT[13]);
+            default:
+                return toWordCase(rt);
+        }
+    }
+
+    protected static String toWordCase(String str) {
+        if (str.length() > 1)
+            return str.toUpperCase().charAt(0) + str.toLowerCase().substring(1);
+        else
+            return String.valueOf(str.toUpperCase().charAt(0));
     }
 
 }
