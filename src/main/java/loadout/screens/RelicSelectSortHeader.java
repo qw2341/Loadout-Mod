@@ -29,9 +29,6 @@ import java.util.HashSet;
 import static loadout.LoadoutMod.*;
 
 public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderButtonPlusListener, DropdownMenuListener {
-    //private static final UIStrings cUIStrings = CardCrawlGame.languagePack.getUIString("CardLibSortHeader");
-    //public static final String[] cTEXT = cUIStrings.TEXT;
-
     private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectSortHeader"));
     public static final String[] TEXT = UiStrings.TEXT;
     private static final UIStrings esKeyUiStrings = CardCrawlGame.languagePack.getUIString("RewardItem");
@@ -40,35 +37,26 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
     public static final String BLUE_KEY_TEXT = esTEXT[6];
     public static final String RED_KEY_TEXT = TEXT[4];
 
-    //public boolean justSorted = false;
-
     public static final float START_X = 650.0F * Settings.xScale;
     public static final float SPACE_X = 226.0F * Settings.xScale;
     private static final float START_Y = Settings.HEIGHT - 300.0F * Settings.yScale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
-    private HeaderButtonPlus rarityButton;
-    private HeaderButtonPlus classButton;
-    private HeaderButtonPlus nameButton;
-    private HeaderButtonPlus modButton;
-    private HeaderButtonPlus obtainRedKeyButton;
-    private HeaderButtonPlus obtainGreenKeyButton;
-    private HeaderButtonPlus obtainBlueKeyButton;
-    private DropdownMenu numRelicsButton;
-    private DropdownMenu selectionModeButton;
+    private final HeaderButtonPlus rarityButton;
+    private final HeaderButtonPlus classButton;
+    private final HeaderButtonPlus nameButton;
+    private final HeaderButtonPlus modButton;
+    private final HeaderButtonPlus obtainRedKeyButton;
+    private final HeaderButtonPlus obtainGreenKeyButton;
+    private final HeaderButtonPlus obtainBlueKeyButton;
+    private final DropdownMenu numRelicsButton;
+    private final DropdownMenu selectionModeButton;
 
-    private DropdownMenu colorFilterDropdown;
+    private final DropdownMenu colorFilterDropdown;
 
-    private DropdownMenu rarityFilterDropdown;
-    private DropdownMenu modNameDropdown;
+    private final DropdownMenu rarityFilterDropdown;
+    private final DropdownMenu modNameDropdown;
 
-    //private String[] dropdownMenuHeaders;
-    //public DropdownMenu[] dropdownMenus;
-
-    //public HeaderButtonPlus[] buttons;
-    //public int selectionIndex = -1;
-
-    //private static Texture img;
-    private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
+    private final Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
     public ArrayList<String> relicMods;
     public HashMap<String,String> relicModNames;
@@ -214,50 +202,6 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
             return String.valueOf(str.toUpperCase().charAt(0));
     }
 
-
-//    public void update() {
-//        for (HeaderButtonPlus button : this.buttons) {
-//            button.update();
-//        }
-//
-//        for (DropdownMenu dropdownMenu : this.dropdownMenus) {
-//            if (dropdownMenu.isOpen) {
-//                dropdownMenu.update();
-//                return;
-//            }
-//        }
-//
-//        for (DropdownMenu dm : this.dropdownMenus) {
-//            dm.update();
-//        }
-//
-//    }
-
-//    public Hitbox updateControllerInput() {
-//        for (HeaderButtonPlus button : this.buttons) {
-//            if (button.hb.hovered) {
-//                return button.hb;
-//            }
-//        }
-//
-//        for (DropdownMenu dm: this.dropdownMenus) {
-//            if(dm.getHitbox().hovered)
-//                return dm.getHitbox();
-//        }
-//
-//        return null;
-//    }
-
-//    public int getHoveredIndex() {
-//        int retVal = 0;
-//        for (HeaderButtonPlus button : this.buttons) {
-//            if (button.hb.hovered) {
-//                return retVal;
-//            }
-//            retVal++;
-//        }
-//        return 0;
-//    }
 @Override
     public void clearActiveButtons() {
         //does not clear the last 3 buttons
@@ -334,12 +278,6 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
 
     }
 
-//    public void render(SpriteBatch sb) {
-//        //sb.draw(ImageMaster.COLOR_TAB_BAR, 10.0F, -50.0F, 300.0F, 500.0F, 0, 0, 1334, 102, false, false);
-//        updateScrollPositions();
-//        renderButtons(sb);
-//        renderSelection(sb);
-//    }
 
     protected void updateScrollPositions() {
 
@@ -365,29 +303,10 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
                 FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, dropdownMenuHeaders[i], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
                 yPos += spaceY;
             }
-//
-//            this.numRelicsButton.render(sb,xPos,yPos);
-//            yPos += spaceY;
-//            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, TEXT[7], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
-//            yPos += 2.0f * spaceY;
-//            this.selectionModeButton.render(sb,xPos,yPos);
-//            yPos += spaceY;
-//            FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, TEXT[10], xPos, yPos, 200.0F, 20.0F, Settings.GOLD_COLOR);
 
         }
     }
 
-//    protected void renderSelection(SpriteBatch sb) {
-//        for (int i = 0; i < this.buttons.length; i++) {
-//            if (i == this.selectionIndex) {
-//                this.selectionColor.a = 0.7F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L)) / 5.0F;
-//                sb.setColor(this.selectionColor);
-//                float doop = 1.0F + (1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 2L % 360L))) / 50.0F;
-//
-//                sb.draw(img, (this.buttons[this.selectionIndex]).hb.cX - 80.0F - (this.buttons[this.selectionIndex]).textWidth / 2.0F * Settings.scale, (this.buttons[this.selectionIndex]).hb.cY - 43.0F, 100.0F, 43.0F, 160.0F + (this.buttons[this.selectionIndex]).textWidth, 86.0F, Settings.scale * doop, Settings.scale * doop, 0.0F, 0, 0, 200, 86, false, false);
-//            }
-//        }
-//    }
 
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
@@ -395,9 +314,6 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
             LoadoutMod.relicObtainMultiplier = i+1;
             RelicSelectScreen.selectMult = i+1;
             try {
-                //Field f = LoadoutMod.class.getDeclaredField("config");
-                //f.setAccessible(true);
-                //SpireConfig config = (SpireConfig) f.get(null);
                 LoadoutMod.config.setInt(RELIC_OBTAIN_AMOUNT, i+1);
                 LoadoutMod.config.save();
             } catch (NullPointerException nPE) {
@@ -409,9 +325,6 @@ public class RelicSelectSortHeader extends AbstractSortHeader implements HeaderB
         if (dropdownMenu == this.selectionModeButton) {
             LoadoutMod.enableDrag = i == 0;
             try {
-                //Field f = LoadoutMod.class.getDeclaredField("config");
-                //f.setAccessible(true);
-                //SpireConfig config = (SpireConfig) f.get(null);
                 LoadoutMod.config.setBool(ENABLE_DRAG_SELECT, enableDrag);
                 LoadoutMod.config.save();
             } catch (NullPointerException nPE) {
