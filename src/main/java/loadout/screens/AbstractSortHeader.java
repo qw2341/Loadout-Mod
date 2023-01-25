@@ -25,7 +25,7 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
     public int selectionIndex = -1;
 
     protected static Texture img;
-    private Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
+    private final Color selectionColor = new Color(1.0F, 0.95F, 0.5F, 0.0F);
 
     public AbstractSelectScreen selectScreen;
     public TextSearchBox searchBox;
@@ -34,8 +34,6 @@ public abstract class AbstractSortHeader implements HeaderButtonPlusListener, Dr
 
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
-        this.startX = startX;
-
 
         this.selectScreen = ss;
 
