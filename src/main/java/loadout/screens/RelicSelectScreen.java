@@ -109,7 +109,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
     public RelicSelectScreen(boolean isDeleteMode, AbstractRelic owner)
     {
         super(owner);
-        //scrollBar = new ScrollBar(this);
         sortHeader = new RelicSelectSortHeader(this);
         this.isDeleteMode = isDeleteMode;
 
@@ -143,22 +142,10 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
     public void sortByClass(boolean isAscending){
         if (isAscending) {
             this.currentSortOrder = SortOrder.ASCENDING;
-            if (true) {
-                this.items.sort(relicClassComparator);
-            } else {
-                //this.relics = this.relicsClass;
-            }
-
+            this.items.sort(relicClassComparator);
         } else {
-
             this.currentSortOrder = SortOrder.DESCENDING;
-            if (true) {
-                this.items.sort(relicClassComparator.reversed());
-            } else {
-                //this.relics = this.relicsClassReverse;
-
-            }
-
+            this.items.sort(relicClassComparator.reversed());
         }
         this.currentSortType = SortType.CLASS;
         scrolledUsingBar(0.0F);
@@ -267,7 +254,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
             this.currentSortOrder = SortOrder.ASCENDING;
             this.currentSortType = SortType.RARITY;
             updateFilters();
-            //initClassList();
         }
 
         targetY = scrollLowerBound;
