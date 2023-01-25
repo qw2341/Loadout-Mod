@@ -291,10 +291,19 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
         for (String pID : LoadoutMod.powersToDisplay.keySet()) {
             if(pID == null) continue;
-            Class<? extends AbstractPower> pClass = LoadoutMod.powersToDisplay.get(pID);
-            PowerButton pb = new PowerButton(pID, pClass);
-            this.items.add(pb);
-            this.itemsClone.add(pb);
+            PowerButton pb = null;
+            try {
+                Class<? extends AbstractPower> pClass = LoadoutMod.powersToDisplay.get(pID);
+                pb = new PowerButton(pID, pClass);
+
+            } catch (Exception | Error e) {
+                LoadoutMod.logger.info("Failed to create a button for " + pID);
+            }
+            if(pb != null) {
+                this.items.add(pb);
+                this.itemsClone.add(pb);
+            }
+
         }
 
 

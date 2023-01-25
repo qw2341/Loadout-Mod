@@ -138,14 +138,19 @@ public class PowerGiver extends CustomRelic implements ClickableRelic, CustomSav
 
     private void openPowerSelect()
     {
-        powerSelected = false;
-        isSelectionScreenUp = true;
+
+
         try {
             if (this.powerSelectScreen == null) powerSelectScreen = new PowerSelectScreen(this);
         } catch (NoClassDefFoundError e) {
             logger.info("Error: PowerSelectScreen Class not found while opening potion select for Potion of Powers!");
+            e.printStackTrace();
         }
-        if (this.powerSelectScreen != null) powerSelectScreen.open();
+        if (this.powerSelectScreen != null) {
+            powerSelected = false;
+            isSelectionScreenUp = true;
+            powerSelectScreen.open();
+        }
     }
 
     @Override
