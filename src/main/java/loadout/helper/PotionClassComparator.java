@@ -17,6 +17,7 @@ public class PotionClassComparator implements Comparator<AbstractPotion> {
     public static final ArrayList<AbstractPlayer.PlayerClass> classList = new ArrayList<>();
     private static final ArrayList<ArrayList<String>> customPotionPools = new ArrayList<>();
     public static ArrayList<String> sharedList;
+    public static ArrayList<String> redList;
     private PotionNameComparator pNC;
 
     public PotionClassComparator() {
@@ -63,6 +64,16 @@ public class PotionClassComparator implements Comparator<AbstractPotion> {
             return retVal + numClasses;
     }
 
+    public static AbstractCard.CardColor getPotionClass(AbstractPotion ap) {
+
+        for (int i = 0; i < customPotionPools.size(); i++) {
+            if (customPotionPools.get(i).contains(ap.ID))
+                return LoadoutMod.allCharacters.get(i).getCardColor();
+        }
+
+        return AbstractCard.CardColor.COLORLESS;
+    }
+
     private void getClasses() {
         LoadoutMod.allCharacters.forEach(aP -> classList.add(aP.chosenClass));
     }
@@ -74,6 +85,10 @@ public class PotionClassComparator implements Comparator<AbstractPotion> {
         ArrayList<String> redList = customPotionPools.get(0);
         ArrayList<String> greenList = customPotionPools.get(1);
         sharedList = redList.stream().filter(greenList::contains).collect(Collectors.toCollection(ArrayList::new));
+
+        for (int i = 0; i< customPotionPools.size(); i++) {
+            customPotionPools.get(i).removeAll(sharedList);
+        }
     }
 
     public static AbstractPlayer getCharacterByClass(AbstractPlayer.PlayerClass c) {
@@ -85,7 +100,7 @@ public class PotionClassComparator implements Comparator<AbstractPotion> {
         return null;
     }
 
-    public static Color getRelicColor(AbstractPotion r) {
+    public static Color getPotionColor(AbstractPotion r) {
         int charClass = potionClassToInt(r);
         ArrayList<AbstractPlayer> allChars = LoadoutMod.allCharacters;
         switch (charClass) {

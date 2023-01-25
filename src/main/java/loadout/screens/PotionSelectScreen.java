@@ -1,29 +1,26 @@
 package loadout.screens;
 
-import com.badlogic.gdx.Gdx;
+import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import loadout.LoadoutMod;
 import loadout.helper.*;
-import loadout.relics.LoadoutBag;
 import loadout.relics.LoadoutCauldron;
-import loadout.relics.TrashBin;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -45,6 +42,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
     private final Comparator<AbstractPotion> potionNameComparator = new PotionNameComparator();
     private final Comparator<AbstractPotion> potionModComparator = new PotionModComparator();
 
+    public AbstractPotion.PotionRarity filterRarity = null;
 
 
     public PotionSelectScreen(AbstractRelic owner)
@@ -54,10 +52,29 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
         sortHeader = new PotionSelectSortHeader(this);
     }
 
+    private boolean checkPotionClass(AbstractPotion ap) {
+        boolean isShared = false;
+        if(this.filterColor == AbstractCard.CardColor.COLORLESS) {
+            isShared = PotionClassComparator.sharedList.contains(ap.ID) ;
+        }
 
+        return isShared || PotionClassComparator.getPotionClass(ap) == this.filterColor;
+    }
+    private boolean testTextFilter(AbstractPotion ap) {
+        if (ap.ID != null && StringUtils.containsIgnoreCase(ap.ID,(this.sortHeader).searchBox.filterText)) return true;
+        if (ap.name != null && StringUtils.containsIgnoreCase(ap.name,(this.sortHeader).searchBox.filterText)) return true;
+        if (ap.description != null && StringUtils.containsIgnoreCase(ap.description,(this.sortHeader).searchBox.filterText)) return true;
+        return false;
+    }
     @Override
-    protected boolean testFilters(AbstractPotion item) {
-        return true;
+    protected boolean testFilters(AbstractPotion ap) {
+        boolean colorCheck = this.filterColor == null || checkPotionClass(ap);
+        String modID = WhatMod.findModID(ap.getClass());
+        if (modID == null) modID = "Slay the Spire";
+        boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
+        boolean rarityCheck = this.filterRarity == null || ap.rarity == this.filterRarity;
+        boolean textCheck = sortHeader == null || (this.sortHeader).searchBox.filterText.equals("") || testTextFilter(ap);
+        return colorCheck && modCheck && rarityCheck && textCheck;
     }
 
     @Override
@@ -478,7 +495,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                     p.renderOutline(sb, Color.GOLD);
                     p.labRender(sb);
                 } else {
-                    outlineColor = PotionClassComparator.getRelicColor(p);
+                    outlineColor = PotionClassComparator.getPotionColor(p);
                     p.renderOutline(sb,outlineColor);
                     p.labRender(sb);
                 }
