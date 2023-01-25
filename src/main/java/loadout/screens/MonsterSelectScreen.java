@@ -365,6 +365,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         this.defaultSortType = SortType.MOD;
 
         this.itemHeight = 150.0F;
+        this.itemsPerLine = 5;
     }
 
 

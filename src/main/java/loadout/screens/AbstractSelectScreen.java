@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -32,6 +33,9 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     protected static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
     public static final float SPACE_X = 226.0F * Settings.scale;
+    public AbstractCard.CardColor filterColor;
+
+    public String filterMod;
 
     protected float scrollY = START_Y;
     protected float targetY = this.scrollY;
@@ -293,10 +297,10 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         int size = items.size();
 
         int scrollTmp = 0;
-        if (size > 5) {
-            scrollTmp = size / 5;
-            scrollTmp += 5;
-            if (size % 5 != 0) {
+        if (size > this.itemsPerLine) {
+            scrollTmp = size / this.itemsPerLine;
+            scrollTmp += this.itemsPerLine;
+            if (size % this.itemsPerLine != 0) {
                 ++scrollTmp;
             }
             scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * itemHeight * Settings.scale;
