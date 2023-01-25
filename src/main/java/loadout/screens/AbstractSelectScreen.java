@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
@@ -61,6 +62,10 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     protected Hitbox controllerRelicHb = null;
     protected boolean show = false;
 
+    private static final UIStrings rUiStrings = CardCrawlGame.languagePack.getUIString("RelicViewScreen");
+    public static final String[] rTEXT = rUiStrings.TEXT;
+    private static final UIStrings pUiStrings = CardCrawlGame.languagePack.getUIString("PotionViewScreen");
+    public static final String[] pTEXT = pUiStrings.TEXT;
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] gTEXT = gUiStrings.TEXT;
     protected GridSelectConfirmButton confirmButton = new GridSelectConfirmButton(gTEXT[0]);
@@ -80,6 +85,19 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     private final InputAction ctrlKey;
     protected SortType defaultSortType;
     protected float itemHeight = 420.0F;
+
+    protected static final Color RED_OUTLINE_COLOR = new Color(-10132568);
+    protected static final Color GREEN_OUTLINE_COLOR = new Color(2147418280);
+    protected static final Color BLUE_OUTLINE_COLOR = new Color(-2016482392);
+    protected static final Color PURPLE_OUTLINE_COLOR = Color.PURPLE;
+    protected static final Color BLACK_OUTLINE_COLOR = new Color(168);
+
+    protected static final CharacterStrings redStrings = CardCrawlGame.languagePack.getCharacterString("Ironclad");
+    protected static final CharacterStrings greenStrings = CardCrawlGame.languagePack.getCharacterString("Silent");
+    protected static final CharacterStrings blueStrings = CardCrawlGame.languagePack.getCharacterString("Defect");
+    protected static final CharacterStrings purpleStrings = CardCrawlGame.languagePack.getCharacterString("Watcher");
+
+    protected static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
 
 
 
