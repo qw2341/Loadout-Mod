@@ -1598,4 +1598,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receivePreUpdate() {
         if(sidePanel != null && !AbstractDungeon.isPlayerInDungeon() && sidePanel.shown) sidePanel.shown = false;
     }
+
+    public static boolean isXggg() {
+        return CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine");
+    }
 }

@@ -48,7 +48,7 @@ public class BottledMonster extends CustomRelic implements ClickableRelic {
     public BottledMonster() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
 
-        if (CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine") && Math.random() < 0.2) {
+        if (LoadoutMod.isXggg() && Math.random() < 0.05) {
             this.img = IMG_XGGG_ALT;
             this.tips.get(0).header = XGGG_NAME;
         }
