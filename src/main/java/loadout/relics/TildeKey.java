@@ -6,16 +6,17 @@ import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.animations.TalkAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
-import com.megacrit.cardcrawl.actions.defect.DecreaseMaxOrbAction;
-import com.megacrit.cardcrawl.actions.defect.IncreaseMaxOrbAction;
+import com.megacrit.cardcrawl.actions.utility.SFXAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -25,12 +26,11 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -39,7 +39,6 @@ import com.megacrit.cardcrawl.powers.FocusPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
@@ -140,11 +139,14 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
     public static boolean isDrawPerTurnLocked = false;
     private static final String isDrawPerTurnLockedKey = "isDrawPerTurnLocked";
     private final InputAction ctrlKey;
+    private final InputAction gKey;
+    private final InputAction kKey;
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
-
+        this.gKey = new InputAction(Input.Keys.G);
+        this.kKey = new InputAction(Input.Keys.K);
 
 
         if(isIsaacMode) {
@@ -275,6 +277,31 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                 if(r != null) {
                     if(InputHelper.scrolledUp) r.counter++;
                     if(InputHelper.scrolledDown) r.counter--;
+                }
+            }
+
+            if(LoadoutMod.isXggg()) {
+                if(gKey.isJustPressed()) {
+                    int roll = MathUtils.random(2);
+                    if (roll == 0) {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_MERCHANT_MA"));
+                    } else if (roll == 1) {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_MERCHANT_MB"));
+                    } else {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_MERCHANT_MC"));
+                    }
+                    addToBot(new TalkAction(true, "~晚~ ~上~ ~好~~", 1.0F, 2.0F));
+                }
+                if(kKey.isJustPressed()) {
+                    int roll = MathUtils.random(2);
+                    if (roll == 0) {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_CULTIST_1A"));
+                    } else if (roll == 1) {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_CULTIST_1B"));
+                    } else {
+                        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new SFXAction("VO_CULTIST_1C"));
+                    }
+                    addToBot((AbstractGameAction)new TalkAction(true, RelicLibrary.getRelic("CultistMask").DESCRIPTIONS[1], 1.0F, 2.0F));
                 }
             }
         }
