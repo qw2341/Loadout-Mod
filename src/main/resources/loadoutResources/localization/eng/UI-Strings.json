@@ -87,7 +87,8 @@
 			"Random Upgrade on Kill",
 			"Increase Damage on Kill",
 			"Add Magic Number on Kill",
-			" NL If Fatal, permanently increase this card's magic number by !loadout:Misc!"
+			" NL If Fatal, permanently increase this card's magic number by !loadout:Misc!",
+			"Lifesteal"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

@@ -37,6 +37,7 @@ public class ModifierLibrary {
         modifiers.put(RandomUpgradeOnKillMod.ID, RandomUpgradeOnKillMod.class);
         modifiers.put(GainDamageOnKill.ID, GainDamageOnKill.class);
         modifiers.put(GainMagicOnKillMod.ID, GainMagicOnKillMod.class);
+        modifiers.put(LifestealMod.ID, LifestealMod.class);
 
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();
@@ -45,6 +46,7 @@ public class ModifierLibrary {
         RandomUpgradeOnKillMod.onLoad();
         GainDamageOnKill.onLoad();
         GainMagicOnKillMod.onLoad();
+        LifestealMod.onLoad();
     }
 
     public static AbstractCardModifier getModifier(String id) {

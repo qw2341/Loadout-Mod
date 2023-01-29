@@ -86,7 +86,8 @@
 			"Mise à niveau aléatoire sur Tuer",
 			"Augmente les dégâts lors de la mise à mort",
 			"Ajouter un numéro magique sur Tuer",
-			" NL Si cette carte tue un ennemi, ses nombre magique augmentent de !loadout:Misc!"
+			" NL Si cette carte tue un ennemi, ses nombre magique augmentent de !loadout:Misc!",
+			"Vol de HP"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

@@ -86,7 +86,8 @@
 			"斬殺隨機升級",
 			"斬殺增加傷害",
 			"斬殺加魔法數字",
-			" NL  斬殺 時，這張牌的魔法數字永久增加 !loadout:Misc! 點 "
+			" NL  斬殺 時，這張牌的魔法數字永久增加 !loadout:Misc! 點 ",
+			"生命竊取"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

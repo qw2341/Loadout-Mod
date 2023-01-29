@@ -117,7 +117,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus randomUpgradeOnKillButton;
     private final HeaderButtonPlus makeGainDamageOnKillButton;
     private final HeaderButtonPlus makeGainMagicOnKillButton;
-
+    private final HeaderButtonPlus makeLifestealButton;
 
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
@@ -276,10 +276,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         this.makeGainMagicOnKillButton = new HeaderButtonPlus(TEXT[17],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         xPosition += SPACE_X;
+        this.makeLifestealButton = new HeaderButtonPlus(TEXT[19],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.miscIncreaseButton, this.miscDecreaseButton, this.restoreDefaultButton,
         this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-        this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton};
+        this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton};
 
 
 
@@ -385,6 +388,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainDamageOnKill.ID);
                 else if(button == this.makeGainMagicOnKillButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainMagicOnKillMod.ID);
+                else if(button == this.makeLifestealButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, LifestealMod.ID);
             }
         }
     }
@@ -413,6 +418,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.randomUpgradeOnKillButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, RandomUpgradeOnKillMod.ID);
             this.makeGainDamageOnKillButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainDamageOnKill.ID);
             this.makeGainMagicOnKillButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, GainMagicOnKillMod.ID);
+            this.makeLifestealButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, LifestealMod.ID);
         }
 
 
@@ -755,6 +761,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainMagicOnKillMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new GainMagicOnKillMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeLifestealButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, LifestealMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new LifestealMod());
             setCardModded(true);
             resetOtherButtons();
         } else {

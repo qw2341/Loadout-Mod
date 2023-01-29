@@ -86,7 +86,8 @@
 			"斩杀随机升级",
 			"斩杀增加伤害",
 			"斩杀加魔法数字",
-			" NL  斩杀 时，它在本局游戏中的魔法数字永久性增加 !loadout:Misc! "
+			" NL  斩杀 时，它在本局游戏中的魔法数字永久性增加 !loadout:Misc! ",
+			"生命窃取"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
