@@ -1,5 +1,6 @@
 package loadout.screens;
 
+import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -49,6 +50,8 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
             this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
             this.tips = new ArrayList<>();
             this.tips.add(new PowerTip(this.instance.name, this.instance.description));
+            ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "scale", Settings.scale);
+            ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "channelAnimTimer", 0.0f);
         }
 
         public void update() {
@@ -101,6 +104,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
     public OrbSelectScreen(AbstractRelic owner) {
         super(owner);
         this.defaultSortType = SortType.MOD;
+        this.itemHeight = 75.0f * Settings.yScale;
 
         this.itemsClone = new ArrayList<>(LoadoutMod.orbsToDisplay);
         this.items = new ArrayList<>(itemsClone);
