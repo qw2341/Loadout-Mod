@@ -83,10 +83,15 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     protected boolean isDragSelecting = false;
     protected boolean isTryingToScroll = false;
     public static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
+    public static final Color GOLD_BACKGROUND = new Color(-2686721);
+    static {
+        GOLD_BACKGROUND.a = 0.5f;
+    }
 
     public static int selectMult = 1;
     private final InputAction shiftKey;
     private final InputAction ctrlKey;
+    private final InputAction altKey;
     protected SortType defaultSortType;
     protected float itemHeight = 420.0F;
 
@@ -102,6 +107,10 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     protected static final CharacterStrings purpleStrings = CardCrawlGame.languagePack.getCharacterString("Watcher");
 
     protected static final CharacterStrings[] charStrings = {redStrings,greenStrings,blueStrings,purpleStrings};
+
+    protected boolean isFaving = false;
+    public boolean filterFavorites = false;
+    public boolean filterAll = true;
 
 
 
@@ -121,6 +130,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
         this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+        this.altKey = new InputAction(Input.Keys.ALT_LEFT);
     }
 
     protected void sortOnOpen() {
@@ -192,6 +202,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         } else {
             selectMult = 1;
         }
+        isFaving = this.altKey.isPressed();
     }
     protected abstract void updateItemClickLogic();
 

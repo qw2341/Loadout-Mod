@@ -25,7 +25,7 @@ public abstract class AbstractCustomScreenRelics extends CustomRelic implements 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
 
     public static boolean isSelectionScreenUp = false;
-    protected boolean itemSelected = false;
+    protected boolean itemSelected = true;
     public AbstractSelectScreen selectScreen;
 
     private boolean fakeHover = false;
@@ -72,7 +72,7 @@ public abstract class AbstractCustomScreenRelics extends CustomRelic implements 
             // If it has been used this turn, the player doesn't actually have the relic (i.e. it's on display in the shop room), or it's the enemy's turn
             return; // Don't do anything.
         }
-        if (LoadoutBag.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || PowerGiver.isSelectionScreenUp)
+        if (isOtherRelicScreenOpen())
             return;
 
         if(isSelectionScreenUp) {
@@ -93,7 +93,15 @@ public abstract class AbstractCustomScreenRelics extends CustomRelic implements 
         openSelectScreen();
     }
 
-    protected abstract void openSelectScreen();
+    protected void openSelectScreen() {
+        this.itemSelected = false;
+        isSelectionScreenUp = true;
+
+        if (selectScreen == null) this.selectScreen = getNewSelectScreen();
+        if(selectScreen != null) this.selectScreen.open();
+    }
+
+    protected abstract AbstractSelectScreen getNewSelectScreen();
 
     @Override
     public void update()

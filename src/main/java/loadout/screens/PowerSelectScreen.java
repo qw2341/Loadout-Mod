@@ -224,10 +224,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     }
 
-    private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
-    public static final String[] gTEXT = gUiStrings.TEXT;
-    private static final UIStrings UiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("RelicSelectionScreen"));
-    public static final String[] TEXT = UiStrings.TEXT;
+    private static final String[] TEXT = RelicSelectScreen.TEXT;
 
 
     private static final float SPACE = 85.0F * Settings.scale;
@@ -238,12 +235,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     //private PowerSelectSortHeader sortHeader;
 
-    private static final Color GOLD_BACKGROUND = new Color(-2686721);
-    static {
-        GOLD_BACKGROUND.a = 0.5f;
-    }
 
-    //public static int selectMult = 1;
 
     private static final Comparator<PowerButton> BY_TYPE = Comparator.comparing(p -> p.type);
     private static final Comparator<PowerButton> BY_NAME = Comparator.comparing(p -> p.name);
@@ -251,27 +243,8 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     private static final Comparator<PowerButton> BY_ID = Comparator.comparing(p -> p.id);
 
-
-
-
-    private InputAction altKey;
-
     public PowerGiver.PowerTarget currentTarget = PowerGiver.PowerTarget.PLAYER;
 
-
-
-    public boolean filterFavorites = false;
-    public boolean filterAll = true;
-
-    private boolean isFaving;
-
-
-
-
-    public boolean doneSelecting()
-    {
-        return doneSelecting;
-    }
 
 
 
@@ -280,10 +253,6 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
         super(owner);
 
         //import favorites
-
-
-        this.altKey = new InputAction(Input.Keys.ALT_LEFT);
-
 
         this.currentSortType = SortType.MOD;
         this.defaultSortType = SortType.MOD;
@@ -424,16 +393,6 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
         }
     }
 
-    @Override
-    protected void updateHotkeyControls() {
-        super.updateHotkeyControls();
-
-        if(this.altKey.isPressed()) {
-            isFaving = true;
-        } else {
-            isFaving = false;
-        }
-    }
 
     @Override
     protected void updateItemClickLogic() {
