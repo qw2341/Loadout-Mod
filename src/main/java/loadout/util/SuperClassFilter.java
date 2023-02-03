@@ -14,9 +14,13 @@ public class SuperClassFilter implements ClassFilter{
         private ClassPool pool;
         private CtClass baseClass;
 
-        public SuperClassFilter(ClassPool pool, Class<?> baseClass) throws NotFoundException {
+        public SuperClassFilter(ClassPool pool, Class<?> baseClass) {
             this.pool = pool;
-            this.baseClass = pool.get(baseClass.getName());
+            try {
+                this.baseClass = pool.get(baseClass.getName());
+            } catch (NotFoundException e) {
+                this.baseClass = null;
+            }
         }
 
         public boolean accept(ClassInfo classInfo, ClassFinder classFinder) {
