@@ -1427,13 +1427,14 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                         }
                         if (isOrb) {
                             Class<?extends AbstractOrb> orbC = (Class<? extends AbstractOrb>) clazzLoader.loadClass(cls.getName());
+                            OrbSelectScreen.OrbButton ob;
                             try{
                                 Class.forName(orbC.getName(),false,clazzLoader);
+                                ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
                             } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
                                 logger.info(orbC.getName() + "does not exist");
                                 continue;
                             }
-                            OrbSelectScreen.OrbButton ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
 
                             if(orbIDs.contains(orbC.getName())) {
                                 continue;

@@ -65,7 +65,12 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
             if(this.hb != null) {
                 this.hb.render(sb);
                 float a = (amount != 0 || this.hb.hovered) ? 1.0f : 0.7f;
-                this.instance.render(sb);
+                try{
+                    this.instance.render(sb);
+                } catch (Exception ignored) {
+
+                }
+
 
                 if (this.hb.hovered) {
                     sb.setBlendFunction(770, 1);
@@ -78,11 +83,11 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
                 }
-                if (this.amount > 0) {
-                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
-                } else if (this.amount < 0) {
-                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.RED_TEXT_COLOR);
-                }
+//                if (this.amount > 0) {
+//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
+//                } else if (this.amount < 0) {
+//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.RED_TEXT_COLOR);
+//                }
             }
 
 
