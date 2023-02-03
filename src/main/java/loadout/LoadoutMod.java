@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -42,6 +43,7 @@ import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
+import javassist.ClassPool;
 import javassist.CtClass;
 import loadout.cardmods.GainGoldOnKillMod;
 import loadout.cardmods.GainGoldOnPlayMod;
@@ -55,15 +57,13 @@ import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
 import loadout.screens.MonsterSelectScreen;
+import loadout.screens.OrbSelectScreen;
 import loadout.screens.SidePanel;
-import loadout.util.MonsterFilter;
-import loadout.util.PowerFilter;
+import loadout.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
-import loadout.util.IDCheckDontTouchPls;
-import loadout.util.TextureLoader;
 import org.clapper.util.classutil.*;
 
 import java.io.IOException;
@@ -76,7 +76,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static basemod.BaseMod.gson;
-import static loadout.screens.PowerSelectScreen.TEXT;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
 //TODO: DON'T MASS RENAME/REFACTOR
@@ -153,6 +152,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static final String ENABLE_STARTING_LOADOUT_BOTTLE = "enableBottleMonsterStarting";
     public static boolean enableBottleStarting = true;
+    public static final String ENABLE_STARTING_LOADOUT_BALLS = "enableOrbBoxStarting";
+    public static boolean enableBallBoxStarting = true;
 
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
@@ -206,6 +207,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
     public static HashMap<String,Class<? extends AbstractPower>> powersToDisplay = new HashMap<>();
     public static ArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new ArrayList<>();
+    public static ArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new ArrayList<>();
+    public static HashSet<String> orbIDs = new HashSet<>();
 
     public static HashSet<String> monsterIDS = new HashSet<>();
 
@@ -280,6 +283,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BOTTLE,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BALLS,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -312,6 +316,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             enablePowerStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
             enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
             enableBottleStarting = config.getBool(ENABLE_STARTING_LOADOUT_BOTTLE);
+            enableBallBoxStarting = config.getBool(ENABLE_STARTING_LOADOUT_BALLS);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -648,6 +653,25 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 });
 
         settingsPanel.addUIElement(enableBottleAsStartingButton);
+        settingXPos += xSpacing;
+        ModLabeledToggleButton enableBallBoxAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(OrbBox.ID).name,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableBallBoxStarting, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+
+                    enableBallBoxStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+                    try {
+                        // And based on that boolean, set the settings and save them
+                        config.setBool(ENABLE_STARTING_LOADOUT_BALLS, enableBallBoxStarting);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        settingsPanel.addUIElement(enableBallBoxAsStartingButton);
         settingXPos += xSpacing;
 
         settingXPos = startingXPos;
@@ -1014,6 +1038,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
         BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
         BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
+        BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
@@ -1096,7 +1121,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
             if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
             if(enableBottleStarting&&RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
-
+            if(enableBallBoxStarting && RelicLibrary.isARelic(OrbBox.ID)&&!AbstractDungeon.player.hasRelic(OrbBox.ID)) RelicLibrary.getRelic(OrbBox.ID).makeCopy().instantObtain();
         }
 
 
@@ -1207,6 +1232,19 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         AbstractDungeon.player = dummyPlayer;
 
         addBaseGameMonsters();
+
+        orbsToDisplay.clear();
+        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Dark()));
+        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Frost()));
+        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Lightning()));
+        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Plasma()));
+        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new EmptyOrbSlot()));
+        orbIDs.add(Dark.class.getName());
+        orbIDs.add(Frost.class.getName());
+        orbIDs.add(Lightning.class.getName());
+        orbIDs.add(Plasma.class.getName());
+        orbIDs.add(EmptyOrbSlot.class.getName());
+
         autoAddStuffs();
 
 
@@ -1271,11 +1309,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     private void autoAddStuffs() {
         ClassFinder finder = new ClassFinder();
+        ClassPool clazzPool = Loader.getClassPool();
         AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new PowerFilter()});
         AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new MonsterFilter(true)});
+        AndClassFilter andOrbClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new OrbFilter()});
 
 
-        ClassLoader clazzLoader = Loader.getClassPool().getClassLoader();
+        ClassLoader clazzLoader = clazzPool.getClassLoader();
         String noID = "Unnamed Power";
         int count = 0;
 
@@ -1286,14 +1326,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 finder.add(new java.io.File(url.toURI()));
                 ArrayList<ClassInfo> foundClasses = new ArrayList<>();
                 finder.findClasses(foundClasses, (ClassFilter) andPowerClassFilter);
-                finder.findClasses(foundClasses, andMonsterClassFilter);
-                int len = foundClasses.size();
-                for (int i = 0; i< len; i++) {
-                    ClassInfo classInfo = foundClasses.get(i);
+                for(ClassInfo classInfo : foundClasses) {
                     try {
-                        CtClass cls = Loader.getClassPool().get(classInfo.getClassName());
+                        CtClass cls = clazzPool.get(classInfo.getClassName());
                         boolean isPower = false;
-                        boolean isMonster = false;
                         CtClass superCls = cls;
                         while (superCls != null) {
                             superCls = superCls.getSuperclass();
@@ -1303,18 +1339,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                                 isPower = true;
                                 break;
                             }
-                            if (superCls.getName().equals(AbstractMonster.class.getName())) {
-                                isMonster = true;
-                                break;
-                            }
                         }
-                        //logger.info("Class: " + classInfo.getClassName() + (isPower ? " is Power": isMonster ? " is Monster" : " is neither"));
-
                         if (isPower) {
-                            //System.out.println(classInfo.getClassName());
                             Class<?extends AbstractPower> powerC = (Class<? extends AbstractPower>) clazzLoader.loadClass(cls.getName());
-                            //PowerStrings pStr = ReflectionHacks.getPrivateStatic(powerC,"powerStrings");
-
                             try{
                                 Class.forName(powerC.getName(),false,clazzLoader);
                             } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
@@ -1324,40 +1351,43 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
                             String pID = null;
 
-//                            try {
-//                                pID = (String) powerC.getDeclaredField("POWER_ID").get(null);
-//                            } catch (NoSuchFieldException|ExceptionInInitializerError ignored) {
-//
-//                            } catch (NoClassDefFoundError ncdfe) {
-//                                continue;
-//                            }
-//
-//                            if (pID == null)  {
-//
-//                                try {
-//                                    AbstractPower p = powerC.newInstance();
-//
-//                                    pID = p.ID;
-//                                } catch (InstantiationException|IllegalAccessException|ExceptionInInitializerError ignored) {
-//
-//                                }
-//
-//                                if (pID == null) {
-//                                    //pID = noID + count++;
-//                                    continue;
-//                                }
-//                            }
                             pID = powerC.getName();
                             if(powersToDisplay.containsKey(pID)) {
                                 continue;
                             }
 
                             powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
-                        } else if (isMonster) {
+                        }
+                    } catch (Exception ignored) {
+
+                    }
+
+                }
+                logger.info("Done Adding custom powers! Total powers: " + powersToDisplay.size());
+                foundClasses.clear();
+                finder.findClasses(foundClasses, andMonsterClassFilter);
+                int len = foundClasses.size();
+                for (int i = 0; i< len; i++) {
+                    ClassInfo classInfo = foundClasses.get(i);
+                    try {
+                        CtClass cls = clazzPool.get(classInfo.getClassName());
+                        boolean isMonster = false;
+                        CtClass superCls = cls;
+                        while (superCls != null) {
+                            superCls = superCls.getSuperclass();
+                            if (superCls == null)
+                                break;
+                            if (superCls.getName().equals(AbstractMonster.class.getName())) {
+                                isMonster = true;
+                                break;
+                            }
+                        }
+                        //logger.info("Class: " + classInfo.getClassName() + (isPower ? " is Power": isMonster ? " is Monster" : " is neither"));
+
+                        if (isMonster) {
                             if(monsterIDS.contains(cls.getName())) continue;
 
                             monsterIDS.add(cls.getName());
-
 
                             Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
                             //logger.info("Trying to create monster button for: " + monsterC.getName());
@@ -1370,23 +1400,58 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                             } catch (NoClassDefFoundError noClassDefFoundError) {
                                 continue;
                             }
-
                         } else {
                             continue;
                         }
-
-
-
                     } catch (Exception e) {
                         logger.info("Failed to initialize for " + classInfo.getClassName());
                     }
+                }
+                logger.info("Done Adding custom monsters! Total monsters: " + monstersToDisplay.size());
+                foundClasses.clear();
+
+                finder.findClasses(foundClasses, (ClassFilter) andOrbClassFilter);
+                for(ClassInfo classInfo : foundClasses) {
+                    try {
+                        CtClass cls = clazzPool.get(classInfo.getClassName());
+                        boolean isOrb = false;
+                        CtClass superCls = cls;
+                        while (superCls != null) {
+                            superCls = superCls.getSuperclass();
+                            if (superCls == null)
+                                break;
+                            if (superCls.getName().equals(AbstractOrb.class.getName())) {
+                                isOrb = true;
+                                break;
+                            }
+                        }
+                        if (isOrb) {
+                            Class<?extends AbstractOrb> orbC = (Class<? extends AbstractOrb>) clazzLoader.loadClass(cls.getName());
+                            try{
+                                Class.forName(orbC.getName(),false,clazzLoader);
+                            } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
+                                logger.info(orbC.getName() + "does not exist");
+                                continue;
+                            }
+                            OrbSelectScreen.OrbButton ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
+
+                            if(orbIDs.contains(orbC.getName())) {
+                                continue;
+                            }
+                            orbIDs.add(orbC.getName());
+                            orbsToDisplay.add(ob);
+                        }
+                    } catch (Exception ignored) {
+
+                    }
 
                 }
-
+                logger.info("Done Adding custom orbs! Total orbs: " + orbsToDisplay.size());
+                foundClasses.clear();
 
 
             } catch (Exception e) {
-                logger.info("Failed to initialize custom power for "+ mi.ID);
+                logger.info("Failed to initialize custom stuff for "+ mi.ID);
                 e.printStackTrace();
             }
 

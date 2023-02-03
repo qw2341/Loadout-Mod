@@ -144,7 +144,22 @@
     "DESCRIPTIONS": [
       "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez."
     ]
+  },
+  "loadout:OrbBox": {
+    "NAME": "Boîte d’Orbes",
+    "FLAVOR": "Balles",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit de la souris sur cette relique pour générer n’importe quel orbe de votre choix."
+    ]
+  },
+  "loadout:OrbBoxAlt": {
+    "NAME": "Livre des Vertus",
+    "FLAVOR": "Compagnie Spirituelle",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour générer n’importe quel wisp que vous voulez."
+    ]
   }
+
 
 
 

@@ -143,6 +143,18 @@
     "DESCRIPTIONS": [
       "右键此遗物来生成任意怪物。"
     ]
-  }
+  },"loadout:OrbBox": {
+  "NAME": "球盒",
+  "FLAVOR": "并不是西格玛",
+  "DESCRIPTIONS": [
+    "右键获得任何你想要的球。"
+  ]
+},"loadout:OrbBoxAlt": {
+  "NAME": "球盒",
+  "FLAVOR": "并不是西格玛",
+  "DESCRIPTIONS": [
+    "右键获得任何你想要的球。"
+  ]
+}
 
 }

@@ -143,5 +143,17 @@
     "DESCRIPTIONS": [
       "Right-click this relic to spawn any monster you want."
     ]
-  }
+  },"loadout:OrbBox": {
+  "NAME": "Box of Orbs",
+  "FLAVOR": "balls",
+  "DESCRIPTIONS": [
+    "Right-click this relic to spawn any orb you want."
+  ]
+},"loadout:OrbBoxAlt": {
+  "NAME": "Book of Virtues",
+  "FLAVOR": "Spiritual Companionship",
+  "DESCRIPTIONS": [
+    "Right-click this relic to spawn any wisp you want."
+  ]
+}
 }

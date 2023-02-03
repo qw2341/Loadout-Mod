@@ -143,7 +143,22 @@
     "DESCRIPTIONS": [
       "この遺物を右クリックして、必要なモンスターをスポーンします。"
     ]
+  },
+  "loadout:OrbBox": {
+    "NAME": "オーブの箱",
+    "FLAVOR": "睾丸",
+    "DESCRIPTIONS": [
+      "この遺物を右クリックして、必要なオーブをスポーンします。"
+    ]
+  },
+  "loadout:OrbBoxAlt": {
+    "NAME": "美徳の書",
+    "FLAVOR": "霊的な伴侶",
+    "DESCRIPTIONS": [
+      "この遺物を右クリックして、必要なウィスプを生成します。"
+    ]
   }
+
 
 
 
