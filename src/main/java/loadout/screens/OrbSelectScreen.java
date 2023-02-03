@@ -56,12 +56,16 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
 
         public void update() {
             this.hb.update();
-            this.instance.update();
-            this.instance.tX = this.x;
-            this.instance.cX = this.x;
-            this.instance.tY = this.y;
-            this.instance.cY = this.y;
-            if(this.hb.hovered) this.instance.updateAnimation();
+            try {
+                this.instance.update();
+                this.instance.tX = this.x;
+                this.instance.cX = this.x;
+                this.instance.tY = this.y;
+                this.instance.cY = this.y;
+                if(this.hb.hovered) this.instance.updateAnimation();
+            } catch (Exception ignored) {
+
+            }
         }
 
         public void render(SpriteBatch sb) {
