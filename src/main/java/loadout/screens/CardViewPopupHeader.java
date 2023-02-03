@@ -556,7 +556,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             CardModifications.cardMap.put(cardId, SerializableCard.toSerializableCard(cardViewScreen.card));
             //logger.info(CardModifications.cardMap.toString());
             CardLibrary.cards.put(cardId,cardViewScreen.card);
-            LoadoutMod.createCardList();
+            //LoadoutMod.createCardList();
+            cardsToDisplay.replaceAll(card -> (card.cardID.equals(cardId)) ? cardViewScreen.card : card);
             try {
                 cardModifications.save();
             } catch (IOException e) {
