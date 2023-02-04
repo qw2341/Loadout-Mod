@@ -15,8 +15,9 @@ import static loadout.LoadoutMod.makeRelicPath;
 public class OrbBox extends AbstractCustomScreenRelics{
 
     public static final String ID = LoadoutMod.makeID("OrbBox");
-    public static final Texture IMG = TextureLoader.getTexture(makeRelicPath("orb_box_relic.png"));
-    private static final Texture OUTLINE = TextureLoader.getTexture(makeRelicOutlinePath("orb_box_relic.png"));
+    private static final String RESDIR = "orb_box_relic" + (isIsaacMode ? "_alt" : "") + ".png";
+    public static final Texture IMG = TextureLoader.getTexture(makeRelicPath(RESDIR));
+    private static final Texture OUTLINE = TextureLoader.getTexture(makeRelicOutlinePath(RESDIR));
 
 
     public OrbBox() {
