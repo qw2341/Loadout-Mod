@@ -18,10 +18,15 @@ public class OrbBox extends AbstractCustomScreenRelics{
     private static final String RESDIR = "orb_box_relic" + (isIsaacMode ? "_alt" : "") + ".png";
     public static final Texture IMG = TextureLoader.getTexture(makeRelicPath(RESDIR));
     private static final Texture OUTLINE = TextureLoader.getTexture(makeRelicOutlinePath(RESDIR));
+    private static final String XGGG_NAME = "";
+    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("orb_box_relic_xggg.png"));
 
 
     public OrbBox() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.MAGICAL);
+        if (LoadoutMod.isXggg()) {
+            this.img = IMG_XGGG_ALT;
+        }
     }
 
     @Override
