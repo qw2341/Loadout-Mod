@@ -20,6 +20,7 @@ public class LoadoutRelicHelper {
         loadoutRelicIds.add(PowerGiver.ID);
         loadoutRelicIds.add(TildeKey.ID);
         loadoutRelicIds.add(BottledMonster.ID);
-
+        loadoutRelicIds.add(OrbBox.ID);
+        loadoutRelicIds.add(AllInOneBag.ID);
     }
 }
