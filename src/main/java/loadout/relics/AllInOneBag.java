@@ -3,6 +3,7 @@ package loadout.relics;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,6 +18,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -38,8 +40,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public static boolean isSelectionScreenUp = true;
 
     public static final String ID = LoadoutMod.makeID("AllInOneBag");
-    public static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("loadout_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic.png"));
+    public static final Texture IMG = LoadoutBag.IMG;
+    private static final Texture OUTLINE = LoadoutBag.OUTLINE;
 
     public LoadoutBag loadoutBag;
     public TrashBin trashBin;
@@ -53,6 +55,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public BottledMonster bottledMonster;
     public OrbBox orbBox;
     public ArrayList<CustomRelic> loadoutRelics;
+
+    Color color = new Color();
 
     static final float SIDE_PANEL_X = 50.0F * Settings.scale;
 
@@ -209,10 +213,32 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
 
+    private void updateColor() {
+        this.color.r = (MathUtils.cosDeg((float)(System.currentTimeMillis() / 10L % 360L)) + 1.25F) / 2.3F;
+        this.color.g = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 1000L) / 10L % 360L)) + 1.25F) / 2.3F;
+        this.color.b = (MathUtils.cosDeg((float)((System.currentTimeMillis() + 2000L) / 10L % 360L)) + 1.25F) / 2.3F;
+        this.color.a = 1.0F;
+    }
+
     @Override
     public void renderInTopPanel(SpriteBatch sb)
     {
-        super.renderInTopPanel(sb);
+        if (!Settings.hideRelics) {
+            this.renderOutline(sb, true);
+            if (this.grayscale) {
+                ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
+            }
+            updateColor();
+            sb.setColor(this.color);
+            sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+            if (this.grayscale) {
+                ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
+            }
+
+            this.renderCounter(sb, true);
+            this.renderFlash(sb, true);
+            this.hb.render(sb);
+        }
 
         for (CustomRelic cr : loadoutRelics) {
             cr.renderInTopPanel(sb);
