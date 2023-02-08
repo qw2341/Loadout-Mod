@@ -158,11 +158,21 @@
     "DESCRIPTIONS": [
       "이 유물을 마우스 오른쪽 버튼으로 클릭하면 원하는 위습이 생성됩니다."
     ]
+  },
+  "loadout:AllInOneBag": {
+    "NAME": "모든 가방",
+    "FLAVOR": "모두.",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 다른 장비창 유물을 전환합니다."
+    ]
+  },
+  "loadout:AllInOneBagAlt": {
+    "NAME": "사망 증명서 2.0",
+    "FLAVOR": "achievement *",
+    "DESCRIPTIONS": [
+      "이 유물을 마우스 오른쪽 버튼으로 클릭하여 다른 장비창 유물을 전환합니다."
+    ]
   }
-
-
-
-
 
 
 }

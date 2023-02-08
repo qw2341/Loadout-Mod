@@ -18,7 +18,7 @@
 			"Utiliser les icônes d'objets de Binding of Isaac? (Redémarrage du jeu nécessaire)",
 			"Effacer les données de modification de la carte?",
 			"#rAVERTISSEMENT: La désactivation de la relique du modificateur entraînera un dysfonctionnement de toutes les modifications de la carte, y compris les modifications permanentes!",
-			"Activer le panneau latéral [Expérimental]"
+			"Activer Tout le Sac [Expérimental]"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

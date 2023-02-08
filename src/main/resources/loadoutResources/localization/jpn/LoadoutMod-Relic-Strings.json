@@ -157,10 +157,21 @@
     "DESCRIPTIONS": [
       "この遺物を右クリックして、必要なウィスプを生成します。"
     ]
+  },
+  "loadout:AllInOneBag": {
+    "NAME": "エブリシングバッグ",
+    "FLAVOR": "すべてが。",
+    "DESCRIPTIONS": [
+      "この遺物を右クリックして、他のロードアウト遺物を切り替えます。"
+    ]
+  },
+  "loadout:AllInOneBagAlt": {
+    "NAME": "死亡診断書2.0",
+    "FLAVOR": "achievement *",
+    "DESCRIPTIONS": [
+      "この遺物を右クリックして、他のロードアウト遺物を切り替えます。"
+    ]
   }
-
-
-
 
 
 }

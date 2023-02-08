@@ -155,7 +155,20 @@
   "DESCRIPTIONS": [
     "右鍵獲得任何你想要的魂火跟班。"
   ]
-}
+},"loadout:AllInOneBag": {
+  "NAME": "裝備箱2.0",
+  "FLAVOR": "是裝備箱裏的裝備箱",
+  "DESCRIPTIONS": [
+    "右鍵此遺物來顯示/隱藏其他 loadout 遺物。"
+  ]
+},
+  "loadout:AllInOneBagAlt":{
+    "NAME": "死亡證明2.0",
+    "FLAVOR": "選什麽呢？當然是鴨架2.0了",
+    "DESCRIPTIONS": [
+      "右鍵此遺物來顯示/隱藏其他 loadout 遺物。"
+    ]
+  }
 
 
 

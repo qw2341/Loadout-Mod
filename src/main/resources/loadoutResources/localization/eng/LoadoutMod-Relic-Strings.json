@@ -161,5 +161,13 @@
   "DESCRIPTIONS": [
     "Right-click this relic to toggle other loadout relics."
   ]
-}
+},
+  "loadout:AllInOneBagAlt": {
+    "NAME": "Death Certificate 2.0",
+    "FLAVOR": "achievement *",
+    "DESCRIPTIONS": [
+      "Right-click this relic to toggle other loadout relics."
+    ]
+  }
+
 }

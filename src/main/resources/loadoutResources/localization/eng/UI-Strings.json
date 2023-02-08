@@ -18,7 +18,7 @@
 			"Use item icons from Binding of Isaac? (Game Restart Needed)",
 			"Clear card modification data?",
 			"#rWARNING: Disabling the Modifier Relic will cause #rALL card modifications including permanent modifications to malfunction!",
-			"Enable Side Panel [Experimental]"
+			"Enable Everything Bag [Experimental]"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

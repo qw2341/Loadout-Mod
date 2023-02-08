@@ -158,11 +158,21 @@
     "DESCRIPTIONS": [
       "Cliquez avec le bouton droit sur cette relique pour générer n’importe quel wisp que vous voulez."
     ]
+  },
+  "loadout:AllInOneBag": {
+    "NAME": "Tout Sac",
+    "FLAVOR": "tout.",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour basculer vers d’autres reliques de chargement."
+    ]
+  },
+  "loadout:AllInOneBagAlt": {
+    "NAME": "Certificat de Décès 2.0",
+    "FLAVOR": "achievement *",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit sur cette relique pour basculer vers d’autres reliques de chargement."
+    ]
   }
-
-
-
-
 
 
 }

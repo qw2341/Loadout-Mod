@@ -159,8 +159,15 @@
   "NAME": "装备箱2.0",
   "FLAVOR": "是装备箱里的装备箱",
   "DESCRIPTIONS": [
-    "右键此遗物来显示/隐藏其他 loadout 遗物"
+    "右键此遗物来显示/隐藏其他 loadout 遗物。"
   ]
-}
+},
+  "loadout:AllInOneBagAlt":{
+    "NAME": "死亡证明2.0",
+    "FLAVOR": "选什么呢？当然是鸭架2.0了",
+    "DESCRIPTIONS": [
+      "右键此遗物来显示/隐藏其他 loadout 遗物。"
+    ]
+  }
 
 }
