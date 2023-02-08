@@ -155,6 +155,12 @@
   "DESCRIPTIONS": [
     "右键获得任何你想要的魂火跟班。"
   ]
+},"loadout:AllInOneBag": {
+  "NAME": "装备箱2.0",
+  "FLAVOR": "是装备箱里的装备箱",
+  "DESCRIPTIONS": [
+    "右键此遗物来显示/隐藏其他 loadout 遗物"
+  ]
 }
 
 }

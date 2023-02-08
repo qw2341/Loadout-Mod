@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -288,7 +289,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(RELIC_OBTAIN_AMOUNT,"1");
         theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
         theDefaultDefaultSettings.setProperty(USE_ISAAC_ICONS,"FALSE");
-        theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "FALSE");
+        theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "TRUE");
 
         try {
             config = new SpireConfig("loadoutMod", "theLoadoutConfig", theDefaultDefaultSettings); // ...right here
@@ -939,23 +940,23 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-//        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
-//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-//                enableSidePanel, // Boolean it uses
-//                settingsPanel, // The mod panel in which this button will be in
-//                (label) -> {}, // thing??????? idk
-//                (button) -> { // The actual button:
-//                    enableSidePanel = button.enabled;
-//                    try {
-//                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
-//                        config.save();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                });
-//        settingsPanel.addUIElement(enableSidePanelButton);
-//
-//        settingYPos -= lineSpacing;
+        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableSidePanel, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+                    enableSidePanel = button.enabled;
+                    try {
+                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        settingsPanel.addUIElement(enableSidePanelButton);
+
+        settingYPos -= lineSpacing;
         settingXPos += 800.0f;
 
         ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,
@@ -1028,6 +1029,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
         BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
         BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
+        BaseMod.addRelic(new AllInOneBag(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
@@ -1099,7 +1101,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
 
-        if(enableStarting) {
+        if(enableStarting && !enableSidePanel) {
             if(enableBagStarting&&RelicLibrary.isARelic(LoadoutBag.ID)&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) RelicLibrary.getRelic(LoadoutBag.ID).makeCopy().instantObtain();
             if(enableBinStarting&&RelicLibrary.isARelic(TrashBin.ID)&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) RelicLibrary.getRelic(TrashBin.ID).makeCopy().instantObtain();
             if(enableCauldronStarting&&RelicLibrary.isARelic("loadout:LoadoutCauldron")&&!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) RelicLibrary.getRelic("loadout:LoadoutCauldron").makeCopy().instantObtain();
@@ -1112,7 +1114,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             if(enableBottleStarting&&RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
             if(enableBallBoxStarting && RelicLibrary.isARelic(OrbBox.ID)&&!AbstractDungeon.player.hasRelic(OrbBox.ID)) RelicLibrary.getRelic(OrbBox.ID).makeCopy().instantObtain();
         }
-
+        if(enableSidePanel && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) RelicLibrary.getRelic(AllInOneBag.ID).makeCopy().instantObtain();
 
         TildeKey.resetToDefault();
 
@@ -1124,9 +1126,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         createRelicList();
         createPotionList();
         createCardList();
-
-        if(enableSidePanel && sidePanel == null) sidePanel = new SidePanel(50.0F * Settings.scale, Settings.HEIGHT - 200.0F * Settings.yScale);
-        else if(enableSidePanel) sidePanel.shown = true;
     }
 
     private void createEventList() {

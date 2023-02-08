@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
+import loadout.relics.AllInOneBag;
 import loadout.relics.PowerGiver;
 import loadout.relics.TildeKey;
 
@@ -57,7 +58,7 @@ public class AbstractPlayerPatch {
     public static class PreCombatHookPatch {
         public static void Prefix(AbstractPlayer __instance) {
             if(__instance.hasRelic(PowerGiver.ID)) ((PowerGiver)(__instance.getRelic(PowerGiver.ID))).battleStartPreDraw();
-
+            if(__instance.hasRelic(AllInOneBag.ID)) ((AllInOneBag)(__instance.getRelic((AllInOneBag.ID)))).battleStartPreDraw();
         }
     }
 }

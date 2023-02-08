@@ -270,21 +270,14 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         selectedItems.clear();
         selectMult = selectionMult;
 
+        AbstractSelectScreen.hideLoadoutRelics();
     }
-
+    @Override
     public void close()
     {
-        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.FTUE;
-        confirmButton.isDisabled = true;
-        confirmButton.hide();
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-        AbstractDungeon.closeCurrentScreen();
-
-        show = false;
+        super.close();
         LoadoutBag.isSelectionScreenUp = false;
         TrashBin.isSelectionScreenUp = false;
-
-
     }
 
     public void hide() {

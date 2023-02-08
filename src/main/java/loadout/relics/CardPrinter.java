@@ -84,7 +84,7 @@ public class CardPrinter extends CustomRelic implements ClickableRelic {
             return; // Don't do anything.
         }
 
-        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || BottledMonster.isSelectionScreenUp)
+        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || BottledMonster.isSelectionScreenUp || OrbBox.isSelectionScreenUp)
             return;
 
         if(isSelectionScreenUp) {

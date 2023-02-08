@@ -33,7 +33,7 @@ public class TrashBin extends CustomRelic implements ClickableRelic {
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic.png"));
 
     private boolean relicSelected = true;
-    private RelicSelectScreen relicSelectScreen;
+    public RelicSelectScreen relicSelectScreen;
     private boolean fakeHover = false;
     public static boolean isSelectionScreenUp = false;
 
@@ -82,7 +82,7 @@ public class TrashBin extends CustomRelic implements ClickableRelic {
             // If it has been used this turn, the player doesn't actually have the relic (i.e. it's on display in the shop room), or it's the enemy's turn
             return; // Don't do anything.
         }
-        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || BottledMonster.isSelectionScreenUp)
+        if (LoadoutBag.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || BottledMonster.isSelectionScreenUp || OrbBox.isSelectionScreenUp)
             return;
 
         if(isSelectionScreenUp) {

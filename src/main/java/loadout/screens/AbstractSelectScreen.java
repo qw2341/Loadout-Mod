@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
+import loadout.relics.AllInOneBag;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -182,7 +183,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         confirmButton.isDisabled = false;
         confirmButton.show();
         controllerRelicHb = null;
-
+        hideLoadoutRelics();
         callOnOpen();
 
         sortOnOpen();
@@ -190,6 +191,12 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         calculateScrollBounds();
 
         this.selectedItems.clear();
+    }
+    public static void hideLoadoutRelics() {
+        if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).hideAllRelics();
+    }
+    public static void showLoadoutRelics() {
+        if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).showRelics();
     }
 
     protected void updateHotkeyControls() {
@@ -345,7 +352,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         AbstractDungeon.closeCurrentScreen();
 
         show = false;
-
+        showLoadoutRelics();
     }
 
     public void render(SpriteBatch sb)

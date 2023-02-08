@@ -34,7 +34,7 @@ public class LoadoutCauldron extends CustomRelic implements ClickableRelic {
 
     protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
     private boolean potionSelected = true;
-    private PotionSelectScreen potionSelectScreen;
+    public PotionSelectScreen potionSelectScreen;
     private boolean fakeHover = false;
 
     public static boolean isSelectionScreenUp = false;

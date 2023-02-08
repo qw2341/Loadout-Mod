@@ -748,6 +748,7 @@ public class GCardSelectScreen
             this.controllerCard = null;
         }
         this.doneSelecting = false;
+        AbstractSelectScreen.hideLoadoutRelics();
 
 
         if(currentMode == CardDisplayMode.OBTAIN) {
@@ -853,6 +854,7 @@ public class GCardSelectScreen
         CardPrinter.isSelectionScreenUp = false;
         CardShredder.isSelectionScreenUp = false;
         CardModifier.isSelectionScreenUp = false;
+        AbstractSelectScreen.showLoadoutRelics();
     }
     private void updateScrolling() {
         if (PeekButton.isPeeking) {

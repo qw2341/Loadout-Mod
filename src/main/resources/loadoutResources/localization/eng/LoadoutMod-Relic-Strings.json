@@ -155,5 +155,11 @@
   "DESCRIPTIONS": [
     "Right-click this relic to spawn any wisp you want."
   ]
+},"loadout:AllInOneBag": {
+  "NAME": "Everything Bag",
+  "FLAVOR": "everything.",
+  "DESCRIPTIONS": [
+    "Right-click this relic to toggle other loadout relics."
+  ]
 }
 }
