@@ -16,14 +16,6 @@ public class OverlayMenuUpdatePatch {
         @SpirePrefixPatch
         public static void Prefix(OverlayMenu __instance) {
             LoadoutMod.modifyPlayerRelics();
-//            if(LoadoutMod.relicsToRemove.size()>0) {
-//                AbstractDungeon.player.relics.removeAll(LoadoutMod.relicsToRemove);
-//                LoadoutMod.relicsToRemove.clear();
-//            }
-//            if(relicsToAdd.size()>0) {
-//                for (AbstractRelic r : relicsToAdd) AbstractDungeon.getCurrRoom().spawnRelicAndObtain((float) Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F, r);
-//                relicsToAdd.clear();
-//            }
         }
     }
 }
