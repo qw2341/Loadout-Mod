@@ -1,5 +1,6 @@
 package loadout.relics;
 
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Gdx;
@@ -17,8 +18,10 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
+import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -176,12 +179,12 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         if (r.hb != null) {
-           if(isSelectionScreenUp) r.hb.move(r.currentX, r.currentY);
+           if(isSelectionScreenUp) r.hb.move(r.currentX + getOffsetX(), r.currentY);
            else r.hb.move(0,0);
         }
     }
     public void showRelics(){
-        float xPos = SIDE_PANEL_X;
+        float xPos = SIDE_PANEL_X - getOffsetX();
 
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
@@ -196,7 +199,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
     public void hideAllRelics(){
         for (CustomRelic cr : loadoutRelics) {
-            cr.targetX = -SIDE_PANEL_X;
+            cr.targetX = -SIDE_PANEL_X - getOffsetX();
         }
     }
 
@@ -220,6 +223,10 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         this.color.a = 1.0F;
     }
 
+    private float getOffsetX() {
+        return ReflectionHacks.getPrivateStatic(AbstractRelic.class, "offsetX");
+    }
+
     @Override
     public void renderInTopPanel(SpriteBatch sb)
     {
@@ -230,7 +237,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
             updateColor();
             sb.setColor(this.color);
-            sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+            sb.draw(this.img, this.currentX - 64.0F + (float) getOffsetX(), this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
             if (this.grayscale) {
                 ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
             }
@@ -245,6 +252,55 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             if (cr.hb.hovered) cr.renderTip(sb);
         }
 
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        super.render(sb);
+    }
+
+    @Override
+    public void render(SpriteBatch sb, boolean renderAmount, Color outlineColor) {
+        if (this.isSeen) {
+            this.renderOutline(outlineColor, sb, false);
+        } else {
+            this.renderOutline(Color.LIGHT_GRAY, sb, false);
+        }
+
+        if (this.isSeen) {
+            updateColor();
+            sb.setColor(this.color);
+        } else if (this.hb.hovered) {
+            sb.setColor(Settings.HALF_TRANSPARENT_BLACK_COLOR);
+        } else {
+            sb.setColor(Color.BLACK);
+        }
+
+        if (AbstractDungeon.screen != null && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NEOW_UNLOCK) {
+            if (this.largeImg == null) {
+                sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, Settings.scale * 2.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 15.0F, Settings.scale * 2.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 15.0F, 0.0F, 0, 0, 128, 128, false, false);
+            } else {
+                sb.draw(this.largeImg, this.currentX - 128.0F, this.currentY - 128.0F, 128.0F, 128.0F, 256.0F, 256.0F, Settings.scale * 1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 30.0F, Settings.scale * 1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 30.0F, 0.0F, 0, 0, 256, 256, false, false);
+            }
+        } else {
+            sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+        }
+
+        if (this.hb.hovered && !CardCrawlGame.relicPopup.isOpen) {
+            if (!this.isSeen) {
+                if ((float)InputHelper.mX < 1400.0F * Settings.scale) {
+                    TipHelper.renderGenericTip((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 50.0F * Settings.scale, LABEL[1], MSG[1]);
+                } else {
+                    TipHelper.renderGenericTip((float)InputHelper.mX - 350.0F * Settings.scale, (float)InputHelper.mY - 50.0F * Settings.scale, LABEL[1], MSG[1]);
+                }
+
+                return;
+            }
+
+            this.renderTip(sb);
+        }
+
+        this.hb.render(sb);
     }
 
     @Override

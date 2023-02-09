@@ -1,18 +1,22 @@
 package loadout.patches;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import javassist.CannotCompileException;
+import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
 import loadout.helper.LoadoutRelicHelper;
+import loadout.relics.AllInOneBag;
+
+import java.util.Collections;
 
 public class LoadoutRelicSideRenderPatch {
-//    @SpirePatch(clz = AbstractPlayer.class, method = "renderRelics", paramtypez = {SpriteBatch.class})
-//    public static class PlayerRelicRenderPatch {
+    @SpirePatch(clz = AbstractPlayer.class, method = "renderRelics", paramtypez = {SpriteBatch.class})
+    public static class PlayerRelicRenderPatch {
 //        public static ExprEditor Instrument() {
 //            return new ExprEditor() {
 //                @Override
@@ -24,5 +28,19 @@ public class LoadoutRelicSideRenderPatch {
 //                }
 //            };
 //        }
-//    }
+        @SpireInsertPatch(locator = Locator.class, localvars = {"i"})
+        public static void Insert(AbstractPlayer __instance, SpriteBatch sb, int i) {
+            if(__instance.relics.get(i).relicId.equals(AllInOneBag.ID)) {
+                __instance.relics.get(i).renderInTopPanel(sb);
+            }
+        }
+        private static class Locator
+                extends SpireInsertLocator
+        {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher.FieldAccessMatcher fieldAccessMatcher = new Matcher.FieldAccessMatcher(AbstractRelic.class, "MAX_RELICS_PER_PAGE");
+                return LineFinder.findInOrder(ctMethodToPatch, (Matcher)fieldAccessMatcher);
+            }
+        }
+    }
 }
