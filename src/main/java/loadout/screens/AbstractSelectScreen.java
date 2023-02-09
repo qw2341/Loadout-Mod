@@ -214,6 +214,8 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     }
     protected abstract void updateItemClickLogic();
 
+    protected void preInputUpdateLogic() {}
+
     public void update()
     {
         if (!isOpen()) {
@@ -229,7 +231,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
             close();
             return;
         }
-
+        preInputUpdateLogic();
         updateControllerInput();
         if (Settings.isControllerMode && controllerRelicHb != null) {
             if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
@@ -243,6 +245,12 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
                     targetY = scrollLowerBound;
                 }
             }
+        }
+        if ((InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed())&& hoveredItem ==null) {
+            isTryingToScroll = true;
+        }
+        if(InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustReleased()) {
+            isTryingToScroll = false;
         }
 
         updateHotkeyControls();

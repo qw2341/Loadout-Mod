@@ -84,11 +84,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         screenRelics.add(DollysMirror.ID);
     }
 
-    public boolean doneSelecting()
-    {
-        return doneSelecting;
-    }
-
     public ArrayList<AbstractRelic> getSelectedRelics()
     {
         ArrayList<AbstractRelic> ret = new ArrayList<>(selectedItems);
@@ -103,7 +98,11 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         HashSet<Integer> ret = new HashSet<>();
         for (int i=0; i<numRelics;i++) {
             AbstractRelic r = this.items.get(i);
-            if(selectedItems.contains(r)) ret.add(i);
+            if(selectedItems.contains(r)) {
+                if(i >= TrashBin.loadoutRelicsStartIdx) {
+                    ret.add(i + TrashBin.numLoadoutRelics);
+                } else ret.add(i);
+            }
         }
         return ret;
     }
@@ -111,7 +110,8 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
     public RelicSelectScreen(boolean isDeleteMode, AbstractCustomScreenRelic<AbstractRelic> owner)
     {
         super(owner);
-        sortHeader = new RelicSelectSortHeader(this);
+        if(!isDeleteMode) sortHeader = new RelicSelectSortHeader(this);
+        else sortHeader = new RelicDeleteSortHeader(this);
         this.isDeleteMode = isDeleteMode;
 
         this.itemHeight = 75.0F;
@@ -208,7 +208,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
 
     public void sort(boolean isAscending) {
         switch (this.currentSortType) {
-
             case CLASS:
                 sortByClass(isAscending);
                 break;
@@ -224,136 +223,30 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         }
     }
 
-
-
-    public void open(ArrayList<AbstractRelic> relics, int selectionMult)
-    {
-        if(AbstractDungeon.isScreenUp) {
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            AbstractDungeon.overlayMenu.proceedButton.hide();
-            //AbstractDungeon.closeCurrentScreen();
-            LoadoutMod.isScreenUp = false;
-            AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NO_INTERACT;
+    @Override
+    protected void callOnOpen() {
+        if (isDeleteMode) {
+            this.items = TrashBin.getPlayerRelicCopy();
+            selectMult = 1;
+            this.items.forEach(r -> LoadoutMod.logger.info(r.relicId + ", "));
         }
-
-        AbstractDungeon.isScreenUp = true;
-        AbstractDungeon.overlayMenu.showBlackScreen(0.5f);
-
-        show = true;
-        doneSelecting = false;
-
-        confirmButton.isDisabled = false;
-        confirmButton.show();
-        controllerRelicHb = null;
-
-        if (isDeleteMode)
-            this.items = relics;
         else {
-            this.itemsClone = relics;
+            this.itemsClone = LoadoutMod.relicsToDisplay;
 
             this.currentSortOrder = SortOrder.ASCENDING;
             this.currentSortType = SortType.RARITY;
             updateFilters();
         }
-
-        targetY = scrollLowerBound;
-        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
-
-        if(!isDeleteMode) {
-            sortOnOpen();
-            sortHeader.resetAllButtons();
-        }
-
-
-        calculateScrollBounds();
-
-        selectedItems.clear();
-        selectMult = selectionMult;
-
-        AbstractSelectScreen.hideLoadoutRelics();
     }
-
-    public void hide() {
-        confirmButton.isDisabled = true;
-        confirmButton.hide();
-        show = false;
-        owner.setIsSelectionScreenUp(false);
-    }
-
-    public boolean isOpen()
-    {
-        return show;
-    }
-
     @Override
-    protected void callOnOpen() {
-
+    protected void preInputUpdateLogic() {
+        if (isDeleteMode && this.items.size() + TrashBin.numLoadoutRelics != AbstractDungeon.player.relics.size()) {
+            this.items = TrashBin.getPlayerRelicCopy();
+        }
     }
 
     @Override
     protected void updateItemClickLogic() {
-
-    }
-
-    @Override
-    public void update()
-    {
-        if (!isOpen()) {
-            return;
-        }
-        if (LoadoutMod.isScreenUp) {
-            hide();
-            return;
-        }
-        if (InputHelper.pressedEscape) {
-            close();
-            InputHelper.pressedEscape = false;
-            return;
-        }
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            close();
-            return;
-        }
-
-        updateControllerInput();
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            if (Gdx.input.getY() > Settings.HEIGHT * 0.7F) {
-                targetY += Settings.SCROLL_SPEED;
-                if (targetY > scrollUpperBound) {
-                    targetY = scrollUpperBound;
-                }
-            } else if (Gdx.input.getY() < Settings.HEIGHT * 0.3F) {
-                targetY -= Settings.SCROLL_SPEED;
-                if (targetY < scrollLowerBound) {
-                    targetY = scrollLowerBound;
-                }
-            }
-        }
-        confirmButton.update();
-        if (!isDeleteMode) this.sortHeader.update();
-
-        if (confirmButton.hb.clicked) {
-            CInputActionSet.select.unpress();
-            confirmButton.hb.clicked = false;
-            doneSelecting = true;
-        }
-
-        if (isDeleteMode && this.items.size() != AbstractDungeon.player.relics.size()) {
-            ArrayList<AbstractRelic> relics1 = new ArrayList<>();
-            for (AbstractRelic r : AbstractDungeon.player.relics)
-                relics1.add(r.makeCopy());
-            this.items = relics1;
-        }
-
-        if ((InputHelper.justClickedLeft || CInputActionSet.select.isJustPressed())&& hoveredItem ==null) {
-            isTryingToScroll = true;
-        }
-        if(InputHelper.justReleasedClickLeft || CInputActionSet.select.isJustReleased()) {
-            isTryingToScroll = false;
-        }
-
         if (hoveredItem != null && !isTryingToScroll) {
             if (LoadoutMod.enableDrag) {
                 if (InputHelper.isMouseDown || CInputActionSet.select.isPressed()) {
@@ -392,8 +285,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         clickStartedItem = hoveredItem;
                         if (!isDeleteMode) {
                             if (screenRelics.contains(hoveredItem.relicId)) close();
-                            for (int i = 0; i < LoadoutMod.relicObtainMultiplier; i++) LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
-
+                            for (int i = 0; i < selectMult; i++) LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
                         }
 
                     }
@@ -402,7 +294,12 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                     isDragSelecting = false;
                     if (hoveredItem == clickStartedItem) {
                         if (isDeleteMode) {
-                            LoadoutMod.relicsToRemove.add(this.items.indexOf(clickStartedItem));
+                            int idx = this.items.indexOf(clickStartedItem);
+                            if(idx >= TrashBin.loadoutRelicsStartIdx) {
+                                idx += TrashBin.numLoadoutRelics;
+                            }
+
+                            LoadoutMod.relicsToRemove.add(idx);
                         }
                         clickStartedItem = null;
                     }
@@ -413,30 +310,30 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
 
             if (InputHelper.justReleasedClickRight)
             {
-                    CardCrawlGame.relicPopup.open(hoveredItem, items);
+                CardCrawlGame.relicPopup.open(hoveredItem, items);
             }
         } else {
             clickStartedItem = null;
             isDragSelecting = false;
         }
-        boolean isScrollingScrollBar = scrollBar.update();
-        if (!isScrollingScrollBar && !isDragSelecting) {
-            updateScrolling();
-        }
-        InputHelper.justClickedLeft = false;
-        InputHelper.justClickedRight = false;
-
-        hoveredItem = null;
-        updateList(items);
-        if (Settings.isControllerMode && controllerRelicHb != null) {
-            Gdx.input.setCursorPosition((int)controllerRelicHb.cX, (int)(Settings.HEIGHT - controllerRelicHb.cY));
-        }
-        if(doneSelecting) close();
     }
 
-    private void updateControllerInput()
-    {
-        // TODO
+
+
+    public void hide() {
+        confirmButton.isDisabled = true;
+        confirmButton.hide();
+        show = false;
+        owner.setIsSelectionScreenUp(false);
+        showLoadoutRelics();
+    }
+    @Override
+    public void update() {
+        if(LoadoutMod.isScreenUp) {
+            hide();
+            return;
+        }
+        super.update();
     }
 
     @Override
@@ -453,27 +350,6 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         }
     }
 
-    @Override
-    public void render(SpriteBatch sb)
-    {
-        if (!isOpen()) {
-            return;
-        }
-//        if (LoadoutMod.isScreenUp) {
-//            return;
-//        }
-
-        row = -1;
-        col = 0;
-
-
-        renderList(sb, items);
-
-        scrollBar.render(sb);
-        confirmButton.render(sb);
-        if (!isDeleteMode)
-            sortHeader.render(sb);
-    }
 
     @Override
     protected void renderList(SpriteBatch sb, ArrayList<AbstractRelic> list)

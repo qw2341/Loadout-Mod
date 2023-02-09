@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
+import loadout.helper.LoadoutRelicHelper;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.RelicSelectScreen;
 import loadout.util.TextureLoader;
@@ -18,6 +19,8 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("thebin_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("thebin_relic.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic.png"));
 
+    public static int numLoadoutRelics = 0;
+    public static int loadoutRelicsStartIdx = -1;
     public TrashBin() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
     }
@@ -35,25 +38,23 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
             this.flash();
         }
     }
-    @Override
-    protected void openSelectScreen() {
 
+    public static ArrayList<AbstractRelic> getPlayerRelicCopy() {
+        numLoadoutRelics = 0;
         ArrayList<AbstractRelic> playerRelics = AbstractDungeon.player.relics;
-
         ArrayList<AbstractRelic> relics = new ArrayList<>();
+        int idx = 0;
+        loadoutRelicsStartIdx = -1;
+        for (AbstractRelic r: playerRelics) {
+            if(!LoadoutRelicHelper.loadoutRelicIds.contains(r.relicId)) relics.add(r.makeCopy());
+            else {
+                if(loadoutRelicsStartIdx == -1) loadoutRelicsStartIdx = idx;
+                numLoadoutRelics++;
+            }
+            idx++;
+        }
 
-        playerRelics.forEach((r)->relics.add(r.makeCopy()));
-        try {
-            if (this.selectScreen == null)
-                selectScreen = getNewSelectScreen();
-        } catch (NoClassDefFoundError e) {
-            logger.info("Error: RelicSelectScreen Class not found while opening relic select for bin!");
-        }
-        if (this.selectScreen != null) {
-            itemSelected = false;
-            isScreenUpMap.put(TrashBin.class.getSimpleName(), true);
-            ((RelicSelectScreen) selectScreen).open(relics, 1);
-        }
+        return relics;
     }
 
     @Override
