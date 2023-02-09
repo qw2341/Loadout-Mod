@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.OrbBox;
 import loadout.savables.Favorites;
 
@@ -105,7 +106,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
     private static final Comparator<OrbButton> BY_MOD = Comparator.comparing(o -> o.modID);
 
     private static final Comparator<OrbButton> BY_ID = Comparator.comparing(o -> o.id);
-    public OrbSelectScreen(AbstractRelic owner) {
+    public OrbSelectScreen(AbstractCustomScreenRelic<OrbButton> owner) {
         super(owner);
         this.defaultSortType = SortType.MOD;
         this.itemHeight = 75.0f * Settings.yScale;
@@ -113,12 +114,6 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
         this.itemsClone = new ArrayList<>(LoadoutMod.orbsToDisplay);
         this.items = new ArrayList<>(itemsClone);
         this.sortHeader = new OrbSelectSortHeader(this);
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        OrbBox.isSelectionScreenUp = false;
     }
 
     @Override

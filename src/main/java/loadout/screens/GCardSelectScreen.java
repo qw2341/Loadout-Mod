@@ -123,7 +123,7 @@ public class GCardSelectScreen
     private InputAction shiftKey;
     private InputAction ctrlKey;
 
-    public AbstractRelic caller;
+    public AbstractCardScreenRelic caller;
 
     public enum ViewingPool {
         EXTERNAL,MASTER_DECK, DRAW, DISCARD, HAND, EXHAUST
@@ -134,7 +134,7 @@ public class GCardSelectScreen
     public int selectMult = 1;
 
 
-    public GCardSelectScreen(CardDisplayMode currentMode,  AbstractRelic caller) {
+    public GCardSelectScreen(CardDisplayMode currentMode,  AbstractCardScreenRelic caller) {
         this.caller = caller;
 
         drawStartX = Settings.WIDTH;
@@ -370,7 +370,7 @@ public class GCardSelectScreen
                 this.cancelButton.hide();
                 this.confirmScreenUp = false;
                 this.selectedCards.add(this.hoveredCard);
-                CardPrinter.isSelectionScreenUp = false;
+                this.caller.setIsSelectionScreenUp(false);
                 AbstractDungeon.closeCurrentScreen();
             }
         }
@@ -851,9 +851,7 @@ public class GCardSelectScreen
 
         show = false;
 
-        CardPrinter.isSelectionScreenUp = false;
-        CardShredder.isSelectionScreenUp = false;
-        CardModifier.isSelectionScreenUp = false;
+        caller.setIsSelectionScreenUp(false);
         AbstractSelectScreen.showLoadoutRelics();
     }
     private void updateScrolling() {

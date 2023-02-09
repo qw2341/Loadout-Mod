@@ -33,6 +33,7 @@ import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import loadout.LoadoutMod;
 import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.TildeKey;
 
 import java.util.ArrayList;
@@ -254,7 +255,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
 
 
 
-    public StatModSelectScreen(AbstractRelic owner) {
+    public StatModSelectScreen(AbstractCustomScreenRelic<StatModButton> owner) {
         super(owner);
         if (sortHeader == null) this.sortHeader = new StatModSortHeader(this);
         itemHeight = StatModButton.HITBOX_HEIGHT;
@@ -492,7 +493,6 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
     @Override
     public void close() {
         super.close();
-        TildeKey.isSelectionScreenUp = false;
 
         for(StatModButton smb : this.items) {
             if(smb.isTyping) smb.stopTyping();

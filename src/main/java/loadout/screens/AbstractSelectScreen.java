@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import loadout.LoadoutMod;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.AllInOneBag;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
     public SortOrder currentSortOrder = SortOrder.ASCENDING;
     public enum SortType {TYPE,NAME,MOD,COST,RARITY,CLASS};
     public SortType currentSortType = null;
-    public AbstractRelic owner;
+    public AbstractCustomScreenRelic<T> owner;
     protected boolean isDragSelecting = false;
     protected boolean isTryingToScroll = false;
     public static Color GOLD_OUTLINE_COLOR = new Color(-2686721);
@@ -120,7 +121,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         return doneSelecting;
     }
 
-    public AbstractSelectScreen(AbstractRelic owner) {
+    public AbstractSelectScreen(AbstractCustomScreenRelic<T> owner) {
         scrollBar = new ScrollBar(this);
 
         this.owner = owner;
@@ -352,6 +353,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         AbstractDungeon.closeCurrentScreen();
 
         show = false;
+        owner.setIsSelectionScreenUp(false);
         showLoadoutRelics();
     }
 

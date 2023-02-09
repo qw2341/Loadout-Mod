@@ -30,15 +30,14 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
-import loadout.util.TextureLoader;
 
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
-import static loadout.relics.AbstractCustomScreenRelics.isIsaacMode;
+import static loadout.relics.AbstractCustomScreenRelic.isIsaacMode;
 
 public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSavable<RelicSavables>, OnReceivePowerRelic, OnPlayerDeathRelic {
-    protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
+    protected static final Sfx landingSfx = AbstractCustomScreenRelic.landingSfx;
 
     public static boolean isSelectionScreenUp = true;
 
@@ -58,6 +57,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public BottledMonster bottledMonster;
     public OrbBox orbBox;
     public ArrayList<CustomRelic> loadoutRelics;
+    public ArrayList<AbstractCustomScreenRelic<?>> customScreenRelics;
+    public ArrayList<AbstractCardScreenRelic> cardScreenRelics;
 
     Color color = new Color();
 
@@ -103,24 +104,24 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             customRelic.isObtained = true;
             RelicPopUpPatch.IsInsideAnotherRelicField.isInsideAnother.set(customRelic, Boolean.TRUE);
         });
+        customScreenRelics = new ArrayList<>();
+        customScreenRelics.add(this.loadoutBag);
+        customScreenRelics.add(this.trashBin);
+        customScreenRelics.add(this.loadoutCauldron);
+        customScreenRelics.add(this.eventfulCompass);
+        customScreenRelics.add(this.powerGiver);
+        customScreenRelics.add(this.tildeKey);
+        customScreenRelics.add(this.bottledMonster);
+        customScreenRelics.add(this.orbBox);
+
+        cardScreenRelics = new ArrayList<>();
+        cardScreenRelics.add(this.cardPrinter);
+        cardScreenRelics.add(this.cardShredder);
+        cardScreenRelics.add(this.cardModifier);
+
         if(isSelectionScreenUp) showRelics();
         else hideRelics();
     }
-
-    /**
-     this.loadoutBag;
-     this.trashBin;
-     this.loadoutCauldron;
-     this.cardPrinter;
-     this.cardShredder;
-     this.cardModifier;
-     this.eventfulCompass;
-     this.powerGiver;
-     this.tildeKey;
-     this.bottledMonster;
-     this.orbBox;
-     * @return
-     */
 
     @Override
     public String getUpdatedDescription() {
@@ -128,25 +129,18 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     @Override
-    public void relicTip() {
-
-    }
+    public void relicTip() {}
     @Override
     public void onUnequip() {
         closeAllScreens();
     }
-    private void closeAllScreens() {
-        if(LoadoutBag.isSelectionScreenUp) this.loadoutBag.relicSelectScreen.close();
-        if(TrashBin.isSelectionScreenUp) this.trashBin.relicSelectScreen.close();
-        if(LoadoutCauldron.isSelectionScreenUp) this.loadoutCauldron.potionSelectScreen.close();
-        if(CardPrinter.isSelectionScreenUp) this.cardPrinter.cardSelectScreen.close();
-        if(CardShredder.isSelectionScreenUp) this.cardShredder.cardSelectScreen.close();
-        if(CardModifier.isSelectionScreenUp) this.cardModifier.cardSelectScreen.close();
-        if(EventfulCompass.isSelectionScreenUp) this.eventfulCompass.eventSelectScreen.close();
-        if(PowerGiver.isSelectionScreenUp) this.powerGiver.powerSelectScreen.close();
-        if(TildeKey.isSelectionScreenUp) this.tildeKey.statSelectScreen.close();
-        if(BottledMonster.isSelectionScreenUp) this.bottledMonster.monsterSelectScreen.close();
-        if(OrbBox.isSelectionScreenUp) this.orbBox.selectScreen.close();
+    public void closeAllScreens() {
+        for(AbstractCustomScreenRelic<?> r : customScreenRelics) {
+            if(r.isSelectionScreenUp()) r.selectScreen.close();
+        }
+        for(AbstractCardScreenRelic r : cardScreenRelics) {
+            if(r.isSelectionScreenUp()) r.selectScreen.close();
+        }
     }
 
     @Override
@@ -179,12 +173,12 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         if (r.hb != null) {
-           if(isSelectionScreenUp) r.hb.move(r.currentX + getOffsetX(), r.currentY);
+           if(isSelectionScreenUp) r.hb.move(r.currentX, r.currentY);
            else r.hb.move(0,0);
         }
     }
     public void showRelics(){
-        float xPos = SIDE_PANEL_X - getOffsetX();
+        float xPos = SIDE_PANEL_X;
 
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
@@ -199,7 +193,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
     public void hideAllRelics(){
         for (CustomRelic cr : loadoutRelics) {
-            cr.targetX = -SIDE_PANEL_X - getOffsetX();
+            cr.targetX = -SIDE_PANEL_X;
         }
     }
 
@@ -211,6 +205,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             for (CustomRelic cr : loadoutRelics) {
                 moveRelic(cr);
                 cr.update();
+                cr.hb.update();
                 if(cr.hb.hovered && InputHelper.justClickedRight) ((ClickableRelic)cr).onRightClick();
             }
         }
@@ -344,6 +339,16 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
     public void battleStartPreDraw() {
         powerGiver.battleStartPreDraw();
+    }
+
+    @Override
+    public void atBattleStart() {
+        tildeKey.atBattleStart();
+    }
+
+    @Override
+    public void atTurnStart() {
+        tildeKey.atTurnStart();
     }
 
     @Override

@@ -53,6 +53,6 @@ public class LoadoutBagUIE extends ClickableUIElement {
     public void render(SpriteBatch sb) {
         super.render(sb);
         if(hitbox.hovered) child.renderTip(sb);
-        if(LoadoutBag.isSelectionScreenUp) child.relicSelectScreen.render(sb);
+        if(child.isSelectionScreenUp()) child.selectScreen.render(sb);
     }
 }

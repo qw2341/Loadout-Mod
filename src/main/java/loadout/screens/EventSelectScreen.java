@@ -23,6 +23,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import loadout.LoadoutMod;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.EventfulCompass;
 import org.apache.commons.lang3.StringUtils;
 //import net.sourceforge.pinyin4j.PinyinHelper;
@@ -140,7 +141,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
 
 
 
-    public EventSelectScreen(AbstractRelic owner)
+    public EventSelectScreen(AbstractCustomScreenRelic<EventButton> owner)
     {
         super(owner);
         scrollBar = new ScrollBar(this);
@@ -264,12 +265,6 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
         if (hoveredItem != null && InputHelper.justClickedLeft) {
             executeEvent(hoveredItem);
         }
-    }
-
-    public void close()
-    {
-        super.close();
-        EventfulCompass.isSelectionScreenUp = false;
     }
 
     @Override

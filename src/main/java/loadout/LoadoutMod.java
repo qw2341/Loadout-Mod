@@ -1573,9 +1573,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             relicsToAdd.clear();
         }
     }
-    public static boolean isSelectionScreenUp() {
-        return LoadoutBag.isSelectionScreenUp || TrashBin.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp;
-    }
 
     public static void removeRelicFromPools(String relicId) {
         if(!AbstractDungeon.commonRelicPool.remove(relicId))

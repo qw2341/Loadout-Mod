@@ -27,6 +27,7 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
+import loadout.relics.AbstractCustomScreenRelic;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -353,7 +354,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
 
 
-    public MonsterSelectScreen(AbstractRelic owner) {
+    public MonsterSelectScreen(AbstractCustomScreenRelic<MonsterButton> owner) {
         super(owner);
 
         this.items.addAll(LoadoutMod.monstersToDisplay);

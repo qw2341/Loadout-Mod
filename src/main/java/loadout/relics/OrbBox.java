@@ -2,7 +2,6 @@ package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
@@ -12,7 +11,7 @@ import loadout.util.TextureLoader;
 import static loadout.LoadoutMod.makeRelicOutlinePath;
 import static loadout.LoadoutMod.makeRelicPath;
 
-public class OrbBox extends AbstractCustomScreenRelics{
+public class OrbBox extends AbstractCustomScreenRelic<OrbSelectScreen.OrbButton> {
 
     public static final String ID = LoadoutMod.makeID("OrbBox");
     private static final String RESDIR = "orb_box_relic" + (isIsaacMode ? "_alt" : "") + ".png";
@@ -30,13 +29,13 @@ public class OrbBox extends AbstractCustomScreenRelics{
     }
 
     @Override
-    public boolean isOtherRelicScreenOpen() {
-        return LoadoutBag.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || TildeKey.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || BottledMonster.isSelectionScreenUp;
+    protected AbstractSelectScreen<OrbSelectScreen.OrbButton> getNewSelectScreen() {
+        return new OrbSelectScreen(this);
     }
 
     @Override
-    protected AbstractSelectScreen<OrbSelectScreen.OrbButton> getNewSelectScreen() {
-        return new OrbSelectScreen(this);
+    protected void doneSelectionLogics() {
+
     }
 
     public void channelOrb(AbstractOrb orb, int amount) {

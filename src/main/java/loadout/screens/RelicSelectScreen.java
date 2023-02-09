@@ -26,6 +26,8 @@ import loadout.helper.RelicClassComparator;
 import loadout.helper.RelicModComparator;
 import loadout.helper.RelicNameComparator;
 import loadout.helper.RelicTierComparator;
+import loadout.relics.AbstractCardScreenRelic;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.LoadoutBag;
 import loadout.relics.TrashBin;
 import org.apache.commons.lang3.StringUtils;
@@ -106,7 +108,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         return ret;
     }
 
-    public RelicSelectScreen(boolean isDeleteMode, AbstractRelic owner)
+    public RelicSelectScreen(boolean isDeleteMode, AbstractCustomScreenRelic<AbstractRelic> owner)
     {
         super(owner);
         sortHeader = new RelicSelectSortHeader(this);
@@ -272,19 +274,12 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
 
         AbstractSelectScreen.hideLoadoutRelics();
     }
-    @Override
-    public void close()
-    {
-        super.close();
-        LoadoutBag.isSelectionScreenUp = false;
-        TrashBin.isSelectionScreenUp = false;
-    }
 
     public void hide() {
         confirmButton.isDisabled = true;
         confirmButton.hide();
         show = false;
-        LoadoutBag.isSelectionScreenUp = false;
+        owner.setIsSelectionScreenUp(false);
     }
 
     public boolean isOpen()

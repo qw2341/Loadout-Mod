@@ -1,13 +1,10 @@
 package loadout.relics;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -18,18 +15,13 @@ import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.utility.SFXAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
-import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
@@ -43,6 +35,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
+import loadout.screens.AbstractSelectScreen;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
 
@@ -52,22 +45,14 @@ import java.util.Iterator;
 
 import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
-import static loadout.relics.LoadoutBag.isIsaacMode;
 
-public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePowerRelic, OnPlayerDeathRelic, CustomSavable<HashMap<String,String>> {
+public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.StatModButton> implements OnReceivePowerRelic, OnPlayerDeathRelic, CustomSavable<HashMap<String,String>> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
     //TODO: Make non Isaac version icon
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png"));
-
-    protected static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
-    private boolean modSelected = true;
-    public StatModSelectScreen statSelectScreen;
-    private boolean fakeHover = false;
-
-    public static boolean isSelectionScreenUp = false;
 
     public static boolean isHealthLocked = false;
     private static final String isHealthLockedKey = "isHealthLocked";
@@ -148,85 +133,27 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
         this.gKey = new InputAction(Input.Keys.G);
         this.kKey = new InputAction(Input.Keys.K);
 
-
-        if(isIsaacMode) {
-            try {
-                RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
-                tips.clear();
-                flavorText = relicStrings.FLAVOR;
-                tips.add(new PowerTip(relicStrings.NAME, description));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
-    @Override
-    public String getUpdatedDescription()
-    {
-        return DESCRIPTIONS[0];
-    }
-
-    @Override
-    public void relicTip() {
-
-    }
-    @Override
-    public void onUnequip() {
-        if(isSelectionScreenUp) {
-            if(statSelectScreen !=null) {
-                isSelectionScreenUp = false;
-                statSelectScreen.close();
-            }
-        }
-    }
 
     @Override
     public void onRightClick() {
-        if (!isObtained|| AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            // If it has been used this turn, the player doesn't actually have the relic (i.e. it's on display in the shop room), or it's the enemy's turn
-            return; // Don't do anything.
-        }
-        if (LoadoutBag.isSelectionScreenUp || TrashBin.isSelectionScreenUp || CardPrinter.isSelectionScreenUp || CardShredder.isSelectionScreenUp || CardModifier.isSelectionScreenUp || LoadoutCauldron.isSelectionScreenUp || PowerGiver.isSelectionScreenUp || EventfulCompass.isSelectionScreenUp || BottledMonster.isSelectionScreenUp || OrbBox.isSelectionScreenUp)
-            return;
-
-        if(isSelectionScreenUp) {
-
-            if(statSelectScreen !=null) {
-                isSelectionScreenUp = false;
-                statSelectScreen.close();
-            }
-            return;
-        }
         if(this.ctrlKey.isPressed()) {
             killAllMonsters();
             return;
         }
 
-        if (AbstractDungeon.isScreenUp) {
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
-        }
-
-        openStatModSelect();
+        super.onRightClick();
     }
 
+    @Override
+    protected AbstractSelectScreen<StatModSelectScreen.StatModButton> getNewSelectScreen() {
+        return new StatModSelectScreen(this);
+    }
 
+    @Override
+    protected void doneSelectionLogics() {
 
-    private void openStatModSelect()
-    {
-        modSelected = false;
-        isSelectionScreenUp = true;
-
-        try {
-            if (this.statSelectScreen == null) statSelectScreen = new StatModSelectScreen(this);
-        } catch (NoClassDefFoundError e) {
-            logger.info("Error: EventSelectScreen Class not found while opening potion select for cauldron!");
-        }
-
-        if (this.statSelectScreen != null) statSelectScreen.open();
     }
 
     @Override
@@ -249,20 +176,7 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                     if(isMaxEnergyLocked) AbstractDungeon.player.energy.energy = maxEnergyLockAmount;
                 }
                 if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
-
-
-//                if(isKillAllMode) {
-//                    MonsterGroup mg = AbstractDungeon.getMonsters();
-//                    if(mg != null) {
-//                        if (AbstractDungeon.actionManager.actions.isEmpty() && !(mg.areMonstersDead()||mg.areMonstersBasicallyDead())) {
-//                            for (AbstractMonster am: mg.monsters) {
-//                                AbstractDungeon.actionManager.addToTop(new InstantKillAction(am));
-//                            }
-//                        }
-//                    }
-//                }
             }
-
 
 
             if(enableRelicCounterEdit) {
@@ -305,70 +219,12 @@ public class TildeKey extends CustomRelic implements ClickableRelic, OnReceivePo
                 }
             }
         }
-
-
-
-
-
-
-
-        if (!modSelected && statSelectScreen != null) {
-            if (statSelectScreen.doneSelecting()) {
-                modSelected = true;
-                isSelectionScreenUp = false;
-            } else {
-                statSelectScreen.update();
-                if (!hb.hovered) {
-                    fakeHover = true;
-                }
-                hb.hovered = true;
-            }
-        }
-    }
-
-    @Override
-    public void renderTip(SpriteBatch sb)
-    {
-        if (!modSelected && fakeHover) {
-            statSelectScreen.render(sb);
-        }
-        if (fakeHover) {
-            fakeHover = false;
-            hb.hovered = false;
-        } else {
-            super.renderTip(sb);
-        }
-    }
-
-    @Override
-    public void renderInTopPanel(SpriteBatch sb)
-    {
-        super.renderInTopPanel(sb);
-
-        if (!modSelected && !fakeHover && statSelectScreen != null) {
-            statSelectScreen.render(sb);
-        }
     }
 
     @Override
     public AbstractRelic makeCopy()
     {
         return new TildeKey();
-    }
-
-    @Override
-    public void playLandingSFX() {
-        if (isIsaacMode) {
-            if (CardCrawlGame.MUTE_IF_BG && Settings.isBackgrounded) {
-                return;
-            } else if (landingSfx != null) {
-                landingSfx.play(Settings.SOUND_VOLUME * Settings.MASTER_VOLUME);
-            } else {
-                logger.info("Missing landing sound!");
-            }
-        } else {
-            CardCrawlGame.sound.play("RELIC_DROP_CLINK");
-        }
     }
 
     public static void resetToDefault() {

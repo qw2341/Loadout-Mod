@@ -19,6 +19,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import loadout.LoadoutMod;
 import loadout.helper.*;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.LoadoutCauldron;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +46,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
     public AbstractPotion.PotionRarity filterRarity = null;
 
 
-    public PotionSelectScreen(AbstractRelic owner)
+    public PotionSelectScreen(AbstractCustomScreenRelic<AbstractPotion> owner)
     {
         super(owner);
         this.defaultSortType = SortType.RARITY;
@@ -140,13 +141,6 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
         }
         this.currentSortType = SortType.MOD;
         scrolledUsingBar(0.0F);
-    }
-
-    @Override
-    public void close()
-    {
-        super.close();
-        LoadoutCauldron.isSelectionScreenUp = false;
     }
 
     @Override

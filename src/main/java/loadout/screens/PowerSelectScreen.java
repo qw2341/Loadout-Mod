@@ -30,6 +30,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import loadout.LoadoutMod;
+import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
 import org.apache.commons.lang3.StringUtils;
@@ -248,7 +249,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
 
 
-    public PowerSelectScreen(AbstractRelic owner)
+    public PowerSelectScreen(AbstractCustomScreenRelic<PowerButton> owner)
     {
         super(owner);
 
@@ -347,14 +348,6 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                 }
             }
         }
-    }
-
-
-    public void close()
-    {
-        super.close();
-        PowerGiver.isSelectionScreenUp = false;
-
     }
 
     public void resetPowerAmounts() {
