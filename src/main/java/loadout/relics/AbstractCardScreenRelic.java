@@ -74,11 +74,13 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
 
     public boolean isOtherRelicScreenOpen() {
         for(Map.Entry<String,Boolean> e : AbstractCustomScreenRelic.isScreenUpMap.entrySet()) {
+            //logger.info(e.getKey() + " : " + e.getValue());
             if(!e.getKey().equals(this.getClass().getSimpleName())) {
                 if(e.getValue()) return true;
             }
         }
         for(Map.Entry<String,Boolean> e : AbstractCardScreenRelic.isScreenUpMap.entrySet()) {
+            //logger.info(e.getKey() + " : " + e.getValue());
             if(!e.getKey().equals(this.getClass().getSimpleName())) {
                 if(e.getValue()) return true;
             }
@@ -206,7 +208,7 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
     }
 
     public void setIsSelectionScreenUp(boolean bool) {
-        logger.info("Setting isScreenUp for " + this.getClass().getSimpleName() + " to " + bool);
+        //logger.info("Setting isScreenUp for " + this.getClass().getSimpleName() + " to " + bool);
         isScreenUpMap.put(this.getClass().getSimpleName(), bool);
     }
 }

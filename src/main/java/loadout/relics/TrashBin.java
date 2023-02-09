@@ -37,8 +37,6 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
     }
     @Override
     protected void openSelectScreen() {
-        itemSelected = false;
-        setIsSelectionScreenUp(true);
 
         ArrayList<AbstractRelic> playerRelics = AbstractDungeon.player.relics;
 
@@ -51,7 +49,11 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
         } catch (NoClassDefFoundError e) {
             logger.info("Error: RelicSelectScreen Class not found while opening relic select for bin!");
         }
-        if (this.selectScreen != null) ((RelicSelectScreen)selectScreen).open(relics, 1);
+        if (this.selectScreen != null) {
+            itemSelected = false;
+            isScreenUpMap.put(TrashBin.class.getSimpleName(), true);
+            ((RelicSelectScreen) selectScreen).open(relics, 1);
+        }
     }
 
     @Override

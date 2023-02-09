@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import loadout.LoadoutMod;
 import loadout.helper.LoadoutRelicHelper;
 import loadout.patches.RelicPopUpPatch;
 import loadout.screens.AbstractSelectScreen;
@@ -70,11 +71,13 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
 
     public boolean isOtherRelicScreenOpen() {
         for(Map.Entry<String,Boolean> e : AbstractCustomScreenRelic.isScreenUpMap.entrySet()) {
+            //logger.info(e.getKey() + " : " + e.getValue());
             if(!e.getKey().equals(this.getClass().getSimpleName())) {
                 if(e.getValue()) return true;
             }
         }
         for(Map.Entry<String,Boolean> e : AbstractCardScreenRelic.isScreenUpMap.entrySet()) {
+            //logger.info(e.getKey() + " : " + e.getValue());
             if(!e.getKey().equals(this.getClass().getSimpleName())) {
                 if(e.getValue()) return true;
             }
@@ -209,7 +212,11 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
     }
 
     public void setIsSelectionScreenUp(boolean bool) {
-        logger.info("Setting isScreenUp for " + this.getClass().getSimpleName() + " to " + bool);
+        //logger.info("Setting isScreenUp for " + this.getClass().getSimpleName() + " to " + bool);
         isScreenUpMap.put(this.getClass().getSimpleName(), bool);
+    }
+
+    public static void setIsSelectionScreenUp(Class<? extends AbstractCustomScreenRelic<?>> caller, boolean bool) {
+        isScreenUpMap.put(caller.getSimpleName(), bool);
     }
 }

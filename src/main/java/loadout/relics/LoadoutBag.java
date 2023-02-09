@@ -37,7 +37,7 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
     @Override
     protected void openSelectScreen() {
         this.itemSelected = false;
-        setIsSelectionScreenUp(true);
+        isScreenUpMap.put(LoadoutBag.class.getSimpleName(), true);
 
         if (selectScreen == null) this.selectScreen = getNewSelectScreen();
         if(selectScreen != null) ((RelicSelectScreen)this.selectScreen).open(relicsToDisplay, relicObtainMultiplier);
