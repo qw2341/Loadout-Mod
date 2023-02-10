@@ -17,6 +17,7 @@ import loadout.LoadoutMod;
 import loadout.helper.LoadoutRelicHelper;
 import loadout.patches.RelicPopUpPatch;
 import loadout.screens.AbstractSelectScreen;
+import loadout.util.TextureLoader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,6 @@ import static loadout.LoadoutMod.*;
 
 public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implements ClickableRelic {
     public static final boolean isIsaacMode = enableIsaacIcons || Loader.isModLoadedOrSideloaded("IsaacMod")||Loader.isModLoadedOrSideloaded("IsaacModExtend");
-
     public static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
 
     protected boolean itemSelected = true;

@@ -238,6 +238,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         return getModID() + "Resources/images/relics/outline/" + resourcePath;
     }
 
+    public static String makeUIPath(String resourcePath) {
+        return getModID() + "Resources/images/ui/" + resourcePath;
+    }
+
     public static Map getRelicStrings(String jsonPath) {
         return (Map)gson.fromJson(Gdx.files.internal(jsonPath).readString(String.valueOf(StandardCharsets.UTF_8)),(new TypeToken<Map<String, RelicStrings>>() {
         }).getType());

@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
+import loadout.uiElements.XGGGIcon;
 
 import java.util.ArrayList;
 
@@ -65,6 +66,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     Color color = new Color();
 
     static final float SIDE_PANEL_X = 50.0F * Settings.scale;
+
+    XGGGIcon xgggIcon;
 
     public AllInOneBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -123,6 +126,12 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
         if(isSelectionScreenUp) showRelics();
         else hideRelics();
+
+        if(isXggg()) {
+            xgggIcon = new XGGGIcon(this.currentX, this.currentY);
+            xgggIcon.setAngle(330.0f);
+            xgggIcon.scale = 0.75F;
+        }
     }
 
     @Override
@@ -203,6 +212,17 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public void update()
     {
         super.update();
+        if(isXggg() && isInScreen()) {
+            if(this.hovered()) {
+                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F,Gdx.graphics.getDeltaTime() * 6.0F));
+                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F, Gdx.graphics.getDeltaTime() * 6.0F));
+            } else {
+                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX,Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+            }
+            this.xgggIcon.update();
+        }
+
         if(isObtained) {
             for (CustomRelic cr : loadoutRelics) {
                 moveRelic(cr);
@@ -228,6 +248,11 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public void renderInTopPanel(SpriteBatch sb)
     {
         if (!Settings.hideRelics) {
+            if(isXggg() && isInScreen()) {
+                if(xgggIcon.getX() != this.currentX || xgggIcon.getY() != this.currentY) {
+                    xgggIcon.render(sb);
+                }
+            }
             this.renderOutline(sb, true);
             if (this.grayscale) {
                 ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
@@ -252,12 +277,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     @Override
-    public void render(SpriteBatch sb) {
-        super.render(sb);
-    }
-
-    @Override
     public void render(SpriteBatch sb, boolean renderAmount, Color outlineColor) {
+        if(isXggg() && isInScreen()) {
+            if(xgggIcon.getX() != this.currentX || xgggIcon.getY() != this.currentY) {
+                xgggIcon.render(sb);
+            }
+        }
+
         if (this.isSeen) {
             this.renderOutline(outlineColor, sb, false);
         } else {
@@ -298,6 +324,10 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         this.hb.render(sb);
+    }
+
+    private boolean isInScreen() {
+        return this.currentX > 0 && this.currentX < Settings.WIDTH && this.currentY > 0 && this.currentY < Settings.HEIGHT;
     }
 
     @Override
