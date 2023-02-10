@@ -4,6 +4,7 @@ import basemod.ReflectionHacks;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +23,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -206,7 +208,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
                 moveRelic(cr);
                 cr.update();
                 cr.hb.update();
-                if(cr.hb.hovered && InputHelper.justClickedRight) ((ClickableRelic)cr).onRightClick();
+                if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) ((ClickableRelic)cr).onRightClick();
             }
         }
     }
