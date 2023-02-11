@@ -20,7 +20,7 @@ public class UnexhaustMod  extends AbstractCardModifier {
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
 
-        String regEx = "NL" + "\\s*" + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD;
+        String regEx = "(NL\\s)*" + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD;
         return StringUtils.replacePattern(rawDescription, regEx, "");
     }
 
