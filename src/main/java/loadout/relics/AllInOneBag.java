@@ -69,6 +69,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     static final float SIDE_PANEL_X = 50.0F * Settings.scale;
 
     XGGGIcon xgggIcon;
+    boolean showXGGG;
+    float showXGGGTimer;
 
     public AllInOneBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -135,6 +137,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             xgggIcon = new XGGGIcon(this.currentX, this.currentY);
             xgggIcon.setAngle(330.0f);
             xgggIcon.scale = 0.75F;
+            showXGGG = false;
+            showXGGGTimer = 0.0f;
         }
     }
 
@@ -212,17 +216,33 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
 
+    private void showXGGG() {
+        this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
+        this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+    }
+
+    private void hideXGGG() {
+        this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+        this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+    }
+
     @Override
     public void update()
     {
         super.update();
         if(isXggg() && isInScreen()) {
             if(this.hovered()) {
-                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
-                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+                showXGGG();
             } else {
-                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
-                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+                if(showXGGG) {
+                    showXGGGTimer -= Gdx.graphics.getDeltaTime();
+                    if(showXGGGTimer < 0) {
+                        showXGGG = false;
+                    }
+                    showXGGG();
+                } else {
+                    hideXGGG();
+                }
             }
             this.xgggIcon.update();
         }
@@ -420,5 +440,24 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     @Override
     public void onObtainCard(AbstractCard c) {
         cardModifier.onObtainCard(c);
+    }
+
+    @Override
+    public void onMonsterDeath(AbstractMonster m) {
+        this.showXGGG = true;
+        switch (m.type) {
+            case NORMAL:
+                this.showXGGGTimer = 2.5F;
+                break;
+            case ELITE:
+                this.showXGGGTimer = 7.5F;
+                break;
+            case BOSS:
+                this.showXGGGTimer = 15.0F;
+                break;
+            default:
+                this.showXGGGTimer = 5.0F;
+                break;
+        }
     }
 }
