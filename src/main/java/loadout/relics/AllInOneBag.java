@@ -59,6 +59,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public TildeKey tildeKey;
     public BottledMonster bottledMonster;
     public OrbBox orbBox;
+    public BlightChest blightChest;
     public ArrayList<CustomRelic> loadoutRelics;
     public ArrayList<AbstractCustomScreenRelic<?>> customScreenRelics;
     public ArrayList<AbstractCardScreenRelic> cardScreenRelics;
@@ -93,6 +94,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         this.tildeKey = new TildeKey();
         this.bottledMonster = new BottledMonster();
         this.orbBox = new OrbBox();
+        this.blightChest = new BlightChest();
         loadoutRelics = new ArrayList<>();
         loadoutRelics.add(this.loadoutBag);
         loadoutRelics.add(this.trashBin);
@@ -105,6 +107,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         loadoutRelics.add(this.tildeKey);
         loadoutRelics.add(this.bottledMonster);
         loadoutRelics.add(this.orbBox);
+        loadoutRelics.add(this.blightChest);
         loadoutRelics.forEach(customRelic -> {
             customRelic.isObtained = true;
             RelicPopUpPatch.IsInsideAnotherRelicField.isInsideAnother.set(customRelic, Boolean.TRUE);
@@ -118,6 +121,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         customScreenRelics.add(this.tildeKey);
         customScreenRelics.add(this.bottledMonster);
         customScreenRelics.add(this.orbBox);
+        customScreenRelics.add(this.blightChest);
 
         cardScreenRelics = new ArrayList<>();
         cardScreenRelics.add(this.cardPrinter);

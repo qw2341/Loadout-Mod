@@ -3,14 +3,14 @@
     "NAME": "Sac de Chargement",
     "FLAVOR": "Un sac sorti de nulle part... Était-ce l’orgueil ?",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez."
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez. Ctrl x5, Maj x10."
     ]
   },
   "loadout:LoadoutBagAlt": {
     "NAME": "Acte de Décès",
     "FLAVOR": "spawn 5.100.628",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez."
+      "Cliquez avec le bouton droit sur cette relique pour obtenir la relique que vous voulez. Ctrl x5, Maj x10."
     ]
   },
   "loadout:TheBin": {
@@ -46,7 +46,7 @@
     "FLAVOR": "",
     "DESCRIPTIONS": [
       "Cliquez avec le bouton droit sur cette relique pour obtenir la carte de votre choix; l’utiliser pendant le combat l’ajoutera également à votre main.",
-      "Obtenez des cartes."
+      "Obtenez des cartes. Ctrl x5, Maj x10."
     ]
   },
   "loadout:CardShredder": {
@@ -171,6 +171,20 @@
     "FLAVOR": "achievement *",
     "DESCRIPTIONS": [
       "Cliquez avec le bouton droit sur cette relique pour basculer vers d’autres reliques de chargement."
+    ]
+  },
+  "loadout:BlightChest": {
+    "NAME": "Coffre à Brûlure Minuscule",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit de la souris sur cette relique pour obtenir des mildiou. Faites un clic gauche pour obtenir, faites un clic droit pour supprimer. Ctrl x5, Maj x10."
+    ]
+  },
+  "loadout:BlightChestAlt": {
+    "NAME": "Coffre à Brûlure Minuscule",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "Cliquez avec le bouton droit de la souris sur cette relique pour obtenir des mildiou. Faites un clic gauche pour obtenir, faites un clic droit pour supprimer. Ctrl x5, Maj x10."
     ]
   }
 

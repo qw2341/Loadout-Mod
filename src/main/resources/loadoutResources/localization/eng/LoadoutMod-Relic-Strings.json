@@ -3,14 +3,14 @@
     "NAME": "Loadout Bag",
     "FLAVOR": "A bag out of nowhere... Was it the hubris?",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any relic you want."
+      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10."
     ]
   },
   "loadout:LoadoutBagAlt": {
     "NAME": "Death Certificate",
     "FLAVOR": "spawn 5.100.628",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any relic you want."
+      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10."
     ]
   },
   "loadout:TheBin": {
@@ -168,6 +168,20 @@
     "DESCRIPTIONS": [
       "Right-click this relic to toggle other loadout relics."
     ]
-  }
+  },
+  "loadout:BlightChest": {
+    "NAME": "Tiny Blight Chest",
+    "FLAVOR": "",
+    "DESCRIPTIONS": [
+      "Right-click this relic to obtain any blights. Left-click to obtain, right-click to remove. Ctrl x5, Shift x10."
+    ]
+  },"loadout:BlightChestAlt": {
+  "NAME": "Tiny Blight Chest",
+  "FLAVOR": "",
+  "DESCRIPTIONS": [
+    "Right-click this relic to obtain any blights. Left-click to obtain, right-click to remove. Ctrl x5, Shift x10."
+  ]
+}
+
 
 }

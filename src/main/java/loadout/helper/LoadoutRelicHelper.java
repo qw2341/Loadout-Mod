@@ -25,6 +25,7 @@ public class LoadoutRelicHelper {
         loadoutRelicIds.add(BottledMonster.ID);
         loadoutRelicIds.add(OrbBox.ID);
         loadoutRelicIds.add(AllInOneBag.ID);
+        loadoutRelicIds.add(BlightChest.ID);
 
         customScreenRelicIds = new HashSet<>();
         customScreenRelicIds.add(LoadoutBag.ID);
@@ -35,6 +36,7 @@ public class LoadoutRelicHelper {
         customScreenRelicIds.add(TildeKey.ID);
         customScreenRelicIds.add(BottledMonster.ID);
         customScreenRelicIds.add(OrbBox.ID);
+        customScreenRelicIds.add(BlightChest.ID);
 
         cardScreenRelicIds = new HashSet<>();
         cardScreenRelicIds.add(CardPrinter.ID);

@@ -3,14 +3,14 @@
     "NAME": "裝備箱",
     "FLAVOR": "選什麽呢？當然是衣架了",
     "DESCRIPTIONS": [
-      "右鍵此遺物來獲取任何你想要的遺物。"
+      "右鍵此遺物來獲取任何你想要的遺物。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:LoadoutBagAlt":{
     "NAME": "死亡證明",
     "FLAVOR": "選什麽呢？當然是鴨架了",
     "DESCRIPTIONS": [
-      "右鍵此遺物來獲取任何你想要的遺物。"
+      "右鍵此遺物來獲取任何你想要的遺物。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:TheBin": {
@@ -45,7 +45,7 @@
     "FLAVOR": "",
     "DESCRIPTIONS": [
       "右鍵此遺物來添加卡牌進入牌組；戰鬥中使用也會同時添加進手牌。",
-      "獲取任何卡牌。"
+      "獲取任何卡牌。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:CardShredder": {
@@ -69,7 +69,7 @@
     "FLAVOR": "盡在卡牌中",
     "DESCRIPTIONS": [
       "右鍵此遺物來添加卡牌進入牌組；戰鬥中使用也會同時添加進手牌。",
-      "獲取任何卡牌。"
+      "獲取任何卡牌。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:CardShredderAlt": {
@@ -168,7 +168,19 @@
     "DESCRIPTIONS": [
       "右鍵此遺物來顯示/隱藏其他 loadout 遺物。"
     ]
-  }
+  },"loadout:BlightChest": {
+  "NAME": "小荒疫箱",
+  "FLAVOR": "",
+  "DESCRIPTIONS": [
+    "右鍵獲得任何你想要的荒疫。左鍵獲取，右鍵移除。Ctrl x5，Shift x10。"
+  ]
+},"loadout:BlightChestAlt": {
+  "NAME": "小荒疫箱",
+  "FLAVOR": "",
+  "DESCRIPTIONS": [
+    "右鍵獲得任何你想要的荒疫。左鍵獲取，右鍵移除。Ctrl x5，Shift x10。"
+  ]
+}
 
 
 

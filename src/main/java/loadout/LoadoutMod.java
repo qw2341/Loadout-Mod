@@ -1033,6 +1033,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
         BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
         BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
+        BaseMod.addRelic(new BlightChest(), RelicType.SHARED);
+
         BaseMod.addRelic(new AllInOneBag(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game

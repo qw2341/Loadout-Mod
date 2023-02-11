@@ -3,14 +3,14 @@
     "NAME": "装备箱",
     "FLAVOR": "选什么呢？当然是衣架了",
     "DESCRIPTIONS": [
-      "右键此遗物来获取任何你想要的遗物。"
+      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:LoadoutBagAlt":{
     "NAME": "死亡证明",
     "FLAVOR": "选什么呢？当然是鸭架了",
     "DESCRIPTIONS": [
-      "右键此遗物来获取任何你想要的遗物。"
+      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:TheBin": {
@@ -45,7 +45,7 @@
     "FLAVOR": "可能很卡",
     "DESCRIPTIONS": [
       "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。",
-      "获取任何卡牌。"
+      "获取任何卡牌。左键获取。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:CardShredder": {
@@ -69,7 +69,7 @@
     "FLAVOR": "尽在卡牌中",
     "DESCRIPTIONS": [
       "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。按住Shift为x10张，Ctrl为x5张",
-      "获取任何卡牌。"
+      "获取任何卡牌。左键获取。Ctrl x5，Shift x10。"
     ]
   },
   "loadout:CardShredderAlt": {
@@ -168,6 +168,18 @@
     "DESCRIPTIONS": [
       "右键此遗物来显示/隐藏其他 loadout 遗物。"
     ]
-  }
+  },"loadout:BlightChest": {
+  "NAME": "小荒疫箱",
+  "FLAVOR": "",
+  "DESCRIPTIONS": [
+    "右键获得任何你想要的荒疫。左键获取，右键移除。Ctrl x5，Shift x10。"
+  ]
+},"loadout:BlightChestAlt": {
+  "NAME": "小荒疫箱",
+  "FLAVOR": "",
+  "DESCRIPTIONS": [
+    "右键获得任何你想要的荒疫。左键获取，右键移除。Ctrl x5，Shift x10。"
+  ]
+}
 
 }
