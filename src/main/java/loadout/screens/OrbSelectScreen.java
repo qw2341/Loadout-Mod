@@ -179,12 +179,8 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                 {
                     if(isFaving) {
                         String pID = hoveredItem.id;
-                        //Add to fav
-                        if(Favorites.favoritePowers.contains(pID)) {
-                            Favorites.favoritePowers.remove(pID);
-                        } else {
-                            Favorites.favoritePowers.add(pID);
-                        }
+                        //TODO Add to fav
+
                         if(filterFavorites)
                             updateFilters();
 
