@@ -242,7 +242,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
                         if (desc.contains("NL")) {
                             desc = desc.split(" NL ")[0];
                         } else if (desc.equals("StsOrigPlaceholder")) {
-                            desc = RelicSelectScreen.TEXT[6];
+                            desc = "";
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
