@@ -46,7 +46,7 @@ public class XGGGIcon extends ClickableUIElement {
         if (this.image != null) {
             halfWidth = (float)this.image.getWidth() / 2.0F;
             halfHeight = (float)this.image.getHeight() / 2.0F;
-            sb.draw(this.image, this.x - 64.0F - halfWidth + halfWidth * Settings.scale, this.y - 64.0F - halfHeight + halfHeight * Settings.scale, halfWidth, halfHeight, (float)this.image.getWidth(), (float)this.image.getHeight(), Settings.scale * this.scale, Settings.scale * this.scale, this.angle, 0, 0, this.image.getWidth(), this.image.getHeight(), false, false);
+            sb.draw(this.image, this.x - 64.0F * Settings.scale - halfWidth + halfWidth * Settings.scale, this.y - 64.0F * Settings.scale - halfHeight + halfHeight * Settings.scale, halfWidth, halfHeight, (float)this.image.getWidth(), (float)this.image.getHeight(), Settings.scale * this.scale, Settings.scale * this.scale, this.angle, 0, 0, this.image.getWidth(), this.image.getHeight(), false, false);
             if (this.tint.a > 0.0F) {
                 sb.setBlendFunction(770, 1);
                 sb.setColor(this.tint);

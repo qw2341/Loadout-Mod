@@ -218,8 +218,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         super.update();
         if(isXggg() && isInScreen()) {
             if(this.hovered()) {
-                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
-                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F, Gdx.graphics.getDeltaTime() * 6.0F));
+                this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
+                this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
             } else {
                 this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
                 this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
