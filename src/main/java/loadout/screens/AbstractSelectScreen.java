@@ -31,8 +31,8 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
 
     protected static final float SPACE = 80.0F * Settings.scale;
-    protected static final float START_X = 450.0F * Settings.scale;
-    protected static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
+    public static final float START_X = 450.0F * Settings.scale;
+    public static final float START_Y = Settings.HEIGHT - 300.0F * Settings.scale;
 
     public static final float SPACE_X = 226.0F * Settings.scale;
     public AbstractCard.CardColor filterColor;
