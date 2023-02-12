@@ -145,6 +145,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static final String ENABLE_STARTING_LOADOUT_BALLS = "enableOrbBoxStarting";
     public static boolean enableBallBoxStarting = true;
 
+    public static final String ENABLE_STARTING_LOADOUT_CHEST = "enableBlightChestStarting";
+    public static boolean enableBChestStarting = true;
+
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
     public static final String ENABLE_STARTER_POOL = "enableStarterPool";
@@ -278,6 +281,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BOTTLE,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BALLS,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_CHEST,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -311,6 +315,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
             enableBottleStarting = config.getBool(ENABLE_STARTING_LOADOUT_BOTTLE);
             enableBallBoxStarting = config.getBool(ENABLE_STARTING_LOADOUT_BALLS);
+            enableBChestStarting = config.getBool(ENABLE_STARTING_LOADOUT_CHEST);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -648,6 +653,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingsPanel.addUIElement(enableBottleAsStartingButton);
         settingXPos += xSpacing;
+
+        settingXPos = startingXPos + 100.0F;
+        settingYPos -= lineSpacing;
         ModLabeledToggleButton enableBallBoxAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(OrbBox.ID).name,
                 settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
                 enableBallBoxStarting, // Boolean it uses
@@ -666,6 +674,25 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 });
 
         settingsPanel.addUIElement(enableBallBoxAsStartingButton);
+        settingXPos += xSpacing;
+        ModLabeledToggleButton enableBChestAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BlightChest.ID).name,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableBChestStarting, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+
+                    enableBChestStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+                    try {
+                        // And based on that boolean, set the settings and save them
+                        config.setBool(ENABLE_STARTING_LOADOUT_CHEST, enableBChestStarting);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        settingsPanel.addUIElement(enableBChestAsStartingButton);
         settingXPos += xSpacing;
 
         settingXPos = startingXPos;
@@ -882,31 +909,31 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-        ModLabel RelicAmountLabel = new ModLabel(SettingText[10], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> {
-        });
-        settingsPanel.addUIElement(RelicAmountLabel);
-
-        settingYPos -= 0.5f * lineSpacing;
-
-        ModMinMaxSlider RelicAmountSlider = new ModMinMaxSlider("",
-                settingXPos, settingYPos, 1.0F, 10.0F,
-                relicObtainMultiplier,
-                "x%.0f",
-                settingsPanel,
-                slider -> {
-            float fVal = slider.getValue();
-            int iVal = Math.round(fVal);
-            relicObtainMultiplier = iVal;
-            try {
-                config.setInt(RELIC_OBTAIN_AMOUNT, iVal);
-                config.save();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        settingsPanel.addUIElement(RelicAmountSlider);
-
-        settingYPos -= lineSpacing;
+//        ModLabel RelicAmountLabel = new ModLabel(SettingText[10], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> {
+//        });
+//        settingsPanel.addUIElement(RelicAmountLabel);
+//
+//        settingYPos -= 0.5f * lineSpacing;
+//
+//        ModMinMaxSlider RelicAmountSlider = new ModMinMaxSlider("",
+//                settingXPos, settingYPos, 1.0F, 10.0F,
+//                relicObtainMultiplier,
+//                "x%.0f",
+//                settingsPanel,
+//                slider -> {
+//            float fVal = slider.getValue();
+//            int iVal = Math.round(fVal);
+//            relicObtainMultiplier = iVal;
+//            try {
+//                config.setInt(RELIC_OBTAIN_AMOUNT, iVal);
+//                config.save();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        settingsPanel.addUIElement(RelicAmountSlider);
+//
+//        settingYPos -= lineSpacing;
 
         ModLabeledToggleButton enableRemoveFromPoolButton = new ModLabeledToggleButton(SettingText[13],
                 settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -1119,6 +1146,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
             if(enableBottleStarting&&RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
             if(enableBallBoxStarting && RelicLibrary.isARelic(OrbBox.ID)&&!AbstractDungeon.player.hasRelic(OrbBox.ID)) RelicLibrary.getRelic(OrbBox.ID).makeCopy().instantObtain();
+            if(enableBChestStarting && RelicLibrary.isARelic(BlightChest.ID)&&!AbstractDungeon.player.hasRelic(BlightChest.ID)) RelicLibrary.getRelic(BlightChest.ID).makeCopy().instantObtain();
         }
         if(enableSidePanel && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) RelicLibrary.getRelic(AllInOneBag.ID).makeCopy().instantObtain();
 
