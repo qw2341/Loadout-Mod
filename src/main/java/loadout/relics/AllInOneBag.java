@@ -193,7 +193,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
         if (r.hb != null) {
            if(isSelectionScreenUp) r.hb.move(r.currentX, r.currentY);
-           else r.hb.move(0,0);
+           else r.hb.move(-100.0f * Settings.scale,-100.0f * Settings.scale);
         }
     }
     public void showRelics(){
