@@ -29,7 +29,7 @@ public class CardPrinter extends AbstractCardScreenRelic {
     public static final String ID = LoadoutMod.makeID("CardPrinter");
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("printer_relic_alt.png")): TextureLoader.getTexture(makeRelicPath("printer_relic.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("printer_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("printer_relic.png"));
-    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("chest_relic_xggg.png"));
+    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("printer_relic_xggg.png"));
 
 
     public CardPrinter() {
