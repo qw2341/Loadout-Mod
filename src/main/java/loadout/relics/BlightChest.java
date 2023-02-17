@@ -20,9 +20,13 @@ public class BlightChest extends AbstractCustomScreenRelic<AbstractBlight>{
     private static final String RESDIR = "chest_relic" + ".png";
     public static final Texture IMG = TextureLoader.getTexture(makeRelicPath(RESDIR));
     private static final Texture OUTLINE = TextureLoader.getTexture(makeRelicOutlinePath(RESDIR));
+    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("chest_relic_xggg.png"));
 
     public BlightChest() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.HEAVY);
+        if (LoadoutMod.isXggg()) {
+            this.img = IMG_XGGG_ALT;
+        }
     }
 
     @Override
