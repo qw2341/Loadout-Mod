@@ -50,9 +50,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
-    //TODO: Make non Isaac version icon
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png"));
+    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("tildekey_relic.png"));
+    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic.png"));
 
     public static boolean isHealthLocked = false;
     private static final String isHealthLockedKey = "isHealthLocked";

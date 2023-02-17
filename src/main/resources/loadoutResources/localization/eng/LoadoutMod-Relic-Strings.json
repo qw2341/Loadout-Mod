@@ -117,7 +117,7 @@
     ]
   },
   "loadout:TildeKey": {
-    "NAME": "Tilde Key",
+    "NAME": "Reality Manipulator",
     "FLAVOR": "Debug without debug console",
     "DESCRIPTIONS": [
       "Right-click this relic to select debug powers you want. Left Click fields to edit them. Ctrl + right click to kill all monsters."

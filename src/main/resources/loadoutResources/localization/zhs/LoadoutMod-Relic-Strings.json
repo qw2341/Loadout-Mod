@@ -117,7 +117,7 @@
     ]
   },
   "loadout:TildeKey": {
-    "NAME": "波浪键",
+    "NAME": "现实操纵仪",
     "FLAVOR": "叮",
     "DESCRIPTIONS": [
       "右键此遗物来进行调试。 左键数值来修改它。 Ctrl + 右键来杀死房间所有怪物。"

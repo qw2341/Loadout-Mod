@@ -117,7 +117,7 @@
     ]
   },
   "loadout:TildeKey": {
-    "NAME": "波浪鍵",
+    "NAME": "現實操縱儀",
     "FLAVOR": "調試但是不用控制台",
     "DESCRIPTIONS": [
       "右鍵此遺物來進行調試。 左鍵數值來修改它。 Ctrl + 右鍵來殺死房間所有怪物。"
