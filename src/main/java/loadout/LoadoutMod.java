@@ -1665,7 +1665,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receiveRelicGet(AbstractRelic r) {
         if(isXggg()) {
             if(r.relicId.equals(HandDrill.ID)) {
-                if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).xgggSay("7点钟还能用电钻的吗?");
+                AllInOneBag.XGGGSay("7点钟还能用电钻的吗?");
             }
         }
 

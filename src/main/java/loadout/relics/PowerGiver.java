@@ -170,7 +170,6 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
 
     public void applyPowerToPlayer(String id, int amount) {
         AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPower(id, amount, AbstractDungeon.player, placeholderCard), amount));
-
     }
 
     public void applyPowerToMonster(String id, int amount, AbstractCreature monster) {

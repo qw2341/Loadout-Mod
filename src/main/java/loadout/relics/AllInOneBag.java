@@ -468,5 +468,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         xgggIcon.say(msg);
     }
 
-
+    public static void XGGGSay(String msg) {
+        if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).xgggSay(msg);
+    }
 }

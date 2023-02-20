@@ -25,12 +25,14 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.exordium.Cultist;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.powers.TheBombPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
+import loadout.relics.AllInOneBag;
 import loadout.relics.PowerGiver;
 import loadout.savables.Favorites;
 import org.apache.commons.lang3.StringUtils;
@@ -423,8 +425,13 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                             ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, +selectMult);
 
                         if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                            if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                            if(currentTarget == PowerGiver.PowerTarget.PLAYER) {
                                 ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, +selectMult);
+                                if(clickStartedItem.id.equals(StrengthPower.POWER_ID) && selectMult > 0) {
+                                    if(selectMult > 5) AllInOneBag.XGGGSay("@I@ @need@ @MORE@ @power!@");
+                                    else AllInOneBag.XGGGSay("~I~ ~need~ ~power!~");
+                                }
+                            }
                             else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
                                 for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
                                     ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, +selectMult, am);
