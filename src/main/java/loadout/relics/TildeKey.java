@@ -122,27 +122,20 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     private static final String drawPerTurnKey = "drawPerTurn";
     public static boolean isDrawPerTurnLocked = false;
     private static final String isDrawPerTurnLockedKey = "isDrawPerTurnLocked";
-    private final InputAction ctrlKey;
+
     private final InputAction gKey;
     private final InputAction kKey;
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
-        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
         this.gKey = new InputAction(Input.Keys.G);
         this.kKey = new InputAction(Input.Keys.K);
 
     }
 
-
     @Override
-    public void onRightClick() {
-        if(this.ctrlKey.isPressed()) {
-            killAllMonsters();
-            return;
-        }
-
-        super.onRightClick();
+    public void onCtrlRightClick() {
+        killAllMonsters();
     }
 
     @Override

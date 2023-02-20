@@ -134,14 +134,14 @@
     "NAME": "Bottled Monster",
     "FLAVOR": "Kakaa!",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to duplicate all monsters."
     ]
   },
   "loadout:BottledMonsterAlt": {
     "NAME": "Friendly Ball",
     "FLAVOR": "Gotta fetch 'em all! Wait... it is not user-friendly",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to duplicate all monsters."
     ]
   },"loadout:OrbBox": {
   "NAME": "Box of Orbs",

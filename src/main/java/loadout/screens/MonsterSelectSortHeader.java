@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import loadout.LoadoutMod;
+import loadout.relics.BottledMonster;
 
 import java.util.ArrayList;
 
@@ -86,17 +87,7 @@ public class MonsterSelectSortHeader extends AbstractSortHeader {
             ((MonsterSelectScreen)this.selectScreen).sortByMod(isAscending);
             resetOtherButtons();
         } else if (button == this.dupeButton) {
-            AbstractRoom ar = AbstractDungeon.getCurrRoom();
-            if(ar!=null && ar.monsters!= null) {
-                ArrayList<AbstractMonster> monsterTemp = new ArrayList<>();
-                for (AbstractMonster am: ar.monsters.monsters) {
-
-                    AbstractMonster m = MonsterSelectScreen.spawnMonster(am.getClass(),am.drawX - MonsterSelectScreen.MonsterButton.calculateSmartDistance(am, am) + 30.0F * (float) Math.random(), am.drawY + 20.0F * (float) Math.random());
-                    m.flipHorizontal = am.flipHorizontal;
-                    monsterTemp.add(m);
-                }
-                ar.monsters.monsters.addAll(monsterTemp);
-            }
+            BottledMonster.dupeMonsters();
         } else if (button == this.showPreviewButton) {
             MonsterSelectScreen.showPreviews = isAscending;
             selectScreen.itemHeight = isAscending ? 570.0F : 420.0F;
