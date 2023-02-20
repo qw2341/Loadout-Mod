@@ -9,7 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -111,8 +110,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     // Mod-settings settings. This is if you want an on/off savable button
     public static SpireConfig config = null;
     public static Properties theDefaultDefaultSettings = new Properties();
-    public static final String ENABLE_AS_STARTING_RELIC = "enableAsStartingRelic";
-    public static boolean enableStarting = true; // The boolean we'll be setting on/off (true/false)
+    public static final String ENABLE_LEGACY_LAYOUT = "enableLegacyLayout";
+    public static boolean enableLegacyLayout = true; // The boolean we'll be setting on/off (true/false)
 
     public static final String ENABLE_STARTING_LOADOUT_BAG = "enableLoadoutBagStarting";
     public static boolean enableBagStarting = true;
@@ -184,7 +183,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
     public static boolean enableIsaacIcons = false;
     public static final String ENABLE_SIDE_PANEL = "eSidePanel";
-    public static boolean enableSidePanel = false;
+    //public static boolean enableSidePanel = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
 
@@ -270,19 +269,19 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         logger.info("Adding mod settings");
         // This loads the mod settings.
         // The actual mod Button is added below in receivePostInitialize()
-        theDefaultDefaultSettings.setProperty(ENABLE_AS_STARTING_RELIC, "TRUE"); // This is the default setting. It's actually set...
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BAG, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BIN, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_CAULDRON, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_PRINTER, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_SHREDDER, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_MODIFIER, "TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_COMPASS,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BOTTLE,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BALLS,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_CHEST,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_LEGACY_LAYOUT, "FALSE"); // This is the default setting. It's actually set...
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BAG, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BIN, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_CAULDRON, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_PRINTER, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_SHREDDER, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_MODIFIER, "TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_COMPASS,"TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_POWER,"TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_TILDE,"TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BOTTLE,"TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_BALLS,"TRUE");
+//        theDefaultDefaultSettings.setProperty(ENABLE_STARTING_LOADOUT_CHEST,"TRUE");
         theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
         theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
@@ -298,25 +297,25 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(RELIC_OBTAIN_AMOUNT,"1");
         theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
         theDefaultDefaultSettings.setProperty(USE_ISAAC_ICONS,"FALSE");
-        theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "TRUE");
+        //theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "TRUE");
 
         try {
             config = new SpireConfig("loadoutMod", "theLoadoutConfig", theDefaultDefaultSettings); // ...right here
             // the "fileName" parameter is the name of the file MTS will create where it will save our setting.
             config.load(); // Load the setting and set the boolean to equal it
-            enableStarting = config.getBool(ENABLE_AS_STARTING_RELIC);
-            enableBagStarting = config.getBool(ENABLE_STARTING_LOADOUT_BAG);
-            enableBinStarting = config.getBool(ENABLE_STARTING_LOADOUT_BIN);
-            enableCauldronStarting = config.getBool(ENABLE_STARTING_LOADOUT_CAULDRON);
-            enablePrinterStarting = config.getBool(ENABLE_STARTING_LOADOUT_PRINTER);
-            enableShredderStarting = config.getBool(ENABLE_STARTING_LOADOUT_SHREDDER);
-            enableModifierStarting = config.getBool(ENABLE_STARTING_LOADOUT_MODIFIER);
-            enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
-            enablePowerStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
-            enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
-            enableBottleStarting = config.getBool(ENABLE_STARTING_LOADOUT_BOTTLE);
-            enableBallBoxStarting = config.getBool(ENABLE_STARTING_LOADOUT_BALLS);
-            enableBChestStarting = config.getBool(ENABLE_STARTING_LOADOUT_CHEST);
+            enableLegacyLayout = config.getBool(ENABLE_LEGACY_LAYOUT);
+//            enableBagStarting = config.getBool(ENABLE_STARTING_LOADOUT_BAG);
+//            enableBinStarting = config.getBool(ENABLE_STARTING_LOADOUT_BIN);
+//            enableCauldronStarting = config.getBool(ENABLE_STARTING_LOADOUT_CAULDRON);
+//            enablePrinterStarting = config.getBool(ENABLE_STARTING_LOADOUT_PRINTER);
+//            enableShredderStarting = config.getBool(ENABLE_STARTING_LOADOUT_SHREDDER);
+//            enableModifierStarting = config.getBool(ENABLE_STARTING_LOADOUT_MODIFIER);
+//            enableCompassStarting = config.getBool(ENABLE_STARTING_LOADOUT_COMPASS);
+//            enablePowerStarting = config.getBool(ENABLE_STARTING_LOADOUT_POWER);
+//            enableTildeStarting = config.getBool(ENABLE_STARTING_LOADOUT_TILDE);
+//            enableBottleStarting = config.getBool(ENABLE_STARTING_LOADOUT_BOTTLE);
+//            enableBallBoxStarting = config.getBool(ENABLE_STARTING_LOADOUT_BALLS);
+//            enableBChestStarting = config.getBool(ENABLE_STARTING_LOADOUT_CHEST);
             ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
             enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
             enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
@@ -332,7 +331,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             relicObtainMultiplier = config.getInt(RELIC_OBTAIN_AMOUNT);
             enableRemoveFromPool = config.getBool(REMOVE_RELIC_FROM_POOLS);
             enableIsaacIcons = config.getBool(USE_ISAAC_ICONS);
-            enableSidePanel = config.getBool(ENABLE_SIDE_PANEL);
+            //enableSidePanel = config.getBool(ENABLE_SIDE_PANEL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,15 +431,15 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         // Create the on/off button:
         ModLabeledToggleButton enableAsStartingButton = new ModLabeledToggleButton(SettingText[0],
                 settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableStarting, // Boolean it uses
+                enableLegacyLayout, // Boolean it uses
                 settingsPanel, // The mod panel in which this button will be in
                 (label) -> {}, // thing??????? idk
                 (button) -> { // The actual button:
             
-            enableStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+            enableLegacyLayout = button.enabled; // The boolean true/false will be whether the button is enabled or not
             try {
                 // And based on that boolean, set the settings and save them
-                config.setBool(ENABLE_AS_STARTING_RELIC, enableStarting);
+                config.setBool(ENABLE_LEGACY_LAYOUT, enableLegacyLayout);
                 config.save();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -449,252 +448,252 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         
         settingsPanel.addUIElement(enableAsStartingButton); // Add the button to the settings panel. Button is a go.
 
-        settingYPos -= lineSpacing;
-
-        settingXPos += 100.0f;
-
-        ModLabeledToggleButton enableBagAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(LoadoutBag.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBagStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableBagStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_BAG, enableBagStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableBagAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableBinAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(TrashBin.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBinStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableBinStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_BIN, enableBinStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableBinAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableCauldronAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(LoadoutCauldron.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableCauldronStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableCauldronStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_CAULDRON, enableCauldronStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableCauldronAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enablePrinterAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardPrinter.ID).name,
-        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enablePrinterStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enablePrinterStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_PRINTER, enablePrinterStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enablePrinterAsStartingButton);
-        settingXPos += xSpacing;
-
-
-        ModLabeledToggleButton enableShredderAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardShredder.ID).name,
-        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableShredderStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableShredderStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_SHREDDER, enableShredderStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableShredderAsStartingButton);
-        settingXPos = startingXPos + 100.0f;
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableModifierAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardModifier.ID).name, SettingText[16],
-        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableModifierStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableModifierStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_MODIFIER, enableModifierStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableModifierAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableCompassAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(EventfulCompass.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableCompassStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableCompassStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_COMPASS, enableCompassStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableCompassAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enablePowerAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(PowerGiver.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enablePowerStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enablePowerStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_POWER, enablePowerStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enablePowerAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableTildeAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(TildeKey.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableTildeStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableTildeStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_TILDE, enableTildeStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableTildeAsStartingButton);
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableBottleAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BottledMonster.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBottleStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableBottleStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_BOTTLE, enableBottleStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableBottleAsStartingButton);
-        settingXPos += xSpacing;
-
-        settingXPos = startingXPos + 100.0F;
-        settingYPos -= lineSpacing;
-        ModLabeledToggleButton enableBallBoxAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(OrbBox.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBallBoxStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableBallBoxStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_BALLS, enableBallBoxStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableBallBoxAsStartingButton);
-        settingXPos += xSpacing;
-        ModLabeledToggleButton enableBChestAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BlightChest.ID).name,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBChestStarting, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-
-                    enableBChestStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
-                    try {
-                        // And based on that boolean, set the settings and save them
-                        config.setBool(ENABLE_STARTING_LOADOUT_CHEST, enableBChestStarting);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        settingsPanel.addUIElement(enableBChestAsStartingButton);
-        settingXPos += xSpacing;
+//        settingYPos -= lineSpacing;
+//
+//        settingXPos += 100.0f;
+//
+//        ModLabeledToggleButton enableBagAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(LoadoutBag.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableBagStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableBagStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_BAG, enableBagStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableBagAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enableBinAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(TrashBin.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableBinStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableBinStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_BIN, enableBinStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableBinAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enableCauldronAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(LoadoutCauldron.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableCauldronStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableCauldronStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_CAULDRON, enableCauldronStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableCauldronAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enablePrinterAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardPrinter.ID).name,
+//        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enablePrinterStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enablePrinterStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_PRINTER, enablePrinterStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enablePrinterAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//
+//        ModLabeledToggleButton enableShredderAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardShredder.ID).name,
+//        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableShredderStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableShredderStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_SHREDDER, enableShredderStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableShredderAsStartingButton);
+//        settingXPos = startingXPos + 100.0f;
+//        settingYPos -= lineSpacing;
+//
+//        ModLabeledToggleButton enableModifierAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(CardModifier.ID).name, SettingText[16],
+//        settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableModifierStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableModifierStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_MODIFIER, enableModifierStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableModifierAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enableCompassAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(EventfulCompass.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableCompassStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableCompassStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_COMPASS, enableCompassStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableCompassAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enablePowerAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(PowerGiver.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enablePowerStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enablePowerStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_POWER, enablePowerStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enablePowerAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enableTildeAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(TildeKey.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableTildeStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableTildeStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_TILDE, enableTildeStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableTildeAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        ModLabeledToggleButton enableBottleAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BottledMonster.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableBottleStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableBottleStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_BOTTLE, enableBottleStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableBottleAsStartingButton);
+//        settingXPos += xSpacing;
+//
+//        settingXPos = startingXPos + 100.0F;
+//        settingYPos -= lineSpacing;
+//        ModLabeledToggleButton enableBallBoxAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(OrbBox.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableBallBoxStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableBallBoxStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_BALLS, enableBallBoxStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableBallBoxAsStartingButton);
+//        settingXPos += xSpacing;
+//        ModLabeledToggleButton enableBChestAsStartingButton = new ModLabeledToggleButton(RelicLibrary.getRelic(BlightChest.ID).name,
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableBChestStarting, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//
+//                    enableBChestStarting = button.enabled; // The boolean true/false will be whether the button is enabled or not
+//                    try {
+//                        // And based on that boolean, set the settings and save them
+//                        config.setBool(ENABLE_STARTING_LOADOUT_CHEST, enableBChestStarting);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//        settingsPanel.addUIElement(enableBChestAsStartingButton);
+//        settingXPos += xSpacing;
 
         settingXPos = startingXPos;
         settingYPos -= lineSpacing;
@@ -972,21 +971,21 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableSidePanel, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableSidePanel = button.enabled;
-                    try {
-                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableSidePanelButton);
+//        ModLabeledToggleButton enableSidePanelButton = new ModLabeledToggleButton(SettingText[17],
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableSidePanel, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//                    enableSidePanel = button.enabled;
+//                    try {
+//                        config.setBool(ENABLE_SIDE_PANEL, enableSidePanel);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//        settingsPanel.addUIElement(enableSidePanelButton);
 
         settingYPos -= lineSpacing;
         settingXPos += 800.0f;
@@ -1135,7 +1134,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
 
-        if(enableStarting && !enableSidePanel) {
+        if(enableLegacyLayout) {
             if(enableBagStarting&&RelicLibrary.isARelic(LoadoutBag.ID)&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) RelicLibrary.getRelic(LoadoutBag.ID).makeCopy().instantObtain();
             if(enableBinStarting&&RelicLibrary.isARelic(TrashBin.ID)&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) RelicLibrary.getRelic(TrashBin.ID).makeCopy().instantObtain();
             if(enableCauldronStarting&&RelicLibrary.isARelic("loadout:LoadoutCauldron")&&!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) RelicLibrary.getRelic("loadout:LoadoutCauldron").makeCopy().instantObtain();
@@ -1149,7 +1148,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             if(enableBallBoxStarting && RelicLibrary.isARelic(OrbBox.ID)&&!AbstractDungeon.player.hasRelic(OrbBox.ID)) RelicLibrary.getRelic(OrbBox.ID).makeCopy().instantObtain();
             if(enableBChestStarting && RelicLibrary.isARelic(BlightChest.ID)&&!AbstractDungeon.player.hasRelic(BlightChest.ID)) RelicLibrary.getRelic(BlightChest.ID).makeCopy().instantObtain();
         }
-        if(enableSidePanel && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) RelicLibrary.getRelic(AllInOneBag.ID).makeCopy().instantObtain();
+        if(!enableLegacyLayout && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) RelicLibrary.getRelic(AllInOneBag.ID).makeCopy().instantObtain();
 
         TildeKey.resetToDefault();
 

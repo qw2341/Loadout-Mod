@@ -1,7 +1,7 @@
 {
 	"loadout:OptionsMenu": {
 		"TEXT": [
-			"Spawn Mod relic at run start?",
+			"Enable Legacy Layout (Relics on top)",
 			"Render locked and unseen relics?",
 			"Show relics in Starter pool?",
 			"Show relics in Common pool?",
