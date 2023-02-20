@@ -33,6 +33,7 @@ import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.HandDrill;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDDodecahedron;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
@@ -103,7 +104,7 @@ public class LoadoutMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
 
@@ -1658,5 +1659,15 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static boolean isXggg() {
         return CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine");
+    }
+
+    @Override
+    public void receiveRelicGet(AbstractRelic r) {
+        if(isXggg()) {
+            if(r.relicId.equals(HandDrill.ID)) {
+                if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).xgggSay("7点钟还能用电钻的吗?");
+            }
+        }
+
     }
 }

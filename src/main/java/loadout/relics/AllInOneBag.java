@@ -460,4 +460,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
                 break;
         }
     }
+
+    public void xgggSay(String msg) {
+        if(!isXggg()) return;
+        showXGGG = true;
+        showXGGGTimer = 4.0F;
+        xgggIcon.say(msg);
+    }
+
+
 }

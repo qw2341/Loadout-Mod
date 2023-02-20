@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.ui.DialogWord;
+import com.megacrit.cardcrawl.vfx.ShopSpeechBubble;
+import com.megacrit.cardcrawl.vfx.SpeechBubble;
+import com.megacrit.cardcrawl.vfx.SpeechTextEffect;
 import loadout.util.TextureLoader;
 
 import static loadout.LoadoutMod.makeUIPath;
@@ -60,5 +65,10 @@ public class XGGGIcon extends ClickableUIElement {
 
     public void setAngle(float angle) {
         this.angle = angle;
+    }
+
+    public void say(String msg) {
+        AbstractDungeon.effectList.add(new ShopSpeechBubble(this.x - 100.0F * Settings.xScale, this.y - 330.0F * Settings.yScale, 3.0F, msg, true));
+        AbstractDungeon.effectList.add(new SpeechTextEffect(x + 75.0F * Settings.scale, y - 200.0F * Settings.scale, 3.0F, msg, DialogWord.AppearEffect.BUMP_IN));
     }
 }
