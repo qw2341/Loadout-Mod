@@ -326,37 +326,9 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
             }
         }
 
-        RoomEventDialog.optionList.clear();
-
         AbstractDungeon.eventList.add(0, eb.id);
 
-        MapRoomNode cur = AbstractDungeon.currMapNode;
-        MapRoomNode mapRoomNode2 = new MapRoomNode(cur.x, cur.y);
-        mapRoomNode2.room = (AbstractRoom)new CustomEventRoom();
-
-        ArrayList<MapEdge> curEdges = cur.getEdges();
-        for (MapEdge edge : curEdges) {
-            mapRoomNode2.addEdge(edge);
-        }
-
-        AbstractDungeon.player.releaseCard();
-        AbstractDungeon.overlayMenu.hideCombatPanels();
-        AbstractDungeon.previousScreen = null;
-        AbstractDungeon.dynamicBanner.hide();
-        AbstractDungeon.dungeonMapScreen.closeInstantly();
-        AbstractDungeon.closeCurrentScreen();
-        AbstractDungeon.topPanel.unhoverHitboxes();
-        AbstractDungeon.fadeIn();
-        AbstractDungeon.effectList.clear();
-        AbstractDungeon.topLevelEffects.clear();
-        AbstractDungeon.topLevelEffectsQueue.clear();
-        AbstractDungeon.effectsQueue.clear();
-        AbstractDungeon.dungeonMapScreen.dismissable = true;
-        AbstractDungeon.nextRoom = mapRoomNode2;
-        AbstractDungeon.setCurrMapNode(mapRoomNode2);
-        AbstractDungeon.getCurrRoom().onPlayerEntry();
-        AbstractDungeon.scene.nextRoom(mapRoomNode2.room);
-        AbstractDungeon.rs = (mapRoomNode2.room.event instanceof com.megacrit.cardcrawl.events.AbstractImageEvent) ? AbstractDungeon.RenderScene.EVENT : AbstractDungeon.RenderScene.NORMAL;
+        EventfulCompass.goToRoom((AbstractRoom)new CustomEventRoom());
 
         if (Loader.isModLoadedOrSideloaded("IsaacMod")) {
             try {

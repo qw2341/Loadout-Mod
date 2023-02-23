@@ -12,11 +12,14 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rewards.chests.*;
+import com.megacrit.cardcrawl.rooms.*;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.vfx.combat.BattleStartEffect;
 import loadout.LoadoutMod;
+import loadout.relics.EventfulCompass;
+import loadout.rooms.CustomChestRoom;
 
 
 import java.util.*;
@@ -44,6 +47,13 @@ public class EventSelectSortHeader extends AbstractSortHeader {
 
     private DropdownMenu actSelectDropdown;
 
+    private DropdownMenu chestSelectDropdown;
+    private HeaderButtonPlus chestButton;
+
+    private HeaderButtonPlus shopButton;
+
+    private HeaderButtonPlus campButton;
+
 
     private ArrayList<String> eventMods;
     private HashMap<String,String> eventModNames;
@@ -53,24 +63,37 @@ public class EventSelectSortHeader extends AbstractSortHeader {
 
     private String currentActSelection = "";
 
-
+    private int currentChestTypeSelection = 0;
 
 
     public EventSelectSortHeader(EventSelectScreen eventSelectScreen, float startX) {
         super(eventSelectScreen);
 
         this.startX = startX;
-        float xPosition = this.startX - 75.0f;
+        float xPosition = this.startX - 75.0f * Settings.scale;
         float yPosition = START_Y - 450.0f * Settings.yScale;
 
 
         this.nameButton = new HeaderButtonPlus(rTEXT[2], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
         yPosition -= SPACE_Y;
         this.modButton = new HeaderButtonPlus(rTEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
-        yPosition -= SPACE_Y;
-        this.actButton = new HeaderButtonPlus(TEXT[1], 50.0F, START_Y - 5 * 52.0f * Settings.yScale, this, true , ImageMaster.MAP_ICON);
-        this.actButton.alignment = HeaderButtonPlus.Alignment.LEFT;
 
+
+        xPosition = 50.0F;
+        yPosition = START_Y - 5 * 52.0f * Settings.yScale;
+        this.actButton = new HeaderButtonPlus(TEXT[1], xPosition, yPosition, this, true , ImageMaster.MAP_ICON);
+        this.actButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPosition -= 3 * 52.0f * Settings.yScale;
+        this.chestButton = new HeaderButtonPlus(TEXT[1], xPosition, yPosition, this, true , ImageMaster.MAP_NODE_TREASURE);
+        this.chestButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+
+        xPosition = 20.0f * Settings.scale;
+        yPosition -= SPACE_Y;
+        this.shopButton = new HeaderButtonPlus(TEXT[2], xPosition, yPosition, this, true , ImageMaster.MAP_NODE_MERCHANT);
+        this.shopButton.alignment = HeaderButtonPlus.Alignment.LEFT;
+        yPosition -= SPACE_Y;
+        this.campButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true , ImageMaster.MAP_NODE_REST);
+        this.campButton.alignment = HeaderButtonPlus.Alignment.LEFT;
 
 
 
@@ -128,10 +151,12 @@ public class EventSelectSortHeader extends AbstractSortHeader {
 
         this.actSelectDropdown = new DropdownMenu(this, arr, FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
+        String[] chestTypes = new String[] {TEXT[5],TEXT[6],TEXT[7],TEXT[8]};
+        this.chestSelectDropdown= new DropdownMenu(this, chestTypes, FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
-        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton, this.actButton};
-        this.dropdownMenus = new DropdownMenu[] {this.actSelectDropdown, this.modNameDropdown};
-        this.dropdownMenuHeaders = new String[] {TEXT[0], "Mod"};
+        this.buttons = new HeaderButtonPlus[] { this.nameButton, this.modButton, this.actButton, this.chestButton, this.shopButton, this.campButton};
+        this.dropdownMenus = new DropdownMenu[] {this.chestSelectDropdown,this.actSelectDropdown, this.modNameDropdown};
+        this.dropdownMenuHeaders = new String[] {TEXT[3],TEXT[0], "Mod"};
 
         this.searchBox = new TextSearchBox(this, 0.0f, START_Y, false);
     }
@@ -157,6 +182,37 @@ public class EventSelectSortHeader extends AbstractSortHeader {
             resetOtherButtons();
         } else if (button == this.actButton) {
             goToAct();
+        }  else if (button == this.chestButton) {
+            AbstractChest chest = null;
+            switch (this.currentChestTypeSelection) {
+                case 3:
+                    break;
+                case 2:
+                    chest = new LargeChest();
+                    break;
+                case 1:
+                    chest = new MediumChest();
+                    break;
+                case 0:
+                default:
+                    chest = new SmallChest();
+                    break;
+            }
+            this.selectScreen.close();
+            if(this.currentChestTypeSelection == 3) {
+                EventfulCompass.goToRoom(new TreasureRoomBoss());
+            } else {
+                CustomChestRoom treasureRoom = new CustomChestRoom();
+                treasureRoom.chest = chest;
+                EventfulCompass.goToRoom(treasureRoom);
+            }
+
+        }  else if (button == this.shopButton) {
+            this.selectScreen.close();
+            EventfulCompass.goToRoom(new ShopRoom());
+        }  else if (button == this.campButton) {
+            this.selectScreen.close();
+            EventfulCompass.goToRoom(new RestRoom());
         } else {
             return;
         }
@@ -182,7 +238,9 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         }
         if(dropdownMenu == this.actSelectDropdown) {
             this.currentActSelection = s;
-
+        }
+        if(dropdownMenu == this.chestSelectDropdown) {
+            this.currentChestTypeSelection = i;
         }
     }
 
@@ -235,7 +293,7 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         }
 
         float spaceY = 52.0f * Settings.yScale;
-        float yPos = START_Y - 200.0f*Settings.yScale;
+        float yPos = START_Y - 325.0f * Settings.yScale;
 
         float xPos = 0.0f;
 
@@ -246,7 +304,7 @@ public class EventSelectSortHeader extends AbstractSortHeader {
             ddm.render(sb,xPos,yPos);
             yPos += 0.5f * spaceY;
             FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, dropdownMenuHeaders[i], xPos, yPos, 250.0F, 20.0F, Settings.GOLD_COLOR);
-            yPos += spaceY;
+            yPos += 2.0f * spaceY;
         }
 
     }

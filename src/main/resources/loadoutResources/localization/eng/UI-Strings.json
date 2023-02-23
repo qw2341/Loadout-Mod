@@ -153,7 +153,14 @@
 	"loadout:EventSelectSortHeader": {
 		"TEXT": [
 			"Act",
-			"Go to"
+			"Go to",
+			"Enter Shop",
+			"Treasure Room Type",
+			"Enter Campfire",
+			"Small Chest",
+			"Medium Chest",
+			"large Chest",
+			"Boss Chest"
 		]
 	}
 }

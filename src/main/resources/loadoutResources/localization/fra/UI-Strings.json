@@ -152,7 +152,14 @@
 	"loadout:EventSelectSortHeader": {
 		"TEXT": [
 			"étape",
-			"Aller à"
+			"Aller à",
+			"Entrez dans le magasin",
+			"Sélection de chambres Coffre au Trésor",
+			"Entrez dans le feu de camp",
+			"Petit coffre au trésor",
+			"Coffre au trésor",
+			"Grand Coffre au trésor",
+			"Coffre au Trésor du Boss"
 		]
 	}
 
