@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.neow.NeowRoom;
 import com.megacrit.cardcrawl.rewards.chests.*;
 import com.megacrit.cardcrawl.rooms.*;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
@@ -54,7 +55,8 @@ public class EventSelectSortHeader extends AbstractSortHeader {
 
     private HeaderButtonPlus campButton;
 
-
+    private HeaderButtonPlus neowButton;
+    private HeaderButtonPlus bossButton;
     private ArrayList<String> eventMods;
     private HashMap<String,String> eventModNames;
 
@@ -94,7 +96,9 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         yPosition -= SPACE_Y;
         this.campButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true , ImageMaster.MAP_NODE_REST);
         this.campButton.alignment = HeaderButtonPlus.Alignment.LEFT;
-
+        yPosition -= SPACE_Y;
+        this.neowButton = new HeaderButtonPlus(TEXT[9], xPosition, yPosition, this, true , ImageMaster.TP_FLOOR);
+        this.neowButton.alignment = HeaderButtonPlus.Alignment.LEFT;
 
 
 
@@ -182,7 +186,7 @@ public class EventSelectSortHeader extends AbstractSortHeader {
             resetOtherButtons();
         } else if (button == this.actButton) {
             goToAct();
-        }  else if (button == this.chestButton) {
+        } else if (button == this.chestButton) {
             AbstractChest chest = null;
             switch (this.currentChestTypeSelection) {
                 case 3:
@@ -207,12 +211,15 @@ public class EventSelectSortHeader extends AbstractSortHeader {
                 EventfulCompass.goToRoom(treasureRoom);
             }
 
-        }  else if (button == this.shopButton) {
+        } else if (button == this.shopButton) {
             this.selectScreen.close();
             EventfulCompass.goToRoom(new ShopRoom());
-        }  else if (button == this.campButton) {
+        } else if (button == this.campButton) {
             this.selectScreen.close();
             EventfulCompass.goToRoom(new RestRoom());
+        } else if (button == this.neowButton) {
+            this.selectScreen.close();
+            EventfulCompass.goToRoom(new NeowRoom(false));
         } else {
             return;
         }
