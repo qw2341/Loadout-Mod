@@ -275,7 +275,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             di.output = di.base;
             di.output *= mult;
         }
-        am.createIntent();
+        try {
+            am.createIntent();
+        } catch (NullPointerException ignored) {
+
+        }
 
     }
 

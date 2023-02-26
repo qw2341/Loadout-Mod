@@ -406,8 +406,11 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             @Override
             public void setAmount(int amountToSet) {
                 TildeKey.enemyAttackMult = amountToSet;
-                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters)
-                    TildeKey.setMonsterDamage(am, amountToSet);
+                MonsterGroup mg = AbstractDungeon.getMonsters();
+                if(mg != null) {
+                    for (AbstractMonster am : mg.monsters)
+                        TildeKey.setMonsterDamage(am, amountToSet);
+                }
             }
 
             @Override
