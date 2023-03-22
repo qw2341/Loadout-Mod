@@ -1277,33 +1277,33 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     private void addBaseGameMonsters() {
-//        ClassFinder finder = new ClassFinder();
-//        ClassPool clazzPool = Loader.getClassPool();
-//        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
-//        ClassLoader clazzLoader = clazzPool.getClassLoader();
+        ClassFinder finder = new ClassFinder();
+        ClassPool clazzPool = Loader.getClassPool();
+        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
+        ClassLoader clazzLoader = clazzPool.getClassLoader();
         try {
-            MonsterAdder monsterAdder = new MonsterAdder(Loader.STS_JAR, "StSMonsterThread");
-            monsterAdder.start();
-//            finder.add(new java.io.File(Loader.STS_JAR));
-//            Collection<ClassInfo> foundClasses = new ArrayList<>();
-//            finder.findClasses(foundClasses, andMonsterClassFilter);
-//            for (ClassInfo classInfo : foundClasses) {
-//                try {
-//                    CtClass cls = clazzPool.get(classInfo.getClassName());
-//                    //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
-//                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-//                        //logger.info("Trying to create monster button for: " + monsterC.getName());
-//                        try{
-//                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
-//                        } catch (Exception e) {
-//                            logger.info("Failed to create monster button for: " + monsterC.getName());
-//                            e.printStackTrace();
-//                        }
-//                } catch (Exception e) {
-//                    logger.info("Failed to initialize for " + classInfo.getClassName());
-//                }
-//
-//            }
+//            MonsterAdder monsterAdder = new MonsterAdder(Loader.STS_JAR, "StSMonsterThread");
+//            monsterAdder.start();
+            finder.add(new java.io.File(Loader.STS_JAR));
+            Collection<ClassInfo> foundClasses = new ArrayList<>();
+            finder.findClasses(foundClasses, andMonsterClassFilter);
+            for (ClassInfo classInfo : foundClasses) {
+                try {
+                    CtClass cls = clazzPool.get(classInfo.getClassName());
+                    //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
+                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
+                        //logger.info("Trying to create monster button for: " + monsterC.getName());
+                        try{
+                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
+                        } catch (Exception e) {
+                            logger.info("Failed to create monster button for: " + monsterC.getName());
+                            e.printStackTrace();
+                        }
+                } catch (Exception e) {
+                    logger.info("Failed to initialize for " + classInfo.getClassName());
+                }
+
+            }
         } catch (Exception e) {
             logger.info("Failed to initialize base game monsters");
             e.printStackTrace();

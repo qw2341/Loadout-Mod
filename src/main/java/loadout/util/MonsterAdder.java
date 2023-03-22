@@ -26,7 +26,7 @@ public class MonsterAdder extends AbstractAdder{
     @Override
     public void run() {
         list = new ArrayList<>();
-        boolean isModded = !threadName.equals("StSMonsterThread");
+//        boolean isModded = !threadName.equals("StSMonsterThread");
         finder.findClasses(list, filter);
         int len = list.size();
         for (int i = 0; i< len; i++) {
@@ -42,7 +42,7 @@ public class MonsterAdder extends AbstractAdder{
                 //logger.info("Trying to create monster button for: " + monsterC.getName());
                 if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
                 try{
-                    monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, isModded));
+                    monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
                 } catch (Exception e) {
                     logger.info("Failed to create monster button for: " + monsterC.getName());
                     continue;
