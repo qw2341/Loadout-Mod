@@ -54,6 +54,6 @@ public class MonsterAdder extends AbstractAdder{
                 logger.info("Failed to initialize for " + classInfo.getClassName());
             }
         }
-        logger.info("Thread ${threadName} finished adding monster!");
+        logger.info("Thread "+ threadName +" finished adding monster!");
     }
 }

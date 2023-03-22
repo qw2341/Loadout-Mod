@@ -49,6 +49,6 @@ public class OrbAdder extends AbstractAdder{
             }
 
         }
-        logger.info("Thread ${threadName} finished adding orbs!");
+        logger.info("Thread "+ threadName +" finished adding orbs!");
     }
 }

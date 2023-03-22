@@ -50,6 +50,6 @@ public class PowerAdder extends AbstractAdder{
             }
 
         }
-        logger.info("Thread ${threadName} finished adding power!");
+        logger.info("Thread "+ threadName +" finished adding power!");
     }
 }
