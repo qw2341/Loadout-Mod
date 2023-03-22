@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
     <description>Adds relics that gives you stuffs.</description>
 
     <properties>

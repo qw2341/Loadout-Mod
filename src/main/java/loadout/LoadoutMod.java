@@ -62,6 +62,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -198,12 +200,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static ArrayList<AbstractCard> cardsToDisplay = new ArrayList<>();
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
-    public static HashMap<String,Class<? extends AbstractPower>> powersToDisplay = new HashMap<>();
-    public static ArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new ArrayList<>();
-    public static ArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new ArrayList<>();
-    public static HashSet<String> orbIDs = new HashSet<>();
-
-    public static HashSet<String> monsterIDS = new HashSet<>();
+    public static ConcurrentHashMap<String,Class<? extends AbstractPower>> powersToDisplay = new ConcurrentHashMap<>();
+    public static CopyOnWriteArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new CopyOnWriteArrayList<>();
+    static ConcurrentHashMap<String, String> orbMap = new ConcurrentHashMap<>();
+    public static Set<String> orbIDs = orbMap.keySet("");
+    static ConcurrentHashMap<String, String> monsterMap = new ConcurrentHashMap<>();
+    public static Set<String> monsterIDS = monsterMap.keySet("");
 
     public static boolean isScreenUp = false;
 
@@ -1274,31 +1277,33 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     private void addBaseGameMonsters() {
-        ClassFinder finder = new ClassFinder();
-        ClassPool clazzPool = Loader.getClassPool();
-        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
-        ClassLoader clazzLoader = clazzPool.getClassLoader();
+//        ClassFinder finder = new ClassFinder();
+//        ClassPool clazzPool = Loader.getClassPool();
+//        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
+//        ClassLoader clazzLoader = clazzPool.getClassLoader();
         try {
-            finder.add(new java.io.File(Loader.STS_JAR));
-            Collection<ClassInfo> foundClasses = new ArrayList<>();
-            finder.findClasses(foundClasses, andMonsterClassFilter);
-            for (ClassInfo classInfo : foundClasses) {
-                try {
-                    CtClass cls = clazzPool.get(classInfo.getClassName());
-                    //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
-                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                        //logger.info("Trying to create monster button for: " + monsterC.getName());
-                        try{
-                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
-                        } catch (Exception e) {
-                            logger.info("Failed to create monster button for: " + monsterC.getName());
-                            e.printStackTrace();
-                        }
-                } catch (Exception e) {
-                    logger.info("Failed to initialize for " + classInfo.getClassName());
-                }
-
-            }
+            MonsterAdder monsterAdder = new MonsterAdder(Loader.STS_JAR, "StSMonsterThread");
+            monsterAdder.start();
+//            finder.add(new java.io.File(Loader.STS_JAR));
+//            Collection<ClassInfo> foundClasses = new ArrayList<>();
+//            finder.findClasses(foundClasses, andMonsterClassFilter);
+//            for (ClassInfo classInfo : foundClasses) {
+//                try {
+//                    CtClass cls = clazzPool.get(classInfo.getClassName());
+//                    //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
+//                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
+//                        //logger.info("Trying to create monster button for: " + monsterC.getName());
+//                        try{
+//                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
+//                        } catch (Exception e) {
+//                            logger.info("Failed to create monster button for: " + monsterC.getName());
+//                            e.printStackTrace();
+//                        }
+//                } catch (Exception e) {
+//                    logger.info("Failed to initialize for " + classInfo.getClassName());
+//                }
+//
+//            }
         } catch (Exception e) {
             logger.info("Failed to initialize base game monsters");
             e.printStackTrace();
@@ -1339,11 +1344,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
     private void autoAddStuffs() {
+        logger.info("Adding stuffs...");
+        long startTime = System.currentTimeMillis();
         ClassFinder finder = new ClassFinder();
         ClassPool clazzPool = Loader.getClassPool();
-        AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractPower.class)});
-        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
-        AndClassFilter andOrbClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractOrb.class)});
+//        AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractPower.class)});
+//        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
+//        AndClassFilter andOrbClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractOrb.class)});
 
 
         ClassLoader clazzLoader = clazzPool.getClassLoader();
@@ -1354,93 +1361,27 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         for (ModInfo mi : Loader.MODINFOS) {
             try {
                 URL url = mi.jarURL;
-                finder.add(new java.io.File(url.toURI()));
-                ArrayList<ClassInfo> foundClasses = new ArrayList<>();
-                finder.findClasses(foundClasses, (ClassFilter) andPowerClassFilter);
-                for(ClassInfo classInfo : foundClasses) {
-                    try {
-                        CtClass cls = clazzPool.get(classInfo.getClassName());
-                            Class<?extends AbstractPower> powerC = (Class<? extends AbstractPower>) clazzLoader.loadClass(cls.getName());
-                            try{
-                                Class.forName(powerC.getName(),false,clazzLoader);
-                            } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                                logger.info(powerC.getName() + "does not exist");
-                                continue;
-                            }
-
-                            String pID = null;
-
-                            pID = powerC.getName();
-                            if(powersToDisplay.containsKey(pID)) {
-                                continue;
-                            }
-
-                            powersToDisplay.put(pID, (Class<? extends AbstractPower>) powerC);
-
-                    } catch (Exception ignored) {
-
-                    }
-
+                try {
+                    PowerAdder powerAdder = new PowerAdder(url, mi.ID + "PowerThread");
+                    powerAdder.start();
+                } catch (Exception e) {
+                    logger.info("Failed to import power from " + mi.ID);
                 }
-                logger.info("Done Adding custom powers! Total powers: " + powersToDisplay.size());
-                foundClasses.clear();
-                finder.findClasses(foundClasses, andMonsterClassFilter);
-                int len = foundClasses.size();
-                for (int i = 0; i< len; i++) {
-                    ClassInfo classInfo = foundClasses.get(i);
-                    try {
-                        CtClass cls = clazzPool.get(classInfo.getClassName());
-                        //logger.info("Class: " + classInfo.getClassName() + (isPower ? " is Power": isMonster ? " is Monster" : " is neither"));
-                            if(monsterIDS.contains(cls.getName())) continue;
 
-                            monsterIDS.add(cls.getName());
-
-                            Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                            //logger.info("Trying to create monster button for: " + monsterC.getName());
-                            if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
-                            try{
-                                monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
-                            } catch (Exception e) {
-                                logger.info("Failed to create monster button for: " + monsterC.getName());
-                                continue;
-                            } catch (NoClassDefFoundError noClassDefFoundError) {
-                                continue;
-                            }
-
-                    } catch (Exception e) {
-                        logger.info("Failed to initialize for " + classInfo.getClassName());
-                    }
+                try {
+                    MonsterAdder monsterAdder = new MonsterAdder(url, mi.ID + "MonsterThread");
+                    monsterAdder.start();
+                } catch (Exception e) {
+                    logger.info("Failed to import monsters from " + mi.ID);
                 }
-                logger.info("Done Adding custom monsters! Total monsters: " + monstersToDisplay.size());
-                foundClasses.clear();
 
-                finder.findClasses(foundClasses, (ClassFilter) andOrbClassFilter);
-                for(ClassInfo classInfo : foundClasses) {
-                    try {
-                        CtClass cls = clazzPool.get(classInfo.getClassName());
-                            Class<?extends AbstractOrb> orbC = (Class<? extends AbstractOrb>) clazzLoader.loadClass(cls.getName());
-                            OrbSelectScreen.OrbButton ob;
-                            try{
-                                Class.forName(orbC.getName(),false,clazzLoader);
-                                ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
-                            } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                                logger.info(orbC.getName() + "does not exist");
-                                continue;
-                            }
-
-                            if(orbIDs.contains(orbC.getName())) {
-                                continue;
-                            }
-                            orbIDs.add(orbC.getName());
-                            orbsToDisplay.add(ob);
-
-                    } catch (Exception ignored) {
-
-                    }
-
+                try {
+                    OrbAdder orbAdder = new OrbAdder(url, mi.ID + "OrbThread");
+                    orbAdder.start();
+                } catch (Exception e) {
+                    logger.info("Failed to import orbs from " + mi.ID);
                 }
-                logger.info("Done Adding custom orbs! Total orbs: " + orbsToDisplay.size());
-                foundClasses.clear();
+
 
 
             } catch (Exception e) {
@@ -1449,6 +1390,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             }
 
         }
+
+        long timeTaken = System.currentTimeMillis() - startTime;
+        logger.info("Time Elapsed: " + timeTaken + "ms");
     }
 
 
@@ -1574,10 +1518,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     public static void modifyPlayerRelics() {
-        AbstractDungeon.CurrentScreen prevScreen = AbstractDungeon.screen;
-
         if(relicsToRemove.size()>0) {
-            //AbstractDungeon.player.relics.removeAll(relicsToRemove);
+
             ArrayList<AbstractRelic> playerRelics = AbstractDungeon.player.relics;
             relicsToRemove.forEach(i->playerRelics.get(i).onUnequip());
             AbstractDungeon.player.relics = IntStream.range(0, playerRelics.size())
@@ -1586,24 +1528,16 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                     .collect(Collectors.toCollection(ArrayList::new));
             AbstractDungeon.player.reorganizeRelics();
 
-//            int actualRelicPage = AbstractDungeon.player.relics.size()/AbstractRelic.MAX_RELICS_PER_PAGE;
-//            if (AbstractRelic.relicPage > actualRelicPage && actualRelicPage >= 0)
-//                AbstractRelic.relicPage = actualRelicPage;
             AbstractRelic.relicPage = 0;
             AbstractDungeon.topPanel.adjustRelicHbs();
 
             relicsToRemove.clear();
         }
         if(relicsToAdd.size()>0){
-//            while (relicsToAdd.size()>0 && !isScreenUp) {
-//                AbstractRelic r = relicsToAdd.pop();
-//                AbstractDungeon.getCurrRoom().spawnRelicAndObtain((float)Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F, r);
-//            }
             for (AbstractRelic r : relicsToAdd) {
                 if(enableRemoveFromPool) removeRelicFromPools(r.relicId);
                 AbstractDungeon.getCurrRoom().spawnRelicAndObtain((float)Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F, r);
             }
-            //AbstractDungeon.actionManager.addToBottom(new );
             relicsToAdd.clear();
         }
     }

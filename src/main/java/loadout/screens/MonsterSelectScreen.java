@@ -358,7 +358,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         super(owner);
 
         this.items.addAll(LoadoutMod.monstersToDisplay);
-        this.itemsClone = LoadoutMod.monstersToDisplay;
+        this.itemsClone = new ArrayList<>(LoadoutMod.monstersToDisplay);
         this.sortHeader = new MonsterSelectSortHeader(this);
 
         this.currentSortOrder = SortOrder.ASCENDING;
