@@ -171,6 +171,9 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                     LoadoutMod.logger.info("Error creating button for " + orbC.getName());
                     e.printStackTrace();
                     continue;
+                } catch (NoClassDefFoundError noClassError) {
+                    LoadoutMod.logger.info("ERROR THROWN! NO CLASS DEF FOUND FOR " + orbC.getName());
+                    continue;
                 }
             }
 

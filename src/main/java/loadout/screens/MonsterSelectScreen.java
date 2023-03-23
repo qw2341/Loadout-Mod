@@ -418,8 +418,10 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 } catch (Exception e) {
                     LoadoutMod.logger.info("Error creating button for " + monsterC.getName());
                     continue;
+                } catch (NoClassDefFoundError noClassError) {
+                    LoadoutMod.logger.info("ERROR THROWN! NO CLASS DEF FOUND FOR " + monsterC.getName());
+                    continue;
                 }
-
 
             }
 

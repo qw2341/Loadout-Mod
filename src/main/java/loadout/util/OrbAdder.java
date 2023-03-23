@@ -29,24 +29,10 @@ public class OrbAdder extends AbstractAdder{
             try {
                 CtClass cls = clazzPool.get(classInfo.getClassName());
                 Class<?extends AbstractOrb> orbC = (Class<? extends AbstractOrb>) clazzLoader.loadClass(cls.getName());
-//                OrbSelectScreen.OrbButton ob;
-//                try{
-////                    Class.forName(orbC.getName(),false,clazzLoader);
-//                    //ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
-//                } catch (NoClassDefFoundError|NoSuchMethodException cnfe) {
-//                    //logger.info(orbC.getName() + "does not exist");
-//                    continue;
-//                } catch (Exception|Error e) {
-//                    e.printStackTrace();
-//                    //logger.info("Other error occurred while creating button for " + orbC.getName());
-//                    continue;
-//                }
-
                 if(orbMap.containsKey(orbC.getName())) {
                     continue;
                 }
                 orbMap.put(orbC.getName(),orbC);
-                //orbsToDisplay.add(ob);
 
             } catch (Exception ignored) {
 
