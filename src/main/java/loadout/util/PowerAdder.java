@@ -32,7 +32,7 @@ public class PowerAdder extends AbstractAdder{
                 try{
                     Class.forName(powerC.getName(),false,clazzLoader);
                 } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                    logger.info(powerC.getName() + "does not exist");
+                    //logger.info(powerC.getName() + "does not exist");
                     continue;
                 }
 
@@ -51,5 +51,6 @@ public class PowerAdder extends AbstractAdder{
 
         }
         logger.info("Thread "+ threadName +" finished adding power!");
+        finish();
     }
 }

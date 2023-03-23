@@ -29,20 +29,24 @@ public class OrbAdder extends AbstractAdder{
             try {
                 CtClass cls = clazzPool.get(classInfo.getClassName());
                 Class<?extends AbstractOrb> orbC = (Class<? extends AbstractOrb>) clazzLoader.loadClass(cls.getName());
-                OrbSelectScreen.OrbButton ob;
-                try{
-                    Class.forName(orbC.getName(),false,clazzLoader);
-                    ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
-                } catch (ClassNotFoundException|NoClassDefFoundError cnfe) {
-                    logger.info(orbC.getName() + "does not exist");
-                    continue;
-                }
+//                OrbSelectScreen.OrbButton ob;
+//                try{
+////                    Class.forName(orbC.getName(),false,clazzLoader);
+//                    //ob = new OrbSelectScreen.OrbButton(orbC.getDeclaredConstructor(new Class[]{}).newInstance(null));
+//                } catch (NoClassDefFoundError|NoSuchMethodException cnfe) {
+//                    //logger.info(orbC.getName() + "does not exist");
+//                    continue;
+//                } catch (Exception|Error e) {
+//                    e.printStackTrace();
+//                    //logger.info("Other error occurred while creating button for " + orbC.getName());
+//                    continue;
+//                }
 
-                if(orbIDs.contains(orbC.getName())) {
+                if(orbMap.containsKey(orbC.getName())) {
                     continue;
                 }
-                orbIDs.add(orbC.getName());
-                orbsToDisplay.add(ob);
+                orbMap.put(orbC.getName(),orbC);
+                //orbsToDisplay.add(ob);
 
             } catch (Exception ignored) {
 
@@ -50,5 +54,6 @@ public class OrbAdder extends AbstractAdder{
 
         }
         logger.info("Thread "+ threadName +" finished adding orbs!");
+        finish();
     }
 }

@@ -34,26 +34,28 @@ public class MonsterAdder extends AbstractAdder{
             try {
                 CtClass cls = clazzPool.get(classInfo.getClassName());
                 //logger.info("Class: " + classInfo.getClassName() + (isPower ? " is Power": isMonster ? " is Monster" : " is neither"));
-                if(monsterIDS.contains(cls.getName())) continue;
-
-                monsterIDS.add(cls.getName());
+                if(monsterMap.containsKey(cls.getName())) continue;
 
                 Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                //logger.info("Trying to create monster button for: " + monsterC.getName());
-                if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
-                try{
-                    monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
-                } catch (Exception e) {
-                    logger.info("Failed to create monster button for: " + monsterC.getName());
-                    continue;
-                } catch (NoClassDefFoundError noClassDefFoundError) {
-                    continue;
-                }
+                monsterMap.put(cls.getName(), monsterC);
 
-            } catch (Exception e) {
-                logger.info("Failed to initialize for " + classInfo.getClassName());
+                //logger.info("Trying to create monster button for: " + monsterC.getName());
+//                if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
+//                try{
+////                    monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
+//                } catch (Exception e) {
+//                    //logger.info("Failed to create monster button for: " + monsterC.getName());
+//                    continue;
+//                } catch (NoClassDefFoundError noClassDefFoundError) {
+//                    continue;
+//                }
+
+            } catch (Exception|Error e) {
+                e.printStackTrace();
+                //logger.info("Failed to initialize for " + classInfo.getClassName());
             }
         }
         logger.info("Thread "+ threadName +" finished adding monster!");
+        finish();
     }
 }

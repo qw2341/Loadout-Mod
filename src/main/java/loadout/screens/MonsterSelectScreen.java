@@ -86,8 +86,8 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                         this.monsterStrings = ReflectionHacks.getPrivateStatic(amClass, "monsterStrings");
                         this.name = this.monsterStrings.NAME;
                     }
-                } catch (Exception e) {
-
+                } catch (Exception|Error e) {
+                    this.name = amClass.getSimpleName();
                 }
 
                 if(!isModded) {
@@ -102,7 +102,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                     try{
                         this.id = (String) amClass.getField("ID").get(null);
 
-                    } catch(NoSuchFieldException nsfe) {
+                    } catch(NoSuchFieldException|Error nsfe) {
                         this.id = amClass.getSimpleName();
                     }
                     this.type = AbstractMonster.EnemyType.NORMAL;
@@ -357,8 +357,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
     public MonsterSelectScreen(AbstractCustomScreenRelic<MonsterButton> owner) {
         super(owner);
 
-        this.items.addAll(LoadoutMod.monstersToDisplay);
-        this.itemsClone = new ArrayList<>(LoadoutMod.monstersToDisplay);
+
         this.sortHeader = new MonsterSelectSortHeader(this);
 
         this.currentSortOrder = SortOrder.ASCENDING;
@@ -409,6 +408,24 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
     @Override
     protected void callOnOpen() {
+        if(this.itemsClone == null || this.itemsClone.isEmpty()) {
+            this.itemsClone = new ArrayList<>();
+
+            for (Class<? extends AbstractMonster> monsterC : LoadoutMod.monsterMap.values()) {
+                if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
+                try {
+                    this.itemsClone.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
+                } catch (Exception e) {
+                    LoadoutMod.logger.info("Error creating button for " + monsterC.getName());
+                    continue;
+                }
+
+
+            }
+
+        }
+
+        this.items = new ArrayList<>(this.itemsClone);
 
     }
 

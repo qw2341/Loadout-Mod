@@ -201,12 +201,12 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
     public static ConcurrentHashMap<String,Class<? extends AbstractPower>> powersToDisplay = new ConcurrentHashMap<>();
-    public static CopyOnWriteArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new CopyOnWriteArrayList<>();
-    public static CopyOnWriteArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new CopyOnWriteArrayList<>();
-    static ConcurrentHashMap<String, String> orbMap = new ConcurrentHashMap<>();
-    public static Set<String> orbIDs = orbMap.keySet("");
-    static ConcurrentHashMap<String, String> monsterMap = new ConcurrentHashMap<>();
-    public static Set<String> monsterIDS = monsterMap.keySet("");
+    //public static CopyOnWriteArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new CopyOnWriteArrayList<>();
+    //public static CopyOnWriteArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new CopyOnWriteArrayList<>();
+    public static ConcurrentHashMap<String, Class<? extends AbstractOrb>> orbMap = new ConcurrentHashMap<>();
+    //public static Set<String> orbIDs = orbMap.keySet("");
+    public static ConcurrentHashMap<String, Class<? extends AbstractMonster>> monsterMap = new ConcurrentHashMap<>();
+    //public static Set<String> monsterIDS = monsterMap.keySet("");
 
     public static boolean isScreenUp = false;
 
@@ -216,7 +216,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static SidePanel sidePanel = null;
 
+    public static int numThreadsTotal = 0;
+    public static int numThreadsFinished = 0;
 
+    public static long startTime;
 
     //This is for the in-game mod settings panel.
     private static final String MODNAME = "Loadout Mod";
@@ -1249,7 +1252,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 logger.error("Failed to instantiate power");
             }
         }
-        monstersToDisplay.clear();
+        monsterMap.clear();
 
         Settings.seed = 0L;
         AbstractDungeon.generateSeeds();
@@ -1258,22 +1261,14 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         addBaseGameMonsters();
 
-        orbsToDisplay.clear();
-        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Dark()));
-        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Frost()));
-        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Lightning()));
-        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new Plasma()));
-        orbsToDisplay.add(new OrbSelectScreen.OrbButton(new EmptyOrbSlot()));
-        orbIDs.add(Dark.class.getName());
-        orbIDs.add(Frost.class.getName());
-        orbIDs.add(Lightning.class.getName());
-        orbIDs.add(Plasma.class.getName());
-        orbIDs.add(EmptyOrbSlot.class.getName());
+        orbMap.clear();
+        orbMap.put(Dark.class.getName(),Dark.class);
+        orbMap.put(Frost.class.getName(),Frost.class);
+        orbMap.put(Lightning.class.getName(), Lightning.class);
+        orbMap.put(Plasma.class.getName(), Plasma.class);
+        orbMap.put(EmptyOrbSlot.class.getName(), EmptyOrbSlot.class);
 
         autoAddStuffs();
-
-
-
     }
 
     private void addBaseGameMonsters() {
@@ -1291,14 +1286,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 try {
                     CtClass cls = clazzPool.get(classInfo.getClassName());
                     //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
-                        Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                        //logger.info("Trying to create monster button for: " + monsterC.getName());
-                        try{
-                            monstersToDisplay.add(new MonsterSelectScreen.MonsterButton(monsterC));
-                        } catch (Exception e) {
-                            logger.info("Failed to create monster button for: " + monsterC.getName());
-                            e.printStackTrace();
-                        }
+                    Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
+                    monsterMap.put(monsterC.getName(), monsterC);
                 } catch (Exception e) {
                     logger.info("Failed to initialize for " + classInfo.getClassName());
                 }
@@ -1345,18 +1334,18 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     private void autoAddStuffs() {
         logger.info("Adding stuffs...");
-        long startTime = System.currentTimeMillis();
-        ClassFinder finder = new ClassFinder();
-        ClassPool clazzPool = Loader.getClassPool();
+        startTime = System.currentTimeMillis();
+//        ClassFinder finder = new ClassFinder();
+//        ClassPool clazzPool = Loader.getClassPool();
 //        AndClassFilter andPowerClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractPower.class)});
 //        AndClassFilter andMonsterClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractMonster.class)});
 //        AndClassFilter andOrbClassFilter = new AndClassFilter(new ClassFilter[]{(ClassFilter) new NotClassFilter((ClassFilter) new InterfaceOnlyClassFilter()), (ClassFilter) new NotClassFilter((ClassFilter) new AbstractClassFilter()), (ClassFilter) new ClassModifiersClassFilter(1), new SuperClassFilter(clazzPool, AbstractOrb.class)});
 
 
-        ClassLoader clazzLoader = clazzPool.getClassLoader();
-        String noID = "Unnamed Power";
-        int count = 0;
-
+//        ClassLoader clazzLoader = clazzPool.getClassLoader();
+//        String noID = "Unnamed Power";
+//        int count = 0;
+        numThreadsTotal = Loader.MODINFOS.length * 3;
 
         for (ModInfo mi : Loader.MODINFOS) {
             try {
@@ -1391,8 +1380,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         }
 
-        long timeTaken = System.currentTimeMillis() - startTime;
-        logger.info("Time Elapsed: " + timeTaken + "ms");
+
     }
 
 

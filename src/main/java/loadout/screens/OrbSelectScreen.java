@@ -19,6 +19,7 @@ import loadout.relics.OrbBox;
 import loadout.savables.Favorites;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -111,8 +112,6 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
         this.defaultSortType = SortType.MOD;
         this.itemHeight = 75.0f * Settings.yScale;
 
-        this.itemsClone = new ArrayList<>(LoadoutMod.orbsToDisplay);
-        this.items = new ArrayList<>(itemsClone);
         this.sortHeader = new OrbSelectSortHeader(this);
     }
 
@@ -161,6 +160,24 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
     protected void callOnOpen() {
         targetY = scrollLowerBound;
         scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
+
+        if(this.itemsClone == null || this.itemsClone.isEmpty()) {
+            //first time
+            this.itemsClone = new ArrayList<>();
+            for (Class<?extends AbstractOrb> orbC : LoadoutMod.orbMap.values()) {
+                try {
+                    itemsClone.add(new OrbButton(orbC.getDeclaredConstructor(new Class[] {}).newInstance()));
+                } catch (InvocationTargetException|InstantiationException|IllegalAccessException|NoSuchMethodException e) {
+                    LoadoutMod.logger.info("Error creating button for " + orbC.getName());
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+
+
+            this.items = new ArrayList<>(itemsClone);
+        }
+
     }
     private boolean isCombat() {
         return AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
