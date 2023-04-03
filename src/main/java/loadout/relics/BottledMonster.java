@@ -1,8 +1,10 @@
 package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
@@ -13,6 +15,7 @@ import loadout.util.TextureLoader;
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
+import static loadout.screens.MonsterSelectScreen.MonsterButton.calculateSmartDistance;
 
 public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScreen.MonsterButton> {
     // ID, images, text.
@@ -23,6 +26,8 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
 
     private static final String XGGG_NAME = "瓶装星光";
+
+    public static Class<? extends AbstractMonster> lastMonster = null;
 
 
     public BottledMonster() {
@@ -41,7 +46,10 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
 
     @Override
     public void onCtrlRightClick() {
-        dupeMonsters();
+        if(lastMonster != null && AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            MonsterSelectScreen.spawnMonster(lastMonster);
+        }
+
     }
 
     @Override
@@ -54,8 +62,7 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
         if(ar!=null && ar.monsters!= null) {
             ArrayList<AbstractMonster> monsterTemp = new ArrayList<>();
             for (AbstractMonster am: ar.monsters.monsters) {
-
-                AbstractMonster m = MonsterSelectScreen.spawnMonster(am.getClass(),am.drawX - MonsterSelectScreen.MonsterButton.calculateSmartDistance(am, am) + 30.0F * (float) Math.random(), am.drawY + 20.0F * (float) Math.random());
+                AbstractMonster m = MonsterSelectScreen.spawnMonster(am.getClass(),am.drawX - calculateSmartDistance(am, am) + 30.0F * (float) Math.random(), am.drawY + 20.0F * (float) Math.random());
                 m.flipHorizontal = am.flipHorizontal;
                 monsterTemp.add(m);
             }

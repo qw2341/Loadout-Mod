@@ -28,12 +28,14 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
+import loadout.relics.BottledMonster;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static loadout.screens.MonsterSelectScreen.MonsterButton.calculateSmartDistance;
 import static loadout.screens.PowerSelectScreen.dummyMonster;
 
 public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScreen.MonsterButton> {
@@ -225,6 +227,9 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             if(this.hb.clicked) {
                 this.hb.clicked = false;
                 if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+
+                    BottledMonster.lastMonster = this.mClass;
+
                     MonsterGroup mg = AbstractDungeon.getMonsters();
                     float monsterDX = Settings.WIDTH / 2.0F;
                     float monsterDY = AbstractDungeon.player.drawY;
@@ -621,7 +626,48 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
         return m;
     }
+    public static AbstractMonster spawnMonster(Class<? extends AbstractMonster> monsterClass) {
+        AbstractMonster m = MonsterButton.createMonster(monsterClass);
+        MonsterGroup mg = AbstractDungeon.getMonsters();
+        float monsterDX = Settings.WIDTH / 2.0F;
+        float monsterDY = AbstractDungeon.player.drawY;
+        AbstractMonster lastMonster = null;
 
+        if(!mg.monsters.isEmpty()) {
+            lastMonster = mg.monsters.get(mg.monsters.size()-1);
+            monsterDX = lastMonster.drawX ;
+            monsterDY = lastMonster.drawY;
+        }
+        m.drawX = monsterDX - (lastMonster != null ? calculateSmartDistance(lastMonster,m) : 200.0F) * Settings.scale;
+        m.drawY = monsterDY;
 
+        m.hb.move(m.drawX,m.drawY);
 
+        m.init();
+        m.applyPowers();
+
+        if (ModHelper.isModEnabled("Lethality")) {
+            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new StrengthPower((AbstractCreature)m, 3), 3));
+        }
+
+        if (ModHelper.isModEnabled("Time Dilation")) {
+            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new SlowPower((AbstractCreature)m, 0)));
+        }
+        m.showHealthBar();
+        m.createIntent();
+        if(m.type == AbstractMonster.EnemyType.BOSS && !noBGMBossList.contains(m.id)) {
+
+            CardCrawlGame.music.silenceTempBgmInstantly();
+            CardCrawlGame.music.silenceBGMInstantly();
+        }
+        m.usePreBattleAction();
+
+        for (AbstractRelic r : AbstractDungeon.player.relics) {
+            r.onSpawnMonster(m);
+        }
+
+        return m;
     }
+
+
+}
