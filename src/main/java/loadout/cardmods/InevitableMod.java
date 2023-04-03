@@ -21,7 +21,7 @@ public class InevitableMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return "#y"+CardViewPopupHeader.TEXT[20] + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return CardViewPopupHeader.TEXT[20] + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override

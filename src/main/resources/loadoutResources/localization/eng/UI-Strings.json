@@ -90,7 +90,7 @@
 			" NL If Fatal, permanently increase this card's magic number by !loadout:Misc!",
 			"Lifesteal",
 			"Inevitable",
-			"Return a copy to your hand upon exhaustion. To deck for removal."
+			"Return a copy to your hand upon exhaustion. To deck upon removal."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

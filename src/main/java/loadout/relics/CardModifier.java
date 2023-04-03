@@ -32,7 +32,7 @@ import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 import static loadout.relics.AbstractCustomScreenRelic.landingSfx;
 
-public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]>, OnRemoveCardFromMasterDeckRelic {
+public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]> {
 
     public static final String ID = LoadoutMod.makeID("CardModifier");
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("modifier_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("modifier_relic.png"));
@@ -179,10 +179,4 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
     }
 
 
-    @Override
-    public void onRemoveCardFromMasterDeck(AbstractCard abstractCard) {
-        if(CardModifierManager.hasModifier(abstractCard, InevitableMod.ID)) {
-            AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(abstractCard.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
-        }
-    }
 }
