@@ -285,7 +285,11 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         clickStartedItem = hoveredItem;
                         if (!isDeleteMode) {
                             if (screenRelics.contains(hoveredItem.relicId)) close();
-                            for (int i = 0; i < selectMult; i++) LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
+                            LoadoutBag.lastRelics.clear();
+                            for (int i = 0; i < selectMult; i++) {
+                                LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
+                                LoadoutBag.lastRelics.add(clickStartedItem.makeCopy());
+                            }
                         }
 
                     }

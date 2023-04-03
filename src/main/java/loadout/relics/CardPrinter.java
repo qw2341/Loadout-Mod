@@ -20,6 +20,8 @@ import loadout.LoadoutMod;
 import loadout.screens.GCardSelectScreen;
 import loadout.util.TextureLoader;
 
+import java.util.ArrayList;
+
 import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 import static loadout.relics.LoadoutBag.landingSfx;
@@ -31,6 +33,7 @@ public class CardPrinter extends AbstractCardScreenRelic {
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("printer_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("printer_relic.png"));
     private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("printer_relic_xggg.png"));
 
+    public static final ArrayList<AbstractCard> lastCards = new ArrayList<>();
 
     public CardPrinter() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.OBTAIN);
@@ -52,11 +55,13 @@ public class CardPrinter extends AbstractCardScreenRelic {
         int count = selectScreen.selectedCards.size();
         if (count > 0) {
             float min = -15.0F * count;
+            lastCards.clear();
             for (int i = 0; i < count; i++) {
                 AbstractCard card = selectScreen.selectedCards.get(i);
                 if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)
                     AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
                 AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+                lastCards.add(card.makeStatEquivalentCopy());
             }
             this.flash();
         }
@@ -72,5 +77,12 @@ public class CardPrinter extends AbstractCardScreenRelic {
     @Override
     public AbstractRelic makeCopy() {
         return new CardPrinter();
+    }
+
+    @Override
+    public void onCtrlRightClick() {
+        if(!lastCards.isEmpty()) {
+            lastCards.forEach(this::obtainCard);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package loadout.relics;
 
 import basemod.abstracts.CustomRelic;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +13,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import loadout.helper.LoadoutRelicHelper;
 import loadout.patches.RelicPopUpPatch;
@@ -35,9 +37,12 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
 
     public GCardSelectScreen.CardDisplayMode displayMode;
 
+    protected final InputAction ctrlKey;
+
     public AbstractCardScreenRelic(String id, Texture texture, Texture outline, RelicTier tier, LandingSound sfx, GCardSelectScreen.CardDisplayMode displayMode) {
         super(id, texture, outline, tier, sfx);
         this.displayMode = displayMode;
+        this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
         if(isIsaacMode) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(id+"Alt");
@@ -103,6 +108,8 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
         return false;
     }
 
+    public void onCtrlRightClick() {}
+
     @Override
     public void onRightClick() {
         if (!isObtained|| AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SETTINGS) {
@@ -122,6 +129,11 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
                 setIsSelectionScreenUp(false);
                 selectScreen.close();
             }
+            return;
+        }
+
+        if(this.ctrlKey.isPressed()) {
+            onCtrlRightClick();
             return;
         }
 

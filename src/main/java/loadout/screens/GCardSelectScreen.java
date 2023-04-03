@@ -314,7 +314,11 @@ public class GCardSelectScreen
                         switch (currentMode) {
 
                             case OBTAIN:
-                                for (int i=0; i<selectMult; i++) ((CardPrinter)caller).obtainCard(this.hoveredCard);
+                                CardPrinter.lastCards.clear();
+                                for (int i=0; i<selectMult; i++) {
+                                    ((CardPrinter)caller).obtainCard(this.hoveredCard);
+                                    CardPrinter.lastCards.add(this.hoveredCard.makeStatEquivalentCopy());
+                                }
                                 break;
                             case DELETE:
                                 ((CardShredder)caller).removeCard(this.hoveredCard);

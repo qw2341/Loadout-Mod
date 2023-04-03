@@ -24,6 +24,7 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
     public static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("loadout_relic.png"));
     public static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic.png"));
 
+    public static final ArrayList<AbstractRelic> lastRelics = new ArrayList<>();
     public LoadoutBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
     }
@@ -37,9 +38,11 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
     @Override
     protected void doneSelectionLogics() {
         ArrayList<AbstractRelic> relics = selectScreen.getSelectedItems();
+        lastRelics.clear();
         for (AbstractRelic r : relics) {
             for(int i = 0; i< relicObtainMultiplier; i++) {
                 relicsToAdd.add(r.makeCopy());
+                lastRelics.add(r.makeCopy());
                 r.playLandingSFX();
                 this.flash();
             }
@@ -52,4 +55,10 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
         return new LoadoutBag();
     }
 
+    @Override
+    public void onCtrlRightClick() {
+        if(!lastRelics.isEmpty()) {
+            lastRelics.forEach(r -> relicsToAdd.add(r.makeCopy()));
+        }
+    }
 }
