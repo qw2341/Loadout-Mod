@@ -2,9 +2,11 @@ package loadout.relics;
 
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
+import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
+import com.evacipated.cardcrawl.mod.stslib.relics.OnRemoveCardFromMasterDeckRelic;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -15,8 +17,10 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.vfx.UpgradeShineEffect;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 import loadout.LoadoutMod;
+import loadout.cardmods.InevitableMod;
 import loadout.patches.AbstractCardPatch;
 import loadout.savables.CardModifications;
 import loadout.screens.GCardSelectScreen;
@@ -28,7 +32,7 @@ import static loadout.LoadoutMod.*;
 import static loadout.relics.LoadoutBag.isIsaacMode;
 import static loadout.relics.AbstractCustomScreenRelic.landingSfx;
 
-public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]>{
+public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]>, OnRemoveCardFromMasterDeckRelic {
 
     public static final String ID = LoadoutMod.makeID("CardModifier");
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("modifier_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("modifier_relic.png"));
@@ -171,6 +175,14 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
             } catch (Exception e) {
                 LoadoutMod.logger.info("Failed to modify: " + c.cardID + " when obtaining");
             }
+        }
+    }
+
+
+    @Override
+    public void onRemoveCardFromMasterDeck(AbstractCard abstractCard) {
+        if(CardModifierManager.hasModifier(abstractCard, InevitableMod.ID)) {
+            AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(abstractCard.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
         }
     }
 }

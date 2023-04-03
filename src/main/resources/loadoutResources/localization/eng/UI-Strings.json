@@ -88,7 +88,9 @@
 			"Increase Damage on Kill",
 			"Add Magic Number on Kill",
 			" NL If Fatal, permanently increase this card's magic number by !loadout:Misc!",
-			"Lifesteal"
+			"Lifesteal",
+			"Inevitable",
+			"Return a copy to your hand upon exhaustion. To deck for removal."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
