@@ -3,14 +3,14 @@
     "NAME": "Loadout Bag",
     "FLAVOR": "A bag out of nowhere... Was it the hubris?",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10."
+      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:LoadoutBagAlt": {
     "NAME": "Death Certificate",
     "FLAVOR": "spawn 5.100.628",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10."
+      "Right-click this relic to obtain any relic you want. Ctrl x5, Shift x10. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:TheBin": {
@@ -30,21 +30,21 @@
   "NAME": "The Cauldron",
   "FLAVOR": "Pinch of Death Cap, heel of shoe.",
   "DESCRIPTIONS": [
-    "Right-click this relic to obtain any potion you want."
+    "Right-click this relic to obtain any potion you want. Ctrl + right click to repeat the last action."
   ]
 },
   "loadout:LoadoutCauldronAlt": {
     "NAME": "Mom's Bottle of Pills",
     "FLAVOR": "TEARS DOWN",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any potion you want."
+      "Right-click this relic to obtain any potion you want. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:CardPrinter": {
     "NAME": "Card Printer",
     "FLAVOR": "Printer go brrrrr",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any card you want; use during combat will also add it to your hand.",
+      "Right-click this relic to obtain any card you want; use during combat will also add it to your hand. Ctrl + right click to repeat the last action.",
       "Obtain any cards. Hold Shift for x10, Ctrl for x5."
     ]
   },
@@ -68,7 +68,7 @@
     "NAME": "Deck of Cards",
     "FLAVOR": "It's in the Cards",
     "DESCRIPTIONS": [
-      "Right-click this relic to obtain any card you want; use during combat will also add it to your hand.",
+      "Right-click this relic to obtain any card you want; use during combat will also add it to your hand. Ctrl + right click to repeat the last action.",
       "Obtain any cards."
     ]
   },
@@ -92,28 +92,28 @@
     "NAME": "Eventful Compass",
     "FLAVOR": "It always points to somewhere interesting",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the event you want."
+      "Right-click this relic to select the event you want. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:EventfulCompassAlt": {
     "NAME": "The Compass",
     "FLAVOR": "The end is near",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the event you want."
+      "Right-click this relic to select the event you want. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:PowerGiver": {
     "NAME": "Potion of Powers",
     "FLAVOR": "A powerful draught",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite"
+      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:PowerGiverAlt": {
     "NAME": "Lemegeton",
     "FLAVOR": "Grants you power... but at what cost?",
     "DESCRIPTIONS": [
-      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite"
+      "Right-click this relic to select the power for you/monsters at the start/middle of combat. Left-click to increase, right-click to decrease. Ctrl x5, Shift x10. Alt + left-click to favorite. Ctrl + right click to repeat the last action."
     ]
   },
   "loadout:TildeKey": {
@@ -134,14 +134,14 @@
     "NAME": "Bottled Monster",
     "FLAVOR": "Kakaa!",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want. Ctrl + right click to duplicate all monsters."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon."
     ]
   },
   "loadout:BottledMonsterAlt": {
     "NAME": "Friendly Ball",
     "FLAVOR": "Gotta fetch 'em all! Wait... it is not user-friendly",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want. Ctrl + right click to duplicate all monsters."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon."
     ]
   },"loadout:OrbBox": {
   "NAME": "Box of Orbs",

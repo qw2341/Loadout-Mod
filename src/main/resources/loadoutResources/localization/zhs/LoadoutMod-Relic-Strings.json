@@ -3,14 +3,14 @@
     "NAME": "装备箱",
     "FLAVOR": "选什么呢？当然是衣架了",
     "DESCRIPTIONS": [
-      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。"
+      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:LoadoutBagAlt":{
     "NAME": "死亡证明",
     "FLAVOR": "选什么呢？当然是鸭架了",
     "DESCRIPTIONS": [
-      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。"
+      "右键此遗物来获取任何你想要的遗物。左键获取。Ctrl x5，Shift x10。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:TheBin": {
@@ -30,21 +30,21 @@
   "NAME": "炼药大锅",
   "FLAVOR": "加一点毒蘑菇，再加一个旧鞋跟。",
   "DESCRIPTIONS": [
-    "右键此遗物来获取任何你想要的药水。"
+    "右键此遗物来获取任何你想要的药水。Ctrl + 右键来重复上一次操作。"
   ]
 },
   "loadout:LoadoutCauldronAlt": {
     "NAME": "妈妈的药瓶",
     "FLAVOR": "并没有真的药丸。",
     "DESCRIPTIONS": [
-      "右键此遗物来获取任何你想要的药水。"
+      "右键此遗物来获取任何你想要的药水。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:CardPrinter": {
     "NAME": "印卡机",
     "FLAVOR": "可能很卡",
     "DESCRIPTIONS": [
-      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。",
+      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。Ctrl + 右键来重复上一次操作。",
       "获取任何卡牌。左键获取。Ctrl x5，Shift x10。"
     ]
   },
@@ -68,7 +68,7 @@
     "NAME": "卡牌盒",
     "FLAVOR": "尽在卡牌中",
     "DESCRIPTIONS": [
-      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。按住Shift为x10张，Ctrl为x5张",
+      "右键此遗物来添加卡牌进入牌组；战斗中使用也会同时添加进手牌。按住Shift为x10张，Ctrl为x5张。Ctrl + 右键来重复上一次操作。",
       "获取任何卡牌。左键获取。Ctrl x5，Shift x10。"
     ]
   },
@@ -92,28 +92,28 @@
     "NAME": "事件指南针",
     "FLAVOR": "总是指向一些有趣的地方",
     "DESCRIPTIONS": [
-      "右键此遗物来选择你想去的事件。"
+      "右键此遗物来选择你想去的事件。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:EventfulCompassAlt": {
     "NAME": "指南针",
     "FLAVOR": "并不能带你去超级隐藏房",
     "DESCRIPTIONS": [
-      "右键此遗物来选择你想去的事件。"
+      "右键此遗物来选择你想去的事件。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:PowerGiver": {
     "NAME": "能力药水",
     "FLAVOR": "大力出奇迹",
     "DESCRIPTIONS": [
-      "右键此遗物来选择你或怪物在战斗开始时/中获得的能力。 左键增加，右键减少。Ctrl x5, Shift x10。 Alt+左键收藏"
+      "右键此遗物来选择你或怪物在战斗开始时/中获得的能力。 左键增加，右键减少。Ctrl x5, Shift x10。 Alt+左键收藏。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:PowerGiverAlt": {
     "NAME": "所罗门魔典",
     "FLAVOR": "给予你力量... 但是代价是什么呢?",
     "DESCRIPTIONS": [
-      "右键此遗物来选择你或怪物在战斗开始时/中获得的能力。 左键增加，右键减少。Ctrl x5, Shift x10。 Alt+左键收藏"
+      "右键此遗物来选择你或怪物在战斗开始时/中获得的能力。 左键增加，右键减少。Ctrl x5, Shift x10。 Alt+左键收藏。Ctrl + 右键来重复上一次操作。"
     ]
   },
   "loadout:TildeKey": {
@@ -134,14 +134,14 @@
     "NAME": "瓶装怪物",
     "FLAVOR": "Kakaa!",
     "DESCRIPTIONS": [
-      "右键此遗物来生成任意怪物。Ctrl + 右键来复制所有怪物。"
+      "右键此遗物来生成任意怪物。Ctrl + 右键来重复生成上一个。"
     ]
   },
   "loadout:BottledMonsterAlt": {
     "NAME": "友好球",
     "FLAVOR": "收服所有怪物吧！等等...这并不对用户友好",
     "DESCRIPTIONS": [
-      "右键此遗物来生成任意怪物。Ctrl + 右键来复制所有怪物。"
+      "右键此遗物来生成任意怪物。Ctrl + 右键来重复生成上一个。"
     ]
   },"loadout:OrbBox": {
   "NAME": "球盒",
