@@ -1,6 +1,7 @@
 package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
@@ -19,6 +20,8 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
     public static final String ID = LoadoutMod.makeID("LoadoutCauldron");
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("cauldron_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("cauldron_relic.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("cauldron_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("cauldron_relic.png"));
+
+    public static AbstractPotion lastPotion = null;
 
     public LoadoutCauldron() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -40,4 +43,11 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
         return new LoadoutCauldron();
     }
 
+    @Override
+    public void onCtrlRightClick() {
+        if (lastPotion != null) {
+            AbstractDungeon.player.obtainPotion(lastPotion.makeCopy());
+            this.flash();
+        }
+    }
 }

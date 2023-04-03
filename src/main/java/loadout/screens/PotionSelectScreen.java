@@ -162,6 +162,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                 if (hoveredItem == clickStartedItem)
                 {
                     AbstractDungeon.player.obtainPotion(hoveredItem.makeCopy());
+                    LoadoutCauldron.lastPotion = hoveredItem.makeCopy();
                     AbstractPotion.playPotionSound();
                     this.owner.flash();
                     clickStartedItem = null;
