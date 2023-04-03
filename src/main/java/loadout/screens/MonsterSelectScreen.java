@@ -666,6 +666,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             r.onSpawnMonster(m);
         }
 
+        mg.monsters.add(m);
         return m;
     }
 
