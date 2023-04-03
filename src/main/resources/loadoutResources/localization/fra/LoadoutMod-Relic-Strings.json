@@ -186,6 +186,13 @@
     "DESCRIPTIONS": [
       "Cliquez avec le bouton droit de la souris sur cette relique pour obtenir des mildiou. Faites un clic gauche pour obtenir, faites un clic droit pour supprimer. Ctrl x5, Maj x10."
     ]
+  },
+  "loadout:AllInOneBagUp": {
+    "NAME": "Sac Ultime",
+    "FLAVOR": "Nous sommes maintenant dans la phase finale.",
+    "DESCRIPTIONS": [
+      "Faites un clic droit sur cette relique pour gagner la partie."
+    ]
   }
 
 

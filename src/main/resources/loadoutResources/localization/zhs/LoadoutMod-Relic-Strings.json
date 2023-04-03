@@ -180,6 +180,12 @@
   "DESCRIPTIONS": [
     "右键获得任何你想要的荒疫。左键获取，右键移除。Ctrl x5，Shift x10。"
   ]
+},"loadout:AllInOneBagUp": {
+  "NAME": "终极装备箱",
+  "FLAVOR": "这把算我赢。",
+  "DESCRIPTIONS": [
+    "右键此遗物来获取胜利。"
+  ]
 }
 
 }

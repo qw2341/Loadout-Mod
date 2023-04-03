@@ -8,5 +8,6 @@
   "sts_version": "${SlayTheSpire.version}",
   "mts_version": "${ModTheSpire.version}",
   "dependencies": ["basemod", "stslib"],
-  "update_json": ""
+  "update_json": "",
+  "optional_dependencies": ["RelicUpgradeLib"]
 }

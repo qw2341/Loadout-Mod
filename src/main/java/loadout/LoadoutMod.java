@@ -55,6 +55,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
 import org.clapper.util.classutil.*;
+import relicupgradelib.arch.Proxy;
+import relicupgradelib.arch.ProxyManager;
+import relicupgradelib.arch.UpgradeBranch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +69,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 
 import static basemod.BaseMod.addKeyword;
 import static basemod.BaseMod.gson;
@@ -1059,6 +1063,12 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
+
+        if(Loader.isModLoaded("RelicUpgradeLib")) {
+            Proxy p = new Proxy(new AllInOneBag());
+            p.addBranch(new UpgradeBranch(new AllInOneBagUp(), true, true, true));
+            ProxyManager.register(p);
+        }
         logger.info("Done adding relics!");
     }
     
@@ -1477,9 +1487,11 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         if (Loader.isModLoaded("RelicUpgradeLib")) {
             try {
-                Class proxyManager = Class.forName("relicupgradelib.arch.ProxyManager");
-                HashMap<String, AbstractRelic> ur = (HashMap<String, AbstractRelic>) proxyManager.getDeclaredField("upgradeRelics").get(null);
-                relics.addAll(ur.values());
+                HashMap<String, AbstractRelic> ur = ProxyManager.upgradeRelics;
+                for (AbstractRelic r : ur.values()) {
+                    if(!r.relicId.equals(AllInOneBagUp.ID))
+                        relics.add(r);
+                }
             } catch (Exception e) {
                 logger.info("Failed to load relicUpgradeLib!");
             }

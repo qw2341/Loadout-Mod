@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>0.8.6</version>
+    <version>0.8.7</version>
     <description>Adds relics that gives you stuffs.</description>
 
     <properties>
@@ -61,14 +61,15 @@
             <systemPath>${Steam.path}/workshop/content/646570/1609158507/StSLib.jar</systemPath>
             <!--<systemPath>${basedir}/../lib/StSLib.jar</systemPath>-->
         </dependency>
-        <!--
+
         <dependency>
-            <groupId>pinyin4j</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.0</version>
+            <groupId>relicupgradelib</groupId>
+            <artifactId>RelicUpgradeLib</artifactId>
+            <version>1.0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/java/loadout/lib/pinyin4j.jar</systemPath>
-        </dependency>-->
+            <systemPath>${Steam.path}/workshop/content/646570/2769174299/RelicUpgradeLib.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 

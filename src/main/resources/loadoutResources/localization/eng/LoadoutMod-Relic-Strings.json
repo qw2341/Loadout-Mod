@@ -181,6 +181,12 @@
   "DESCRIPTIONS": [
     "Right-click this relic to obtain any blights. Left-click to obtain, right-click to remove. Ctrl x5, Shift x10."
   ]
+},"loadout:AllInOneBagUp": {
+  "NAME": "Ultimate Bag",
+  "FLAVOR": "We are in the end game now.",
+  "DESCRIPTIONS": [
+    "Right-click this relic to win the game."
+  ]
 }
 
 
