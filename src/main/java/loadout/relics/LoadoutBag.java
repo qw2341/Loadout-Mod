@@ -61,6 +61,7 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
     @Override
     public void onCtrlRightClick() {
         if(!lastRelics.isEmpty()) {
+            flash();
             lastRelics.forEach(r -> relicsToAdd.add(r.makeCopy()));
         }
     }

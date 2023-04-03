@@ -89,6 +89,7 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
     @Override
     public void onCtrlRightClick() {
         if(lastEvent != null) {
+            flash();
             if(selectScreen == null) {
                 selectScreen = getNewSelectScreen();
             }

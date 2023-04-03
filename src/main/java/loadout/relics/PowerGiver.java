@@ -236,6 +236,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
     @Override
     public void onCtrlRightClick() {
         if(!lastPowers.isEmpty()) {
+            flash();
             lastPowers.forEach(p -> p.execute(this));
         }
     }

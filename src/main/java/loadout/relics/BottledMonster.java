@@ -47,6 +47,7 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
     @Override
     public void onCtrlRightClick() {
         if(lastMonster != null && AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            flash();
             MonsterSelectScreen.spawnMonster(lastMonster);
         }
 
