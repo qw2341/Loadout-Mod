@@ -38,15 +38,18 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
     @Override
     protected void doneSelectionLogics() {
         ArrayList<AbstractRelic> relics = selectScreen.getSelectedItems();
-        lastRelics.clear();
-        for (AbstractRelic r : relics) {
-            for(int i = 0; i< relicObtainMultiplier; i++) {
-                relicsToAdd.add(r.makeCopy());
-                lastRelics.add(r.makeCopy());
-                r.playLandingSFX();
-                this.flash();
+        if(!relics.isEmpty()) {
+            lastRelics.clear();
+            for (AbstractRelic r : relics) {
+                for(int i = 0; i< relicObtainMultiplier; i++) {
+                    relicsToAdd.add(r.makeCopy());
+                    lastRelics.add(r.makeCopy());
+                    r.playLandingSFX();
+                    this.flash();
+                }
             }
         }
+
     }
 
     @Override
