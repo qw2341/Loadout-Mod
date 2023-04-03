@@ -47,7 +47,6 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
     public void onCtrlRightClick() {
         if (lastPotion != null) {
             AbstractDungeon.player.obtainPotion(lastPotion.makeCopy());
-            this.flash();
         }
     }
 }
