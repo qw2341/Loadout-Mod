@@ -67,24 +67,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static basemod.BaseMod.addKeyword;
 import static basemod.BaseMod.gson;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
-
-//TODO: DON'T MASS RENAME/REFACTOR
-//TODO: DON'T MASS RENAME/REFACTOR
-//TODO: DON'T MASS RENAME/REFACTOR
-//TODO: DON'T MASS RENAME/REFACTOR
-// Please don't just mass replace "theDefault" with "yourMod" everywhere.
-// It'll be a bigger pain for you. You only need to replace it in 4 places.
-// I comment those places below, under the place where you set your ID.
-
-//TODO: FIRST THINGS FIRST: RENAME YOUR PACKAGE AND ID NAMES FIRST-THING!!!
-// Right click the package (Open the project pane on the left. Folder with black dot on it. The name's at the very top) -> Refactor -> Rename, and name it whatever you wanna call your mod.
-// Scroll down in this file. Change the ID from "theDefault:" to "yourModName:" or whatever your heart desires (don't use spaces). Dw, you'll see it.
-// In the JSON strings (resources>localization>eng>[all them files] make sure they all go "yourModName:" rather than "theDefault", and change to "yourmodname" rather than "thedefault".
-// You can ctrl+R to replace in 1 file, or ctrl+shift+r to mass replace in specific files/directories, and press alt+c to make the replace case sensitive (Be careful.).
-// Start with the DefaultCommon cards - they are the most commented cards since I don't feel it's necessary to put identical comments on every card.
-// After you sorta get the hang of how to make cards, check out the card template which will make your life easier
 
 /*
  * With that out of the way:
