@@ -263,6 +263,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
     @Override
     protected void updateItemClickLogic() {
         if (hoveredItem != null && InputHelper.justClickedLeft) {
+            EventfulCompass.lastEvent = hoveredItem;
             executeEvent(hoveredItem);
         }
     }

@@ -26,6 +26,8 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("compass_relic.png"));
     private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("compass_relic.png"));
 
+    public static EventSelectScreen.EventButton lastEvent = null;
+
     public EventfulCompass() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK);
     }
@@ -81,6 +83,16 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
             AbstractDungeon.rs = AbstractDungeon.RenderScene.CAMPFIRE;
         } else {
             AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
+        }
+    }
+
+    @Override
+    public void onCtrlRightClick() {
+        if(lastEvent != null) {
+            if(selectScreen == null) {
+                selectScreen = getNewSelectScreen();
+            }
+            ((EventSelectScreen)selectScreen).executeEvent(lastEvent);
         }
     }
 }
