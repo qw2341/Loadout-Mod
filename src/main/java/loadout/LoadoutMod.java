@@ -1040,18 +1040,20 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         
         // This adds a relic to the Shared pool. Every character can find this relic.
-        BaseMod.addRelic(new LoadoutBag(), RelicType.SHARED);
-        BaseMod.addRelic(new TrashBin(), RelicType.SHARED);
-        BaseMod.addRelic(new LoadoutCauldron(), RelicType.SHARED);
-        BaseMod.addRelic(new CardPrinter(), RelicType.SHARED);
-        BaseMod.addRelic(new CardShredder(), RelicType.SHARED);
-        BaseMod.addRelic(new CardModifier(), RelicType.SHARED);
-        BaseMod.addRelic(new EventfulCompass(), RelicType.SHARED);
-        BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
-        BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
-        BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
-        BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
-        BaseMod.addRelic(new BlightChest(), RelicType.SHARED);
+        if(enableLegacyLayout){
+            BaseMod.addRelic(new LoadoutBag(), RelicType.SHARED);
+            BaseMod.addRelic(new TrashBin(), RelicType.SHARED);
+            BaseMod.addRelic(new LoadoutCauldron(), RelicType.SHARED);
+            BaseMod.addRelic(new CardPrinter(), RelicType.SHARED);
+            BaseMod.addRelic(new CardShredder(), RelicType.SHARED);
+            BaseMod.addRelic(new CardModifier(), RelicType.SHARED);
+            BaseMod.addRelic(new EventfulCompass(), RelicType.SHARED);
+            BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
+            BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
+            BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
+            BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
+            BaseMod.addRelic(new BlightChest(), RelicType.SHARED);
+        }
 
         BaseMod.addRelic(new AllInOneBag(), RelicType.SHARED);
         // Mark relics as seen - makes it visible in the compendium immediately
@@ -1126,20 +1128,20 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
         if(enableLegacyLayout) {
-            if(enableBagStarting&&RelicLibrary.isARelic(LoadoutBag.ID)&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) RelicLibrary.getRelic(LoadoutBag.ID).makeCopy().instantObtain();
-            if(enableBinStarting&&RelicLibrary.isARelic(TrashBin.ID)&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) RelicLibrary.getRelic(TrashBin.ID).makeCopy().instantObtain();
-            if(enableCauldronStarting&&RelicLibrary.isARelic("loadout:LoadoutCauldron")&&!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) RelicLibrary.getRelic("loadout:LoadoutCauldron").makeCopy().instantObtain();
-            if(enablePrinterStarting&&RelicLibrary.isARelic("loadout:CardPrinter")&&!AbstractDungeon.player.hasRelic(CardPrinter.ID)) RelicLibrary.getRelic("loadout:CardPrinter").makeCopy().instantObtain();
-            if(enableShredderStarting&&RelicLibrary.isARelic("loadout:CardShredder")&&!AbstractDungeon.player.hasRelic(CardShredder.ID)) RelicLibrary.getRelic("loadout:CardShredder").makeCopy().instantObtain();
-            if(enableModifierStarting&&RelicLibrary.isARelic("loadout:CardModifier")&&!AbstractDungeon.player.hasRelic(CardModifier.ID)) RelicLibrary.getRelic("loadout:CardModifier").makeCopy().instantObtain();
-            if(enableCompassStarting&&RelicLibrary.isARelic(EventfulCompass.ID)&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) RelicLibrary.getRelic(EventfulCompass.ID).makeCopy().instantObtain();
-            if(enablePowerStarting&&RelicLibrary.isARelic(PowerGiver.ID)&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) RelicLibrary.getRelic(PowerGiver.ID).makeCopy().instantObtain();
-            if(enableTildeStarting&&RelicLibrary.isARelic(TildeKey.ID)&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) RelicLibrary.getRelic(TildeKey.ID).makeCopy().instantObtain();
-            if(enableBottleStarting&&RelicLibrary.isARelic(BottledMonster.ID)&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) RelicLibrary.getRelic(BottledMonster.ID).makeCopy().instantObtain();
-            if(enableBallBoxStarting && RelicLibrary.isARelic(OrbBox.ID)&&!AbstractDungeon.player.hasRelic(OrbBox.ID)) RelicLibrary.getRelic(OrbBox.ID).makeCopy().instantObtain();
-            if(enableBChestStarting && RelicLibrary.isARelic(BlightChest.ID)&&!AbstractDungeon.player.hasRelic(BlightChest.ID)) RelicLibrary.getRelic(BlightChest.ID).makeCopy().instantObtain();
+            if(enableBagStarting&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) new LoadoutBag().instantObtain();
+            if(enableBinStarting&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) new TrashBin().instantObtain();
+            if(enableCauldronStarting&&!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) new LoadoutCauldron().instantObtain();
+            if(enablePrinterStarting&&!AbstractDungeon.player.hasRelic(CardPrinter.ID)) new CardPrinter().instantObtain();
+            if(enableShredderStarting&&!AbstractDungeon.player.hasRelic(CardShredder.ID)) new CardShredder().instantObtain();
+            if(enableModifierStarting&&!AbstractDungeon.player.hasRelic(CardModifier.ID)) new CardModifier().instantObtain();
+            if(enableCompassStarting&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) new EventfulCompass().instantObtain();
+            if(enablePowerStarting&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) new PowerGiver().instantObtain();
+            if(enableTildeStarting&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) new TildeKey().instantObtain();
+            if(enableBottleStarting&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) new BottledMonster().instantObtain();
+            if(enableBallBoxStarting &&!AbstractDungeon.player.hasRelic(OrbBox.ID)) new OrbBox().instantObtain();
+            if(enableBChestStarting &&!AbstractDungeon.player.hasRelic(BlightChest.ID)) new BlightChest().instantObtain();
         }
-        if(!enableLegacyLayout && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) RelicLibrary.getRelic(AllInOneBag.ID).makeCopy().instantObtain();
+        if(!enableLegacyLayout && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) new AllInOneBag().instantObtain();
 
         TildeKey.resetToDefault();
 
