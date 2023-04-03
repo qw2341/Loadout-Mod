@@ -9,14 +9,17 @@ import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.PowerSelectScreen;
 import loadout.util.TextureLoader;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -26,6 +29,36 @@ import static loadout.LoadoutMod.*;
  * TODO: Unfinished
  */
 public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.PowerButton> implements CustomSavable<HashMap<String,Integer>[]> {
+
+    public static class PowerAction {
+        public PowerTarget target;
+        public String id;
+        public int amount;
+        public PowerAction(PowerTarget target, String id, int amount) {
+            this.target = target;
+            this.id = id;
+            this.amount = amount;
+        }
+
+        public void execute(PowerGiver powerGiver) {
+            switch (target) {
+                case PLAYER:
+                    powerGiver.modifyAmountPlayer(id, amount);
+                    if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                        powerGiver.applyPowerToPlayer(id, amount);
+                    }
+                    break;
+                case MONSTER:
+                    powerGiver.modifyAmountMonster(id, amount);
+                    MonsterGroup monsterGroup = AbstractDungeon.getMonsters();
+                    if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && monsterGroup!=null) {
+                        for (AbstractMonster monster: monsterGroup.monsters)
+                            powerGiver.applyPowerToMonster(id, amount, monster);
+                    }
+                    break;
+            }
+        }
+    }
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("PowerGiver");
@@ -50,6 +83,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         buggedPowers.add(VulnerablePower.POWER_ID);
     }
 
+    public static final ArrayList<PowerAction> lastPowers = new ArrayList<>();
     public PowerGiver() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
         if (savedPowersPlayer == null) {
@@ -199,5 +233,10 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         });
     }
 
-
+    @Override
+    public void onCtrlRightClick() {
+        if(!lastPowers.isEmpty()) {
+            lastPowers.forEach(p -> p.execute(this));
+        }
+    }
 }

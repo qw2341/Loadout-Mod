@@ -248,7 +248,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     public PowerGiver.PowerTarget currentTarget = PowerGiver.PowerTarget.PLAYER;
 
-
+    private boolean firstSelection = true;
 
 
     public PowerSelectScreen(AbstractCustomScreenRelic<PowerButton> owner)
@@ -368,6 +368,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
         targetY = scrollLowerBound;
         scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
+        firstSelection = true;
     }
 
     private boolean isCombat() {
@@ -418,6 +419,11 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                             LoadoutMod.logger.info("Failed to save favorites");
                         }
                     } else {
+                        if(firstSelection) {
+                            firstSelection = false;
+                            PowerGiver.lastPowers.clear();
+                        }
+                        PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, selectMult));
                         clickStartedItem.amount += selectMult;
                         if(currentTarget == PowerGiver.PowerTarget.PLAYER)
                             ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, +selectMult);
@@ -459,6 +465,11 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                 CInputActionSet.select.unpress();
                 if (hoveredItem == clickStartedItem)
                 {
+                    if(firstSelection) {
+                        firstSelection = false;
+                        PowerGiver.lastPowers.clear();
+                    }
+                    PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, -selectMult));
                     clickStartedItem.amount -= selectMult;
                     if(currentTarget == PowerGiver.PowerTarget.PLAYER)
                         ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, -selectMult);
