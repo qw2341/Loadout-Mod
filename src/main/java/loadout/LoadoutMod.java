@@ -195,6 +195,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static ConcurrentHashMap<String, Class<? extends AbstractOrb>> orbMap = new ConcurrentHashMap<>();
     //public static Set<String> orbIDs = orbMap.keySet("");
     public static ConcurrentHashMap<String, Class<? extends AbstractMonster>> monsterMap = new ConcurrentHashMap<>();
+    public static HashMap<String, Class<? extends AbstractMonster>> baseGameMonsterMap = new HashMap<>();
     //public static Set<String> monsterIDS = monsterMap.keySet("");
 
     public static boolean isScreenUp = false;
@@ -1250,6 +1251,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             }
         }
         monsterMap.clear();
+        baseGameMonsterMap.clear();
 
         Settings.seed = 0L;
         AbstractDungeon.generateSeeds();
@@ -1284,7 +1286,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                     CtClass cls = clazzPool.get(classInfo.getClassName());
                     //logger.info("Class: " + classInfo.getClassName() + (isMonster ? " is Monster" : " is neither"));
                     Class<?extends AbstractMonster> monsterC = (Class<? extends AbstractMonster>) clazzLoader.loadClass(cls.getName());
-                    monsterMap.put(monsterC.getName(), monsterC);
+                    baseGameMonsterMap.put(monsterC.getName(), monsterC);
                 } catch (Exception e) {
                     logger.info("Failed to initialize for " + classInfo.getClassName());
                 }

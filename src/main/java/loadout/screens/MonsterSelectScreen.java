@@ -205,6 +205,8 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 //LoadoutMod.logger.info("just hovered, creating class");
                 try{
                     this.instance = createMonster(this.mClass);
+                    if(this.type != this.instance.type)
+                        this.type = this.instance.type;
                 } catch (Exception|Error e) {
                     LoadoutMod.logger.info("just hovered, failed to create class");
                 }
@@ -416,16 +418,25 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         if(this.itemsClone == null || this.itemsClone.isEmpty()) {
             this.itemsClone = new ArrayList<>();
 
+            for (Class<? extends AbstractMonster> monsterC : LoadoutMod.baseGameMonsterMap.values()) {
+                try {
+                    this.itemsClone.add(new MonsterSelectScreen.MonsterButton(monsterC, false));
+                } catch (Exception e) {
+                    LoadoutMod.logger.info("Error creating button for " + monsterC.getName());
+                } catch (NoClassDefFoundError noClassError) {
+                    LoadoutMod.logger.warn("ERROR THROWN! NO CLASS DEF FOUND FOR " + monsterC.getName());
+                }
+
+            }
+
             for (Class<? extends AbstractMonster> monsterC : LoadoutMod.monsterMap.values()) {
                 if(monsterC.getName().equals("isaacModExtend.monsters.SirenHelper") || monsterC.getName().equals("HalationCode.monsters.ElsaMaria") ) continue;
                 try {
                     this.itemsClone.add(new MonsterSelectScreen.MonsterButton(monsterC, true));
                 } catch (Exception e) {
                     LoadoutMod.logger.info("Error creating button for " + monsterC.getName());
-                    continue;
                 } catch (NoClassDefFoundError noClassError) {
-                    LoadoutMod.logger.info("ERROR THROWN! NO CLASS DEF FOUND FOR " + monsterC.getName());
-                    continue;
+                    LoadoutMod.logger.warn("ERROR THROWN! NO CLASS DEF FOUND FOR " + monsterC.getName());
                 }
 
             }
