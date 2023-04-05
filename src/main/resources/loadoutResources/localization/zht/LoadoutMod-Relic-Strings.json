@@ -134,14 +134,14 @@
     "NAME": "瓶裝怪物",
     "FLAVOR": "Kakaa!",
     "DESCRIPTIONS": [
-      "右鍵此遺物來生成任意怪物。Ctrl + 右鍵來重複上一次操作。"
+      "右鍵此遺物來生成任意怪物。Ctrl + 右鍵來重複上一次操作。如沒有則複制房間怪物。"
     ]
   },
   "loadout:BottledMonsterAlt": {
     "NAME": "友好球",
     "FLAVOR": "收服所有怪物吧！等等...這並不對用戶友好",
     "DESCRIPTIONS": [
-      "右键此遗物来生成任意怪物。Ctrl + 右鍵來重複上一次操作。"
+      "右键此遗物来生成任意怪物。Ctrl + 右鍵來重複上一次操作。如沒有則複制房間怪物。"
     ]
   },"loadout:OrbBox": {
   "NAME": "球盒",

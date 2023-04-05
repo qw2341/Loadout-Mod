@@ -134,14 +134,14 @@
     "NAME": "Bottled Monster",
     "FLAVOR": "Kakaa!",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon. If none, dupe monsters instead."
     ]
   },
   "loadout:BottledMonsterAlt": {
     "NAME": "Friendly Ball",
     "FLAVOR": "Gotta fetch 'em all! Wait... it is not user-friendly",
     "DESCRIPTIONS": [
-      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon."
+      "Right-click this relic to spawn any monster you want. Ctrl + right click to resummon the last summon. If none, dupe monsters instead."
     ]
   },"loadout:OrbBox": {
   "NAME": "Box of Orbs",

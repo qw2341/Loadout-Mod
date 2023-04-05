@@ -135,14 +135,14 @@
     "NAME": "Monstre en Bouteille",
     "FLAVOR": "Cacao!",
     "DESCRIPTIONS": [
-      "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez. Ctrl + clic droit pour répéter la dernière action."
+      "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez. Ctrl + clic droit pour répéter la dernière action. Si aucun, dupez les monstres à la place."
     ]
   },
   "loadout:BottledMonsterAlt": {
   "NAME": "Bal amical",
   "FLAVOR": "Je vais tous les chercher! Attendre... ce n’est pas convivial",
     "DESCRIPTIONS": [
-      "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez. Ctrl + clic droit pour répéter la dernière action."
+      "Faites un clic droit sur cette relique pour engendrer n’importe quel monstre que vous voulez. Ctrl + clic droit pour répéter la dernière action. Si aucun, dupez les monstres à la place."
     ]
   },
   "loadout:OrbBox": {
