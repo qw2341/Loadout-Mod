@@ -1,6 +1,7 @@
 package loadout.screens;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.DynamicVariable;
 import basemod.helpers.TooltipInfo;
@@ -1226,27 +1227,20 @@ public class SCardViewPopup {
     }
 
     public static float myRenderDynamicVariable(SCardViewPopup sCardViewPopup, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
+        return subRenderDynamicVariable(sCardViewPopup, "", "" + ckey, cend == null ? "" : "" + cend, start_x, draw_y, i, font, sb);
+    }
 
-        AbstractCard card = sCardViewPopup.card;
-        float current_x = sCardViewPopup.current_x;
-        float current_y = sCardViewPopup.current_y;
-
-        String end = "";
-        Pattern pattern = Pattern.compile("!(.+)!(.*) ");
-        Matcher matcher = pattern.matcher(key);
-        if (matcher.find()) {
-            key = matcher.group(1);
-            end = matcher.group(2);
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
+    public static float subRenderDynamicVariable(SCardViewPopup sCardViewPopup, String pre, String key, String end, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb) {
+        AbstractCard card = (AbstractCard) ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "card");
+        float current_x = (Float)ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "current_x");
+        float current_y = (Float)ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "current_y");
         Color c = Settings.CREAM_COLOR;
         int num = 0;
         DynamicVariable dv = (DynamicVariable)BaseMod.cardDynamicVariableMap.get(key);
         if (dv != null) {
-            num = dv.baseValue(card);
+            num = dv.modifiedBaseValue(card);
             if (dv.upgraded(card)) {
-                c = dv.getUpgradedColor();
+                c = dv.getUpgradedColor(card);
             } else {
                 c = dv.getNormalColor();
             }
@@ -1254,25 +1248,26 @@ public class SCardViewPopup {
             LoadoutMod.logger.error("No dynamic card variable found for key \"" + key + "\"!");
         }
 
-        if (dv instanceof BlockVariable) {
-            if ((!card.isBlockModified || card.upgradedBlock) && (Boolean) CardModifierPatches.CardModifierFields.cardModHasBaseBlock.get(card)) {
-                num = (Integer) CardModifierPatches.CardModifierFields.cardModBaseBlock.get(card);
-            }
-        } else if (dv instanceof DamageVariable && (!card.isDamageModified || card.upgradedDamage) && (Boolean) CardModifierPatches.CardModifierFields.cardModHasBaseDamage.get(card)) {
-            num = (Integer) CardModifierPatches.CardModifierFields.cardModBaseDamage.get(card);
+        float totalWidth = 0.0F;
+        String variableValue = Integer.toString(num);
+        if (!pre.isEmpty()) {
+            gl.setText(font, pre);
+            FontHelper.renderRotatedText(sb, font, pre, current_x, current_y, start_x - current_x + gl.width / 2.0F, (float)i * 1.53F * -font.getCapHeight() + draw_y - current_y + -12.0F, 0.0F, true, Settings.CREAM_COLOR);
+            totalWidth += gl.width;
+            start_x += gl.width;
         }
 
-        stringBuilder.append(num);
-        gl.setText(font, stringBuilder.toString());
-        FontHelper.renderRotatedText(sb, font, stringBuilder.toString(), current_x, current_y, start_x - current_x + gl.width / 2.0F, (float)i * 1.53F * -font.getCapHeight() + draw_y - current_y + -12.0F, 0.0F, true, c);
-        if (end != null) {
-            FontHelper.renderRotatedText(sb, font, end, current_x, current_y, start_x - current_x + gl.width + 10.0F * Settings.scale, (float)i * 1.53F * -font.getCapHeight() + draw_y - current_y + -12.0F, 0.0F, true, Settings.CREAM_COLOR);
-            stringBuilder.append(end);
+        gl.setText(font, variableValue);
+        FontHelper.renderRotatedText(sb, font, variableValue, current_x, current_y, start_x - current_x + gl.width / 2.0F, (float)i * 1.53F * -font.getCapHeight() + draw_y - current_y + -12.0F, 0.0F, true, c);
+        totalWidth += gl.width;
+        start_x += gl.width;
+        if (!end.isEmpty()) {
+            gl.setText(font, end);
+            FontHelper.renderRotatedText(sb, font, end, current_x, current_y, start_x - current_x + gl.width / 2.0F, (float)i * 1.53F * -font.getCapHeight() + draw_y - current_y + -12.0F, 0.0F, true, Settings.CREAM_COLOR);
+            totalWidth += gl.width;
         }
 
-        stringBuilder.append(' ');
-        gl.setText(font, stringBuilder.toString());
-        return gl.width;
+        return totalWidth;
     }
 
     private static Map<Class<? extends CustomCard>, BitmapFont> titleFontMap = new HashMap<>();
