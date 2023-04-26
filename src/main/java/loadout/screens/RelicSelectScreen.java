@@ -84,6 +84,8 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         screenRelics.add(DollysMirror.ID);
     }
 
+    boolean isFirstTime = true;
+
     public ArrayList<AbstractRelic> getSelectedRelics()
     {
         ArrayList<AbstractRelic> ret = new ArrayList<>(selectedItems);
@@ -602,7 +604,17 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                     if (isRelicLocked) {
                         r.renderLock(sb, outlineColor);
                     } else {
-                        r.render(sb, false, outlineColor);
+                        try {
+                            r.render(sb, false, outlineColor);
+                        } catch (NullPointerException npe) {
+                            if(isFirstTime) {
+                                LoadoutMod.logger.warn("Exception occurred while trying to render relic: " + r.relicId);
+                                npe.printStackTrace();
+                                isFirstTime = false;
+                            }
+
+                        }
+
                     }
                 }
             }
