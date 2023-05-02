@@ -130,7 +130,8 @@
 			"Max Energy",
 			"Enemy Damage Mult %",
 			"Hand Size",
-			"Draw Per Turn"
+			"Draw Per Turn",
+			"Player Damage Mult %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

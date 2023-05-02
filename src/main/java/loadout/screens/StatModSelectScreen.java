@@ -419,6 +419,23 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
+        this.items.add(new StatModButton(TEXT[8], false, ImageMaster.INTENT_ATK_7, GOLD_NUM_OFFSET_X, Color.SCARLET, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return TildeKey.playerAttackMult;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                TildeKey.playerAttackMult = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }));
+
         this.items.add(new StatModButton(TEXT[6], false, ImageMaster.DECK_BTN_BASE, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
             @Override
             public int getAmount() {

@@ -471,4 +471,9 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public static void XGGGSay(String msg) {
         if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).xgggSay(msg);
     }
+
+    @Override
+    public float atDamageModify(float damage, AbstractCard c) {
+        return tildeKey.atDamageModify(damage, c);
+    }
 }

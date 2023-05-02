@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.utility.SFXAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -125,6 +126,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     private final InputAction gKey;
     private final InputAction kKey;
+
+    public static int playerAttackMult = 100;
+    private static final String playerAttackMultKey = "playerAttackMult";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -250,6 +254,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         isDrawPerTurnLocked = false;
         drawPerTurn = 5;
+
+        playerAttackMult = 100;
     }
 
     public static void killAllMonsters() {
@@ -427,6 +433,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         drawPerTurn = AbstractDungeon.player.masterHandSize;
         sav.put(drawPerTurnKey, String.valueOf(drawPerTurn));
+
+        sav.put(playerAttackMultKey, String.valueOf(playerAttackMult));
         return sav;
     }
 
@@ -476,6 +484,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             int diff = AbstractDungeon.player.gameHandSize - AbstractDungeon.player.masterHandSize;
             AbstractDungeon.player.masterHandSize = drawPerTurn;
             AbstractDungeon.player.gameHandSize = drawPerTurn + diff;
+
+            playerAttackMult = Integer.parseInt(sav.get(playerAttackMultKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
@@ -530,7 +540,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     }
 
-
-
-
+    @Override
+    public float atDamageModify(float damage, AbstractCard c) {
+        return damage * (playerAttackMult / 100.0f);
+    }
 }

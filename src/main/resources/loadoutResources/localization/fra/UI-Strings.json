@@ -129,7 +129,8 @@
 			"Énergie maximale",
 			"Multiplicateur de dégâts ennemis %",
 			"Taille de la main",
-			"Tirage Au Sort Par Tour"
+			"Tirage Au Sort Par Tour",
+			"Dégâts du joueur Multi %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

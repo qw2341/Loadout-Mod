@@ -37,7 +37,7 @@
 		"TEXT": [
 			"Clase",
 			"Rareza",
-			"ARIZONA",
+			"A-Z",
 			"Modificación",
 			"Llave de rubí",
 			"Llave verde",
@@ -53,7 +53,7 @@
 		"TEXT": [
 			"Clase",
 			"Rareza",
-			"ARIZONA",
+			"A-Z",
 			"Modificación",
 			"Ranura para la poción"
 		]
@@ -95,7 +95,7 @@
 	},
 	"loadout:PowerSelectSortHeader": {
 		"TEXT": [
-			"ARIZONA",
+			"A-Z",
 			"Modificación",
 			"Restablecer cantidades",
 			"Clear De/Buffs",
@@ -130,7 +130,8 @@
 			"Energía máxima",
 			"Daño enemigo Mult %",
 			"Tamaño de la mano",
-			"Empate por turno"
+			"Empate por turno",
+			"%de Daño múltiple del jugador"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {
