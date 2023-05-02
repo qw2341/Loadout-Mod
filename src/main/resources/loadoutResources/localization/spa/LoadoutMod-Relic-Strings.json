@@ -1,0 +1,197 @@
+{
+	"loadout:LoadoutBag": {
+		"NAME": "Bolsa de Carga",
+		"FLAVOR": "Una bolsa de la nada ... ¿era la arrogancia?",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier reliquia que desee. CTRL x5, Shift x10. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:LoadoutBagAlt": {
+		"NAME": "Acta de Defunción",
+		"FLAVOR": "Sobre 5.100.628",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier reliquia que desee. CTRL x5, Shift x10. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:TheBin": {
+		"NAME": "Deposito",
+		"FLAVOR": "Recicla todo tipo de cosas.",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para borrar cualquier reliquia que desee."
+		]
+	},
+	"loadout:TheBinAlt": {
+		"NAME": "El Vacío",
+		"FLAVOR": "Apesta.",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para anular cualquier reliquia que desee."
+		]
+	},
+	"loadout:LoadoutCauldron": {
+		"NAME": "El Caldero",
+		"FLAVOR": "Pizca de tapa de muerte, talón de zapato.",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier poción que desee. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:LoadoutCauldronAlt": {
+		"NAME": "La Botella de Pastillas de Mamá",
+		"FLAVOR": "DERRIBA",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier poción que desee. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:CardPrinter": {
+		"NAME": "Impresora de la Tarjeta",
+		"FLAVOR": "Impresora Go Brrrrr",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier tarjeta que desee; Uso durante el combate también lo agregará a su mano. CTRL + Haga clic derecho para repetir la última acción.",
+			"Obtener cualquier tarjetas. Mantenga el desplazamiento para X10, CTRL para X5."
+		]
+	},
+	"loadout:CardShredder": {
+		"NAME": "Trituradora de Tarjeta",
+		"FLAVOR": "Shredder Go Brrrr",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para borrar cualquier tarjeta que desee; El uso durante el combate también lo eliminará del combate.",
+			"Destruye cualquier carta."
+		]
+	},
+	"loadout:CardModifier": {
+		"NAME": "Modificador de la Tarjeta",
+		"FLAVOR": "Versa",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para modificar cualquier tarjeta que desee; Haga clic derecho en las tarjetas para modificarlas.",
+			"Actualice cualquier tarjetas. Haga clic derecho en una tarjeta para modificarla."
+		]
+	},
+	"loadout:CardPrinterAlt": {
+		"NAME": "Mazo de Cartas",
+		"FLAVOR": "Está en las cartas",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier tarjeta que desee; Uso durante el combate también lo agregará a su mano. CTRL + Haga clic derecho para repetir la última acción.",
+			"Obtener cualquier tarjetas."
+		]
+	},
+	"loadout:CardShredderAlt": {
+		"NAME": "Tarjeta Desgarrada",
+		"FLAVOR": "Ipecac + mi reflexión",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para borrar cualquier tarjeta que desee; El uso durante el combate también lo eliminará del combate.",
+			"Destruye cualquier carta."
+		]
+	},
+	"loadout:CardModifierAlt": {
+		"NAME": "Tarjeta en Blanco",
+		"FLAVOR": "Jera",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para modificar cualquier tarjeta que desee; Haga clic derecho en las tarjetas para modificarlas.",
+			"Actualice cualquier tarjetas. Haga clic derecho en una tarjeta para modificarla."
+		]
+	},
+	"loadout:EventfulCompass": {
+		"NAME": "Brújula llena de Acontecimientos",
+		"FLAVOR": "Siempre apunta a algún lugar interesante",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar el evento que desee. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:EventfulCompassAlt": {
+		"NAME": "La Brújula",
+		"FLAVOR": "El final está cerca",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar el evento que desee. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:PowerGiver": {
+		"NAME": "Poción de Poderes",
+		"FLAVOR": "Un potente borrador",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar la potencia para usted/monstruos al inicio/medio del combate. Haga clic izquierdo para aumentar, haga clic con el botón derecho para disminuir. CTRL x5, Shift x10. Alt + Haga clic a la izquierda con el favorito. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:PowerGiverAlt": {
+		"NAME": "Lemegeton",
+		"FLAVOR": "Te otorga poder ... pero ¿a qué costo?",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar la potencia para usted/monstruos al inicio/medio del combate. Haga clic izquierdo para aumentar, haga clic con el botón derecho para disminuir. CTRL x5, Shift x10. Alt + Haga clic a la izquierda con el favorito. CTRL + Haga clic derecho para repetir la última acción."
+		]
+	},
+	"loadout:TildeKey": {
+		"NAME": "Manipulador de Realidad",
+		"FLAVOR": "Depurar sin consola de depuración",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos."
+		]
+	},
+	"loadout:TildeKeyAlt": {
+		"NAME": "Tecla de Tilde",
+		"FLAVOR": "Es hora de empezar de nuevo ... espera",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos."
+		]
+	},
+	"loadout:BottledMonster": {
+		"NAME": "Monstruo Embotellado",
+		"FLAVOR": "¡Kakaa!",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para generar cualquier monstruo que desee. CTRL + Haga clic derecho para volver a revisar la última invocación. Si ninguno, Dupe Monsters en su lugar."
+		]
+	},
+	"loadout:BottledMonsterAlt": {
+		"NAME": "Bola Amigable",
+		"FLAVOR": "¡Tengo que buscarlos a todos! Espera ... no es fácil de usar",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para generar cualquier monstruo que desee. CTRL + Haga clic derecho para volver a revisar la última invocación. Si ninguno, Dupe Monsters en su lugar."
+		]
+	},
+	"loadout:OrbBox": {
+		"NAME": "Caja de Orbes",
+		"FLAVOR": "pelotas",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para generar cualquier orbe que desee."
+		]
+	},
+	"loadout:OrbBoxAlt": {
+		"NAME": "Libro de Virtudes",
+		"FLAVOR": "Compañía espiritual",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para generar cualquier WISP que desee."
+		]
+	},
+	"loadout:AllInOneBag": {
+		"NAME": "Todo Bolso",
+		"FLAVOR": "toda.",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para alternar otras reliquias de carga."
+		]
+	},
+	"loadout:AllInOneBagAlt": {
+		"NAME": "Certificado de Defensa 2.0",
+		"FLAVOR": "logro *",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para alternar otras reliquias de carga."
+		]
+	},
+	"loadout:BlightChest": {
+		"NAME": "Pequeño Cofre de Tizón",
+		"FLAVOR": "-",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier tizón. Haga clic izquierdo para obtener, haga clic derecho para quitar. CTRL x5, Shift x10."
+		]
+	},
+	"loadout:BlightChestAlt": {
+		"NAME": "Pequeño Cofre de Tizón",
+		"FLAVOR": "-",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para obtener cualquier tizón. Haga clic izquierdo para obtener, haga clic derecho para quitar. CTRL x5, Shift x10."
+		]
+	},
+	"loadout:AllInOneBagUp": {
+		"NAME": "Bolsa Definitiva",
+		"FLAVOR": "Estamos en el juego final ahora.",
+		"DESCRIPTIONS": [
+			"Haga clic derecho en esta reliquia para ganar el juego."
+		]
+	}
+}

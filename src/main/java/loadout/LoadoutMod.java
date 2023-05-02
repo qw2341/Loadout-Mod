@@ -1113,8 +1113,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 return "jpn";
             case FRA:
                 return "fra";
-//            case RUS:
-//                return "rus";
+            case SPA:
+                return "spa";
         }
         return "eng";
     }

@@ -1,0 +1,169 @@
+{
+	"loadout:OptionsMenu": {
+		"TEXT": [
+			"Habilitar el diseño heredado (reliquias en la parte superior)",
+			"¿Imaginar reliquias bloqueadas e invisibles?",
+			"¿Mostrar reliquias en la piscina de inicio?",
+			"¿Mostrar reliquias en la piscina común?",
+			"¿Mostrar reliquias en una piscina poco común?",
+			"¿Mostrar reliquias en la piscina rara?",
+			"¿Mostrar reliquias en la piscina de jefes?",
+			"¿Mostrar reliquias en la piscina de la tienda?",
+			"¿Mostrar reliquias en el grupo de eventos?",
+			"¿Mostrar reliquias en la piscina desactivada?",
+			"Cantidad de reliquia para obtener a la vez",
+			"Habilitar el nombre de la categoría?",
+			"Habilitar descripciones de categorías?",
+			"¿Retirar la reliquia de la piscina después de obtener?",
+			"¿Usar iconos de elementos desde la vinculación de Isaac? (Reinicio del juego necesario)",
+			"¿Borrar datos de modificación de la tarjeta?",
+			"#rwarning: ¡Deshabilitar la reliquia del modificador causará modificaciones de la tarjeta #rall, incluidas modificaciones permanentes al mal funcionamiento!",
+			"Habilitar todo Bag [Experimental]"
+		]
+	},
+	"loadout:RelicSelectionScreen": {
+		"TEXT": [
+			"Obsoleta:",
+			"Reliquias que pueden causar errores.",
+			"Sin categoría:",
+			"-",
+			"Compartida:",
+			"Reliquias que se comparten entre personajes",
+			"Reliquias del Slay The Spire",
+			"Haga clic en Reliquias para seleccionarlas para la eliminación:"
+		]
+	},
+	"loadout:RelicSelectSortHeader": {
+		"TEXT": [
+			"Clase",
+			"Rareza",
+			"ARIZONA",
+			"Modificación",
+			"Llave de rubí",
+			"Llave verde",
+			"Llave azul",
+			"Reliquia obtener multiplicador",
+			"Seleccionar",
+			"Hacer clic",
+			"Modo de selección de reliquias",
+			"Compartida"
+		]
+	},
+	"loadout:PotionSelectSortHeader": {
+		"TEXT": [
+			"Clase",
+			"Rareza",
+			"ARIZONA",
+			"Modificación",
+			"Ranura para la poción"
+		]
+	},
+	"loadout:CardSelectSortHeader": {
+		"TEXT": [
+			"Toda",
+			"Modo de selección",
+			"Mano",
+			"Introducir texto aquí",
+			"Buscar"
+		]
+	},
+	"loadout:CardViewPopupHeader": {
+		"TEXT": [
+			"Daño",
+			"Número mágico",
+			"Sanar",
+			"Dibujar",
+			"Restaurar",
+			"Hacer que no sea reproducible",
+			"Hacer jugable",
+			"Hacer sin cifras",
+			"Hacer maldición",
+			"Salvo para todas las tarjetas futuras",
+			"Tarjeta de copia",
+			"Ganar oro en matar",
+			"Ganar maxhp en matar",
+			"Ganar oro en juego",
+			"Sanar HP en juego",
+			"Actualización aleatoria en Kill",
+			"Aumentar el daño en la muerte",
+			"Agregar número mágico en matar",
+			"NL Si es fatal, aumente permanentemente el número mágico de esta tarjeta por! Loadout: ¡Misc!",
+			"Robo de vida",
+			"Inevitable",
+			"Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar."
+		]
+	},
+	"loadout:PowerSelectSortHeader": {
+		"TEXT": [
+			"ARIZONA",
+			"Modificación",
+			"Restablecer cantidades",
+			"Clear De/Buffs",
+			"Jugadora",
+			"Monstruos",
+			"Objetivo",
+			"Tipo",
+			"Favorita"
+		]
+	},
+	"loadout:StatModSortHeader": {
+		"TEXT": [
+			"Mata a todos los enemigos",
+			"Modo de Dios",
+			"Energía infinita",
+			"Ir a cualquier habitación normal",
+			"Siempre giro del jugador",
+			"Dibujar cartas hasta el límite",
+			"Cambiar de semilla",
+			"Aplicar cambio de semillas",
+			"Niega todos los debuffs",
+			"Fuerza de intención enemigo",
+			"Scroll Edit de contador de reliquias"
+		]
+	},
+	"loadout:StatModSelectScreen": {
+		"TEXT": [
+			"Máxima salud",
+			"Cerrar",
+			"Multiplicador de recompensa",
+			"Solo dupes",
+			"Energía máxima",
+			"Daño enemigo Mult %",
+			"Tamaño de la mano",
+			"Empate por turno"
+		]
+	},
+	"loadout:MasterDeckViewSortHeader": {
+		"TEXT": [
+			"Ahorrar",
+			"Borrar",
+			"Inicio",
+			"Carga",
+			"Mazos guardados",
+			"Nombra tu carga",
+			"Copiar al portapapeles",
+			"Pegar del portapapeles",
+			"Si desea usar este mazo, vaya a matar el taller Spire, suscríbase al mod de carga y péguelo en la pantalla de la cubierta"
+		]
+	},
+	"loadout:MonsterSelectSortHeader": {
+		"TEXT": [
+			"Monstruos duplicados",
+			"Mostrar vistas previas"
+		]
+	},
+	"loadout:EventSelectSortHeader": {
+		"TEXT": [
+			"Acto",
+			"Ir a",
+			"Ingrese la tienda",
+			"Tipo de sala del tesoro",
+			"Ingrese a Campfire",
+			"Pecho pequeño",
+			"Cofre",
+			"arcón",
+			"Cofre del jefe",
+			"Ir a la sala de neow"
+		]
+	}
+}
