@@ -55,6 +55,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
 import org.clapper.util.classutil.*;
+import pinacolada.cards.base.PCLCard;
+import pinacolada.cards.base.PCLCardData;
 import relicupgradelib.arch.Proxy;
 import relicupgradelib.arch.ProxyManager;
 import relicupgradelib.arch.UpgradeBranch;
@@ -1439,7 +1441,14 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         if(enableDeprecatedPool){
             addBaseGameDeprecatedCards();
         }
-
+        if(Loader.isModLoaded("pinacolada-fabricate")){
+            logger.info("Fabricate detected, adding custom cards");
+//            Collection<PCLCardData> pclCards = PCLCardData.getAllData(true, false, (extendedui.interfaces.delegates.FuncT1)null);
+//            pclCards.forEach(pclCardData -> {
+//                PCLCard pclCard = pclCardData.create(0,0);
+//                cardsToDisplay.add(pclCard);
+//            });
+        }
     }
     private void createPotionList() {
         potionsToDisplay.clear();

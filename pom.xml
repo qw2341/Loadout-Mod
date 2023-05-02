@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>0.8.7</version>
+    <version>0.8.9</version>
     <description>Adds relics that gives you stuffs.</description>
 
     <properties>
@@ -68,6 +68,22 @@
             <version>1.0.1</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/2769174299/RelicUpgradeLib.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>pinacolada</groupId>
+            <artifactId>STS-CardEditor</artifactId>
+            <version>1.1.4</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2947433143/Fabricate.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>pinacolada</groupId>
+            <artifactId>EUI</artifactId>
+            <version>4.1.0.2</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2788071529/ExtendedUI.jar</systemPath>
             <optional>true</optional>
         </dependency>
     </dependencies>
