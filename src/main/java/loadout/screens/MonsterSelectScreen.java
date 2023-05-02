@@ -615,13 +615,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         m.init();
         m.applyPowers();
 
-        if (ModHelper.isModEnabled("Lethality")) {
-            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new StrengthPower((AbstractCreature)m, 3), 3));
-        }
-
-        if (ModHelper.isModEnabled("Time Dilation")) {
-            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new SlowPower((AbstractCreature)m, 0)));
-        }
+        m.useUniversalPreBattleAction();
         m.showHealthBar();
         m.createIntent();
         if(m.type == AbstractMonster.EnemyType.BOSS && !noBGMBossList.contains(m.id)) {
@@ -657,13 +651,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         m.init();
         m.applyPowers();
 
-        if (ModHelper.isModEnabled("Lethality")) {
-            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new StrengthPower((AbstractCreature)m, 3), 3));
-        }
-
-        if (ModHelper.isModEnabled("Time Dilation")) {
-            AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)m, (AbstractCreature)m, (AbstractPower)new SlowPower((AbstractCreature)m, 0)));
-        }
+        m.useUniversalPreBattleAction();
         m.showHealthBar();
         m.createIntent();
         if(m.type == AbstractMonster.EnemyType.BOSS && !noBGMBossList.contains(m.id)) {
