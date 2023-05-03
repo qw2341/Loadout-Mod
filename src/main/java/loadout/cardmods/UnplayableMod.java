@@ -10,10 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 public class UnplayableMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("UnplayableCardModifier");
 
-    @Override
-    public boolean isInherent(AbstractCard card) {
-        return super.isInherent(card);
-    }
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -47,8 +43,5 @@ public class UnplayableMod extends AbstractCardModifier {
         return ID;
     }
 
-    @Override
-    public boolean shouldApply(AbstractCard card) {
-        return card.cost != -2;
-    }
+
 }
