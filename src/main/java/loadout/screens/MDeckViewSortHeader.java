@@ -128,9 +128,8 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
             setClipboardString(CardLoadouts.exportEncodedLoadout(AbstractDungeon.player.masterDeck.group));
         }else if (button == this.loadFromClipButton) {
             try {
-                ArrayList<AbstractCard> cardsToImport = CardLoadouts.importEncodedLoadout(getClipboardString());
 
-                AbstractDungeon.player.masterDeck.group = cardsToImport;
+                AbstractDungeon.player.masterDeck.group = CardLoadouts.importEncodedLoadout(getClipboardString());
             } catch (Exception e) {
                 LoadoutMod.logger.info("Failed to import from clipboard!");
             }

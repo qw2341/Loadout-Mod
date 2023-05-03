@@ -1,27 +1,21 @@
 package loadout.relics;
 
-import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnRemoveCardFromMasterDeckRelic;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.helpers.PowerTip;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.vfx.UpgradeShineEffect;
-import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 import loadout.LoadoutMod;
-import loadout.cardmods.InevitableMod;
+import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.patches.AbstractCardPatch;
+import loadout.patches.InfUpgradePatch;
 import loadout.savables.CardModifications;
 import loadout.screens.GCardSelectScreen;
 import loadout.util.TextureLoader;
@@ -29,8 +23,6 @@ import loadout.util.TextureLoader;
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
-import static loadout.relics.LoadoutBag.isIsaacMode;
-import static loadout.relics.AbstractCustomScreenRelic.landingSfx;
 
 public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]> {
 
@@ -66,11 +58,11 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
 
     public void upgradeCard(AbstractCard card, float x, float y) {
+        card.upgrade();
+
         if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-            card.upgrade();
             card.superFlash();
         } else {
-            card.upgrade();
             AbstractDungeon.topLevelEffects.add(new ShowCardBrieflyEffect(card.makeStatEquivalentCopy(), x, y));
             AbstractDungeon.topLevelEffects.add(new UpgradeShineEffect(x, y));
             CardCrawlGame.sound.play("CARD_UPGRADE");
@@ -147,6 +139,11 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                     card.rarity = AbstractCard.CardRarity.values()[ret[i][10]];
                     card.misc = ret[i][11];
                     AbstractCardPatch.setCardModified(card,true);
+                    if(CardModifierManager.hasModifier(card, InfiniteUpgradeMod.ID)) {
+                        card.upgraded = false;
+                        card.timesUpgraded = ret[i][12];
+                        InfUpgradePatch.changeCardName(card);
+                    }
                 }
             }
         }
@@ -177,6 +174,5 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
             }
         }
     }
-
 
 }

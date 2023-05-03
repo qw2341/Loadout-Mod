@@ -5,8 +5,10 @@ import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
+import loadout.patches.InfUpgradePatch;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ public class SerializableCardLite {
             if(unmoddedCopy.upgraded != ac.upgraded) cardArray[2] = ac.upgraded;
             if(unmoddedCopy.timesUpgraded != ac.timesUpgraded) cardArray[3] = ac.timesUpgraded;
             if(unmoddedCopy.cost != ac.cost) cardArray[4] = ac.cost;
-            //if(unmoddedCopy.costForTurn != ac.costForTurn ) cardArray[5] = ac.costForTurn;
             if(unmoddedCopy.baseDamage != ac.baseDamage ) cardArray[5] = ac.baseDamage;
             if(unmoddedCopy.baseBlock != ac.baseBlock ) cardArray[6] = ac.baseBlock;
             if(unmoddedCopy.baseMagicNumber != ac.baseMagicNumber ) cardArray[7] = ac.baseMagicNumber;
@@ -53,8 +54,8 @@ public class SerializableCardLite {
         }
 
         AbstractCard card = CardLibrary.getCard((String) sc[0]).makeCopy();
-        if (sc[2] != null && (boolean)sc[2])  {
-            if(sc[3] != null) card.timesUpgraded = (int)(double)sc[3] - 1;
+        if (sc[3] != null && (int)(double)sc[3] > 0)  {
+            card.timesUpgraded = (int)(double)sc[3] - 1;
             card.upgrade();
         }
 
@@ -77,6 +78,8 @@ public class SerializableCardLite {
         if(sc[15] != null) for(String modifierId : (ArrayList<String>)sc[15]) {
             CardModifierManager.addModifier(card, Objects.requireNonNull(ModifierLibrary.getModifier(modifierId)));
         }
+
+        InfUpgradePatch.changeCardName(card);
 
         return card;
     }

@@ -89,7 +89,9 @@
 			" NL Si cette carte tue un ennemi, ses nombre magique augmentent de !loadout:Misc!",
 			"Vol de HP",
 			"Inévitable",
-			"Remettez une copie à votre main lorsque vous êtes épuisé. Au pont pour le retrait."
+			"Remettez une copie à votre main lorsque vous êtes épuisé. Au pont pour le retrait.",
+			"Mise à niveau infinie",
+			"Peut être mis à niveau indéfiniment."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

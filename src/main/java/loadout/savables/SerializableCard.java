@@ -1,5 +1,6 @@
 package loadout.savables;
 
+import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
@@ -9,8 +10,12 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundFi
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.localization.CardStrings;
+import loadout.LoadoutMod;
+import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
+import loadout.patches.InfUpgradePatch;
 import loadout.relics.CardModifier;
 
 import java.io.Serializable;
@@ -46,7 +51,7 @@ public class SerializableCard implements Serializable {
         }
 
         AbstractCard card = CardLibrary.getCard(sc.id).makeCopy();
-        if (sc.upgraded)  {
+        if (sc.timesUpgraded > 0)  {
             card.timesUpgraded = sc.timesUpgraded - 1;
             card.upgrade();
         }
@@ -72,6 +77,8 @@ public class SerializableCard implements Serializable {
             if(cardModifier == null) continue;
             CardModifierManager.addModifier(card, cardModifier);
         }
+
+        InfUpgradePatch.changeCardName(card);
 
         return card;
     }

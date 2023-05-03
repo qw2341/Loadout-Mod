@@ -39,6 +39,7 @@ public class ModifierLibrary {
         modifiers.put(GainMagicOnKillMod.ID, GainMagicOnKillMod.class);
         modifiers.put(LifestealMod.ID, LifestealMod.class);
         modifiers.put(InevitableMod.ID, InevitableMod.class);
+        modifiers.put(InfiniteUpgradeMod.ID, InfiniteUpgradeMod.class);
 
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();

@@ -90,7 +90,9 @@
 			"NL Si es fatal, aumente permanentemente el número mágico de esta tarjeta por! Loadout: ¡Misc!",
 			"Robo de vida",
 			"Inevitable",
-			"Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar."
+			"Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar.",
+			"Actualización infinita",
+			"Capaz de actualizarse indefinidamente."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
