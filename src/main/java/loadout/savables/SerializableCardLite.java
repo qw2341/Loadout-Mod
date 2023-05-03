@@ -25,6 +25,11 @@ public class SerializableCardLite {
 
             if(unmoddedCopy.upgraded != ac.upgraded) cardArray[2] = ac.upgraded;
             if(unmoddedCopy.timesUpgraded != ac.timesUpgraded) cardArray[3] = ac.timesUpgraded;
+
+            for (int i = 0; i < ac.timesUpgraded; i++) {
+                unmoddedCopy.upgrade();
+            }
+
             if(unmoddedCopy.cost != ac.cost) cardArray[4] = ac.cost;
             if(unmoddedCopy.baseDamage != ac.baseDamage ) cardArray[5] = ac.baseDamage;
             if(unmoddedCopy.baseBlock != ac.baseBlock ) cardArray[6] = ac.baseBlock;
