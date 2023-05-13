@@ -7,7 +7,6 @@ import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
 import basemod.helpers.CardModifierManager;
-import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,15 +16,11 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingFie
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
@@ -33,21 +28,15 @@ import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
 import loadout.patches.AbstractCardPatch;
-import loadout.relics.CardModifier;
-import loadout.relics.CardPrinter;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static loadout.LoadoutMod.*;
 
-public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMenuListener {
+public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMenuListener, CardEffectButton.CardStuffProvider {
 
 
     public static final String[] clTEXT = CardLibSortHeader.TEXT;
@@ -123,12 +112,15 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus makeInfUpgradeButton;
 
+    private final CardEffectButton costButton;
+
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
     private final HeaderButtonPlus getCopyButton;
 
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
+    public CardEffectButton[] cardEffectButtons;
     public DropdownMenu[] dropdownMenus;
     public int selectionIndex = -1;
 
@@ -145,10 +137,29 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     public CardViewPopupHeader(SCardViewPopup sCardViewPopup, float startX) {
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
-        AbstractCard card = sCardViewPopup.card;
+        this.cardViewScreen = sCardViewPopup;
         this.startX = startX;
         float xPosition = this.startX;
         float yPosition = START_Y;
+
+        this.costButton = new CardEffectButton(ImageMaster.ORB_PLASMA, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                AbstractCard card = getCard();
+                return card == null ? -999 : card.cost;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                if(amountToSet >= 0) getCard().cost = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
+        yPosition -= SPACE_Y;
 
         this.costIncreaseButton = new HeaderButtonPlus(clTEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
         this.costIncreaseButton.isAscending = false;
@@ -294,11 +305,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
         this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton};
 
-
+        this.cardEffectButtons = new CardEffectButton[] {this.costButton};
 
         this.dropdownMenus = new DropdownMenu[] {};
         this.dropdownMenuHeaders = new String[] {};
-        this.cardViewScreen = sCardViewPopup;
+
 
     }
 
@@ -306,6 +317,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         for (HeaderButtonPlus button : this.buttons) {
             button.update();
         }
+        for (CardEffectButton button : this.cardEffectButtons) {
+            button.update();
+        }
+
         for (DropdownMenu dropdownMenu : this.dropdownMenus) {
             if (dropdownMenu.isOpen) {
                 dropdownMenu.update();
@@ -325,6 +340,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             }
         }
         for (HeaderButtonPlus button : this.buttons) {
+            if (button.hb.hovered) {
+                return button.hb;
+            }
+        }
+
+        for (CardEffectButton button : this.cardEffectButtons) {
             if (button.hb.hovered) {
                 return button.hb;
             }
@@ -413,6 +434,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             HeaderButtonPlus button = buttons[i];
             if(!button.isToggle)
                 button.reset();
+        }
+        for (int i = 0;i<this.cardEffectButtons.length;i++) {
+            CardEffectButton button = cardEffectButtons[i];
+            button.reset();
         }
         AbstractCard card = cardViewScreen.card;
         if(card != null) {
@@ -832,6 +857,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             b.render(sb);
         }
 
+        for (CardEffectButton b : this.cardEffectButtons) {
+            b.render(sb);
+        }
+
         float spaceY = 52.0f * Settings.yScale;
         float yPos = START_Y - 7.0f * spaceY;
 
@@ -864,5 +893,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
 
+    }
+
+    @Override
+    public int getMultiplier() {
+        return this.multiplier;
+    }
+    @Override
+    public AbstractCard getCard() {
+        return cardViewScreen.card;
     }
 }
