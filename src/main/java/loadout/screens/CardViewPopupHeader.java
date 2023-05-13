@@ -16,11 +16,13 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingFie
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
@@ -55,28 +57,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private static final float START_Y = Settings.HEIGHT - 150.0F * Settings.yScale;
     public static final float SPACE_Y = 45.0F * Settings.yScale;
 
-    private final HeaderButtonPlus costIncreaseButton;
-    private final HeaderButtonPlus costDecreaseButton;
 
-    private final HeaderButtonPlus damageIncreaseButton;
-    private final HeaderButtonPlus damageDecreaseButton;
-
-    private final HeaderButtonPlus blockIncreaseButton;
-    private final HeaderButtonPlus blockDecreaseButton;
-
-    private final HeaderButtonPlus magicNumberIncButton;
-    private final HeaderButtonPlus magicNumberDecButton;
-
-    private final HeaderButtonPlus healIncreaseButton;
-    private final HeaderButtonPlus healDecreaseButton;
-
-    private final HeaderButtonPlus drawIncreaseButton;
-    private final HeaderButtonPlus drawDecreaseButton;
-
-    private final HeaderButtonPlus discardIncreaseButton;
-    private final HeaderButtonPlus discardDecreaseButton;
-    private final HeaderButtonPlus miscIncreaseButton;
-    private final HeaderButtonPlus miscDecreaseButton;
 
     private final HeaderButtonPlus rarityIncreaseButton;
     private final HeaderButtonPlus rarityDecreaseButton;
@@ -113,6 +94,24 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus makeInfUpgradeButton;
 
     private final CardEffectButton costButton;
+    private final CardEffectButton damageButton;
+
+    private final CardEffectButton blockButton;
+
+
+    private final CardEffectButton magicNumberButton;
+
+
+    private final CardEffectButton healButton;
+
+
+    private final CardEffectButton drawButton;
+
+
+    private final CardEffectButton discardButton;
+
+    private final CardEffectButton miscButton;
+
 
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
@@ -145,13 +144,17 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.costButton = new CardEffectButton(ImageMaster.ORB_PLASMA, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
             @Override
             public int getAmount() {
-                AbstractCard card = getCard();
-                return card == null ? -999 : card.cost;
+                return getCard().cost;
             }
 
             @Override
             public void setAmount(int amountToSet) {
-                if(amountToSet >= 0) getCard().cost = amountToSet;
+                if(amountToSet >= 0) {
+                    AbstractCard card = getCard();
+                    card.cost = amountToSet;
+                    card.costForTurn = amountToSet;
+                    setCardModded(true);
+                }
             }
 
             @Override
@@ -161,60 +164,143 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }, this);
         yPosition -= SPACE_Y;
 
-        this.costIncreaseButton = new HeaderButtonPlus(clTEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.costIncreaseButton.isAscending = false;
-        //yPosition -= SPACE_Y;
-        xPosition += SPACE_X;
-        this.costDecreaseButton = new HeaderButtonPlus(clTEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
+        this.damageButton = new CardEffectButton(null, xPosition, yPosition, TEXT[0], new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseDamage;
+            }
 
-        this.damageIncreaseButton = new HeaderButtonPlus(TEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.damageIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.damageDecreaseButton = new HeaderButtonPlus(TEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().baseDamage = amountToSet;
+                setCardModded(true);
+            }
 
-        this.blockIncreaseButton = new HeaderButtonPlus(StringUtils.capitalize(TEXT_BLOCK), xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.blockIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.blockDecreaseButton = new HeaderButtonPlus(StringUtils.capitalize(TEXT_BLOCK), xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
 
-        this.magicNumberIncButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.magicNumberIncButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.magicNumberDecButton = new HeaderButtonPlus(TEXT[1], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
+            }
+        }, this);
         yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
 
-        this.healIncreaseButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.healIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.healDecreaseButton = new HeaderButtonPlus(TEXT[2], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
-        this.drawIncreaseButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.drawIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.drawDecreaseButton = new HeaderButtonPlus(TEXT[3], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
+        this.blockButton = new CardEffectButton(null, xPosition, yPosition, StringUtils.capitalize(TEXT_BLOCK), new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseBlock;
+            }
 
-        this.discardIncreaseButton = new HeaderButtonPlus(TEXT_DISCARD, xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.discardIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.discardDecreaseButton = new HeaderButtonPlus(TEXT_DISCARD, xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().baseBlock = amountToSet;
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
         yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
-        this.miscIncreaseButton = new HeaderButtonPlus("Misc", xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.miscIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.miscDecreaseButton = new HeaderButtonPlus("Misc", xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
+
+        this.magicNumberButton = new CardEffectButton(null, xPosition, yPosition, TEXT[1], new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseMagicNumber;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                AbstractCard card = getCard();
+                int diff = card.magicNumber - card.baseMagicNumber;
+                card.baseMagicNumber = amountToSet;
+                card.magicNumber = amountToSet + diff;
+
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
         yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
+
+
+        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseHeal;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().baseHeal = amountToSet;
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
+        yPosition -= SPACE_Y;
+
+        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseDraw;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().baseDraw = amountToSet;
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
+        yPosition -= SPACE_Y;
+
+        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().baseDiscard;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().baseDiscard = amountToSet;
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
+        yPosition -= SPACE_Y;
+
+        this.miscButton = new CardEffectButton(null, xPosition, yPosition, "Misc", new StatModSelectScreen.StatModActions() {
+            @Override
+            public int getAmount() {
+                return getCard().misc;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                getCard().misc = amountToSet;
+                setCardModded(true);
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }, this);
+        yPosition -= SPACE_Y;
 
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
         yPosition -= SPACE_Y;
@@ -301,11 +387,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
 
-        this.buttons = new HeaderButtonPlus[] { this.costIncreaseButton, this.costDecreaseButton, this.damageIncreaseButton, this.damageDecreaseButton, this.blockIncreaseButton, this.blockDecreaseButton,this.magicNumberIncButton, this.magicNumberDecButton , this.healIncreaseButton, this.healDecreaseButton, this.drawIncreaseButton, this.drawDecreaseButton, this.discardIncreaseButton, this.discardDecreaseButton, this.miscIncreaseButton, this.miscDecreaseButton, this.restoreDefaultButton,
+        this.buttons = new HeaderButtonPlus[] { this.restoreDefaultButton,
         this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
         this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton};
 
-        this.cardEffectButtons = new CardEffectButton[] {this.costButton};
+        this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
 
         this.dropdownMenus = new DropdownMenu[] {};
         this.dropdownMenuHeaders = new String[] {};
@@ -476,102 +562,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     @Override
     public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
-        if (button == this.costIncreaseButton) {
-            clearActiveButtons();
-            if(cardViewScreen.card.cost >= 0) {
-                cardViewScreen.card.cost += multiplier;
-                cardViewScreen.card.costForTurn = cardViewScreen.card.cost;
-                setCardModded(true);
-            }
-
-            resetAllButtons();
-        } else if (button == this.costDecreaseButton) {
-            clearActiveButtons();
-
-            if(cardViewScreen.card.cost>0) {
-                int tmpCost = cardViewScreen.card.cost;
-                tmpCost -= multiplier;
-                if(tmpCost < 0) tmpCost = 0;
-                cardViewScreen.card.cost = tmpCost;
-
-                cardViewScreen.card.costForTurn = cardViewScreen.card.cost;
-                setCardModded(true);
-            }
-
-            resetOtherButtons();
-        } else if (button == this.magicNumberIncButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseMagicNumber += multiplier;
-            cardViewScreen.card.magicNumber += multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.magicNumberDecButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseMagicNumber-= multiplier;
-            cardViewScreen.card.magicNumber -= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.damageIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDamage+= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.damageDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDamage-= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.blockIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseBlock+= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.blockDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseBlock-= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.healIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseHeal+= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.healDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseHeal-= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.drawIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDraw+= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.drawDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDraw-= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.discardIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDiscard+= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.discardDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.baseDiscard-= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.miscIncreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.misc += multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.miscDecreaseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.misc -= multiplier;
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.restoreDefaultButton) {
+        if (button == this.restoreDefaultButton) {
             clearActiveButtons();
             String cardId = cardViewScreen.card.cardID;
             int idx = cardViewScreen.group.group.indexOf(cardViewScreen.card);
@@ -901,6 +892,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     }
     @Override
     public AbstractCard getCard() {
-        return cardViewScreen.card;
+        return cardViewScreen.card == null ? CardLibrary.getCard(Madness.ID) : cardViewScreen.card;
     }
 }
