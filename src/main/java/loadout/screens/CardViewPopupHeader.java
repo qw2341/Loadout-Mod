@@ -141,7 +141,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         float xPosition = this.startX;
         float yPosition = START_Y;
 
-        this.costButton = new CardEffectButton(ImageMaster.ORB_PLASMA, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
+        this.costButton = new CardEffectButton(null, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
             @Override
             public int getAmount() {
                 return getCard().cost;
