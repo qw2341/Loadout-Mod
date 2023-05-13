@@ -48,7 +48,7 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
 
     public StatModSelectScreen.StatModActions statModActions;
     public CardStuffProvider multiplierGetter;
-    private final float imageOffset;
+    private final float imageOffset = 32.0f;
 
     private boolean isTyping;
     private InputProcessor prevInputProcessor;
@@ -71,7 +71,7 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
         this.upButton = new HeaderButtonPlus("",x + segment,y,this,true, ImageMaster.FILTER_ARROW);
         this.upButton.isAscending = false;
         this.downButton = new HeaderButtonPlus("",x + 6f * segment,y,this,true, ImageMaster.FILTER_ARROW);
-        this.imageOffset = this.image == null ? 0f : this.image.getWidth() / 2f;
+        //this.imageOffset = this.image == null ? 0f : this.image.getWidth() / 2f;
         this.isTyping = false;
     }
 
@@ -134,7 +134,7 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
     public void render(SpriteBatch sb) {
         this.hb.render(sb);
         if(image != null)
-            sb.draw(image, this.x - imageOffset + this.textWidth / 2.0F + imageOffset * Settings.xScale, this.y - imageOffset, imageOffset, imageOffset, imageOffset*2f, imageOffset*2f, Settings.scale, Settings.scale, 0.0F, 0, 0, image.getWidth(), image.getHeight(), false, false);
+            sb.draw(image, this.x - imageOffset + imageOffset * Settings.scale - 100.0f * Settings.scale, this.y - imageOffset * Settings.scale, imageOffset, imageOffset, imageOffset*2f, imageOffset*2f, Settings.scale, Settings.scale, 0.0F, 0, 0, image.getWidth(), image.getHeight(), false, false);
         FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, Color.WHITE);
         this.upButton.render(sb);
         Color valueColor = isTyping ? Color.CYAN : Color.GREEN;
