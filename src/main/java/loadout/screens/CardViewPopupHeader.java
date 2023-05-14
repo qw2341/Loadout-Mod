@@ -17,12 +17,12 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
@@ -35,6 +35,7 @@ import loadout.savables.SerializableCard;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
 
@@ -57,17 +58,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private static final float START_Y = Settings.HEIGHT - 150.0F * Settings.yScale;
     public static final float SPACE_Y = 45.0F * Settings.yScale;
 
-
-
-    private final HeaderButtonPlus rarityIncreaseButton;
-    private final HeaderButtonPlus rarityDecreaseButton;
-
     private final HeaderButtonPlus makeXCostButton;
 
     private final HeaderButtonPlus makeUnplayableButton;
-    //private final HeaderButtonPlus makePlayableButton;
-    private final HeaderButtonPlus makeUncurseButton;
-    private final HeaderButtonPlus makeCurseButton;
 
     private final HeaderButtonPlus makeEtherealButton;
     private final HeaderButtonPlus makeExhaustButton;
@@ -112,6 +105,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final CardEffectButton miscButton;
 
+    private final DropdownMenu rarityButton;
+    private final DropdownMenu classButton;
+
+    private final DropdownMenu typeButton;
+
 
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
@@ -139,7 +137,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardViewScreen = sCardViewPopup;
         this.startX = startX;
         float xPosition = this.startX;
-        float yPosition = START_Y;
+        float yPosition = START_Y - 260.0f * Settings.scale;
 
         this.costButton = new CardEffectButton(null, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
             @Override
@@ -312,26 +310,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition = START_Y;
         xPosition = Settings.WIDTH - 2 * xPosition;
 
-        this.rarityIncreaseButton = new HeaderButtonPlus(clTEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        this.rarityIncreaseButton.isAscending = false;
-        xPosition += SPACE_X;
-        this.rarityDecreaseButton = new HeaderButtonPlus(clTEXT[0], xPosition,yPosition,this,true,ImageMaster.FILTER_ARROW);
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
-
         //this.makeUnplayableButton = new HeaderButtonPlus(TEXT[5], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/muzzle.png"));
         this.makeUnplayableButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.UNPLAYABLE.NAMES[0]), xPosition, yPosition, this, false,true, HeaderButtonPlus.Alignment.CENTER);
         xPosition += SPACE_X;
         this.makeExhaustButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         xPosition -= SPACE_X;
         yPosition -= SPACE_Y;
-        //this.makePlayableButton = new HeaderButtonPlus(TEXT[6], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/ancient.png"));
-        //yPosition -= SPACE_Y;
-        this.makeUncurseButton = new HeaderButtonPlus(TEXT[7], xPosition, yPosition, this, true, ImageMaster.loadImage("images/relics/omamori.png"));
-        xPosition += SPACE_X;
-        this.makeCurseButton = new HeaderButtonPlus(TEXT[8], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/accursed.png"));
-        yPosition -= SPACE_Y;
-        xPosition -= SPACE_X;
 
         this.makeEtherealButton = new HeaderButtonPlus(StringUtils.capitalize(GameDictionary.ETHEREAL.NAMES[0]),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         xPosition += SPACE_X;
@@ -388,13 +372,36 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         xPosition -= SPACE_X;
 
         this.buttons = new HeaderButtonPlus[] { this.restoreDefaultButton,
-        this.saveChangesButton, this.getCopyButton, this.rarityIncreaseButton, this.rarityDecreaseButton,this.makeUnplayableButton, this.makeUncurseButton, this.makeCurseButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
+        this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
         this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton};
 
         this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
 
-        this.dropdownMenus = new DropdownMenu[] {};
-        this.dropdownMenuHeaders = new String[] {};
+        ArrayList<String> a = new ArrayList<>();
+        for (AbstractPlayer ap : allCharacters) {
+            a.add(ap.getLoadout().name);
+        }
+        //Colorless
+        a.add(CardSelectSortHeader.cTEXT[4]);
+        //Curse
+        a.add(StringUtils.capitalize(GameDictionary.CURSE.NAMES[0]));
+        this.classButton = new DropdownMenu(this,a,FontHelper.panelNameFont, Settings.CREAM_COLOR);
+
+        ArrayList<String> c = new ArrayList<>();
+        for (AbstractCard.CardType ct : AbstractCard.CardType.values())
+            c.add(CardSelectSortHeader.toLocalCardTypeStrings(ct));
+        this.typeButton = new DropdownMenu(this, c,FontHelper.panelNameFont, Settings.CREAM_COLOR);
+
+
+        ArrayList<String> e = new ArrayList<>();
+        for (AbstractCard.CardRarity cr : AbstractCard.CardRarity.values()) {
+            e.add(CardSelectSortHeader.toLocalRarity(cr));
+        }
+        this.rarityButton = new DropdownMenu(this,e,FontHelper.panelNameFont, Settings.CREAM_COLOR);
+
+
+        this.dropdownMenus = new DropdownMenu[] {this.typeButton, this.rarityButton,this.classButton};
+        this.dropdownMenuHeaders = new String[] {CardSelectSortHeader.clTEXT[1],CardSelectSortHeader.clTEXT[0],CardSelectSortHeader.rTEXT[0]};
 
 
     }
@@ -416,6 +423,29 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         for (DropdownMenu dropdownMenu : this.dropdownMenus)
             dropdownMenu.update();
+    }
+
+    private int getCurCardColorIndex() {
+        return getCard().color.ordinal();
+    }
+    private AbstractCard.CardColor indexToCardColor(int index) {
+        return AbstractCard.CardColor.values()[index];
+    }
+
+    private int getCurCardRarityIndex() {
+        return getCard().rarity.ordinal();
+    }
+
+    private AbstractCard.CardRarity indexToCardRarity(int index) {
+        return AbstractCard.CardRarity.values()[index];
+    }
+
+    private int getCurCardTypeIndex() {
+        return getCard().type.ordinal();
+    }
+
+    private AbstractCard.CardType indexToCardType(int index) {
+        return AbstractCard.CardType.values()[index];
     }
 
     public Hitbox updateControllerInput() {
@@ -462,6 +492,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             if(!button.isToggle)
                 button.setActive(false);
         }
+    }
+
+    private void resetDropdownMenus() {
+        this.classButton.setSelectedIndex(getCurCardColorIndex());
+        this.rarityButton.setSelectedIndex(getCurCardRarityIndex());
+        this.typeButton.setSelectedIndex(getCurCardTypeIndex());
     }
 
     public void resetOtherButtons() {
@@ -514,6 +550,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 }
             }
         }
+
+        resetDropdownMenus();
     }
     public void resetAllButtons() {
         for (int i = 0;i<this.buttons.length;i++) {
@@ -550,10 +588,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }
 
 
-        for (DropdownMenu ddm : dropdownMenus) {
-            ddm.setSelectedIndex(0);
-        }
-
+//        for (DropdownMenu ddm : dropdownMenus) {
+//            ddm.setSelectedIndex(0);
+//        }
+        resetDropdownMenus();
     }
 
     private void setCardModded(boolean isModified) {
@@ -609,25 +647,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             }
 
             resetOtherButtons();
-        } else if (button == this.rarityIncreaseButton) {
-            clearActiveButtons();
-            int rarInt = cardViewScreen.card.rarity.ordinal();
-            AbstractCard.CardRarity[] rarities = AbstractCard.CardRarity.values();
-            if( ++rarInt < rarities.length) {
-                cardViewScreen.card.rarity = rarities[rarInt];
-                setCardModded(true);
-            }
-
-            resetOtherButtons();
-        } else if (button == this.rarityDecreaseButton) {
-            clearActiveButtons();
-            int rarInt = cardViewScreen.card.rarity.ordinal();
-            AbstractCard.CardRarity[] rarities = AbstractCard.CardRarity.values();
-            if( --rarInt >= 0) {
-                cardViewScreen.card.rarity = rarities[rarInt];
-                setCardModded(true);
-            }
-            resetOtherButtons();
         } else if (button == this.makeUnplayableButton) {
             clearActiveButtons();
             if (!button.isAscending) {
@@ -638,26 +657,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, PlayableMod.ID, true);
                 CardModifierManager.addModifier(cardViewScreen.card, new UnplayableMod());
             }
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.makeUncurseButton) {
-            clearActiveButtons();
-            if (cardViewScreen.card.type == AbstractCard.CardType.CURSE) {
-                cardViewScreen.card.type = AbstractCard.CardType.SKILL;
-            }
-            if (cardViewScreen.card.color == AbstractCard.CardColor.CURSE) {
-                cardViewScreen.card.color = AbstractCard.CardColor.COLORLESS;
-            }
-            if (cardViewScreen.card.rarity == AbstractCard.CardRarity.CURSE) {
-                cardViewScreen.card.rarity = AbstractCard.CardRarity.SPECIAL;
-            }
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.makeCurseButton) {
-            clearActiveButtons();
-            cardViewScreen.card.type = AbstractCard.CardType.CURSE;
-            cardViewScreen.card.color = AbstractCard.CardColor.CURSE;
-            cardViewScreen.card.rarity = AbstractCard.CardRarity.CURSE;
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.makeExhaustButton) {
@@ -853,9 +852,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }
 
         float spaceY = 52.0f * Settings.yScale;
-        float yPos = START_Y - 7.0f * spaceY;
+        float yPos = START_Y - 3.0f * spaceY;
 
-        float xPos = 0.0f;
+        float xPos = 0f;
 
         for (int i = 0; i< this.dropdownMenus.length ; i++) {
 
@@ -883,7 +882,30 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
+        if(dropdownMenu == this.rarityButton) {
+            AbstractCard.CardRarity rarity = indexToCardRarity(i);
+            if(getCard().rarity != rarity) {
+                getCard().rarity = rarity;
+                setCardModded(true);
+            }
 
+        }
+        if(dropdownMenu == this.classButton) {
+            AbstractCard.CardColor cc = indexToCardColor(i);
+            if(getCard().color != cc) {
+                getCard().color = cc;
+                setCardModded(true);
+            }
+
+        }
+        if(dropdownMenu == this.typeButton) {
+            AbstractCard.CardType ct = indexToCardType(i);
+            if(getCard().type != ct) {
+                getCard().type = ct;
+                setCardModded(true);
+            }
+
+        }
     }
 
     @Override
@@ -892,6 +914,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     }
     @Override
     public AbstractCard getCard() {
-        return cardViewScreen.card == null ? CardLibrary.getCard(Madness.ID) : cardViewScreen.card;
+        return cardViewScreen.card == null ? new Madness() : cardViewScreen.card;
     }
 }

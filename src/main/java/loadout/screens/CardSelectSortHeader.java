@@ -240,7 +240,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         return modIDs;
     }
 
-    private String toLocalCardTypeStrings(AbstractCard.CardType ct) {
+    public static String toLocalCardTypeStrings(AbstractCard.CardType ct) {
         String type = ct.toString();
         switch (type) {
             case "ATTACK":
@@ -258,7 +258,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         }
     }
 
-    private String toLocalRarity(AbstractCard.CardRarity cr) {
+    public static String toLocalRarity(AbstractCard.CardRarity cr) {
         switch (cr) {
             case BASIC:
                 return rhTEXT[11];
@@ -273,7 +273,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             case CURSE:
                 return rhTEXT[16];
             default:
-                return rhTEXT[19];
+                return cr.name();
         }
     }
 
