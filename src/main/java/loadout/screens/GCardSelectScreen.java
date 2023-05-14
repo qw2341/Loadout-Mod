@@ -1,5 +1,6 @@
 package loadout.screens;
 
+import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,10 +12,7 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.MathHelper;
-import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
@@ -31,6 +29,10 @@ import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
 import loadout.LoadoutMod;
 import loadout.relics.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -687,6 +689,7 @@ public class GCardSelectScreen
 
     public void open(CardGroup group, int numCards, String tipMsg, boolean forUpgrade, boolean forTransform, boolean canCancel, boolean forPurge) {
 
+        StatusLogger.getLogger().setLevel(Level.ERROR);
         this.originalGroup = group;
         //this.originalGroup.sortByRarityPlusStatusCardType(true);
         if (this.targetGroup == null) {
@@ -857,6 +860,8 @@ public class GCardSelectScreen
 
         caller.setIsSelectionScreenUp(false);
         AbstractSelectScreen.showLoadoutRelics();
+
+        StatusLogger.getLogger().setLevel(Level.INFO);
     }
     private void updateScrolling() {
         if (PeekButton.isPeeking) {
