@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import loadout.LoadoutMod;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -101,6 +104,8 @@ public class RelicClassComparator implements Comparator<AbstractRelic> {
         return null;
     }
     public static String getCharacterNameByColor(AbstractCard.CardColor color) {
+        if (color == AbstractCard.CardColor.COLORLESS) return CardLibraryScreen.TEXT[4];
+        if (color == AbstractCard.CardColor.CURSE) return StringUtils.capitalize(GameDictionary.CURSE.NAMES[0]);
         AbstractPlayer ap = getCharacterByColor(color);
         return ap == null? color.toString() : ap.getLocalizedCharacterName();
     }

@@ -29,6 +29,7 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
+import loadout.helper.RelicClassComparator;
 import loadout.patches.AbstractCardPatch;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
@@ -36,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static loadout.LoadoutMod.*;
 
@@ -378,13 +380,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
 
         ArrayList<String> a = new ArrayList<>();
-        for (AbstractPlayer ap : allCharacters) {
-            a.add(ap.getLoadout().name);
+        for (AbstractCard.CardColor cc : AbstractCard.CardColor.values()) {
+            a.add(RelicClassComparator.getCharacterNameByColor(cc));
         }
         //Colorless
-        a.add(CardSelectSortHeader.cTEXT[4]);
-        //Curse
-        a.add(StringUtils.capitalize(GameDictionary.CURSE.NAMES[0]));
+//        a.add(4,CardSelectSortHeader.cTEXT[4]);
+//        //Curse
+//        a.add(5,StringUtils.capitalize(GameDictionary.CURSE.NAMES[0]));
         this.classButton = new DropdownMenu(this,a,FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
         ArrayList<String> c = new ArrayList<>();
@@ -891,6 +893,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         }
         if(dropdownMenu == this.classButton) {
+//            logger.info("Current colors: " + Arrays.toString(AbstractCard.CardColor.values()));
+//            logger.info("Selected Index: " + i);
+//            logger.info("Curr Color: " + getCard().color.toString());
             AbstractCard.CardColor cc = indexToCardColor(i);
             if(getCard().color != cc) {
                 getCard().color = cc;
