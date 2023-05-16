@@ -22,10 +22,7 @@ import loadout.savables.Favorites;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScreen.CardModButton>{
     public static class CardModButton {
@@ -111,6 +108,8 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
 
     public ArrayList<AbstractCard> cards;
 
+    public HashSet<String> modMods;
+
     private static final Comparator<CardModButton> BY_NAME = Comparator.comparing(c -> c.name);
     private static final Comparator<CardModButton> BY_ID = Comparator.comparing(c -> c.id);
 
@@ -120,7 +119,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
     public CardModSelectScreen() {
         super(null);
         this.itemsPerLine = 5;
-        this.sortHeader = new CardModSortHeader(this);
+        this.modMods = new HashSet<>();
         this.defaultSortType = SortType.MOD;
         this.itemHeight = 75.0f;
     }
@@ -141,6 +140,10 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         this.confirmButton.show();
         callOnOpen();
 
+        if(this.sortHeader == null) {
+            this.sortHeader = new CardModSortHeader(this);
+        }
+
         sortOnOpen();
         calculateScrollBounds();
 
@@ -157,7 +160,10 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
 
     @Override
     protected boolean testFilters(CardModButton item) {
-        return true;
+        String modID = item.modID;
+//        if (modID == null) modID = "Slay the Spire";
+        boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
+        return modCheck;
     }
 
     @Override
@@ -206,7 +212,9 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
             this.itemsClone = new ArrayList<>();
             for (Class<?extends AbstractCardModifier> cardMod : LoadoutMod.cardModMap.values()) {
                 try {
-                    itemsClone.add(new CardModButton(cardMod.getDeclaredConstructor(new Class[] {}).newInstance()));
+                    CardModButton cmb = new CardModButton(cardMod.getDeclaredConstructor(new Class[] {}).newInstance());
+                    modMods.add(cmb.modID);
+                    itemsClone.add(cmb);
                 } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                     LoadoutMod.logger.info("Error creating button for " + cardMod.getName());
                     e.printStackTrace();

@@ -304,6 +304,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }, this);
         yPosition -= SPACE_Y;
 
+        yPosition -= SPACE_Y;
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
         yPosition -= SPACE_Y;
         this.saveChangesButton = new HeaderButtonPlus(TEXT[9], xPosition, yPosition, this, true, ImageMaster.SETTINGS_ICON);
@@ -388,12 +389,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         ArrayList<String> a = new ArrayList<>();
         for (AbstractCard.CardColor cc : AbstractCard.CardColor.values()) {
-            a.add(RelicClassComparator.getCharacterNameByColor(cc));
+            String cName = RelicClassComparator.getCharacterNameByColor(cc);
+            if (cName.length() >= 12) cName = cName.substring(0,11) + "...";
+            a.add(cName);
         }
-        //Colorless
-//        a.add(4,CardSelectSortHeader.cTEXT[4]);
-//        //Curse
-//        a.add(5,StringUtils.capitalize(GameDictionary.CURSE.NAMES[0]));
+
         this.classButton = new DropdownMenu(this,a,FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
         ArrayList<String> c = new ArrayList<>();
