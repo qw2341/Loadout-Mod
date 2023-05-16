@@ -122,6 +122,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         this.itemsPerLine = 5;
         this.sortHeader = new CardModSortHeader(this);
         this.defaultSortType = SortType.MOD;
+        this.itemHeight = 75.0f;
     }
 
     @Override
