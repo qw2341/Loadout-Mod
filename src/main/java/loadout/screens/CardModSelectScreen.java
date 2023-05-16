@@ -74,6 +74,23 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         }
         public void update() {
             this.hb.update();
+            if(this.hb.hovered) {
+                if(dummyCard == null) {
+                    AbstractCard dum = CardModSelectScreen.currentCard.makeStatEquivalentCopy();
+                    applyMod(dum);
+                    dummyCard = dum;
+                    dummyCard.target_x = this.x - 20.0f;
+                    dummyCard.target_y = this.y;
+                    dummyCard.current_x = dummyCard.target_x;
+                    dummyCard.current_y = dummyCard.target_y;
+                } else {
+                    dummyCard.target_x = this.x - 20.0f;
+                    dummyCard.target_y = this.y;
+                    dummyCard.current_x = dummyCard.target_x;
+                    dummyCard.current_y = dummyCard.target_y;
+                    dummyCard.update();
+                }
+            }
         }
 
         public void render(SpriteBatch sb) {
@@ -104,7 +121,9 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         }
     }
 
-    public AbstractCard currentCard = new Madness();
+    public static AbstractCard currentCard = new Madness();
+
+    public static AbstractCard dummyCard = null;
 
     public ArrayList<AbstractCard> cards;
 
@@ -289,15 +308,16 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
 
         } else {
             clickStartedItem = null;
+            dummyCard = null;
         }
 
     }
 
     @Override
     protected void updateList(ArrayList<CardModButton> list) {
-        this.currentCard.target_x = 200.0f * Settings.scale;
-        this.currentCard.target_y = Settings.HEIGHT / 2f;
-        this.currentCard.update();
+        currentCard.target_x = 200.0f * Settings.scale;
+        currentCard.target_y = Settings.HEIGHT / 2f;
+        currentCard.update();
 
         if (this.confirmButton.hb.hovered) return;
 
@@ -316,7 +336,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
     @Override
     protected void renderList(SpriteBatch sb, ArrayList<CardModButton> list) {
 
-        this.currentCard.render(sb);
+        currentCard.render(sb);
 
         row += 1;
         col = 0;
@@ -407,8 +427,9 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
 
             col += 1;
         }
+
+        if(dummyCard != null) dummyCard.render(sb);
+
         calculateScrollBounds();
     }
-
-
 }
