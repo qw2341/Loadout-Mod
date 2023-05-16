@@ -1,85 +1,88 @@
 package loadout.screens;
 
-import basemod.ReflectionHacks;
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.CardModifierManager;
+import basemod.helpers.TooltipInfo;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.OrbBox;
 import loadout.savables.Favorites;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
-public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbButton>{
-
-    public static class OrbButton {
-        public AbstractOrb instance;
+public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScreen.CardModButton>{
+    public static class CardModButton {
         public String id;
         public String name;
         public String modID;
         public Hitbox hb;
         public float x;
         public float y;
-        public int amount;
+        public AbstractCardModifier instance;
         public ArrayList<PowerTip> tips;
+        public int amount;
+        public CardModButton(AbstractCardModifier instance) {
+            this.instance = instance;
+            this.id = instance.identifier(null);
+            if(id == null) this.id = instance.getClass().getName();
 
-        public OrbButton(AbstractOrb orb) {
-            this.instance = orb;
-            this.id = orb.ID;
-            if(id == null) this.id = orb.getClass().getName();
-            this.name = this.instance.name;
-            if(name == null) this.name = orb.getClass().getSimpleName();
-            this.modID = WhatMod.findModID(orb.getClass());
+            this.modID = WhatMod.findModID(instance.getClass());
             if (this.modID == null) this.modID = "Slay the Spire";
 
             this.x = 0;
             this.y = 0;
             this.amount = 0;
+
             this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
             this.tips = new ArrayList<>();
-            this.tips.add(new PowerTip(this.instance.name, this.instance.description));
-            ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "scale", Settings.scale);
-            ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "channelAnimTimer", 0.0f);
-        }
 
+            List<TooltipInfo> tooltips = this.instance.additionalTooltips(null);
+            if(tooltips != null && !tooltips.isEmpty()) {
+
+                for (int i = 0; i < tooltips.size(); i++) {
+                    TooltipInfo first = tooltips.get(i);
+                    if (i == 0) {
+                        this.name = first.title;
+                    }
+                    this.tips.add(first.toPowerTip());
+                }
+
+//                TooltipInfo first = tooltips.remove(0);
+//
+//
+//                for(TooltipInfo ti: tooltips) {
+//                    this.tips.add(ti.toPowerTip());
+//                }
+            }
+
+            if(name == null) this.name = instance.getClass().getSimpleName();
+            this.tips.add(0,new PowerTip(this.name, ""));
+        }
         public void update() {
             this.hb.update();
-            try {
-                this.instance.update();
-                this.instance.tX = this.x;
-                this.instance.cX = this.x;
-                this.instance.tY = this.y;
-                this.instance.cY = this.y;
-                if(this.hb.hovered) this.instance.updateAnimation();
-            } catch (Exception ignored) {
-
-            }
         }
 
         public void render(SpriteBatch sb) {
             if(this.hb != null) {
                 this.hb.render(sb);
                 float a = (amount != 0 || this.hb.hovered) ? 1.0f : 0.7f;
-                try{
-                    this.instance.render(sb);
-                } catch (Exception ignored) {
-
-                }
-
 
                 if (this.hb.hovered) {
                     sb.setBlendFunction(770, 1);
@@ -92,31 +95,67 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                 } else {
                     FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
                 }
-//                if (this.amount > 0) {
-//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
-//                } else if (this.amount < 0) {
-//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.RED_TEXT_COLOR);
-//                }
             }
 
+        }
+        public void applyMod(AbstractCard card) {
+            CardModifierManager.addModifier(card, instance.makeCopy());
+        }
 
+        public void removeMod(AbstractCard card) {
+            CardModifierManager.removeModifiersById(card, id, true);
         }
     }
 
-    private static final Comparator<OrbButton> BY_NAME = Comparator.comparing(o -> o.name);
-    private static final Comparator<OrbButton> BY_MOD = Comparator.comparing(o -> o.modID);
+    public AbstractCard currentCard = new Madness();
 
-    private static final Comparator<OrbButton> BY_ID = Comparator.comparing(o -> o.id);
-    public OrbSelectScreen(AbstractCustomScreenRelic<OrbButton> owner) {
-        super(owner);
+    public ArrayList<AbstractCard> cards;
+
+    private static final Comparator<CardModButton> BY_NAME = Comparator.comparing(c -> c.name);
+    private static final Comparator<CardModButton> BY_ID = Comparator.comparing(c -> c.id);
+
+    private static final Comparator<CardModButton> BY_MOD = Comparator.comparing(c -> c.modID);
+
+
+    public CardModSelectScreen() {
+        super(null);
+        this.itemsPerLine = 5;
+        this.sortHeader = new CardModSortHeader(this);
         this.defaultSortType = SortType.MOD;
-        this.itemHeight = 75.0f * Settings.yScale;
-
-        this.sortHeader = new OrbSelectSortHeader(this);
     }
 
     @Override
-    protected boolean testFilters(OrbButton item) {
+    public void open() {
+        super.open();
+    }
+
+    public void open(AbstractCard card, ArrayList<AbstractCard> cards) {
+        show = true;
+        doneSelecting = false;
+
+        this.currentCard = card;
+        this.cards = cards;
+
+        this.confirmButton.isDisabled = false;
+        this.confirmButton.show();
+        callOnOpen();
+
+        sortOnOpen();
+        calculateScrollBounds();
+
+        this.selectedItems.clear();
+    }
+
+    @Override
+    public void close() {
+        this.show = false;
+        InputHelper.justReleasedClickLeft = false;
+        this.confirmButton.hide();
+        this.confirmButton.isDisabled = true;
+    }
+
+    @Override
+    protected boolean testFilters(CardModButton item) {
         return true;
     }
 
@@ -164,15 +203,15 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
         if(this.itemsClone == null || this.itemsClone.isEmpty()) {
             //first time
             this.itemsClone = new ArrayList<>();
-            for (Class<?extends AbstractOrb> orbC : LoadoutMod.orbMap.values()) {
+            for (Class<?extends AbstractCardModifier> cardMod : LoadoutMod.cardModMap.values()) {
                 try {
-                    itemsClone.add(new OrbButton(orbC.getDeclaredConstructor(new Class[] {}).newInstance()));
-                } catch (InvocationTargetException|InstantiationException|IllegalAccessException|NoSuchMethodException e) {
-                    LoadoutMod.logger.info("Error creating button for " + orbC.getName());
+                    itemsClone.add(new CardModButton(cardMod.getDeclaredConstructor(new Class[] {}).newInstance()));
+                } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+                    LoadoutMod.logger.info("Error creating button for " + cardMod.getName());
                     e.printStackTrace();
                     continue;
                 } catch (NoClassDefFoundError noClassError) {
-                    LoadoutMod.logger.info("ERROR THROWN! NO CLASS DEF FOUND FOR " + orbC.getName());
+                    LoadoutMod.logger.info("ERROR THROWN! NO CLASS DEF FOUND FOR " + cardMod.getName());
                     continue;
                 }
             }
@@ -180,11 +219,8 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
 
             this.items = new ArrayList<>(itemsClone);
         }
+    }
 
-    }
-    private boolean isCombat() {
-        return AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
-    }
     @Override
     protected void updateItemClickLogic() {
         if(hoveredItem != null) {
@@ -213,11 +249,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                         clickStartedItem.amount += selectMult;
                         //TODO modify amount
 
-                        if(isCombat()) {
-                            ((OrbBox)owner).channelOrb(clickStartedItem.instance.makeCopy(), +selectMult);
-                        }
-
-                        this.owner.flash();
+                        clickStartedItem.applyMod(currentCard);
                     }
 
                     clickStartedItem = null;
@@ -240,11 +272,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                     clickStartedItem.amount -= selectMult;
                     //TODO modify amount
 
-                    if(isCombat()) {
-
-                    }
-
-                    this.owner.flash();
+                    clickStartedItem.removeMod(currentCard);
 
                     clickStartedItem = null;
                 }
@@ -257,23 +285,30 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
     }
 
     @Override
-    protected void updateList(ArrayList<OrbButton> list) {
+    protected void updateList(ArrayList<CardModButton> list) {
+        this.currentCard.target_x = 200.0f * Settings.scale;
+        this.currentCard.target_y = Settings.HEIGHT / 2f;
+        this.currentCard.update();
+
         if (this.confirmButton.hb.hovered) return;
 
-        for (OrbButton o : list)
+        for (CardModButton cmb : list)
         {
-            o.update();
-            o.hb.move(o.x  + 150.0f, o.y);
+            cmb.update();
+            cmb.hb.move(cmb.x  + 150.0f, cmb.y);
 
-            if (o.hb.hovered)
+            if (cmb.hb.hovered)
             {
-                hoveredItem = o;
+                hoveredItem = cmb;
             }
         }
     }
 
     @Override
-    protected void renderList(SpriteBatch sb, ArrayList<OrbButton> list) {
+    protected void renderList(SpriteBatch sb, ArrayList<CardModButton> list) {
+
+        this.currentCard.render(sb);
+
         row += 1;
         col = 0;
         float curX;
@@ -283,14 +318,12 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
         String prevMod = "";
         scrollTitleCount = 0;
 
-
-
-        for (Iterator<OrbButton> it = list.iterator(); it.hasNext(); ) {
-            OrbButton o = it.next();
+        for (Iterator<CardModButton> it = list.iterator(); it.hasNext(); ) {
+            CardModButton cardModButton = it.next();
             if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
 
-                    char pFirst = (shouldSortById() || o.name== null || o.name.length() == 0) ?   o.id.toUpperCase().charAt(0) : o.name.toUpperCase().charAt(0);
+                    char pFirst = (shouldSortById() || cardModButton.name== null || cardModButton.name.length() == 0) ?   cardModButton.id.toUpperCase().charAt(0) : cardModButton.name.toUpperCase().charAt(0);
 
                     if (pFirst != prevFirst) {
                         row++;
@@ -314,7 +347,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                         col = 0;
                     }
                 } else if (currentSortType == SortType.MOD) {
-                    String pMod = o.modID;
+                    String pMod = cardModButton.modID;
                     if (pMod == null) pMod = "Slay the Spire";
                     if (!pMod.equals(prevMod)) {
                         row++;
@@ -345,26 +378,28 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                     }
                 }
             }
-            if (col == 5) {
+            if (col == this.itemsPerLine) {
                 col = 0;
                 row += 1;
             }
             curX = (START_X + SPACE_X * col);
             curY = (scrollY - SPACE * row);
 
-            o.x = curX;
-            o.y = curY;
+            cardModButton.x = curX;
+            cardModButton.y = curY;
 
-            if(filterAll && Favorites.favoritePowers.contains(o.id)) {
+            if(filterAll && Favorites.favoritePowers.contains(cardModButton.id)) {
 
                 sb.setColor(GOLD_BACKGROUND);
                 sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT,curX - (float)128 / 2.0F, curY - (float)128 / 2.0F, (float)128, (float)128);
             }
 
-            o.render(sb);
+            cardModButton.render(sb);
 
             col += 1;
         }
         calculateScrollBounds();
     }
+
+
 }

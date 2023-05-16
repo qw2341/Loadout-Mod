@@ -92,6 +92,8 @@ public class SCardViewPopup {
     private InputAction shiftKey;
     private InputAction ctrlKey;
 
+    public static CardModSelectScreen cardModSelectScreen;
+
     public SCardViewPopup() {
         this.fadeColor = Color.BLACK.cpy();
         this.upgradeHb = new Hitbox(250.0F * Settings.scale, 80.0F * Settings.scale);
@@ -116,6 +118,10 @@ public class SCardViewPopup {
 
         if (this.cardViewPopupHeader == null) {
             this.cardViewPopupHeader = new CardViewPopupHeader(this,200.0f*Settings.scale);
+        }
+
+        if(cardModSelectScreen == null) {
+            cardModSelectScreen = new CardModSelectScreen();
         }
 
         for(int i = 0; i < group.size(); ++i) {
@@ -258,6 +264,11 @@ public class SCardViewPopup {
     }
 
     public void update() {
+
+        if(cardModSelectScreen != null && cardModSelectScreen.show) {
+            cardModSelectScreen.update();
+            return;
+        }
 
         this.confirmButton.update();
         if (this.isOpen && this.confirmButton.hb.clicked) {
@@ -420,6 +431,11 @@ public class SCardViewPopup {
     }
 
     public void render(SpriteBatch sb) {
+
+        if(cardModSelectScreen != null && cardModSelectScreen.show) {
+            cardModSelectScreen.render(sb);
+            return;
+        }
 
         sb.setColor(this.fadeColor);
         sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float)Settings.WIDTH, (float)Settings.HEIGHT);

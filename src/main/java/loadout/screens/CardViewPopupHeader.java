@@ -117,6 +117,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus saveChangesButton;
     private final HeaderButtonPlus getCopyButton;
 
+    private final HeaderButtonPlus cardModButton;
+
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
     public CardEffectButton[] cardEffectButtons;
@@ -373,9 +375,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
 
+        yPosition -= SPACE_Y;
+        xPosition += 0.5f * SPACE_X;
+        this.cardModButton = new HeaderButtonPlus("Card Mods",xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
+
+
         this.buttons = new HeaderButtonPlus[] { this.restoreDefaultButton,
         this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-        this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton};
+        this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton};
 
         this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
 
@@ -822,6 +829,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.addModifier(cardViewScreen.card, new InfiniteUpgradeMod());
             setCardModded(true);
             resetOtherButtons();
+        } else if (button == this.cardModButton) {
+            SCardViewPopup.cardModSelectScreen.open(cardViewScreen.card, cardViewScreen.group.group);
         } else {
             return;
         }

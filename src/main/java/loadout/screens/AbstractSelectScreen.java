@@ -361,7 +361,7 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         AbstractDungeon.closeCurrentScreen();
 
         show = false;
-        owner.setIsSelectionScreenUp(false);
+        if(owner != null)owner.setIsSelectionScreenUp(false);
         showLoadoutRelics();
     }
 

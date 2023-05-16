@@ -5,6 +5,7 @@ import basemod.cardmods.EtherealMod;
 import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
+import basemod.helpers.CardModifierManager;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
 
@@ -58,5 +59,18 @@ public class ModifierLibrary {
             LoadoutMod.logger.error("Error importing card modifiers for card modifier: " + id);
         }
         return null;
+    }
+
+    public static void initOtherModifiers() {
+        for (Class<? extends AbstractCardModifier> modClass : LoadoutMod.cardModMap.values()) {
+            String ID;
+            try {
+                ID = (String) modClass.getDeclaredField("ID").get(null);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                ID = modClass.getSimpleName();
+            }
+
+            modifiers.putIfAbsent(ID, modClass);
+        }
     }
 }
