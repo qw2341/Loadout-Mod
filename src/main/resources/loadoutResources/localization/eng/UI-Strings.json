@@ -92,7 +92,8 @@
 			"Inevitable",
 			"Return a copy to your hand upon exhaustion. To deck upon removal.",
 			"Infinite Upgrade",
-			"Able to be upgraded indefinitely."
+			"Able to be upgraded indefinitely.",
+			"Card Modifiers"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

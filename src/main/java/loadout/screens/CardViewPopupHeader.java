@@ -377,7 +377,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
-        this.cardModButton = new HeaderButtonPlus("Card Mods",xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
+        this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
 
         this.buttons = new HeaderButtonPlus[] { this.restoreDefaultButton,

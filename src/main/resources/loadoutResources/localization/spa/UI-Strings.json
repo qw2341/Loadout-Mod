@@ -91,8 +91,9 @@
 			"Robo de vida",
 			"Inevitable",
 			"Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar.",
-			"Actualización infinita",
-			"Capaz de actualizarse indefinidamente."
+			"Actualización Infinita",
+			"Capaz de actualizarse indefinidamente.",
+			"Modificadores de Cartas"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
