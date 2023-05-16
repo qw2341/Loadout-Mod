@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
     <description>Adds relics that gives you stuffs.</description>
 
     <properties>
@@ -84,6 +84,14 @@
             <version>4.1.0.2</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/2788071529/ExtendedUI.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>CardAugments</groupId>
+            <artifactId>CardAugments</artifactId>
+            <version>0.8.2</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2970981743/CardAugments.jar</systemPath>
             <optional>true</optional>
         </dependency>
     </dependencies>

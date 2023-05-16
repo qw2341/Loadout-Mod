@@ -202,7 +202,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     //public static Set<String> monsterIDS = monsterMap.keySet("");
 
     public static ConcurrentHashMap<String, Class<? extends AbstractCardModifier>> cardModMap = new ConcurrentHashMap<>();
-
+    public static ConcurrentHashMap<String, String> cardModIDMap = new ConcurrentHashMap<>();
     public static boolean isScreenUp = false;
 
     public static CardModifications cardModifications = null;
@@ -316,7 +316,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
         logger.info("Done adding mod settings");
 
-
+        autoAddCardMods();
 
         logger.info("loading favorites");
         try {
@@ -960,7 +960,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         orbMap.put(Plasma.class.getName(), Plasma.class);
         orbMap.put(EmptyOrbSlot.class.getName(), EmptyOrbSlot.class);
 
-        cardModMap.clear();
+
 
         autoAddStuffs();
     }
@@ -1056,12 +1056,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                     logger.info("Failed to import orbs from " + mi.ID);
                 }
 
-                try {
-                    CardModAdder cardModAdder = new CardModAdder(url, mi.ID + "CardModThread");
-                    cardModAdder.start();
-                } catch (Exception e) {
-                    logger.info("Failed to import card Mods from " + mi.ID);
-                }
+
 
             } catch (Exception e) {
                 logger.info("Failed to initialize custom stuff for "+ mi.ID);
@@ -1070,6 +1065,36 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         }
 
+    }
+
+    private void autoAddCardMods() {
+        cardModMap.clear();
+        for (ModInfo mi : Loader.MODINFOS) {
+            try {
+                CardModAdder cardModAdder = new CardModAdder(mi.jarURL, mi.ID + "CardModThread");
+                cardModAdder.start();
+            } catch (Exception e) {
+                logger.info("Failed to import card Mods from " + mi.ID);
+            }
+        }
+
+    }
+
+    private void addCardModIDs() {
+        for(Map.Entry<String, Class<? extends AbstractCardModifier>> entry : cardModMap.entrySet()) {
+            Class<? extends AbstractCardModifier> acmC = entry.getValue();
+            String ID;
+            try {
+                ID = (String) acmC.getDeclaredField("ID").get(null);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                ID = acmC.getSimpleName();
+            } catch (NoClassDefFoundError error) {
+                logger.error("FAILED to get card mod with class name: " + acmC.getName());
+                ID = acmC.getSimpleName();
+            }
+
+            cardModIDMap.put(ID, entry.getKey());
+        }
     }
 
 
@@ -1263,6 +1288,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         try {
             ModifierLibrary.initialize();
+//            ModifierLibrary.initOtherModifiers();
+            addCardModIDs();
             cardModifications = new CardModifications();
         } catch (IOException e) {
             logger.error("Error loading card modifications");

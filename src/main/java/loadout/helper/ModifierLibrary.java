@@ -53,8 +53,21 @@ public class ModifierLibrary {
     }
 
     public static AbstractCardModifier getModifier(String id) {
+        Class<? extends AbstractCardModifier> modC;
         try {
-            return modifiers.get(id).getDeclaredConstructor(new Class[0]).newInstance();
+            if(modifiers.containsKey(id)) {
+                modC = modifiers.get(id);
+            } else {
+                modC = tryGetModifier(id);
+                if(modC != null) {
+                    modifiers.put(id, modC);
+                } else {
+                    LoadoutMod.logger.error("Could not find modifier: " + id);
+                    return null;
+                }
+            }
+
+            return modC.getDeclaredConstructor(new Class[0]).newInstance();
         } catch (Exception e) {
             LoadoutMod.logger.error("Error importing card modifiers for card modifier: " + id);
         }
@@ -72,5 +85,10 @@ public class ModifierLibrary {
 
             modifiers.putIfAbsent(ID, modClass);
         }
+    }
+
+    protected static Class<? extends AbstractCardModifier> tryGetModifier(String ID) {
+        String longID = LoadoutMod.cardModIDMap.get(ID);
+        return LoadoutMod.cardModMap.get(longID);
     }
 }
