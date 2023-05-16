@@ -140,7 +140,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         this.cardViewScreen = sCardViewPopup;
         this.startX = startX;
-        float xPosition = this.startX;
+        float xPosition = this.startX - 0.5f * SPACE_X;
         float yPosition = START_Y - 260.0f * Settings.scale;
 
         this.costButton = new CardEffectButton(null, xPosition, yPosition, clTEXT[3], new StatModSelectScreen.StatModActions() {
@@ -304,6 +304,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }, this);
         yPosition -= SPACE_Y;
 
+        xPosition += 0.5f * SPACE_X;
         yPosition -= SPACE_Y;
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
         yPosition -= SPACE_Y;
