@@ -77,7 +77,10 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
             if(this.hb.hovered) {
                 if(dummyCard == null) {
                     AbstractCard dum = CardModSelectScreen.currentCard.makeStatEquivalentCopy();
-                    applyMod(dum);
+                    try {
+                        applyMod(dum);
+                    } catch (NullPointerException ignored) {}
+
                     dummyCard = dum;
                     dummyCard.target_x = this.x - 20.0f;
                     dummyCard.target_y = this.y;
