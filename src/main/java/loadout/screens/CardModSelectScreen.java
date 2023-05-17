@@ -428,7 +428,13 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
             col += 1;
         }
 
-        if(dummyCard != null) dummyCard.render(sb);
+        if(dummyCard != null) {
+            try {
+                dummyCard.render(sb);
+            } catch (NullPointerException ignored) {
+
+            }
+        }
 
         calculateScrollBounds();
     }
