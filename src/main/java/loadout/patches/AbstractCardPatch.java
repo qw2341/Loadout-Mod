@@ -28,6 +28,18 @@ public class AbstractCardPatch {
             card.type = __instance.type;
             card.color = __instance.color;
             card.magicNumber = __instance.baseMagicNumber;
+
+        }
+
+        /**
+         * Patch to prevent double modifying
+         * @param __instance
+         * @param card
+         */
+        @SpireInsertPatch(rloc = 2, localvars = {"card"})
+        public static void Insert2(AbstractCard __instance, AbstractCard card) {
+            if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID))CardModifierManager.removeAllModifiers(card, false);
+            //CardModifierManager.copyModifiers(__instance, card, false, true, false);
         }
     }
 

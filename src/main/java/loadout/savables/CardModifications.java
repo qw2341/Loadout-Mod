@@ -12,6 +12,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
@@ -160,6 +161,14 @@ public class CardModifications
     public static AbstractCard getUnmoddedCopy(AbstractCard card) {
         isGettingUnmoddedCopy = true;
         AbstractCard unmoddedCopy = card.makeCopy();
+        isGettingUnmoddedCopy = false;
+        return unmoddedCopy;
+    }
+
+    public static AbstractCard getUnmoddedCopy(String cardId) {
+        if(!CardLibrary.isACard(cardId)) return new Madness();
+        isGettingUnmoddedCopy = true;
+        AbstractCard unmoddedCopy = CardLibrary.getCard(cardId).makeCopy();
         isGettingUnmoddedCopy = false;
         return unmoddedCopy;
     }

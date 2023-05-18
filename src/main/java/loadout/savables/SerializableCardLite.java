@@ -58,7 +58,8 @@ public class SerializableCardLite {
             return new Madness();
         }
 
-        AbstractCard card = CardLibrary.getCard((String) sc[0]).makeCopy();
+        //AbstractCard card = CardLibrary.getCard((String) sc[0]).makeCopy();
+        AbstractCard card = CardModifications.getUnmoddedCopy((String) sc[0]);
         if (sc[3] != null && (int)(double)sc[3] > 0)  {
             card.timesUpgraded = (int)(double)sc[3] - 1;
             card.upgrade();
