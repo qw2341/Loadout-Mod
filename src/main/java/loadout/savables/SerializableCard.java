@@ -50,7 +50,7 @@ public class SerializableCard implements Serializable {
             return new Madness();
         }
 
-        AbstractCard card = CardLibrary.getCard(sc.id).makeCopy();
+        AbstractCard card = CardModifications.getUnmoddedCopy(sc.id);
         if (sc.timesUpgraded > 0)  {
             card.timesUpgraded = sc.timesUpgraded - 1;
             card.upgrade();
