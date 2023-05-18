@@ -47,8 +47,6 @@ import loadout.helper.dynamicvariables.MiscVariable;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
-import loadout.screens.MonsterSelectScreen;
-import loadout.screens.OrbSelectScreen;
 import loadout.screens.SidePanel;
 import loadout.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -56,8 +54,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
 import org.clapper.util.classutil.*;
-import pinacolada.cards.base.PCLCard;
-import pinacolada.cards.base.PCLCardData;
 import relicupgradelib.arch.Proxy;
 import relicupgradelib.arch.ProxyManager;
 import relicupgradelib.arch.UpgradeBranch;
@@ -69,12 +65,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-import static basemod.BaseMod.addKeyword;
 import static basemod.BaseMod.gson;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
@@ -1161,6 +1155,14 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 //                PCLCard pclCard = pclCardData.create(0,0);
 //                cardsToDisplay.add(pclCard);
 //            });
+            try{
+                pinacolada.cards.base.PCLCustomCardSlot.getCards(null).forEach(slot -> {
+                    cardsToDisplay.add(slot.getBuilder(0).create(0));
+                });
+            } catch (RuntimeException e) {
+                logger.info("Failed to add Fabricate custom cards");
+            }
+
         }
     }
     private void createPotionList() {
