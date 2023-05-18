@@ -173,6 +173,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static boolean enableIsaacIcons = false;
     public static final String ENABLE_SIDE_PANEL = "eSidePanel";
     //public static boolean enableSidePanel = false;
+    public static boolean FABRICATE_MOD_LOADED = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
 
@@ -310,6 +311,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             e.printStackTrace();
         }
         logger.info("Done adding mod settings");
+
+        //mod checks
+        FABRICATE_MOD_LOADED = Loader.isModLoaded("pinacolada-fabricate");
 
         autoAddCardMods();
 
@@ -1149,13 +1153,15 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         if(enableDeprecatedPool){
             addBaseGameDeprecatedCards();
         }
-        if(Loader.isModLoaded("pinacolada-fabricate")){
+        if(FABRICATE_MOD_LOADED){
             logger.info("Fabricate detected, adding custom cards");
 //
             try{
                 ArrayList<PCLCustomCardSlot> customCards = pinacolada.cards.base.PCLCustomCardSlot.getCards(null);
-                for (PCLCustomCardSlot slot : customCards)
-                    cardsToDisplay.add(slot.getBuilder(0).create(0));
+                for (PCLCustomCardSlot slot : customCards) {
+                    cardsToDisplay.add(slot.makeFirstCard(false));
+                }
+                    //cardsToDisplay.add(slot.getBuilder(0).create(0));
             } catch (RuntimeException e) {
                 logger.info("Failed to add Fabricate custom cards");
             }
