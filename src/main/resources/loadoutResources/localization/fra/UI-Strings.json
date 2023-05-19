@@ -63,7 +63,8 @@
 			"Mode de Sélection",
 			"Main de Cartes",
 			"Entrez le texte ici",
-			"Rechercher"
+			"Rechercher",
+			"Faire une Carte"
 		]
 	},
 	"loadout:CardViewPopupHeader": {

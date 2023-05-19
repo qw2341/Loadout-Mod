@@ -1,18 +1,14 @@
 package loadout.screens;
 
-import basemod.BaseMod;
 import basemod.interfaces.TextReceiver;
 import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.codedisaster.steamworks.SteamUtils;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -21,17 +17,12 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
-import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
-import loadout.helper.RelicClassComparator;
-import loadout.helper.TextInputHelper;
-import loadout.helper.TextInputReceiver;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -66,19 +57,20 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
     private static final float START_Y = Settings.HEIGHT - 200.0F * Settings.yScale;
     public static final float SPACE_Y = 75.0F * Settings.yScale;
 
-    private HeaderButtonPlus rarityButton;
-    private HeaderButtonPlus modButton;
-    private HeaderButtonPlus nameButton;
-    private HeaderButtonPlus colorButton;
+    private final HeaderButtonPlus rarityButton;
+    private final HeaderButtonPlus modButton;
+    private final HeaderButtonPlus nameButton;
+    private final HeaderButtonPlus colorButton;
 
-    private HeaderButtonPlus upgradeButton;
+    private HeaderButtonPlus fabricateButton;
+    private final HeaderButtonPlus upgradeButton;
 
-    private DropdownMenu colorFilterDropdown;
-    private DropdownMenu selectionModeButton;
-    private DropdownMenu typeFilterDropdown;
-    private DropdownMenu costFilterDropdown;
-    private DropdownMenu rarityFilterDropdown;
-    private DropdownMenu modNameDropdown;
+    private final DropdownMenu colorFilterDropdown;
+    private final DropdownMenu selectionModeButton;
+    private final DropdownMenu typeFilterDropdown;
+    private final DropdownMenu costFilterDropdown;
+    private final DropdownMenu rarityFilterDropdown;
+    private final DropdownMenu modNameDropdown;
 
 
     private String[] dropdownMenuHeaders;
@@ -126,7 +118,19 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         yPosition -= SPACE_Y;
         this.upgradeButton = new HeaderButtonPlus(cTEXT[7], xPosition, yPosition, this, false ,true, HeaderButtonPlus.Alignment.RIGHT);
 
-        this.buttons = new HeaderButtonPlus[] { this.colorButton, this.rarityButton, this.nameButton, this.modButton, this.upgradeButton };
+        List<HeaderButtonPlus> bList = new LinkedList<>();
+        bList.add(this.colorButton);
+        bList.add(this.rarityButton);
+        bList.add(this.nameButton);
+        bList.add(this.modButton);
+        bList.add(this.upgradeButton);
+
+        if(FABRICATE_MOD_LOADED) {
+            this.fabricateButton =  new HeaderButtonPlus(TEXT[5], filterBarX + 75.0f * Settings.scale, filterBarY - 100.0f * Settings.scale, this, true, ImageMaster.REWARD_CARD_NORMAL);
+            bList.add(this.fabricateButton);
+        }
+
+        this.buttons = bList.toArray(new HeaderButtonPlus[0]);
 
         //ArrayList<String> a = RelicClassComparator.classList.stream().map(RelicClassComparator::getCharacterNameByColor).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<String> a = new ArrayList<>();
@@ -202,9 +206,6 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         f.add(0,TEXT[0]);
         f.add("Slay the Spire");
         this.modNameDropdown = new DropdownMenu(this, f,FontHelper.panelNameFont, Settings.CREAM_COLOR);
-
-
-
 
         this.dropdownMenus = new DropdownMenu[] {this.selectionModeButton,this.rarityFilterDropdown, this.typeFilterDropdown, this.costFilterDropdown,this.colorFilterDropdown, this.modNameDropdown};
         this.dropdownMenuHeaders = new String[] {TEXT[1],clTEXT[0],clTEXT[1],clTEXT[3],rTEXT[0],"Mod"};
@@ -463,11 +464,18 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             this.cardSelectScreen.updateFilters();
             resetOtherButtons();
             return;
+        } else if (button == this.fabricateButton) {
+            launchFabricateScreen();
+            return;
         } else {
             return;
         }
         this.justSorted = true;
         button.setActive(true);
+
+    }
+
+    private void launchFabricateScreen() {
 
     }
 
