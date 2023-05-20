@@ -29,15 +29,19 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
+import loadout.helper.FabricateScreenController;
 import loadout.helper.RelicClassComparator;
 import loadout.patches.AbstractCardPatch;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 import org.apache.commons.lang3.StringUtils;
+import pinacolada.cards.base.PCLCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static loadout.LoadoutMod.*;
 
@@ -119,6 +123,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus cardModButton;
 
+    private final HeaderButtonPlus fabricateEditButton;
+
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
     public CardEffectButton[] cardEffectButtons;
@@ -132,7 +138,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     public SCardViewPopup cardViewScreen;
 
-
+    private boolean isCardFabricated = false;
 
 
     public CardViewPopupHeader(SCardViewPopup sCardViewPopup, float startX) {
@@ -380,11 +386,26 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
+        yPosition -= SPACE_Y;
+
+        HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
+                this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton};
+
+        this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
+
+        if(FABRICATE_MOD_LOADED) {
+            ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
+            Collections.addAll(bList, tempbs);
+
+            bList.add(this.fabricateEditButton);
+
+            this.buttons = bList.toArray(new HeaderButtonPlus[0]);
+        } else {
+            this.buttons = tempbs;
+        }
 
 
-        this.buttons = new HeaderButtonPlus[] { this.restoreDefaultButton,
-        this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-        this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton};
 
         this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
 
@@ -418,6 +439,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     public void update() {
         for (HeaderButtonPlus button : this.buttons) {
+            if(button == this.fabricateEditButton && !isCardFabricated) continue;
             button.update();
         }
         for (CardEffectButton button : this.cardEffectButtons) {
@@ -595,6 +617,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeLifestealButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, LifestealMod.ID);
             this.makeInevitableButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
+
+            this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
         }
 
 
@@ -845,6 +869,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if (button == this.cardModButton) {
             SCardViewPopup.cardModSelectScreen.open(cardViewScreen.card, cardViewScreen.group.group);
+        } else if (button == this.fabricateEditButton) {
+            FabricateScreenController.openEditCardScreen(cardViewScreen.card, cardViewScreen.group);
         } else {
             return;
         }
@@ -869,6 +895,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     protected void renderButtons(SpriteBatch sb) {
         for (HeaderButtonPlus b : this.buttons) {
+            if(b == this.fabricateEditButton) {
+                if(!isCardFabricated) continue;
+            }
             b.render(sb);
         }
 

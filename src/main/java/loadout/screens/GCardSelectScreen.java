@@ -27,6 +27,7 @@ import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import com.megacrit.cardcrawl.ui.buttons.PeekButton;
 import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
 import loadout.LoadoutMod;
+import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -176,6 +177,12 @@ public class GCardSelectScreen
     public void update() {
         updateControllerInput();
         updatePeekButton();
+
+        if(FabricateScreenController.isScreenUp) {
+            FabricateScreenController.update();
+            return;
+        }
+
         if (this.currentMode == CardDisplayMode.UPGRADE && this.cardModScreen != null && this.cardModScreen.isOpen) {
             this.cardModScreen.update();
             return;
@@ -989,6 +996,11 @@ public class GCardSelectScreen
 
     public void render(SpriteBatch sb) {
 
+        if(FabricateScreenController.isScreenUp) {
+            FabricateScreenController.render(sb);
+            return;
+        }
+
         if (currentMode == CardDisplayMode.UPGRADE) {
             if (this.cardModScreen != null && this.cardModScreen.isOpen) {
                 this.cardModScreen.render(sb);
@@ -1169,6 +1181,10 @@ public class GCardSelectScreen
 
     private boolean shouldShowScrollBar() {
         return (!this.confirmScreenUp && this.scrollUpperBound > SCROLL_BAR_THRESHOLD && !PeekButton.isPeeking);
+    }
+
+    public SCardViewPopup getSCardPopup() {
+        return this.cardModScreen;
     }
 }
 

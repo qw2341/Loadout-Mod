@@ -94,7 +94,8 @@
 			"Return a copy to your hand upon exhaustion. To deck upon removal.",
 			"Infinite Upgrade",
 			"Able to be upgraded indefinitely.",
-			"Card Modifiers"
+			"Card Modifiers",
+			"Edit with Fabricate"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

@@ -94,7 +94,8 @@
 			"Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar.",
 			"Actualización Infinita",
 			"Capaz de actualizarse indefinidamente.",
-			"Modificadores de Cartas"
+			"Modificadores de Cartas",
+			"Editar con Fabricar"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

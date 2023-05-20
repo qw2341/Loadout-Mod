@@ -23,6 +23,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
+import loadout.helper.FabricateScreenController;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -465,7 +466,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             resetOtherButtons();
             return;
         } else if (button == this.fabricateButton) {
-            launchFabricateScreen();
+            FabricateScreenController.openAddCardScreen(this.cardSelectScreen.filterColor == null ? AbstractCard.CardColor.COLORLESS : this.cardSelectScreen.filterColor);
             return;
         } else {
             return;
@@ -475,9 +476,6 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
 
     }
 
-    private void launchFabricateScreen() {
-
-    }
 
     public void render(SpriteBatch sb) {
         //sb.draw(ImageMaster.COLOR_TAB_BAR, 10.0F, -50.0F, 300.0F, 500.0F, 0, 0, 1334, 102, false, false);

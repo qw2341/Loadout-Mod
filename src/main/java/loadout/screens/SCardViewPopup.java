@@ -1521,6 +1521,14 @@ public class SCardViewPopup {
 
     }
 
+    public CardGroup getCurrentGroup() {
+        return this.group;
+    }
+
+    public void replaceCurrentCard(AbstractCard card){
+        this.card = card;
+    }
+
     static {
         uiStrings = CardCrawlGame.languagePack.getUIString("SingleCardViewPopup");
         TEXT = uiStrings.TEXT;
