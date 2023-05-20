@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.codedisaster.steamworks.SteamUtils;
 import com.megacrit.cardcrawl.actions.unique.RemoveDebuffsAction;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.curses.AscendersBane;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -484,8 +486,21 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
 
             @Override
             public void setAmount(int amountToSet) {
-                amountToSet = Math.min(amountToSet, 20);
+                amountToSet = Math.min(amountToSet, 20);//hard coding it since no where to get non-hard coded version
+
+                if(AbstractDungeon.isAscensionMode) {
+                    if(AbstractDungeon.ascensionLevel < 10 && amountToSet >= 10) {
+                        if(AbstractDungeon.player.masterDeck.group.stream().noneMatch(c -> c.cardID.equals(AscendersBane.ID)))
+                            AbstractDungeon.player.masterDeck.addToTop(new AscendersBane());
+                    } else if (AbstractDungeon.ascensionLevel >= 10 && amountToSet < 10) {
+                        AbstractCard bane = AbstractDungeon.player.masterDeck.findCardById(AscendersBane.ID);
+                        if(bane != null)
+                            AbstractDungeon.player.masterDeck.removeCard(bane);
+                    }
+                }
+
                 AbstractDungeon.ascensionLevel = amountToSet;
+                AbstractDungeon.topPanel.setupAscensionMode();
             }
 
             @Override
