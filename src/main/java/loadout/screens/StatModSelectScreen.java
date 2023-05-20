@@ -30,6 +30,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.ui.panels.SeedPanel;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
+import com.megacrit.cardcrawl.vfx.AscensionLevelUpTextEffect;
 import loadout.LoadoutMod;
 import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
@@ -475,22 +476,23 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
-//        this.items.add(new StatModButton(TEXT[8], false, ImageMaster.POTION_FAIRY_CONTAINER, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
-//            @Override
-//            public int getAmount() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public void setAmount(int amountToSet) {
-//
-//            }
-//
-//            @Override
-//            public void onBoolChange(boolean boolToChange, int amount) {
-//
-//            }
-//        }));
+        this.items.add(new StatModButton(AscensionLevelUpTextEffect.TEXT[0], false, ImageMaster.TP_ASCENSION, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
+            @Override
+            public int getAmount() {
+                return AbstractDungeon.ascensionLevel;
+            }
+
+            @Override
+            public void setAmount(int amountToSet) {
+                amountToSet = Math.min(amountToSet, 20);
+                AbstractDungeon.ascensionLevel = amountToSet;
+            }
+
+            @Override
+            public void onBoolChange(boolean boolToChange, int amount) {
+
+            }
+        }));
 
     }
 
