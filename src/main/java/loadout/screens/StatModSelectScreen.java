@@ -491,7 +491,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                 if(AbstractDungeon.isAscensionMode) {
                     if(AbstractDungeon.ascensionLevel < 10 && amountToSet >= 10) {
                         if(AbstractDungeon.player.masterDeck.group.stream().noneMatch(c -> c.cardID.equals(AscendersBane.ID)))
-                            AbstractDungeon.player.masterDeck.addToTop(new AscendersBane());
+                            AbstractDungeon.player.masterDeck.addToBottom(new AscendersBane());
                     } else if (AbstractDungeon.ascensionLevel >= 10 && amountToSet < 10) {
                         AbstractCard bane = AbstractDungeon.player.masterDeck.findCardById(AscendersBane.ID);
                         if(bane != null)
