@@ -618,7 +618,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeInevitableButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
 
-            this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
+            if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
         }
 
 

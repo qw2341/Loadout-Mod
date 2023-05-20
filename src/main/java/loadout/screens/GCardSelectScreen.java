@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.ui.buttons.CancelButton;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import com.megacrit.cardcrawl.ui.buttons.PeekButton;
 import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
+import extendedui.patches.HotkeyPatches;
 import loadout.LoadoutMod;
 import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
@@ -178,10 +179,13 @@ public class GCardSelectScreen
         updateControllerInput();
         updatePeekButton();
 
-        if(FabricateScreenController.isScreenUp) {
-            FabricateScreenController.update();
-            return;
+        if(LoadoutMod.FABRICATE_MOD_LOADED) {
+            if(FabricateScreenController.isScreenUp) {
+                FabricateScreenController.update();
+                return;
+            }
         }
+
 
         if (this.currentMode == CardDisplayMode.UPGRADE && this.cardModScreen != null && this.cardModScreen.isOpen) {
             this.cardModScreen.update();
@@ -996,10 +1000,13 @@ public class GCardSelectScreen
 
     public void render(SpriteBatch sb) {
 
-        if(FabricateScreenController.isScreenUp) {
-            FabricateScreenController.render(sb);
-            return;
+        if(LoadoutMod.FABRICATE_MOD_LOADED){
+            if(FabricateScreenController.isScreenUp) {
+                FabricateScreenController.render(sb);
+                return;
+            }
         }
+
 
         if (currentMode == CardDisplayMode.UPGRADE) {
             if (this.cardModScreen != null && this.cardModScreen.isOpen) {
