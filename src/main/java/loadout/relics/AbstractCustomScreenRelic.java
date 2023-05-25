@@ -37,10 +37,12 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
     public static HashMap<String, Boolean> isScreenUpMap = new HashMap<>();
 
     protected final InputAction ctrlKey;
+    protected final InputAction shiftKey;
 
     public AbstractCustomScreenRelic(String id, Texture texture, Texture outline, RelicTier tier, LandingSound sfx) {
         super(id, texture, outline, tier, sfx);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+        this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
         if(isIsaacMode) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(id+"Alt");
@@ -106,6 +108,7 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
     }
 
     public void onCtrlRightClick() {}
+    public void onShiftRightClick() {}
 
     @Override
     public void onRightClick() {
@@ -131,6 +134,11 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
 
         if(this.ctrlKey.isPressed()) {
             onCtrlRightClick();
+            return;
+        }
+
+        if(this.shiftKey.isPressed()) {
+            onShiftRightClick();
             return;
         }
 
