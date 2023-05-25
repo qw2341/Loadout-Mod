@@ -91,7 +91,7 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
             for (int i = 0; i<len; i++) {
                 AbstractCard card = AbstractDungeon.player.masterDeck.group.get(i);
                 if (AbstractCardPatch.isCardModified(card)) {
-                    Object[] cardStat = new Integer[13];
+                    Object[] cardStat = new Object[13];
                     cardStat[0] = i;
                     cardStat[1] = card.cost;
                     cardStat[2] = card.baseDamage;
@@ -100,9 +100,9 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                     cardStat[5] = card.baseHeal;
                     cardStat[6] = card.baseDraw;
                     cardStat[7] = card.baseDiscard;
-                    cardStat[8] = card.color;
-                    cardStat[9] = card.type;
-                    cardStat[10] = card.rarity;
+                    cardStat[8] = card.color.toString();
+                    cardStat[9] = card.type.toString();
+                    cardStat[10] = card.rarity.toString();
                     cardStat[11] = card.misc;
                     cardStat[12] = card.timesUpgraded;
                     ret.add(cardStat);
