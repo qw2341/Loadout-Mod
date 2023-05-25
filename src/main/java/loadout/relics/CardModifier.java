@@ -195,13 +195,13 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
     @Override
     public void onObtainCard(AbstractCard c) {
-//        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(c.cardID)) {
-//            try {
-//                CardModifications.modifyCard(c,CardModifications.cardMap.get(c.cardID));
-//            } catch (Exception e) {
-//                LoadoutMod.logger.info("Failed to modify: " + c.cardID + " when obtaining");
-//            }
-//        }
+        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(c.cardID)) {
+            try {
+                CardModifications.modifyOnlyNumberIfExist(c);
+            } catch (Exception e) {
+                LoadoutMod.logger.info("Failed to modify: " + c.cardID + " when obtaining");
+            }
+        }
     }
 
 }
