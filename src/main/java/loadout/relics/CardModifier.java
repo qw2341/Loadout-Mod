@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
 
-public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Integer[][]> {
+public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Object[][]> {
 
     public static final String ID = LoadoutMod.makeID("CardModifier");
     private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("modifier_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("modifier_relic.png"));
@@ -83,15 +83,15 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
 
     @Override
-    public Integer[][] onSave() {
+    public Object[][] onSave() {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
-            ArrayList<Integer[]> ret = new ArrayList<>();
+            ArrayList<Object[]> ret = new ArrayList<>();
 
             for (int i = 0; i<len; i++) {
                 AbstractCard card = AbstractDungeon.player.masterDeck.group.get(i);
                 if (AbstractCardPatch.isCardModified(card)) {
-                    Integer[] cardStat = new Integer[13];
+                    Object[] cardStat = new Integer[13];
                     cardStat[0] = i;
                     cardStat[1] = card.cost;
                     cardStat[2] = card.baseDamage;
@@ -100,9 +100,9 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                     cardStat[5] = card.baseHeal;
                     cardStat[6] = card.baseDraw;
                     cardStat[7] = card.baseDiscard;
-                    cardStat[8] = card.color.ordinal();
-                    cardStat[9] = card.type.ordinal();
-                    cardStat[10] = card.rarity.ordinal();
+                    cardStat[8] = card.color;
+                    cardStat[9] = card.type;
+                    cardStat[10] = card.rarity;
                     cardStat[11] = card.misc;
                     cardStat[12] = card.timesUpgraded;
                     ret.add(cardStat);
@@ -110,7 +110,7 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
             }
 
-            return ret.toArray(new Integer[0][]);
+            return ret.toArray(new Object[0][]);
         }
 
 
@@ -118,30 +118,59 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
     }
 
     @Override
-    public void onLoad(Integer[][] ret) {
+    public void onLoad(Object[][] ret) {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
             if (ret != null && ret.length <= len && ret.length > 0 && ret[0].length == 13) {
                 for (int i = 0; i<ret.length; i++) {
-                    AbstractCard card = AbstractDungeon.player.masterDeck.group.get(ret[i][0]);
-                    for (int j = card.timesUpgraded; j < ret[i][12]; j++) {card.upgrade();}
-                    card.cost = ret[i][1];
+                    AbstractCard card = AbstractDungeon.player.masterDeck.group.get((int)(double)ret[i][0]);
+                    for (int j = card.timesUpgraded; j < (int)(double)ret[i][12]; j++) {card.upgrade();}
+                    card.cost = (int)(double)ret[i][1];
                     card.costForTurn = card.cost;
-                    card.baseDamage = ret[i][2];
-                    card.baseBlock = ret[i][3];
-                    card.baseMagicNumber = ret[i][4];
+                    card.baseDamage = (int)(double)ret[i][2];
+                    card.baseBlock = (int)(double)ret[i][3];
+                    card.baseMagicNumber = (int)(double)ret[i][4];
                     card.magicNumber = card.baseMagicNumber;
-                    card.baseHeal = ret[i][5];
-                    card.baseDraw = ret[i][6];
-                    card.baseDiscard = ret[i][7];
-                    card.color = AbstractCard.CardColor.values()[ret[i][8]];
-                    card.type = AbstractCard.CardType.values()[ret[i][9]];
-                    card.rarity = AbstractCard.CardRarity.values()[ret[i][10]];
-                    card.misc = ret[i][11];
+                    card.baseHeal = (int)(double)ret[i][5];
+                    card.baseDraw = (int)(double)ret[i][6];
+                    card.baseDiscard = (int)(double)ret[i][7];
+                    try {
+                        card.color = AbstractCard.CardColor.valueOf((String) ret[i][8]);
+                    } catch (Exception e) {
+                        try {
+                            card.color = AbstractCard.CardColor.values()[(int)(double)ret[i][8]];
+                        } catch (Exception ignore) {
+
+                        }
+
+                    }
+
+                    try {
+                        card.type = AbstractCard.CardType.valueOf((String) ret[i][9]);
+                    } catch (Exception e) {
+                        try {
+                            card.type = AbstractCard.CardType.values()[(int)(double)ret[i][9]];
+                        } catch (Exception ignore) {
+
+                        }
+
+                    }
+
+                    try {
+                        card.rarity = AbstractCard.CardRarity.valueOf((String) ret[i][10]);
+                    } catch (Exception e) {
+                        try {
+                            card.rarity = AbstractCard.CardRarity.values()[(int)(double)ret[i][10]];
+                        } catch (Exception ignore) {
+
+                        }
+                    }
+
+                    card.misc = (int)(double)ret[i][11];
                     AbstractCardPatch.setCardModified(card,true);
                     if(CardModifierManager.hasModifier(card, InfiniteUpgradeMod.ID)) {
                         card.upgraded = false;
-                        card.timesUpgraded = ret[i][12];
+                        card.timesUpgraded = (int)(double)ret[i][12];
                         InfUpgradePatch.changeCardName(card);
                     }
                 }
