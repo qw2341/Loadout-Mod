@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
 
                 }
 
-                if (this.name == null || this.name.length() == 0) this.name = "Unnamed Event";
+                if (this.name == null || this.name.length() == 0) this.name = eClass.getSimpleName();
                 String[] desc = (String[]) eClass.getField("DESCRIPTIONS").get(null);
                 if(desc != null && desc.length > 0) {
 //                    for (String d : desc)
@@ -105,6 +106,23 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
                 }
             }
 
+        }
+
+        public AbstractEvent getEvent() {
+            AbstractEvent ret;
+            try {
+                ret = this.eventClass.getConstructor().newInstance();
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+                     NoSuchMethodException e) {
+                e.printStackTrace();
+                try {
+                    ret = this.eventClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException ex) {
+                    ex.printStackTrace();
+                    ret = EventHelper.getEvent(this.id);
+                }
+            }
+            return ret;
         }
     }
     private static final UIStrings gUiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
@@ -327,9 +345,9 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
             }
         }
 
-        AbstractDungeon.eventList.add(0, eb.id);
+        //AbstractDungeon.eventList.add(0, eb.id);
 
-        EventfulCompass.goToRoom((AbstractRoom)new CustomEventRoom());
+        EventfulCompass.goToRoom(eb);
 
         if (Loader.isModLoadedOrSideloaded("IsaacMod")) {
             try {
