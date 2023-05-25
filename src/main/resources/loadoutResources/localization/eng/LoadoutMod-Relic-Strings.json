@@ -120,14 +120,14 @@
     "NAME": "Reality Manipulator",
     "FLAVOR": "Debug without debug console",
     "DESCRIPTIONS": [
-      "Right-click this relic to select debug powers you want. Left Click fields to edit them. Ctrl + right click to kill all monsters."
+      "Right-click this relic to select debug powers you want. Left Click fields to edit them. Ctrl + right click to kill all monsters. Shift + right click to spare all monsters."
     ]
   },
   "loadout:TildeKeyAlt": {
     "NAME": "Tilde Key",
     "FLAVOR": "Time to start over ... wait",
     "DESCRIPTIONS": [
-      "Right-click this relic to select debug powers you want. Left Click fields to edit them. Ctrl + right click to kill all monsters."
+      "Right-click this relic to select debug powers you want. Left Click fields to edit them. Ctrl + right click to kill all monsters. Shift + right click to spare all monsters."
     ]
   },
   "loadout:BottledMonster": {

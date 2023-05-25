@@ -121,14 +121,14 @@
     "NAME": "Manipulateur de Réalité",
     "FLAVOR": "Débogage sans console de débogage",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités. Cliquez avec le bouton gauche sur les champs pour les modifier. Ctrl + clic droit pour tuer tous les monstres."
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités. Cliquez avec le bouton gauche sur les champs pour les modifier. Ctrl + clic droit pour tuer tous les monstres. Maj + clic droit pour partager tous les monstres."
     ]
   },
   "loadout:TildeKeyAlt": {
     "NAME": "Clé Tilde",
     "FLAVOR": "Il est temps de recommencer... attendre",
     "DESCRIPTIONS": [
-      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités. Cliquez avec le bouton gauche sur les champs pour les modifier. Ctrl + clic droit pour tuer tous les monstres."
+      "Cliquez avec le bouton droit sur cette relique pour sélectionner les pouvoirs de débogage souhaités. Cliquez avec le bouton gauche sur les champs pour les modifier. Ctrl + clic droit pour tuer tous les monstres. Maj + clic droit pour partager tous les monstres."
     ]
   },
   "loadout:BottledMonster": {

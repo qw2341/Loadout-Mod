@@ -5,6 +5,7 @@ import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.patches.tempHp.BattleEnd;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -141,6 +142,10 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public void onCtrlRightClick() {
         killAllMonsters();
     }
+    @Override
+    public void onShiftRightClick() {
+        spareAllMonsters();
+    }
 
     @Override
     protected AbstractSelectScreen<StatModSelectScreen.StatModButton> getNewSelectScreen() {
@@ -256,6 +261,19 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         drawPerTurn = 5;
 
         playerAttackMult = 100;
+    }
+
+    public static void spareAllMonsters() {
+        if(AbstractDungeon.getMonsters()== null) return;
+        AbstractDungeon.actionManager.addToTop(new AbstractGameAction() {
+            @Override
+            public void update() {
+                if(!this.isDone) {
+                    this.isDone = true;
+                    AbstractDungeon.getCurrRoom().endBattle();
+                }
+            }
+        });
     }
 
     public static void killAllMonsters() {

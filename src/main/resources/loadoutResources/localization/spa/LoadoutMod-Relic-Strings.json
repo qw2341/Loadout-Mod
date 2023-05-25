@@ -121,14 +121,14 @@
 		"NAME": "Manipulador de Realidad",
 		"FLAVOR": "Depurar sin consola de depuración",
 		"DESCRIPTIONS": [
-			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos."
+			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos. Mayús + clic derecho para compartir todos los monstruos."
 		]
 	},
 	"loadout:TildeKeyAlt": {
 		"NAME": "Tecla de Tilde",
 		"FLAVOR": "Es hora de empezar de nuevo ... espera",
 		"DESCRIPTIONS": [
-			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos."
+			"Haga clic derecho en esta reliquia para seleccionar los poderes de depuración que desee. Campos de clic izquierdo para editarlos. CTRL + Haga clic derecho para matar a todos los monstruos. Mayús + clic derecho para compartir todos los monstruos."
 		]
 	},
 	"loadout:BottledMonster": {
