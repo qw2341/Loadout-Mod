@@ -98,7 +98,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                     this.id = this.instance.id;
                     this.type = this.instance.type;
                     if(this.name == null|| this.name.length() == 0) this.name = this.instance.name;
-                    if (this.name == null || this.name.length() == 0) this.name = "ERROR - Unnamed Monster";
+                    if (this.name == null || this.name.length() == 0) this.name = this.id;
                     this.tips.add(new PowerTip(this.name, "HP: " + this.instance.maxHealth));
                 } else {
                     try{
@@ -108,7 +108,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                         this.id = amClass.getSimpleName();
                     }
                     this.type = AbstractMonster.EnemyType.NORMAL;
-                    if (this.name == null || this.name.length() == 0) this.name = "ERROR - Unnamed Modded Monster";
+                    if (this.name == null || this.name.length() == 0) this.name = this.id;
                 }
 
 
