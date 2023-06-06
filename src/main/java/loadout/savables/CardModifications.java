@@ -191,6 +191,7 @@ public class CardModifications
     }
 
     public static void modifyIfExist(AbstractCard card) {
+        if (isGettingUnmoddedCopy) return;
         if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID)) {
             try {
                 CardModifications.modifyCard(card,CardModifications.cardMap.get(card.cardID));
