@@ -7,6 +7,7 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundFi
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.screens.CardViewPopupHeader;
@@ -21,7 +22,7 @@ public class InevitableMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return CardViewPopupHeader.TEXT[20] + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return FontHelper.colorString(CardViewPopupHeader.TEXT[20],"y")  + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override

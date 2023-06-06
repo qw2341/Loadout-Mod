@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.TooltipInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.screens.CardViewPopupHeader;
@@ -18,7 +19,7 @@ public class InfiniteUpgradeMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return CardViewPopupHeader.TEXT[22] + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return FontHelper.colorString(CardViewPopupHeader.TEXT[22], "y") + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override
