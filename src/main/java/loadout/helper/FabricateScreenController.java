@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import loadout.LoadoutMod;
 import loadout.relics.AllInOneBag;
 import pinacolada.cards.base.PCLCustomCardSlot;
-import pinacolada.ui.cardEditor.PCLCustomCardEditCardScreen;
+import pinacolada.ui.editor.card.PCLCustomCardEditCardScreen;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,8 +21,8 @@ public class FabricateScreenController {
     public static void openAddCardScreen(AbstractCard.CardColor cardColor) {
         isScreenUp = true;
         PCLCustomCardSlot slot = new PCLCustomCardSlot(cardColor);
-        currentScreen = new PCLCustomCardEditCardScreen(slot)
-                .setOnSave(() -> {
+        currentScreen = new PCLCustomCardEditCardScreen(slot);
+        currentScreen.setOnSave(() -> {
                     AbstractCard newCard = slot.makeFirstCard(false);
                     PCLCustomCardSlot.getCards(cardColor).add(slot);
                     LoadoutMod.cardsToDisplay.add(newCard);
@@ -41,8 +41,8 @@ public class FabricateScreenController {
             return;
         }
 
-        currentScreen = new PCLCustomCardEditCardScreen(slot)
-                .setOnSave(() -> {
+        currentScreen = new PCLCustomCardEditCardScreen(slot);
+        currentScreen.setOnSave(() -> {
                     AbstractCard newCard = slot.makeFirstCard(false);
                     replaceCardInList(LoadoutMod.cardsToDisplay,card,newCard);
                     replaceCardInList(cg.group,card,newCard);
