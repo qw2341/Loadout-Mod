@@ -22,6 +22,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
+import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.beyond.*;
 import com.megacrit.cardcrawl.events.city.*;
 import com.megacrit.cardcrawl.events.exordium.*;
@@ -914,9 +915,17 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         if(Loader.isModLoadedOrSideloaded("IsaacMod")) {
             try {
-                //registerEvent("HidenRoomEvent", (Class<? extends AbstractImageEvent>) Class.forName("events.HidenRoomEvent"), new String[] { "Exordium", "TheCity" , "TheBeyond"});
+                registerEvent("HidenRoomEvent", (Class<? extends AbstractImageEvent>) Class.forName("events.HidenRoomEvent"), new String[] { "Exordium", "TheCity" , "TheBeyond"});
             } catch (Exception e) {
                 logger.info("Failed to register Hidden Room event");
+            }
+        }
+
+        if(Loader.isModLoaded("betterNote")) {
+            try {
+                registerEvent("betterNote:BetterNote", (Class<? extends AbstractEvent>) Class.forName("betterNote.events.BetterNoteEvent"));
+            } catch (Exception e) {
+                logger.info("Failed to register better note event");
             }
         }
 
