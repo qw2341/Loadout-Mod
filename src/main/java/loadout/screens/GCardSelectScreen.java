@@ -1,6 +1,5 @@
 package loadout.screens;
 
-import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -26,15 +25,13 @@ import com.megacrit.cardcrawl.ui.buttons.CancelButton;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import com.megacrit.cardcrawl.ui.buttons.PeekButton;
 import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
-import extendedui.patches.HotkeyPatches;
 import loadout.LoadoutMod;
 import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -700,7 +697,6 @@ public class GCardSelectScreen
 
     public void open(CardGroup group, int numCards, String tipMsg, boolean forUpgrade, boolean forTransform, boolean canCancel, boolean forPurge) {
 
-        StatusLogger.getLogger().setLevel(Level.ERROR);
         this.originalGroup = group;
         //this.originalGroup.sortByRarityPlusStatusCardType(true);
         if (this.targetGroup == null) {
@@ -761,6 +757,8 @@ public class GCardSelectScreen
     }
 
     private void callOnOpen() {
+        Configurator.setLevel(TipHelper.class.getName(),Level.FATAL);
+
         if (Settings.isControllerMode) {
             Gdx.input.setCursorPosition(10, Settings.HEIGHT / 2);
             this.controllerCard = null;
@@ -872,7 +870,7 @@ public class GCardSelectScreen
         caller.setIsSelectionScreenUp(false);
         AbstractSelectScreen.showLoadoutRelics();
 
-        StatusLogger.getLogger().setLevel(Level.INFO);
+        Configurator.setLevel(TipHelper.class.getName(),Level.INFO);
     }
     private void updateScrolling() {
         if (PeekButton.isPeeking) {
