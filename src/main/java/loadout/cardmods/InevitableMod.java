@@ -30,6 +30,13 @@ public class InevitableMod extends AbstractCardModifier {
         AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(card.makeStatEquivalentCopy()));
     }
 
+    @Override
+    public List<TooltipInfo> additionalTooltips(AbstractCard card) {
+        if(!LoadoutMod.isCHN()) return null;
+        ArrayList<TooltipInfo> tips = new ArrayList<>();
+        tips.add(new TooltipInfo(CardViewPopupHeader.TEXT[20], CardViewPopupHeader.TEXT[21]));
+        return tips;
+    }
 
     @Override
     public AbstractCardModifier makeCopy() {

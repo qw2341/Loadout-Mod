@@ -24,7 +24,6 @@ public class InfiniteUpgradeMod extends AbstractCardModifier {
 
     @Override
     public List<TooltipInfo> additionalTooltips(AbstractCard card) {
-        if(LoadoutMod.isCHN()) return null;
         ArrayList<TooltipInfo> tips = new ArrayList<>();
         tips.add(new TooltipInfo(CardViewPopupHeader.TEXT[22], CardViewPopupHeader.TEXT[23]));
         return tips;
