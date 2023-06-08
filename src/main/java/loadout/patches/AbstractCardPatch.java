@@ -79,7 +79,8 @@ public class AbstractCardPatch {
 
         public static void use(AbstractCard c, AbstractPlayer player, AbstractMonster monster, int energyOnUse)
         {
-            energyOnUse = EnergyPanel.getCurrentEnergy();
+            //energyOnUse = EnergyPanel.getCurrentEnergy();
+            c.energyOnUse = energyOnUse;
             if (player.hasRelic(ChemicalX.ID)) {
                 player.getRelic(ChemicalX.ID).flash();
                 energyOnUse += 2;
