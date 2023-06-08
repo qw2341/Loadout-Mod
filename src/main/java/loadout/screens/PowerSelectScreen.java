@@ -628,7 +628,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
             if(filterAll && Favorites.favoritePowers.contains(p.id)) {
 
                 sb.setColor(GOLD_BACKGROUND);
-                sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT,curX - (float)128 / 2.0F, curY - (float)128 / 2.0F, (float)128, (float)128);
+                sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT,curX - 128.0f * Settings.scale / 2.0F, curY - 128.0f * Settings.scale / 2.0F, 128.0f * Settings.scale, 128.0f * Settings.scale);
             }
 
             p.render(sb);
