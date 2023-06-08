@@ -22,7 +22,7 @@ public class InevitableMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return FontHelper.colorString(CardViewPopupHeader.TEXT[20],"y")  + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return CardViewPopupHeader.TEXT[20] + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override
@@ -30,12 +30,6 @@ public class InevitableMod extends AbstractCardModifier {
         AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(card.makeStatEquivalentCopy()));
     }
 
-    @Override
-    public List<TooltipInfo> additionalTooltips(AbstractCard card) {
-        ArrayList<TooltipInfo> tips = new ArrayList<>();
-        tips.add(new TooltipInfo(CardViewPopupHeader.TEXT[20], CardViewPopupHeader.TEXT[21]));
-        return tips;
-    }
 
     @Override
     public AbstractCardModifier makeCopy() {

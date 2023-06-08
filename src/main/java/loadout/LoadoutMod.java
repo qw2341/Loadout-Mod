@@ -48,6 +48,7 @@ import loadout.helper.dynamicvariables.MiscVariable;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
+import loadout.screens.CardViewPopupHeader;
 import loadout.screens.SidePanel;
 import loadout.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -90,7 +91,7 @@ import static loadout.screens.PowerSelectScreen.dummyPlayer;
 @SpireInitializer
 public class LoadoutMod implements
         EditRelicsSubscriber, EditCardsSubscriber,
-        EditStringsSubscriber,
+        EditStringsSubscriber, EditKeywordsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
 StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber{
@@ -1329,5 +1330,15 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             }
         }
 
+    }
+
+    @Override
+    public void receiveEditKeywords() {
+        BaseMod.addKeyword(new String[]{CardViewPopupHeader.TEXT[20].toLowerCase()},CardViewPopupHeader.TEXT[21]);
+        if(isCHN()) BaseMod.addKeyword(new String[]{CardViewPopupHeader.TEXT[22].toLowerCase()},CardViewPopupHeader.TEXT[23]);
+    }
+
+    public static boolean isCHN() {
+        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT;
     }
 }

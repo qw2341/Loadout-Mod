@@ -19,11 +19,12 @@ public class InfiniteUpgradeMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return FontHelper.colorString(CardViewPopupHeader.TEXT[22], "y") + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return CardViewPopupHeader.TEXT[22] + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override
     public List<TooltipInfo> additionalTooltips(AbstractCard card) {
+        if(LoadoutMod.isCHN()) return null;
         ArrayList<TooltipInfo> tips = new ArrayList<>();
         tips.add(new TooltipInfo(CardViewPopupHeader.TEXT[22], CardViewPopupHeader.TEXT[23]));
         return tips;
