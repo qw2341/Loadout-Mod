@@ -758,6 +758,7 @@ public class GCardSelectScreen
 
     private void callOnOpen() {
         Configurator.setLevel(TipHelper.class.getName(),Level.FATAL);
+        Configurator.setLevel(LoadoutMod.class.getName(),Level.FATAL);
 
         if (Settings.isControllerMode) {
             Gdx.input.setCursorPosition(10, Settings.HEIGHT / 2);
@@ -871,6 +872,7 @@ public class GCardSelectScreen
         AbstractSelectScreen.showLoadoutRelics();
 
         Configurator.setLevel(TipHelper.class.getName(),Level.INFO);
+        Configurator.setLevel(LoadoutMod.class.getName(),Level.INFO);
     }
     private void updateScrolling() {
         if (PeekButton.isPeeking) {

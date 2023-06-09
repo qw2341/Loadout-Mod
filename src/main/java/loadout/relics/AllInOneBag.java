@@ -33,6 +33,8 @@ import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
 import loadout.uiElements.XGGGIcon;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.ArrayList;
 
@@ -295,7 +297,11 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
         for (CustomRelic cr : loadoutRelics) {
             cr.renderInTopPanel(sb);
-            if (cr.hb.hovered) cr.renderTip(sb);
+            if (cr.hb.hovered) {
+                Configurator.setLevel(TipHelper.class.getName(), Level.FATAL);
+                cr.renderTip(sb);
+                Configurator.setLevel(TipHelper.class.getName(), Level.INFO);
+            }
         }
 
     }

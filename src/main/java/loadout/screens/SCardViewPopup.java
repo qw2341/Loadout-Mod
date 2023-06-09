@@ -48,6 +48,8 @@ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.ui.buttons.ConfirmButton;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -111,6 +113,7 @@ public class SCardViewPopup {
           group = (CardGroup) EverythingFix.Fields.cardGroupMap.get(card.color);
         }
         //CardCrawlGame.isPopupOpen = true;
+        Configurator.setLevel(TipHelper.class.getName(), Level.FATAL);
         this.prevCard = null;
         this.nextCard = null;
         this.prevHb = null;
