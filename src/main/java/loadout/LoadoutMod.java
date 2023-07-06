@@ -1169,7 +1169,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             try{
                 ArrayList<PCLCustomCardSlot> customCards = pinacolada.cards.base.PCLCustomCardSlot.getCards(null);
                 for (PCLCustomCardSlot slot : customCards) {
-                    cardsToDisplay.add(slot.makeFirstCard(false));
+                    cardsToDisplay.add(slot.make());
                 }
                     //cardsToDisplay.add(slot.getBuilder(0).create(0));
             } catch (RuntimeException e) {
