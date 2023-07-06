@@ -104,41 +104,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static final String ENABLE_LEGACY_LAYOUT = "enableLegacyLayout";
     public static boolean enableLegacyLayout = true; // The boolean we'll be setting on/off (true/false)
 
-    public static final String ENABLE_STARTING_LOADOUT_BAG = "enableLoadoutBagStarting";
-    public static boolean enableBagStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_BIN = "enableTrashBinStarting";
-    public static boolean enableBinStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_CAULDRON = "enableLoadoutCauldronStarting";
-    public static boolean enableCauldronStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_PRINTER = "enableCardPrinterStarting";
-    public static boolean enablePrinterStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_SHREDDER = "enableCardShredderStarting";
-    public static boolean enableShredderStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_MODIFIER = "enableCardModifierStarting";
-    public static boolean enableModifierStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_COMPASS = "enableEventfulCompassStarting";
-    public static boolean enableCompassStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_POWER = "enablePowerGiverStarting";
-    public static boolean enablePowerStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_TILDE = "enableTildeKeyStarting";
-    public static boolean enableTildeStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_BOTTLE = "enableBottleMonsterStarting";
-    public static boolean enableBottleStarting = true;
-    public static final String ENABLE_STARTING_LOADOUT_BALLS = "enableOrbBoxStarting";
-    public static boolean enableBallBoxStarting = true;
-
-    public static final String ENABLE_STARTING_LOADOUT_CHEST = "enableBlightChestStarting";
-    public static boolean enableBChestStarting = true;
-
     public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
     public static boolean ignoreUnlock = false;
     public static final String ENABLE_STARTER_POOL = "enableStarterPool";
@@ -173,8 +138,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     //show isaac icons regardless of isaac mod installation?
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
     public static boolean enableIsaacIcons = false;
-    public static final String ENABLE_SIDE_PANEL = "eSidePanel";
-    //public static boolean enableSidePanel = false;
     public static boolean FABRICATE_MOD_LOADED = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
@@ -191,13 +154,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static ArrayList<AddEventParams> eventsToDisplay = new ArrayList<>();
     public static ConcurrentHashMap<String,Class<? extends AbstractPower>> powersToDisplay = new ConcurrentHashMap<>();
-    //public static CopyOnWriteArrayList<MonsterSelectScreen.MonsterButton> monstersToDisplay = new CopyOnWriteArrayList<>();
-    //public static CopyOnWriteArrayList<OrbSelectScreen.OrbButton> orbsToDisplay = new CopyOnWriteArrayList<>();
     public static ConcurrentHashMap<String, Class<? extends AbstractOrb>> orbMap = new ConcurrentHashMap<>();
-    //public static Set<String> orbIDs = orbMap.keySet("");
     public static ConcurrentHashMap<String, Class<? extends AbstractMonster>> monsterMap = new ConcurrentHashMap<>();
     public static HashMap<String, Class<? extends AbstractMonster>> baseGameMonsterMap = new HashMap<>();
-    //public static Set<String> monsterIDS = monsterMap.keySet("");
 
     public static ConcurrentHashMap<String, Class<? extends AbstractCardModifier>> cardModMap = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<String, String> cardModIDMap = new ConcurrentHashMap<>();
@@ -447,10 +406,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                     }
                 });
         settingsPanel.addUIElement(ignoreUnlocksButton);
-
-        //String[] relicPoolStrs = {ENABLE_STARTER_POOL,ENABLE_COMMON_POOL,ENABLE_UNCOMMON_POOL,ENABLE_RARE_POOL,ENABLE_BOSS_POOL,ENABLE_SHOP_POOL,ENABLE_EVENT_POOL};
-        //boolean[] relicPoolBools = {enableStarterPool,enableCommonPool,enableUncommonPool,enableRarePool,enableBossPool,enableShopPool,enableEventPool};
-        //ModLabeledToggleButton[] relicPoolBtns = new ModLabeledToggleButton[relicPoolBools.length];
 
         settingYPos -= lineSpacing;
 
@@ -833,18 +788,18 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
 
         if(enableLegacyLayout) {
-            if(enableBagStarting&&!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) new LoadoutBag().instantObtain();
-            if(enableBinStarting&&!AbstractDungeon.player.hasRelic(TrashBin.ID)) new TrashBin().instantObtain();
-            if(enableCauldronStarting&&!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) new LoadoutCauldron().instantObtain();
-            if(enablePrinterStarting&&!AbstractDungeon.player.hasRelic(CardPrinter.ID)) new CardPrinter().instantObtain();
-            if(enableShredderStarting&&!AbstractDungeon.player.hasRelic(CardShredder.ID)) new CardShredder().instantObtain();
-            if(enableModifierStarting&&!AbstractDungeon.player.hasRelic(CardModifier.ID)) new CardModifier().instantObtain();
-            if(enableCompassStarting&&!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) new EventfulCompass().instantObtain();
-            if(enablePowerStarting&&!AbstractDungeon.player.hasRelic(PowerGiver.ID)) new PowerGiver().instantObtain();
-            if(enableTildeStarting&&!AbstractDungeon.player.hasRelic(TildeKey.ID)) new TildeKey().instantObtain();
-            if(enableBottleStarting&&!AbstractDungeon.player.hasRelic(BottledMonster.ID)) new BottledMonster().instantObtain();
-            if(enableBallBoxStarting &&!AbstractDungeon.player.hasRelic(OrbBox.ID)) new OrbBox().instantObtain();
-            if(enableBChestStarting &&!AbstractDungeon.player.hasRelic(BlightChest.ID)) new BlightChest().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) new LoadoutBag().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(TrashBin.ID)) new TrashBin().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) new LoadoutCauldron().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(CardPrinter.ID)) new CardPrinter().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(CardShredder.ID)) new CardShredder().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(CardModifier.ID)) new CardModifier().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) new EventfulCompass().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(PowerGiver.ID)) new PowerGiver().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(TildeKey.ID)) new TildeKey().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(BottledMonster.ID)) new BottledMonster().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(OrbBox.ID)) new OrbBox().instantObtain();
+            if(!AbstractDungeon.player.hasRelic(BlightChest.ID)) new BlightChest().instantObtain();
         }
         if(!enableLegacyLayout && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) new AllInOneBag().instantObtain();
 
@@ -1237,7 +1192,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
         //add a default option
         relics.add(RelicLibrary.getRelic("Circlet"));
-        //relics.forEach(r->relicsToDisplay.add(r.makeCopy()));
         relicsToDisplay.addAll(relics);
 
 
@@ -1303,7 +1257,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         try {
             ModifierLibrary.initialize();
-//            ModifierLibrary.initOtherModifiers();
             addCardModIDs();
             cardModifications = new CardModifications();
         } catch (IOException e) {
@@ -1335,7 +1288,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receiveEditKeywords() {
         BaseMod.addKeyword(new String[]{CardViewPopupHeader.TEXT[20].toLowerCase()},CardViewPopupHeader.TEXT[21]);
-        //if(Settings.language == Settings.GameLanguage.ZHT) BaseMod.addKeyword(new String[]{CardViewPopupHeader.TEXT[22].toLowerCase()},CardViewPopupHeader.TEXT[23]);
     }
 
     public static boolean isCHN() {
