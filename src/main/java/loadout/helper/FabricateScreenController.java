@@ -23,7 +23,7 @@ public class FabricateScreenController {
         PCLCustomCardSlot slot = new PCLCustomCardSlot(cardColor);
         currentScreen = new PCLCustomCardEditCardScreen(slot);
         currentScreen.setOnSave(() -> {
-                    AbstractCard newCard = slot.makeFirstCard(false);
+                    AbstractCard newCard = slot.make();
                     PCLCustomCardSlot.getCards(cardColor).add(slot);
                     LoadoutMod.cardsToDisplay.add(newCard);
                     refreshCardPrinterCards();
@@ -43,7 +43,7 @@ public class FabricateScreenController {
 
         currentScreen = new PCLCustomCardEditCardScreen(slot);
         currentScreen.setOnSave(() -> {
-                    AbstractCard newCard = slot.makeFirstCard(false);
+                    AbstractCard newCard = slot.make();
                     replaceCardInList(LoadoutMod.cardsToDisplay,card,newCard);
                     replaceCardInList(cg.group,card,newCard);
 
