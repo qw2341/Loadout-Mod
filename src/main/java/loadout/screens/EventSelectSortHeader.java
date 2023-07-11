@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.rewards.chests.*;
 import com.megacrit.cardcrawl.rooms.*;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import com.megacrit.cardcrawl.vfx.combat.BattleStartEffect;
 import loadout.LoadoutMod;
 import loadout.relics.EventfulCompass;
@@ -120,7 +121,12 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         f.add("Slay the Spire");
         this.modNameDropdown = new DropdownMenu(this, f,FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
-        acts = ReflectionHacks.getPrivateStatic(ActCommand.class, "acts");
+        acts = new HashMap<>();
+
+        acts.put(Exordium.ID, 1);
+        acts.put(TheCity.ID, 2);
+        acts.put(TheBeyond.ID, 3);
+        acts.put(TheEnding.ID, 4);
 
         actNames = new HashMap<>();
         actNames.put(Exordium.ID, Exordium.NAME);
@@ -162,6 +168,7 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         this.dropdownMenus = new DropdownMenu[] {this.chestSelectDropdown,this.actSelectDropdown, this.modNameDropdown};
         this.dropdownMenuHeaders = new String[] {TEXT[3],TEXT[0], "Mod"};
 
+        this.currentActSelection = arr.get(this.actSelectDropdown.getSelectedIndex());
         this.searchBox = new TextSearchBox(this, 0.0f, START_Y, false);
     }
 
@@ -254,10 +261,15 @@ public class EventSelectSortHeader extends AbstractSortHeader {
     public void goToAct() {
         String pickedActId = null;
         for (Map.Entry<String, String> entry : actNames.entrySet()) {
-            if (Objects.equals(this.currentActSelection, entry.getValue())) {
+            if (this.currentActSelection.equals(entry.getValue())) {
                 pickedActId = entry.getKey();
+                break;
             }
         }
+        if(pickedActId == null) {
+            LoadoutMod.logger.warn("Did not find id when current act selection is: " + this.currentActSelection);
+        }
+
         int pickedActNum = acts.get(pickedActId) - 1;
         try {
             DevConsole.log("Skipping to act " + pickedActId);
