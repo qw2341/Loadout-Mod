@@ -58,9 +58,10 @@ public class CardPrinter extends AbstractCardScreenRelic {
             lastCards.clear();
             for (int i = 0; i < count; i++) {
                 AbstractCard card = selectScreen.selectedCards.get(i);
+                card = card.makeStatEquivalentCopy();
                 if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)
-                    AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
-                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+                    AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(card.makeSameInstanceOf(), Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(card, Settings.WIDTH / 2.0F + (min + i * 30.0F) * Settings.scale - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
                 lastCards.add(card.makeStatEquivalentCopy());
             }
             this.flash();
@@ -68,9 +69,10 @@ public class CardPrinter extends AbstractCardScreenRelic {
     }
 
     public void obtainCard(AbstractCard card) {
+        card = card.makeStatEquivalentCopy();
         if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)
-            AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
-        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+            AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(card.makeSameInstanceOf(), Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(card, Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
         this.flash();
     }
 
