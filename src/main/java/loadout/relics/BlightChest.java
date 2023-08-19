@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.BlightHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.BlightSelectScreen;
@@ -81,23 +82,37 @@ public class BlightChest extends AbstractCustomScreenRelic<AbstractBlight>{
             pB.incrementUp();
             pB.stack();
         }
+
+        if(AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            AbstractDungeon.getMonsters().showIntent();
+        }
     }
 
     public static void removeBlight(AbstractBlight b) {
+        if(!AbstractDungeon.isPlayerInDungeon()) return;
         if(AbstractDungeon.player.hasBlight(b.blightID)) {
             AbstractDungeon.player.blights.removeIf(pB -> pB.blightID.equals(b.blightID));
             organizePlayerBlights();
         }
+        if(AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            AbstractDungeon.getMonsters().showIntent();
+        }
     }
 
     public static void removeBlight(AbstractBlight b, int amount) {
+        if(!AbstractDungeon.isPlayerInDungeon()) return;
         if(AbstractDungeon.player.hasBlight(b.blightID)) {
            AbstractBlight pB = AbstractDungeon.player.getBlight(b.blightID);
            pB.counter -= amount;
            if(pB.counter < 1) {
                removeBlight(b);
+           } else {
+               if(AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                   AbstractDungeon.getMonsters().showIntent();
+               }
            }
         }
+
     }
 
     public static void organizePlayerBlights() {
