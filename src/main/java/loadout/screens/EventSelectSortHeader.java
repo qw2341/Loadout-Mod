@@ -82,7 +82,7 @@ public class EventSelectSortHeader extends AbstractSortHeader {
         this.modButton = new HeaderButtonPlus(rTEXT[3], xPosition, yPosition, this, true ,false, HeaderButtonPlus.Alignment.RIGHT);
 
 
-        xPosition = 50.0F;
+        xPosition = 120.0F * Settings.scale;
         yPosition = START_Y - 5 * 52.0f * Settings.yScale;
         this.actButton = new HeaderButtonPlus(TEXT[1], xPosition, yPosition, this, true , ImageMaster.MAP_ICON);
         this.actButton.alignment = HeaderButtonPlus.Alignment.LEFT;
