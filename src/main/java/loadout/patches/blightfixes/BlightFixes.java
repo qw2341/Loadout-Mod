@@ -3,6 +3,7 @@ package loadout.patches.blightfixes;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatches;
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -19,7 +20,8 @@ import java.util.Arrays;
 @SpirePatch(clz = AbstractMonster.class, method = "setHp", paramtypez = {int.class, int.class}),
 @SpirePatch(clz = AbstractMonster.class, method = "calculateDamage", paramtypez = {int.class}),
 @SpirePatch(clz = AbstractCreature.class, method = "increaseMaxHp", paramtypez = {int.class, boolean.class}),
-        @SpirePatch(clz = AbstractCreature.class, method = "heal", paramtypez = {int.class, boolean.class})})
+        @SpirePatch(clz = AbstractCreature.class, method = "heal", paramtypez = {int.class, boolean.class}),
+@SpirePatch(clz = DamageInfo.class, method = "applyPowers", paramtypez = {AbstractCreature.class, AbstractCreature.class})})
 public class BlightFixes {
     @SpireRawPatch
     public static void Raw(CtBehavior ctMethodToPatch) throws BadBytecode {
