@@ -1,6 +1,6 @@
 {
   "modid": "${project.artifactId}",
-  "name": "${project.name}",
+  "name": "!!!Loadout Mod",
   "author_list": ["JasonW"],
   "credits": "Basemod, ModTheSpire, #modding",
   "description": "${project.description}",
