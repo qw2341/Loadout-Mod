@@ -5,7 +5,7 @@
     <!--The author name(s) as they appear in MTS and any other comments are in your ModTheSpire.json-->
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
-    <name>Loadout Mod</name>
+    <name>!Loadout Mod</name>
     <version>0.9.4</version>
     <description>Adds relics that gives you stuffs. Please drag me directly under basemod and stslib to prevent crashes</description>
 
