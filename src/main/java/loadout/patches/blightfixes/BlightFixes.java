@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @SpirePatches({@SpirePatch(clz = AbstractDungeon.class, method = "generateMap"),
 @SpirePatch(clz = MonsterRoomElite.class, method = "dropReward"),
-        @SpirePatch(clz = AbstractMonster.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, int.class, float.class, float.class, float.class, float.class, String.class, float.class, float.class, boolean.class}),
+//        @SpirePatch(clz = AbstractMonster.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, int.class, float.class, float.class, float.class, float.class, String.class, float.class, float.class, boolean.class}),
 @SpirePatch(clz = AbstractMonster.class, method = "setHp", paramtypez = {int.class, int.class}),
 @SpirePatch(clz = AbstractMonster.class, method = "calculateDamage", paramtypez = {int.class}),
 @SpirePatch(clz = AbstractCreature.class, method = "increaseMaxHp", paramtypez = {int.class, boolean.class}),
