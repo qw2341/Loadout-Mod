@@ -271,6 +271,9 @@ public class SCardViewPopup {
         if(cardModSelectScreen != null && cardModSelectScreen.show) {
             cardModSelectScreen.update();
             return;
+        } if(this.cardViewPopupHeader.textPopup != null && this.cardViewPopupHeader.textPopup.shown) {
+            this.cardViewPopupHeader.textPopup.update();
+            return;
         }
 
         this.confirmButton.update();
@@ -442,6 +445,12 @@ public class SCardViewPopup {
 
         sb.setColor(this.fadeColor);
         sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float)Settings.WIDTH, (float)Settings.HEIGHT);
+
+        if (this.cardViewPopupHeader != null && this.cardViewPopupHeader.textPopup != null && this.cardViewPopupHeader.textPopup.shown) {
+            this.cardViewPopupHeader.textPopup.render(sb);
+            return;
+        }
+
         sb.setColor(Color.WHITE);
         this.renderCardBack(sb);
         this.renderPortrait(sb);

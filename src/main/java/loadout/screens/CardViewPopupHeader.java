@@ -2,6 +2,7 @@ package loadout.screens;
 
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.cardmods.EtherealMod;
 import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
@@ -29,9 +30,11 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
+import loadout.helper.EnhancedTextInputReceiver;
 import loadout.helper.FabricateScreenController;
 import loadout.helper.RelicClassComparator;
 import loadout.patches.AbstractCardPatch;
+import loadout.relics.CardModifier;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +48,7 @@ import java.util.List;
 
 import static loadout.LoadoutMod.*;
 
-public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMenuListener, CardEffectButton.CardStuffProvider {
+public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMenuListener, CardEffectButton.CardStuffProvider, EnhancedTextInputReceiver {
 
 
     public static final String[] clTEXT = CardLibSortHeader.TEXT;
@@ -125,6 +128,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus fabricateEditButton;
 
+    private final HeaderButtonPlus renameButton;
+    private final HeaderButtonPlus descEditButton;
+
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
     public CardEffectButton[] cardEffectButtons;
@@ -139,12 +145,15 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     public SCardViewPopup cardViewScreen;
 
     private boolean isCardFabricated = false;
+    private boolean isRenaming = true;
+    public TextPopup textPopup;
 
 
     public CardViewPopupHeader(SCardViewPopup sCardViewPopup, float startX) {
         if (img == null)
             img = ImageMaster.loadImage("images/ui/cardlibrary/selectBox.png");
         this.cardViewScreen = sCardViewPopup;
+        this.textPopup = new TextPopup(this, "", false, false);
         this.startX = startX;
         float xPosition = this.startX - 0.5f * SPACE_X;
         float yPosition = START_Y - 260.0f * Settings.scale;
@@ -387,12 +396,19 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         xPosition += 0.5f * SPACE_X;
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
         yPosition -= SPACE_Y;
+        this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
+
+        xPosition = Settings.WIDTH / 2f - 200f * Settings.scale;
+        yPosition = 10f * Settings.yScale;
+
+        this.renameButton = new HeaderButtonPlus(TEXT[26],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
+
+        xPosition += this.renameButton.textWidth + 50.0f * Settings.scale;
+        this.descEditButton = new HeaderButtonPlus(TEXT[27],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton};
-
-        this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton, this.renameButton, this.descEditButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -871,7 +887,15 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             SCardViewPopup.cardModSelectScreen.open(cardViewScreen.card, cardViewScreen.group.group);
         } else if (button == this.fabricateEditButton) {
             FabricateScreenController.openEditCardScreen(cardViewScreen.card, cardViewScreen.group);
-        } else {
+        } else if (button == this.renameButton) {
+            isRenaming = true;
+            textPopup.setText(getTextField());
+            textPopup.open();
+        } else if (button == this.descEditButton) {
+            isRenaming = false;
+            textPopup.setText(getTextField());
+            textPopup.open();
+        }else {
             return;
         }
         if (cardViewScreen != null && cardViewScreen.card != null) {
@@ -972,5 +996,39 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     @Override
     public AbstractCard getCard() {
         return cardViewScreen.card == null ? new Madness() : cardViewScreen.card;
+    }
+
+    @Override
+    public void onConfirming() {
+        if (isRenaming) {
+            ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(getCard());
+        } else {
+            getCard().initializeDescription();
+        }
+
+    }
+
+    @Override
+    public void onCanceling() {
+
+    }
+
+    @Override
+    public void setTextField(String textToSet) {
+        if(isRenaming) {
+            if(!this.getCard().name.equals(textToSet)) {
+                setCardModded(true);
+                this.getCard().originalName = textToSet;
+                this.getCard().name = CardModifier.getUpgradedName(this.getCard());
+            }
+        } else if (!this.getCard().rawDescription.equals(textToSet)) {
+            setCardModded(true);
+            this.getCard().rawDescription = textToSet;
+        }
+    }
+
+    @Override
+    public String getTextField() {
+        return isRenaming ? this.getCard().originalName : this.getCard().rawDescription;
     }
 }

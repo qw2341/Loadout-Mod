@@ -95,7 +95,9 @@
 			"Actualización Infinita",
 			"Capaz de actualizarse indefinidamente.",
 			"Modificadores de Cartas",
-			"Editar con Fabricar"
+			"Editar con Fabricar",
+			"Renombrar",
+			"Modificar descripción"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

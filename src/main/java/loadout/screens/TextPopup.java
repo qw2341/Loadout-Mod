@@ -57,13 +57,15 @@ public class TextPopup implements TextReceiver
     private TextInputReceiver receiver;
     public String title;
     private boolean digitonly;
+    public boolean isClearing;
 
-    public TextPopup(TextInputReceiver receiver, String title, boolean digitonly) {
+    public TextPopup(TextInputReceiver receiver, String title, boolean digitonly, boolean isClearing) {
         this.yesHb.move(854.0F * Settings.scale, Settings.OPTION_Y - 120.0F * Settings.scale);
         this.noHb.move(1066.0F * Settings.scale, Settings.OPTION_Y - 120.0F * Settings.scale);
         this.receiver = receiver;
         this.title = title;
         this.digitonly = digitonly;
+        this.isClearing = isClearing;
     }
 
     public void update() {
@@ -134,7 +136,7 @@ public class TextPopup implements TextReceiver
     }
 
     public void confirm() {
-        textField = textField.trim();
+        //textField = textField.trim();
         if (textField.equals("")) {
             return;
         }
@@ -455,7 +457,7 @@ public class TextPopup implements TextReceiver
 
 
         this.shown = true;
-        textField = "";
+        if(isClearing) textField = "";
     }
 
     @Override
@@ -475,7 +477,7 @@ public class TextPopup implements TextReceiver
 
     @Override
     public boolean acceptCharacter(char c) {
-        return this.digitonly ? Character.isDigit(c) : Character.isDigit(c) || Character.isLetter(c) || (c >=32 && c<=126);
+        return !this.digitonly || Character.isDigit(c);
     }
 
     @Override

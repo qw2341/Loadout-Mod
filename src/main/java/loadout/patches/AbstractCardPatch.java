@@ -4,14 +4,18 @@ import basemod.helpers.CardModifierManager;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.cards.red.SearingBlow;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.ChemicalX;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import javassist.CannotCompileException;
+import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
 import loadout.LoadoutMod;
 import loadout.actions.MultiUseAction;
@@ -29,6 +33,9 @@ public class AbstractCardPatch {
             card.color = __instance.color;
             card.magicNumber = __instance.baseMagicNumber;
 
+            card.originalName = __instance.originalName;
+            card.name = __instance.name;
+            card.rawDescription = __instance.rawDescription;
         }
 
         /**
@@ -139,5 +146,21 @@ public class AbstractCardPatch {
             return __result;
         }
 
+    }
+
+    @SpirePatch(clz = SearingBlow.class, method = "upgrade")
+    public static class upgradeNamePatch {
+
+        public static ExprEditor Instrument()
+        {
+            return new ExprEditor() {
+                @Override
+                public void edit(FieldAccess f) throws CannotCompileException {
+                    if (f.getClassName().equals(SearingBlow.class.getName())
+                            && f.getFieldName().equals("name"))
+                        f.replace("{ $1 = $0.originalName + \"+\" + $0.timesUpgraded; $_ = $proceed($$); }");
+                }
+            };
+        }
     }
 }

@@ -155,7 +155,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         show = true;
         doneSelecting = false;
 
-        this.currentCard = card;
+        currentCard = card;
         this.cards = cards;
 
         this.confirmButton.isDisabled = false;

@@ -95,7 +95,9 @@
 			"Infinite Upgrade",
 			"Able to be upgraded indefinitely.",
 			"Card Modifiers",
-			"Edit with Fabricate"
+			"Edit with Fabricate",
+			"Rename",
+			"Modify Description"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

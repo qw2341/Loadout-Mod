@@ -94,7 +94,9 @@
 			"Mise à niveau infinie",
 			"Peut être mis à niveau indéfiniment.",
 			"Modificateurs de Carte",
-			"Modifier avec Fabriquer"
+			"Modifier avec Fabriquer",
+			"Renommer",
+			"Modifier la description"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

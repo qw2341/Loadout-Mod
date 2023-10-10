@@ -1,5 +1,6 @@
 package loadout.savables;
 
+import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -9,6 +10,7 @@ import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
+import loadout.relics.CardModifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.Objects;
 public class SerializableCardLite {
 
     public static Object[] toObjectArray(AbstractCard ac) {
-        Object[] cardArray = new Object[16];
+        Object[] cardArray = new Object[18];
         cardArray[0] = ac.cardID;
             cardArray[1] = AbstractCardPatch.isCardModified(ac);
             //get an unmodded copy and compare whats changed
@@ -49,6 +51,10 @@ public class SerializableCardLite {
                 ((ArrayList<String>)cardArray[15]).add(acm.identifier(ac));
             }
         }
+        AbstractCard cardCopy = ac.makeStatEquivalentCopy();
+        CardModifierManager.removeAllModifiers(cardCopy, false);
+        if(!unmoddedCopy.originalName.equals(cardCopy.originalName)) cardArray[16] = cardCopy.originalName;
+        if(!unmoddedCopy.rawDescription.equals(cardCopy.rawDescription)) cardArray[17] = cardCopy.rawDescription;
 
         return cardArray;
     }
@@ -83,6 +89,18 @@ public class SerializableCardLite {
 
         if(sc[15] != null) for(String modifierId : (ArrayList<String>)sc[15]) {
             CardModifierManager.addModifier(card, Objects.requireNonNull(ModifierLibrary.getModifier(modifierId)));
+        }
+
+        if(sc.length >= 18) {
+            if(sc[16] != null) {
+                card.originalName = (String) sc[16];
+                card.name = CardModifier.getUpgradedName(card);
+                ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
+            }
+            if(sc[17] != null) {
+                card.rawDescription = (String) sc[17];
+                card.initializeDescription();
+            }
         }
 
         InfUpgradePatch.changeCardName(card);

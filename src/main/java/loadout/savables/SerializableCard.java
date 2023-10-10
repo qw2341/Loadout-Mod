@@ -3,16 +3,9 @@ package loadout.savables;
 import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.localization.CardStrings;
-import loadout.LoadoutMod;
-import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
@@ -20,7 +13,6 @@ import loadout.relics.CardModifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SerializableCard implements Serializable {
     public String id;
@@ -44,6 +36,8 @@ public class SerializableCard implements Serializable {
     public int timesUpgraded = 0;
     public boolean modified;
     public String[] modifiers;
+    public String originalName;
+    public String rawDescription;
 
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         if(!CardLibrary.isACard(sc.id)) {
@@ -78,6 +72,17 @@ public class SerializableCard implements Serializable {
             CardModifierManager.addModifier(card, cardModifier);
         }
 
+        if(sc.originalName != null) {
+            card.originalName = sc.originalName;
+            card.name = CardModifier.getUpgradedName(card);
+            ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
+        }
+        if(sc.rawDescription != null) {
+            card.rawDescription = sc.rawDescription;
+            card.initializeDescription();
+        }
+
+
         InfUpgradePatch.changeCardName(card);
 
         return card;
@@ -106,6 +111,12 @@ public class SerializableCard implements Serializable {
 
         ArrayList<AbstractCardModifier> cardMods = CardModifierManager.modifiers(card);
         sc.modifiers = new String[cardMods.size()];
+        AbstractCard original = card.makeCopy();
+        AbstractCard cardCopy = card.makeStatEquivalentCopy();
+        CardModifierManager.removeAllModifiers(cardCopy,false);
+        sc.originalName = cardCopy.originalName.equals(original.originalName) ? null : cardCopy.originalName;
+        sc.rawDescription = cardCopy.rawDescription.equals(original.rawDescription) ? null : card.rawDescription;
+
         int i = 0;
         for (AbstractCardModifier acm : cardMods) {
             sc.modifiers[i] = acm.identifier(card);

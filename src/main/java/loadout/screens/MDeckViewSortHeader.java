@@ -75,7 +75,7 @@ public class MDeckViewSortHeader extends AbstractSortHeader implements EnhancedT
         this.dropdownMenuHeaders = new String[] { TEXT[4] };
         this.dropdownMenus = new DropdownMenu[] { this.loadoutsButton };
 
-        this.namingPopup = new TextPopup(this,TEXT[5], false);
+        this.namingPopup = new TextPopup(this,TEXT[5], false, true);
     }
 
     private void loadLoadouts() {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.BranchingUpgradesCard;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -344,7 +345,7 @@ public class GCardSelectScreen
                                 refreshCardsInDisplay();
                                 break;
                             case UPGRADE:
-                                if(this.hoveredCard instanceof BranchingUpgradesCard || this.hoveredCard instanceof BranchableUpgradeCard)
+                                if(this.hoveredCard instanceof BranchingUpgradesCard || (Loader.isModLoaded("LazyManKits") && this.hoveredCard instanceof BranchableUpgradeCard))
                                     branchRenderPanel.show(this.hoveredCard);
                                 else CardModifier.upgradeCard(this.hoveredCard);
                                 refreshCardsInDisplay();

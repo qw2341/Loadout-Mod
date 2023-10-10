@@ -21,7 +21,7 @@ public class InfUpgradePatch {
         if(CardModifierManager.hasModifier(__instance, InfiniteUpgradeMod.ID)) {
             try {
                 logger.info("upgrading " + __instance.cardID + " with upgradeTimes: " + __instance.timesUpgraded);
-                __instance.name = ((CardStrings) ReflectionHacks.getPrivateStatic(__instance.getClass(), "cardStrings")).NAME + "+" + __instance.timesUpgraded;
+                __instance.name = __instance.originalName + "+" + __instance.timesUpgraded;
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.info("Failed to infinitely upgrade " + __instance.cardID + " !");

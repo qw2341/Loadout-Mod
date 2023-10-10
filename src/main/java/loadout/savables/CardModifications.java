@@ -3,33 +3,21 @@ package loadout.savables;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
-import com.badlogic.gdx.utils.Json;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
-import loadout.cardmods.GainGoldOnKillMod;
-import loadout.cardmods.GainGoldOnPlayMod;
-import loadout.cardmods.GainHpOnKillMod;
-import loadout.cardmods.HealOnPlayMod;
 import loadout.helper.ModifierLibrary;
-import loadout.patches.AbstractCardPatch;
+import loadout.relics.CardModifier;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class CardModifications
         //implements CustomSavable<HashMap<String,SerializableCard>>
@@ -80,7 +68,7 @@ public class CardModifications
     }
 
     public void save() throws IOException {
-        FileWriter fileWriter = new FileWriter(this.filePath);
+        Writer fileWriter = new OutputStreamWriter(new FileOutputStream(this.filePath),StandardCharsets.UTF_8);;
         CustomSavable.saveFileGson.toJson(cardMap, cardMapType, fileWriter);
         fileWriter.flush();
         fileWriter.close();
@@ -121,6 +109,12 @@ public class CardModifications
             card.type = AbstractCard.CardType.values()[sc.type];
             card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
             card.misc = sc.misc;
+
+            if (sc.originalName != null) {
+                card.originalName = sc.originalName;
+                card.name = CardModifier.getUpgradedName(card);
+            }
+            if (sc.rawDescription != null) card.rawDescription = sc.rawDescription;
 
             for(String modifierId : sc.modifiers) {
                 AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);

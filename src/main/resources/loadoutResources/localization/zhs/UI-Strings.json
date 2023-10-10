@@ -94,7 +94,9 @@
 			"无限升级",
 			"能被强化任意次。",
 			"卡牌词条添加/移除",
-			"使用Fabricate修改"
+			"使用Fabricate修改",
+			"重命名",
+			"修改描述"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
