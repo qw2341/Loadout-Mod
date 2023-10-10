@@ -1,5 +1,6 @@
 package loadout.helper;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -7,27 +8,27 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import loadout.LoadoutMod;
 import loadout.relics.AllInOneBag;
 import pinacolada.cards.base.PCLCustomCardSlot;
-import pinacolada.ui.editor.card.PCLCustomCardEditCardScreen;
+import pinacolada.ui.editor.card.PCLCustomCardEditScreen;
 
 import java.util.List;
 import java.util.Objects;
 
 public class FabricateScreenController {
 
-    public static PCLCustomCardEditCardScreen currentScreen;
+    public static PCLCustomCardEditScreen currentScreen;
 
     public static boolean isScreenUp = false;
 
     public static void openAddCardScreen(AbstractCard.CardColor cardColor) {
         isScreenUp = true;
         PCLCustomCardSlot slot = new PCLCustomCardSlot(cardColor);
-        currentScreen = new PCLCustomCardEditCardScreen(slot);
+        currentScreen = new PCLCustomCardEditScreen(slot);
         currentScreen.setOnSave(() -> {
                     AbstractCard newCard = slot.make();
                     PCLCustomCardSlot.getCards(cardColor).add(slot);
                     LoadoutMod.cardsToDisplay.add(newCard);
                     refreshCardPrinterCards();
-                    slot.commitBuilder();
+                    ReflectionHacks.privateMethod(PCLCustomCardSlot.class, "commitBuilder").invoke(slot);
                     isScreenUp = false;
                 });
     }
@@ -41,14 +42,14 @@ public class FabricateScreenController {
             return;
         }
 
-        currentScreen = new PCLCustomCardEditCardScreen(slot);
+        currentScreen = new PCLCustomCardEditScreen(slot);
         currentScreen.setOnSave(() -> {
                     AbstractCard newCard = slot.make();
                     replaceCardInList(LoadoutMod.cardsToDisplay,card,newCard);
                     replaceCardInList(cg.group,card,newCard);
 
                     replaceSCardPopupCard(newCard);
-                    slot.commitBuilder();
+                    ReflectionHacks.privateMethod(PCLCustomCardSlot.class, "commitBuilder").invoke(slot);
                     isScreenUp = false;
                 });
     }
