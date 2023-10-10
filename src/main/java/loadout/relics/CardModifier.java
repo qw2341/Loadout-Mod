@@ -3,6 +3,8 @@ package loadout.relics;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.BranchingUpgradesCard;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -10,6 +12,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.vfx.UpgradeShineEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 import loadout.LoadoutMod;
@@ -19,6 +22,7 @@ import loadout.patches.InfUpgradePatch;
 import loadout.savables.CardModifications;
 import loadout.screens.GCardSelectScreen;
 import loadout.util.TextureLoader;
+import rs.lazymankits.interfaces.cards.BranchableUpgradeCard;
 
 import java.util.ArrayList;
 
@@ -57,7 +61,7 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
     }
 
 
-    public void upgradeCard(AbstractCard card, float x, float y) {
+    public static void upgradeCard(AbstractCard card, float x, float y) {
         card.upgrade();
 
         if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
@@ -68,11 +72,38 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
             CardCrawlGame.sound.play("CARD_UPGRADE");
         }
 
-        this.flash();
     }
 
-    public void upgradeCard(AbstractCard card) {
-        this.upgradeCard(card,Settings.WIDTH / 2.0F,Settings.HEIGHT / 2.0F);
+    public static void upgradeCard(AbstractCard card) {
+        upgradeCard(card,Settings.WIDTH / 2.0F,Settings.HEIGHT / 2.0F);
+    }
+
+    public static AbstractCard branchUpgradeCard(AbstractCard card, int branch, boolean upgradeEffects) {
+        if(card instanceof BranchingUpgradesCard) {
+            if (branch == 1) {
+                ((BranchingUpgradesCard) card).doBranchUpgrade();
+            } else {
+                ((BranchingUpgradesCard) card).doNormalUpgrade();
+            }
+        } else if (card instanceof BranchableUpgradeCard) {
+            BranchableUpgradeCard b = ((BranchableUpgradeCard)card);
+            b.setChosenBranch(branch);
+            b.upgradeCalledOnSL();
+        } else {
+            logger.warn("{} is not a branch upgrade card!", card.cardID);
+        }
+
+        if(upgradeEffects) {
+            if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                card.superFlash();
+            } else {
+                AbstractDungeon.topLevelEffects.add(new ShowCardBrieflyEffect(card.makeStatEquivalentCopy(), Settings.WIDTH / 2.0F,Settings.HEIGHT / 2.0F));
+                AbstractDungeon.topLevelEffects.add(new UpgradeShineEffect(Settings.WIDTH / 2.0F,Settings.HEIGHT / 2.0F));
+                CardCrawlGame.sound.play("CARD_UPGRADE");
+            }
+
+        }
+        return card;
     }
 
 

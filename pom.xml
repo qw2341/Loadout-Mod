@@ -102,6 +102,14 @@
             <systemPath>${Steam.path}/workshop/content/646570/2396661789/Ruina.jar</systemPath>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>rs.lazymankits</groupId>
+            <artifactId>LazyManKits</artifactId>
+            <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2554005913/[STS]Lazy Man's Kits.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 

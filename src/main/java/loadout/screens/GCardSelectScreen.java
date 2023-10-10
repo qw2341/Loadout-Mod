@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.BranchingUpgradesCard;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -28,9 +29,11 @@ import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
 import loadout.LoadoutMod;
 import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
+import loadout.uiElements.CardBranchRenderPanel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
+import rs.lazymankits.interfaces.cards.BranchableUpgradeCard;
 
 
 import java.util.ArrayList;
@@ -134,6 +137,8 @@ public class GCardSelectScreen
 
     public int selectMult = 1;
 
+    public CardBranchRenderPanel branchRenderPanel;
+
 
     public GCardSelectScreen(CardDisplayMode currentMode,  AbstractCardScreenRelic caller) {
         this.caller = caller;
@@ -169,7 +174,7 @@ public class GCardSelectScreen
                 break;
         }
 
-
+        this.branchRenderPanel = new CardBranchRenderPanel();
     }
 
     public void update() {
@@ -186,6 +191,10 @@ public class GCardSelectScreen
 
         if (this.currentMode == CardDisplayMode.UPGRADE && this.cardModScreen != null && this.cardModScreen.isOpen) {
             this.cardModScreen.update();
+            return;
+        } else if (this.currentMode == CardDisplayMode.UPGRADE && this.branchRenderPanel.shown) {
+            this.branchRenderPanel.update();
+            updateScrolling();
             return;
         }
 
@@ -335,7 +344,9 @@ public class GCardSelectScreen
                                 refreshCardsInDisplay();
                                 break;
                             case UPGRADE:
-                                ((CardModifier)caller).upgradeCard(this.hoveredCard);
+                                if(this.hoveredCard instanceof BranchingUpgradesCard || this.hoveredCard instanceof BranchableUpgradeCard)
+                                    branchRenderPanel.show(this.hoveredCard);
+                                else CardModifier.upgradeCard(this.hoveredCard);
                                 refreshCardsInDisplay();
                                 break;
                         }
@@ -1033,10 +1044,12 @@ public class GCardSelectScreen
             } else {
                 this.targetGroup.renderExceptOneCardShowBottled(sb, this.hoveredCard);
             }
+            if(!branchRenderPanel.shown) {
+                this.hoveredCard.renderHoverShadow(sb);
+                this.hoveredCard.renderInLibrary(sb);
+                this.hoveredCard.renderCardTip(sb);
+            }
 
-            this.hoveredCard.renderHoverShadow(sb);
-            this.hoveredCard.renderInLibrary(sb);
-            this.hoveredCard.renderCardTip(sb);
 
 
             if ((AbstractDungeon.getCurrRoom()).phase != AbstractRoom.RoomPhase.COMBAT) {
@@ -1148,6 +1161,9 @@ public class GCardSelectScreen
         this.confirmButton.render(sb);
         this.cancelButton.render(sb);
 
+        if (this.currentMode == CardDisplayMode.UPGRADE && this.branchRenderPanel != null && this.branchRenderPanel.shown) {
+            this.branchRenderPanel.render(sb);
+        }
 
         //this.peekButton.render(sb);
 
