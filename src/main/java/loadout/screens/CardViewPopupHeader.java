@@ -398,12 +398,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
 
-        xPosition = Settings.WIDTH / 2f - 200f * Settings.scale;
-        yPosition = 10f * Settings.yScale;
+//        xPosition = Settings.WIDTH / 2f - 200f * Settings.scale;
+//        yPosition = 10f * Settings.yScale;
+        yPosition -= SPACE_Y;
 
         this.renameButton = new HeaderButtonPlus(TEXT[26],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
-        xPosition += this.renameButton.textWidth + 50.0f * Settings.scale;
+        //xPosition += this.renameButton.textWidth + 50.0f * Settings.scale;
+        yPosition -= SPACE_Y;
         this.descEditButton = new HeaderButtonPlus(TEXT[27],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
