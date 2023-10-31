@@ -1,5 +1,6 @@
 package loadout.patches;
 
+import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -28,7 +29,8 @@ public class AbstractCreaturePatch {
         }
     }
     @SpirePatches({@SpirePatch(clz = AbstractMonster.class, method = "render", paramtypez = {SpriteBatch.class}),
-            @SpirePatch(clz = AbstractPlayer.class, method = "render", paramtypez = {SpriteBatch.class})})
+            @SpirePatch(clz = AbstractPlayer.class, method = "render", paramtypez = {SpriteBatch.class}),
+            @SpirePatch(clz = CustomMonster.class, method = "render", paramtypez = {SpriteBatch.class})})
     public static class RenderPatch {
         @SpirePostfixPatch
         public static void PostFix(AbstractCreature __instance, SpriteBatch sb) {
