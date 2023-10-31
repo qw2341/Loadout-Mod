@@ -32,6 +32,7 @@ public class CreatureManipulationPanel implements UIElement {
 
     private float oldMX = 0;
     private float oldMY = 0;
+    private float drawXDiff = 0, drawYDiff = 0;
     public boolean isHidden;
 
     public CreatureManipulationPanel(AbstractCreature creature) {
@@ -40,11 +41,14 @@ public class CreatureManipulationPanel implements UIElement {
         this.buttons = new ArrayList<>();
         //move
         this.buttons.add(new CreatureManipulationButton(TEXT[0], () -> {
-            LoadoutMod.logger.info("Move button pressed");
             oldMX = InputHelper.mX;
             oldMY = InputHelper.mY;
+            drawXDiff = creature.drawX - creature.hb_x;
+            drawYDiff = creature.drawY - creature.hb_y;
         }, () -> {
             ReflectionHacks.privateMethod(AbstractCreature.class,"refreshHitboxLocation").invoke(creature);
+            oldMX = 0;
+            oldMY = 0;
         }, () -> {
             if(oldMX != 0 && oldMY != 0) {
                 float xDiff = InputHelper.mX - oldMX;
@@ -87,7 +91,7 @@ public class CreatureManipulationPanel implements UIElement {
 
     @Override
     public void update() {
-        if(AbstractDungeon.isScreenUp) this.isHidden = true;
+        if(AbstractDungeon.isScreenUp || !LoadoutMod.enableCreatureManipulation) this.isHidden = true;
         if(isHidden) return;
 
         boolean isHoveringButtons = false;

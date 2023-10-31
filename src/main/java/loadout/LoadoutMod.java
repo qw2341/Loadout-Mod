@@ -129,6 +129,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static final String ENABLE_DRAG_SELECT = "enableDragSelection";
     public static boolean enableDrag = true;
 
+    public static final String ENABLE_CREATURE_MANIPULATION = "enableCreatureManipulation";
+    public static boolean enableCreatureManipulation = true;
+
     public static final String RELIC_OBTAIN_AMOUNT = "amountOfRelicToObtain";
     public static int relicObtainMultiplier = 1;
 
@@ -245,6 +248,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
         theDefaultDefaultSettings.setProperty(USE_ISAAC_ICONS,"FALSE");
         //theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "TRUE");
+        theDefaultDefaultSettings.setProperty(SkinManager.SKIN_SELECTION, "DEFAULT");
+        theDefaultDefaultSettings.setProperty(ENABLE_CREATURE_MANIPULATION, "TRUE");
 
         try {
             config = new SpireConfig("loadoutMod", "theLoadoutConfig", theDefaultDefaultSettings); // ...right here
@@ -268,6 +273,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             enableRemoveFromPool = config.getBool(REMOVE_RELIC_FROM_POOLS);
             enableIsaacIcons = config.getBool(USE_ISAAC_ICONS);
             //enableSidePanel = config.getBool(ENABLE_SIDE_PANEL);
+            SkinManager.currentSkin = SkinManager.Skin.valueOf(config.getString(SkinManager.SKIN_SELECTION));
+            enableCreatureManipulation = config.getBool(ENABLE_CREATURE_MANIPULATION);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -631,6 +638,24 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                     }
                 });
         settingsPanel.addUIElement(enableIsaacIconsButton);
+
+        settingYPos -= lineSpacing;
+
+        ModLabeledToggleButton enableCreatureManipButton = new ModLabeledToggleButton(SettingText[18],
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+                enableCreatureManipulation, // Boolean it uses
+                settingsPanel, // The mod panel in which this button will be in
+                (label) -> {}, // thing??????? idk
+                (button) -> { // The actual button:
+                    enableCreatureManipulation = button.enabled;
+                    try {
+                        config.setBool(ENABLE_CREATURE_MANIPULATION, enableCreatureManipulation);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        settingsPanel.addUIElement(enableCreatureManipButton);
 
         settingYPos -= lineSpacing;
 

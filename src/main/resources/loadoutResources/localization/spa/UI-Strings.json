@@ -18,7 +18,8 @@
 			"¿Usar iconos de elementos desde la vinculación de Isaac? (Reinicio del juego necesario)",
 			"¿Borrar datos de modificación de la tarjeta?",
 			"#rwarning: ¡Deshabilitar la reliquia del modificador causará modificaciones de la tarjeta #rall, incluidas modificaciones permanentes al mal funcionamiento!",
-			"Habilitar todo Bag [Experimental]"
+			"Habilitar todo Bag [Experimental]",
+			"Habilite la edición con el botón derecho en las entidades"
 		]
 	},
 	"loadout:RelicSelectionScreen": {
