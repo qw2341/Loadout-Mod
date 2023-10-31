@@ -1122,7 +1122,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             logger.info("Fabricate detected, adding custom cards");
 //
             try{
-                ArrayList<PCLCustomCardSlot> customCards = pinacolada.cards.base.PCLCustomCardSlot.getCards(null);
+                ArrayList<PCLCustomCardSlot> customCards = pinacolada.cards.base.PCLCustomCardSlot.getCards();
                 for (PCLCustomCardSlot slot : customCards) {
                     cardsToDisplay.add(slot.make());
                 }
