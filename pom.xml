@@ -110,6 +110,14 @@
             <systemPath>${Steam.path}/workshop/content/646570/2554005913/[STS]Lazy Man's Kits.jar</systemPath>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>spireTogether</groupId>
+            <artifactId>spireTogether</artifactId>
+            <version>6.2.2</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2384072973/TogetherInSpire.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 
