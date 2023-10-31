@@ -111,11 +111,10 @@ public class SerializableCard implements Serializable {
 
         ArrayList<AbstractCardModifier> cardMods = CardModifierManager.modifiers(card);
         sc.modifiers = new String[cardMods.size()];
-        AbstractCard original = card.makeCopy();
-        AbstractCard cardCopy = card.makeStatEquivalentCopy();
-        CardModifierManager.removeAllModifiers(cardCopy,false);
-        sc.originalName = cardCopy.originalName.equals(original.originalName) ? null : cardCopy.originalName;
-        sc.rawDescription = cardCopy.rawDescription.equals(original.rawDescription) ? null : card.rawDescription;
+        AbstractCard original = CardModifier.getUnmodifiedCopyCard(card.cardID);
+
+        sc.originalName = original != null && card.originalName.equals(original.originalName) ? null : card.originalName;
+        sc.rawDescription = original != null && card.rawDescription.equals(original.rawDescription) ? null : card.rawDescription;
 
         int i = 0;
         for (AbstractCardModifier acm : cardMods) {

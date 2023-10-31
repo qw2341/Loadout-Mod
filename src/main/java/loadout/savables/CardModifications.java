@@ -1,5 +1,6 @@
 package loadout.savables;
 
+import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.abstracts.CustomSavable;
 import basemod.helpers.CardModifierManager;
@@ -113,8 +114,12 @@ public class CardModifications
             if (sc.originalName != null) {
                 card.originalName = sc.originalName;
                 card.name = CardModifier.getUpgradedName(card);
+                ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
             }
-            if (sc.rawDescription != null) card.rawDescription = sc.rawDescription;
+            if (sc.rawDescription != null) {
+                card.rawDescription = sc.rawDescription;
+                card.initializeDescription();
+            }
 
             for(String modifierId : sc.modifiers) {
                 AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);
