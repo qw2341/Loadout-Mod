@@ -172,6 +172,14 @@
 			"보스 보물 상자",
 			"새 방으로 이동"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"움직이다",
+			"권한 편집",
+			"죽이다",
+			"제거하다"
+		]
 	}
 
 

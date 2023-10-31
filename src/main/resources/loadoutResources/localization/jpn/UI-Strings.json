@@ -172,6 +172,14 @@
 			"ボス宝箱",
 			"新しい部屋に行く"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"動く",
+			"権限の編集",
+			"殺す",
+			"取り去る"
+		]
 	}
 
 

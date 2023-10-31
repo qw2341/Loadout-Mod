@@ -172,6 +172,14 @@
 			"Coffre au Trésor du Boss",
 			"Aller à la nouvelle chambre"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"Bouger",
+			"Pouvoirs d’édition",
+			"Tuer",
+			"Enlever"
+		]
 	}
 
 

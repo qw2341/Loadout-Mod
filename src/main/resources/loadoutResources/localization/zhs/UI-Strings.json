@@ -172,6 +172,14 @@
 			"Boss宝箱",
 			"Neow房间"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"拖拽移动",
+			"编辑能力",
+			"秒杀",
+			"移除"
+		]
 	}
 
 }

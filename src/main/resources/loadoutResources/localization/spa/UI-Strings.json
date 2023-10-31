@@ -173,5 +173,14 @@
 			"Cofre del jefe",
 			"Ir a la sala de neow"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"Mover",
+			"Editar poderes",
+			"Matar",
+			"Eliminar"
+		]
 	}
+
 }
