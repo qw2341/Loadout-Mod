@@ -117,7 +117,8 @@ public class PowerSelectSortHeader extends AbstractSortHeader implements HeaderB
         }
 
         for (DropdownMenu dm : this.dropdownMenus) {
-            dm.update();
+            if((dm != this.targetSelectMenu || !PowerSelectScreen.singleTarget))
+                dm.update();
         }
 
         this.searchBox.update();
@@ -186,13 +187,18 @@ public class PowerSelectSortHeader extends AbstractSortHeader implements HeaderB
         } else if (button == this.resetAllButton) {
             this.selectScreen.resetPowerAmounts();
         } else if (button == this.clearAllEffectsButton) {
-            if(this.selectScreen.currentTarget == PowerGiver.PowerTarget.PLAYER)
-                AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
-            else if (this.selectScreen.currentTarget == PowerGiver.PowerTarget.MONSTER) {
-                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                    AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(am,false));
+            if(!PowerSelectScreen.singleTarget) {
+                if(this.selectScreen.currentTarget == PowerGiver.PowerTarget.PLAYER)
+                    AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(AbstractDungeon.player,false));
+                else if (this.selectScreen.currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                    for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                        AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(am,false));
+                    }
                 }
+            } else {
+                AbstractDungeon.actionManager.addToBottom(new RemoveAllPowersAction(PowerSelectScreen.target,false));
             }
+
 
         } else {
             return;
@@ -230,6 +236,7 @@ public class PowerSelectSortHeader extends AbstractSortHeader implements HeaderB
         for (int i = 0; i< this.dropdownMenus.length ; i++) {
 
             DropdownMenu ddm = this.dropdownMenus[i];
+            if(ddm == this.targetSelectMenu && PowerSelectScreen.singleTarget) continue;
 
             ddm.render(sb,xPos,yPos);
             yPos += 0.5f * spaceY;

@@ -482,4 +482,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public float atDamageModify(float damage, AbstractCard c) {
         return tildeKey.atDamageModify(damage, c);
     }
+
+    public static AllInOneBag getInstance() {
+        return (AllInOneBag) AbstractDungeon.player.getRelic(ID);
+    }
 }

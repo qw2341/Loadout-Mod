@@ -250,6 +250,9 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     private boolean firstSelection = true;
 
+    public static boolean singleTarget = false;
+    public static AbstractCreature target = null;
+
 
     public PowerSelectScreen(AbstractCustomScreenRelic<PowerButton> owner)
     {
@@ -338,17 +341,29 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
     public void refreshPowersForTarget() {
         PowerGiver o = ((PowerGiver)owner);
+        HashMap<String, Integer> pm = new HashMap<>();
+        if(singleTarget) {
+            for(AbstractPower ap : target.powers) {
+                pm.put(ap.ID, ap.amount);
+            }
+        }
         for(PowerButton pb : this.itemsClone) {
             pb.amount = 0;
-            if (currentTarget == PowerGiver.PowerTarget.PLAYER) {
-                if(o.savedPowersPlayer.containsKey(pb.id)) {
-                    pb.amount = o.savedPowersPlayer.get(pb.id);
+            if(!singleTarget) {
+                if (currentTarget == PowerGiver.PowerTarget.PLAYER) {
+                    if(o.savedPowersPlayer.containsKey(pb.id)) {
+                        pb.amount = o.savedPowersPlayer.get(pb.id);
+                    }
+                } else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                    if(o.savedPowersMonster.containsKey(pb.id)) {
+                        pb.amount = o.savedPowersMonster.get(pb.id);
+                    }
                 }
-            } else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
-                if(o.savedPowersMonster.containsKey(pb.id)) {
-                    pb.amount = o.savedPowersMonster.get(pb.id);
-                }
+            } else {
+                if(pm.containsKey(pb.id))
+                    pb.amount = pm.get(pb.id);
             }
+
         }
     }
 
@@ -356,10 +371,19 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
         for (PowerButton pb : this.items) {
             pb.amount = 0;
         }
-        if (currentTarget == PowerGiver.PowerTarget.PLAYER)
-            ((PowerGiver)this.owner).savedPowersPlayer.clear();
-        else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-            ((PowerGiver)this.owner).savedPowersMonster.clear();
+        if(!singleTarget) {
+            if (currentTarget == PowerGiver.PowerTarget.PLAYER)
+                ((PowerGiver)this.owner).savedPowersPlayer.clear();
+            else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                ((PowerGiver)this.owner).savedPowersMonster.clear();
+        }
+
+    }
+
+    public void openSingle(AbstractCreature targetCreature) {
+        singleTarget = true;
+        target = targetCreature;
+        super.open();
     }
 
     @Override
@@ -369,6 +393,13 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
         targetY = scrollLowerBound;
         scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
         firstSelection = true;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        singleTarget = false;
+        target = null;
     }
 
     private boolean isCombat() {
@@ -419,31 +450,42 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                             LoadoutMod.logger.info("Failed to save favorites");
                         }
                     } else {
-                        if(firstSelection) {
-                            firstSelection = false;
-                            PowerGiver.lastPowers.clear();
-                        }
-                        PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, selectMult));
-                        clickStartedItem.amount += selectMult;
-                        if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                            ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, +selectMult);
-                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-                            ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, +selectMult);
+                        if(!singleTarget) {
+                            if(firstSelection) {
+                                firstSelection = false;
+                                PowerGiver.lastPowers.clear();
+                            }
+                            PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, selectMult));
+                            clickStartedItem.amount += selectMult;
+                            if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                                ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, +selectMult);
+                            else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                                ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, +selectMult);
 
-                        if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                            if(currentTarget == PowerGiver.PowerTarget.PLAYER) {
-                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, +selectMult);
-                                if(clickStartedItem.id.equals(StrengthPower.POWER_ID) && selectMult > 0) {
-                                    if(selectMult > 5) AllInOneBag.XGGGSay("@I@ @need@ @MORE@ @power!@");
-                                    else AllInOneBag.XGGGSay("~I~ ~need~ ~power!~");
+                            if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                                if(currentTarget == PowerGiver.PowerTarget.PLAYER) {
+                                    ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, +selectMult);
+                                    if(clickStartedItem.id.equals(StrengthPower.POWER_ID) && selectMult > 0) {
+                                        if(selectMult > 5) AllInOneBag.XGGGSay("@I@ @need@ @MORE@ @power!@");
+                                        else AllInOneBag.XGGGSay("~I~ ~need~ ~power!~");
+                                    }
+                                }
+                                else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                                    for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                                        ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, +selectMult, am);
+                                    }
                                 }
                             }
-                            else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
-                                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                                    ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, +selectMult, am);
-                                }
+                        } else {
+                            //single target mode
+                            clickStartedItem.amount += selectMult;
+                            if(target.isPlayer) {
+                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, +selectMult);
+                            } else {
+                                ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, +selectMult, target);
                             }
                         }
+
 
                         this.owner.flash();
                     }
@@ -465,26 +507,36 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
                 CInputActionSet.select.unpress();
                 if (hoveredItem == clickStartedItem)
                 {
-                    if(firstSelection) {
-                        firstSelection = false;
-                        PowerGiver.lastPowers.clear();
-                    }
-                    PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, -selectMult));
-                    clickStartedItem.amount -= selectMult;
-                    if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                        ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, -selectMult);
-                    else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
-                        ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, -selectMult);
-
-                    if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                    if(!singleTarget) {
+                        if(firstSelection) {
+                            firstSelection = false;
+                            PowerGiver.lastPowers.clear();
+                        }
+                        PowerGiver.lastPowers.add(new PowerGiver.PowerAction(currentTarget, clickStartedItem.id, -selectMult));
+                        clickStartedItem.amount -= selectMult;
                         if(currentTarget == PowerGiver.PowerTarget.PLAYER)
-                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, -selectMult);
-                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
-                            for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
-                                ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, -selectMult, am);
+                            ((PowerGiver)owner).modifyAmountPlayer(clickStartedItem.id, -selectMult);
+                        else if (currentTarget == PowerGiver.PowerTarget.MONSTER)
+                            ((PowerGiver)owner).modifyAmountMonster(clickStartedItem.id, -selectMult);
+
+                        if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                            if(currentTarget == PowerGiver.PowerTarget.PLAYER)
+                                ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, -selectMult);
+                            else if (currentTarget == PowerGiver.PowerTarget.MONSTER) {
+                                for (AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+                                    ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, -selectMult, am);
+                                }
                             }
                         }
+                    } else {
+                        clickStartedItem.amount -= selectMult;
+                        //single target removal
+                        if(target.isPlayer)
+                            ((PowerGiver)owner).applyPowerToPlayer(clickStartedItem.id, -selectMult);
+                        else
+                            ((PowerGiver)owner).applyPowerToMonster(clickStartedItem.id, -selectMult, target);
                     }
+
 
                     this.owner.flash();
 

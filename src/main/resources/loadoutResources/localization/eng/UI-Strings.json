@@ -173,5 +173,13 @@
 			"Boss Chest",
 			"Go to Neow Room"
 		]
+	},
+	"loadout:CreatureManipulationPanel": {
+		"TEXT": [
+			"Move",
+			"Edit Powers",
+			"Kill",
+			"Remove"
+		]
 	}
 }

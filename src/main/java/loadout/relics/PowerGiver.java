@@ -94,7 +94,12 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         }
     }
 
-
+    public void openSingle(AbstractCreature abstractCreature) {
+        this.itemSelected = false;
+        setIsSelectionScreenUp(true);
+        if(this.selectScreen == null) this.selectScreen = getNewSelectScreen();
+        ((PowerSelectScreen) this.selectScreen).openSingle(abstractCreature);
+    }
 
     @Override
     protected AbstractSelectScreen<PowerSelectScreen.PowerButton> getNewSelectScreen() {
