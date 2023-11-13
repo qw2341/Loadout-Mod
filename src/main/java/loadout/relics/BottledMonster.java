@@ -1,6 +1,7 @@
 package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -72,6 +73,16 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
             }
             ar.monsters.monsters.addAll(monsterTemp);
         }
+    }
+
+    public static void copyMonster(AbstractMonster original, AbstractCreature copy) {
+        copy.flipHorizontal = original.flipHorizontal;
+        copy.powers.clear();
+        if(original.powers != null && !original.powers.isEmpty()) original.powers.forEach(op -> PowerGiver.applyPowerToMonster(op.ID,op.amount,copy));
+        //copy.name = original.name;
+        copy.maxHealth = original.maxHealth;
+        copy.currentHealth = original.currentHealth;
+        copy.currentBlock = original.currentBlock;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
+import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -12,16 +13,22 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
 import loadout.relics.AllInOneBag;
+import loadout.relics.BottledMonster;
 import loadout.relics.TildeKey;
+import loadout.screens.MonsterSelectScreen;
 import loadout.screens.PowerSelectScreen;
 import loadout.uiElements.CreatureManipulationButton;
 import loadout.uiElements.UIElement;
 
 import java.util.ArrayList;
+
+import static loadout.screens.MonsterSelectScreen.MonsterButton.calculateSmartDistance;
 
 public class CreatureManipulationPanel implements UIElement {
 
@@ -72,20 +79,34 @@ public class CreatureManipulationPanel implements UIElement {
         //kill
         this.buttons.add(new CreatureManipulationButton(TEXT[2], () -> {
             AbstractDungeon.actionManager.addToTop(new InstantKillAction(creature));
-            AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(creature.hb.cX, creature.hb.cY)));
+            if(!Settings.FAST_MODE) AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(creature.hb.cX, creature.hb.cY)));
         }));
         //remove
 //        if(!creature.isPlayer) this.buttons.add(new CreatureManipulationButton(TEXT[3], () -> {
 //            AbstractDungeon.getCurrRoom().monsters.monsters.remove(creature);
 //        }));
+        //dupe
+        this.buttons.add(new CreatureManipulationButton(TEXT[4], () -> {
+            AbstractRoom ar = AbstractDungeon.getCurrRoom();
+            if(ar!=null && ar.monsters!= null) {
+                AbstractMonster monsterTemp = MonsterSelectScreen.spawnMonster((Class<? extends AbstractMonster>) creature.getClass(),creature.drawX - calculateSmartDistance(creature, creature) + 30.0F * (float) Math.random(), creature.drawY + 20.0F * (float) Math.random());
+                BottledMonster.copyMonster((AbstractMonster) creature, monsterTemp);
+                //ar.monsters.monsters.add(monsterTemp);
+                AbstractDungeon.actionManager.addToBottom(new SpawnMonsterAction(monsterTemp, false, -99));
+            }
+        }));
     }
 
     @Override
     public void render(SpriteBatch sb) {
         if(isHidden) return;
 
+        //super lazy simple solution here
+        int i = 0;
         for(CreatureManipulationButton cb : buttons) {
+            if(i == 3 && creature == AbstractDungeon.player) break;
             cb.render(sb);
+            i++;
         }
     }
 

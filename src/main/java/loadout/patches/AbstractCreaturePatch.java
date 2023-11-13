@@ -8,6 +8,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatches;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import loadout.LoadoutMod;
@@ -44,11 +45,11 @@ public class AbstractCreaturePatch {
         @SpirePostfixPatch
         public static void PostFix(AbstractCreature __instance) {
             CreatureManipulationPanel panel = PanelField.manipulationPanel.get(__instance);
-            if(__instance.hb.hovered && InputHelper.justReleasedClickRight && !__instance.isDeadOrEscaped()) {
+            if(__instance.hb.hovered && InputHelper.justClickedRight && !__instance.isDeadOrEscaped()) {
                 panel.isHidden = !panel.isHidden;
                 //LoadoutMod.logger.info("Panel is now: {}", panel.isHidden);
             }
-            if(__instance.isDeadOrEscaped()) panel.isHidden = true;
+            if(__instance.isDeadOrEscaped() || AbstractDungeon.player.cardInUse != null || AbstractDungeon.player.isDraggingCard || AbstractDungeon.player.inSingleTargetMode) panel.isHidden = true;
 
             panel.update();
         }

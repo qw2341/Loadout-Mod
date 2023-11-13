@@ -180,7 +180,8 @@
 			"Move",
 			"Edit Powers",
 			"Kill",
-			"Remove"
+			"Remove",
+			"Replicate"
 		]
 	}
 }

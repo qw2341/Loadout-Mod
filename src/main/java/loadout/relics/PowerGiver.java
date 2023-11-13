@@ -69,7 +69,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
 
     public HashMap<String, Integer> savedPowersMonster;
 
-    private final AbstractCard placeholderCard = new Madness();
+    private static final AbstractCard placeholderCard = new Madness();
 
     public enum PowerTarget {
         PLAYER, MONSTER
@@ -161,7 +161,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         this.savedPowersMonster = savedPowers[1];
     }
 
-    public AbstractPower getPower(String pID, int amount, AbstractCreature creature, AbstractCard card) {
+    public static AbstractPower getPower(String pID, int amount, AbstractCreature creature, AbstractCard card) {
         Class<? extends AbstractPower> powerClassToApply = powersToDisplay.get(pID);
         AbstractPower powerToApply = new StrengthPower(PowerSelectScreen.dummyPlayer,0);
 
@@ -211,7 +211,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPower(id, amount, AbstractDungeon.player, placeholderCard), amount));
     }
 
-    public void applyPowerToMonster(String id, int amount, AbstractCreature monster) {
+    public static void applyPowerToMonster(String id, int amount, AbstractCreature monster) {
         AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(monster,monster, getPower(id, amount, monster, placeholderCard), amount));
     }
 
