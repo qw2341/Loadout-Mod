@@ -15,9 +15,11 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import loadout.LoadoutMod;
 import loadout.helper.LoadoutRelicHelper;
 import loadout.patches.RelicPopUpPatch;
 import loadout.screens.GCardSelectScreen;
+import loadout.util.SkinManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,6 @@ import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
 
 public abstract class AbstractCardScreenRelic extends CustomRelic implements ClickableRelic {
-    public static final boolean isIsaacMode = enableIsaacIcons || Loader.isModLoadedOrSideloaded("IsaacMod")||Loader.isModLoadedOrSideloaded("IsaacModExtend");
 
     public static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
 
@@ -43,7 +44,7 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
         super(id, texture, outline, tier, sfx);
         this.displayMode = displayMode;
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
-        if(isIsaacMode) {
+        if(LoadoutMod.isIsaac()) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(id+"Alt");
                 tips.clear();
@@ -198,7 +199,7 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
 
     @Override
     public void playLandingSFX() {
-        if (isIsaacMode) {
+        if (LoadoutMod.isIsaac()) {
             if (CardCrawlGame.MUTE_IF_BG && Settings.isBackgrounded) {
                 return;
             } else if (landingSfx != null) {

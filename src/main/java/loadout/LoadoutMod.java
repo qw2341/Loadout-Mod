@@ -140,7 +140,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     //show isaac icons regardless of isaac mod installation?
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
-    public static boolean enableIsaacIcons = false;
     public static boolean FABRICATE_MOD_LOADED = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
@@ -171,6 +170,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static SidePanel sidePanel = null;
 
+    public static SkinManager skinManager = null;
+
     public static int numThreadsTotal = 0;
     public static int numThreadsFinished = 0;
 
@@ -194,13 +195,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     // =============== MAKE IMAGE PATHS =================
     
-    public static String makeRelicPath(String resourcePath) {
-        return getModID() + "Resources/images/relics/" + resourcePath;
-    }
-    
-    public static String makeRelicOutlinePath(String resourcePath) {
-        return getModID() + "Resources/images/relics/outline/" + resourcePath;
-    }
+
 
     public static String makeUIPath(String resourcePath) {
         return getModID() + "Resources/images/ui/" + resourcePath;
@@ -246,9 +241,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         theDefaultDefaultSettings.setProperty(ENABLE_DRAG_SELECT,"TRUE");
         theDefaultDefaultSettings.setProperty(RELIC_OBTAIN_AMOUNT,"1");
         theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
-        theDefaultDefaultSettings.setProperty(USE_ISAAC_ICONS,"FALSE");
-        //theDefaultDefaultSettings.setProperty(ENABLE_SIDE_PANEL, "TRUE");
-        theDefaultDefaultSettings.setProperty(SkinManager.SKIN_SELECTION, "DEFAULT");
+        theDefaultDefaultSettings.setProperty(SkinManager.SKIN_SELECTION, "default");
         theDefaultDefaultSettings.setProperty(ENABLE_CREATURE_MANIPULATION, "TRUE");
 
         try {
@@ -271,9 +264,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             enableDrag = config.getBool(ENABLE_DRAG_SELECT);
             relicObtainMultiplier = config.getInt(RELIC_OBTAIN_AMOUNT);
             enableRemoveFromPool = config.getBool(REMOVE_RELIC_FROM_POOLS);
-            enableIsaacIcons = config.getBool(USE_ISAAC_ICONS);
-            //enableSidePanel = config.getBool(ENABLE_SIDE_PANEL);
-            SkinManager.currentSkin = SkinManager.Skin.valueOf(config.getString(SkinManager.SKIN_SELECTION));
+
+            SkinManager.currentSkin = config.getString(SkinManager.SKIN_SELECTION);
             enableCreatureManipulation = config.getBool(ENABLE_CREATURE_MANIPULATION);
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,6 +274,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         //mod checks
         FABRICATE_MOD_LOADED = Loader.isModLoaded("pinacolada-fabricate");
+
+
 
         autoAddCardMods();
 
@@ -623,21 +617,52 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-        ModLabeledToggleButton enableIsaacIconsButton = new ModLabeledToggleButton(SettingText[14],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableIsaacIcons, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableIsaacIcons = button.enabled;
+        float tempXPos = settingXPos;
+        ArrayList<ModLabeledToggleButton> skinRadioButtons = new ArrayList<>();
+
+        for(String skinID : skinManager.skinNames.keySet()) {
+            String skinName = skinManager.skinNames.get(skinID);
+            ModLabeledToggleButton mb = new ModLabeledToggleButton( skinName,
+                    tempXPos, settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont,
+                    skinID.equalsIgnoreCase(SkinManager.currentSkin), settingsPanel,
+                    (label) -> {}, (button) -> {
+
+                    for(ModLabeledToggleButton otherB : skinRadioButtons) {
+                        otherB.toggle.enabled = false;
+                    }
                     try {
-                        config.setBool(USE_ISAAC_ICONS, enableIsaacIcons);
+                        skinManager.switchSkin(skinID);
+                        config.setString(SkinManager.SKIN_SELECTION, SkinManager.currentSkin);
                         config.save();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
-        settingsPanel.addUIElement(enableIsaacIconsButton);
+
+                    button.enabled = true;
+
+
+            });
+            skinRadioButtons.add(mb);
+            settingsPanel.addUIElement(mb);
+            tempXPos += FontHelper.getSmartWidth(FontHelper.charDescFont, skinName,99999.0f,20.0f) + 50.0f * Settings.scale;
+        }
+
+
+//        ModLabeledToggleButton enableIsaacIconsButton = new ModLabeledToggleButton(SettingText[14],
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableIsaacIcons, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//                    enableIsaacIcons = button.enabled;
+//                    try {
+//                        config.setBool(USE_ISAAC_ICONS, enableIsaacIcons);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//        settingsPanel.addUIElement(enableIsaacIconsButton);
 
         settingYPos -= lineSpacing;
 
@@ -717,6 +742,20 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         // Of note is that the bard mod uses it's own custom relic class (not dissimilar to our AbstractDefaultCard class for cards) that adds the 'color' field,
         // in order to automatically differentiate which pool to add the relic too.
 
+        //Skins
+        logger.info("loading skins");
+        try {
+            skinManager = new SkinManager();
+            if(isXggg()) {
+                skinManager.switchSkin("xggg");
+            } else if (isIsaac()) {
+                skinManager.switchSkin("isaac");
+            } else
+                skinManager.switchSkin(SkinManager.currentSkin);
+        } catch (Exception e) {
+            logger.error("Error starting skin manager");
+            e.printStackTrace();
+        }
         
         // This adds a relic to the Shared pool. Every character can find this relic.
         if(enableLegacyLayout){
@@ -1297,7 +1336,11 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     public static boolean isXggg() {
-        return CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine");
+        return SkinManager.currentSkin.equals("xggg") || (CardCrawlGame.playerName != null && CardCrawlGame.playerName.equals("BrkStarshine") && SkinManager.currentSkin.equals("default"));
+    }
+
+    public static boolean isIsaac() {
+        return SkinManager.currentSkin.equals("isaac") || (Loader.isModLoadedOrSideloaded("IsaacMod") || Loader.isModLoadedOrSideloaded("IsaacModExtend")) && SkinManager.currentSkin.equals("default");
     }
 
     @Override

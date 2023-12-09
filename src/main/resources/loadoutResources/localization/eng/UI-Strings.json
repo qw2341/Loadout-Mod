@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "Default",
+			"isaac": "The Binding of Isaac: Rebirth",
+			"legacy": "Legacy",
+			"xggg": "The Isaacing of Isaac: ReIsaac"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"Enable Legacy Layout (Relics on top)",

@@ -62,8 +62,8 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("PowerGiver");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("powergiver_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("powergiver_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("powergiver_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("powergiver_relic.png"));
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public HashMap<String, Integer> savedPowersPlayer;
 

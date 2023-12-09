@@ -40,8 +40,8 @@ import static loadout.LoadoutMod.*;
 public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Object[][]> {
 
     public static final String ID = LoadoutMod.makeID("CardModifier");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("modifier_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("modifier_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("modifier_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("modifier_relic.png"));
+    public static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     private static final CustomSaver<Integer, String[]> nameDescSaves;
 

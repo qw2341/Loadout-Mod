@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
-import static loadout.relics.AbstractCustomScreenRelic.isIsaacMode;
+
 
 public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSavable<RelicSavables>, OnReceivePowerRelic, OnPlayerDeathRelic {
     protected static final Sfx landingSfx = AbstractCustomScreenRelic.landingSfx;
@@ -47,8 +47,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public static boolean isSelectionScreenUp = true;
 
     public static final String ID = LoadoutMod.makeID("AllInOneBag");
-    public static final Texture IMG = LoadoutBag.IMG;
-    private static final Texture OUTLINE = LoadoutBag.OUTLINE;
+    public static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public LoadoutBag loadoutBag;
     public TrashBin trashBin;
@@ -76,7 +76,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
     public AllInOneBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
-        if(isIsaacMode) {
+        if(LoadoutMod.isIsaac()) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
                 tips.clear();
@@ -362,7 +362,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
     @Override
     public void playLandingSFX() {
-        if (isIsaacMode) {
+        if (LoadoutMod.isIsaac()) {
             if (CardCrawlGame.MUTE_IF_BG && Settings.isBackgrounded) {
                 return;
             } else if (landingSfx != null) {

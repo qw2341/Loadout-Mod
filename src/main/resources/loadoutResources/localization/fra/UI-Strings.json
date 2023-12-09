@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "Faire défaut",
+			"isaac": "Le lien d’Isaac : la renaissance",
+			"legacy": "Héritage",
+			"xggg": "L’Isaacing d’Isaac : ReIsaac"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"Activer la mise en page héritée (Reliques en haut)",

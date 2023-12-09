@@ -13,21 +13,13 @@ import loadout.screens.AbstractSelectScreen;
 import loadout.screens.BlightSelectScreen;
 import loadout.util.TextureLoader;
 
-import static loadout.LoadoutMod.makeRelicOutlinePath;
-import static loadout.LoadoutMod.makeRelicPath;
 
 public class BlightChest extends AbstractCustomScreenRelic<AbstractBlight>{
     public static final String ID = LoadoutMod.makeID("BlightChest");
-    private static final String RESDIR = "chest_relic" + ".png";
-    public static final Texture IMG = TextureLoader.getTexture(makeRelicPath(RESDIR));
-    private static final Texture OUTLINE = TextureLoader.getTexture(makeRelicOutlinePath(RESDIR));
-    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("chest_relic_xggg.png"));
-
+    public static Texture IMG = null;
+    private static Texture OUTLINE = null;
     public BlightChest() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.HEAVY);
-        if (LoadoutMod.isXggg()) {
-            this.img = IMG_XGGG_ALT;
-        }
     }
 
     @Override

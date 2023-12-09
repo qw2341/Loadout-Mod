@@ -19,10 +19,9 @@ import static loadout.LoadoutMod.*;
 public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
 
     // ID, images, text.
-    public static final boolean isIsaacMode = enableIsaacIcons || Loader.isModLoadedOrSideloaded("IsaacMod")||Loader.isModLoadedOrSideloaded("IsaacModExtend");
     public static final String ID = LoadoutMod.makeID("LoadoutBag");
-    public static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("loadout_relic.png"));
-    public static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("loadout_relic.png"));
+    public static Texture IMG = null;
+    public static Texture OUTLINE = null;
 
     public static final ArrayList<AbstractRelic> lastRelics = new ArrayList<>();
     public LoadoutBag() {

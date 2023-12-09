@@ -23,8 +23,8 @@ import static loadout.LoadoutMod.isXggg;
 public class AllInOneBagUp extends CustomRelic implements ClickableRelic {
 
     public static final String ID = LoadoutMod.makeID("AllInOneBagUp");
-    public static final Texture IMG = LoadoutBag.IMG;
-    private static final Texture OUTLINE = LoadoutBag.OUTLINE;
+    public static Texture IMG = null;
+    private static Texture OUTLINE = null;
     private Color color = new Color();
 
     public AllInOneBagUp() {

@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "Predeterminado",
+			"isaac": "La atadura de Isaac: Renacimiento",
+			"legacy": "Legado",
+			"xggg": "El Isaacing de Isaac: ReIsaac"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"Habilitar el diseño heredado (reliquias en la parte superior)",

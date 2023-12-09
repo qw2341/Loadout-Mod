@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "默认",
+			"isaac": "以撒的结合:重生",
+			"legacy": "旧版",
+			"xggg": "XGGG"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"使用旧版遗物布局（遗物在上面）",

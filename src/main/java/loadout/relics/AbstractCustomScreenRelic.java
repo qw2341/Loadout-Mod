@@ -28,7 +28,7 @@ import static loadout.LoadoutMod.*;
 
 
 public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implements ClickableRelic {
-    public static final boolean isIsaacMode = enableIsaacIcons || Loader.isModLoadedOrSideloaded("IsaacMod")||Loader.isModLoadedOrSideloaded("IsaacModExtend");
+
     public static final Sfx landingSfx = new Sfx(makeSoundPath("choir.wav"), false);
 
     protected boolean itemSelected = true;
@@ -43,7 +43,7 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
         super(id, texture, outline, tier, sfx);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
         this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
-        if(isIsaacMode) {
+        if(LoadoutMod.isIsaac()) {
             try {
                 RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(id+"Alt");
                 tips.clear();
@@ -210,7 +210,7 @@ public abstract class AbstractCustomScreenRelic<T> extends CustomRelic implement
 
     @Override
     public void playLandingSFX() {
-        if (isIsaacMode) {
+        if (LoadoutMod.isIsaac()) {
             if (CardCrawlGame.MUTE_IF_BG && Settings.isBackgrounded) {
                 return;
             } else if (landingSfx != null) {

@@ -1,6 +1,7 @@
 package loadout.relics;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -38,6 +39,7 @@ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
+import loadout.screens.MonsterSelectScreen;
 import loadout.screens.StatModSelectScreen;
 import loadout.util.TextureLoader;
 
@@ -52,8 +54,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("TildeKey");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("tildekey_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("tildekey_relic.png"));
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public static boolean isHealthLocked = false;
     private static final String isHealthLockedKey = "isHealthLocked";
@@ -130,6 +132,10 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static int playerAttackMult = 100;
     private static final String playerAttackMultKey = "playerAttackMult";
+
+    public static final String playerMorphKey = "currentMorph";
+
+    public static String currentMorph = "";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -261,6 +267,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         drawPerTurn = 5;
 
         playerAttackMult = 100;
+        currentMorph = "";
     }
 
     public static void spareAllMonsters() {
@@ -453,6 +460,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         sav.put(drawPerTurnKey, String.valueOf(drawPerTurn));
 
         sav.put(playerAttackMultKey, String.valueOf(playerAttackMult));
+        sav.put(playerMorphKey, currentMorph);
         return sav;
     }
 
@@ -504,6 +512,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             AbstractDungeon.player.gameHandSize = drawPerTurn + diff;
 
             playerAttackMult = Integer.parseInt(sav.get(playerAttackMultKey));
+            currentMorph = sav.get(playerMorphKey);
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();
@@ -561,5 +570,32 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     @Override
     public float atDamageModify(float damage, AbstractCard c) {
         return damage * (playerAttackMult / 100.0f);
+    }
+
+    public static void morphPlayer(AbstractPlayer ap, AbstractMonster am) {
+//        BottledMonster bm = AllInOneBag.getInstance().bottledMonster;
+//        if(bm.selectScreen == null) {
+//            bm.selectScreen = bm.getNewSelectScreen();
+//            if(bm.selectScreen.itemsClone == null) ReflectionHacks.privateMethod(MonsterSelectScreen.class, "callOnOpen").invoke(bm.selectScreen);
+//        }
+//
+//        AbstractMonster am = null;
+//
+//        for (MonsterSelectScreen.MonsterButton mb : bm.selectScreen.itemsClone) {
+//            if(mb.id.equals(monsterID)) {
+//                am = mb.instance;
+//                break;
+//            }
+//        }
+
+
+        if(am == null) return;
+
+        ReflectionHacks.setPrivate(ap, AbstractPlayer.class, "skeleton", ReflectionHacks.getPrivate(am, AbstractMonster.class, "skeleton"));
+        ReflectionHacks.setPrivate(ap, AbstractPlayer.class, "atlas", ReflectionHacks.getPrivate(am, AbstractMonster.class, "atlas"));
+        ap.img = ReflectionHacks.getPrivate(am, AbstractMonster.class, "img");
+        ap.name = am.name;
+        ap.hb.resize(am.hb.width,am.hb.height);
+        //ReflectionHacks.setPrivate(ap, AbstractPlayer.class, "skeleton", ReflectionHacks.getPrivate(am, AbstractMonster.class, "skeleton"));
     }
 }

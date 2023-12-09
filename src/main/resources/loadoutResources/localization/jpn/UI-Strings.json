@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "デフォルト",
+			"isaac": "アイザックの束縛:再生",
+			"legacy": "遺産",
+			"xggg": "アイザックのアイザック:ReIsaac"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"レガシーレイアウトを有効にする（上の遺物）",

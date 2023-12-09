@@ -18,28 +18,20 @@ import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndAddToHandEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import loadout.LoadoutMod;
 import loadout.screens.GCardSelectScreen;
-import loadout.util.TextureLoader;
 
 import java.util.ArrayList;
 
-import static loadout.LoadoutMod.*;
-import static loadout.relics.LoadoutBag.isIsaacMode;
-import static loadout.relics.LoadoutBag.landingSfx;
 
 public class CardPrinter extends AbstractCardScreenRelic {
 
     public static final String ID = LoadoutMod.makeID("CardPrinter");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("printer_relic_alt.png")): TextureLoader.getTexture(makeRelicPath("printer_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("printer_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("printer_relic.png"));
-    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("printer_relic_xggg.png"));
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public static final ArrayList<AbstractCard> lastCards = new ArrayList<>();
 
     public CardPrinter() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.OBTAIN);
-        if (LoadoutMod.isXggg()) {
-            this.img = IMG_XGGG_ALT;
-        }
     }
 
     @Override

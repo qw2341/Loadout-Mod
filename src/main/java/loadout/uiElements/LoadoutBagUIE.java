@@ -10,11 +10,11 @@ import loadout.screens.RelicSelectScreen;
 import loadout.screens.SidePanel;
 import loadout.util.TextureLoader;
 
-import static loadout.LoadoutMod.makeRelicOutlinePath;
 
 public class LoadoutBagUIE extends ClickableUIElement {
 
-    private static final Texture IMG = LoadoutBag.IMG;
+    private static Texture IMG = null;
+    public static Texture OUTLINE = null;
     //public static final String ID = LoadoutMod.makeID("LoadoutBagUIE");
     private boolean relicSelected = true;
     private RelicSelectScreen relicSelectScreen;

@@ -16,16 +16,12 @@ import static loadout.LoadoutMod.*;
 public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
 
     public static final String ID = LoadoutMod.makeID("TheBin");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("thebin_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("thebin_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("thebin_relic.png"));
-    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("thebin_relic_xggg.png"));
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
     public static int numLoadoutRelics = 0;
     public static int loadoutRelicsStartIdx = -1;
     public TrashBin() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
-        if (LoadoutMod.isXggg()) {
-            this.img = IMG_XGGG_ALT;
-        }
     }
 
     @Override

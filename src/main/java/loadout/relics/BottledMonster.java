@@ -21,12 +21,10 @@ import static loadout.screens.MonsterSelectScreen.MonsterButton.calculateSmartDi
 public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScreen.MonsterButton> {
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("BottledMonster");
-    private static final Texture IMG =  (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("bottle_relic.png"));
+    public static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
-    private static final Texture IMG_XGGG_ALT = TextureLoader.getTexture(makeRelicPath("bottle_relic_xggg.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("bottle_relic.png"));
-
-    private static final String XGGG_NAME = "瓶装星光";
+    private static final String XGGG_NAME = LoadoutMod.isCHN() ? "瓶装星光" : "Isaac?!";
 
     public static Class<? extends AbstractMonster> lastMonster = null;
 
@@ -35,7 +33,6 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
 
         if (LoadoutMod.isXggg()) {
-            this.img = IMG_XGGG_ALT;
             this.tips.get(0).header = XGGG_NAME;
         }
     }

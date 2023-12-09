@@ -24,9 +24,8 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("EventfulCompass");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("compass_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("compass_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("compass_relic.png"));
-
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
     public static EventSelectScreen.EventButton lastEvent = null;
 
     public EventfulCompass() {

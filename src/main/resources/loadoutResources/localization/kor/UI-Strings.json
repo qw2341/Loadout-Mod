@@ -1,4 +1,12 @@
 {
+	"loadout:Skins": {
+		"TEXT_DICT": {
+			"default": "기본값",
+			"isaac": "이삭의 결속: 환생",
+			"legacy": "유산",
+			"xggg": "이삭의 이삭: 리이삭"
+		}
+	},
 	"loadout:OptionsMenu": {
 		"TEXT": [
 			"레거시 레이아웃 활성화(상단에 유물)",

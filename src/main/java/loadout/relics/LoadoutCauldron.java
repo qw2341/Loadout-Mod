@@ -18,8 +18,8 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
 
     // ID, images, text.
     public static final String ID = LoadoutMod.makeID("LoadoutCauldron");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("cauldron_relic_alt.png")) : TextureLoader.getTexture(makeRelicPath("cauldron_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("cauldron_relic_alt.png")) : TextureLoader.getTexture(makeRelicOutlinePath("cauldron_relic.png"));
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public static AbstractPotion lastPotion = null;
 

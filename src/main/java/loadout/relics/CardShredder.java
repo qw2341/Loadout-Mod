@@ -17,18 +17,12 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.vfx.cardManip.*;
 import loadout.LoadoutMod;
 import loadout.screens.GCardSelectScreen;
-import loadout.util.TextureLoader;
-
-import static loadout.LoadoutMod.*;
-import static loadout.relics.LoadoutBag.isIsaacMode;
-import static loadout.relics.LoadoutBag.landingSfx;
 
 public class CardShredder extends AbstractCardScreenRelic {
 
     public static final String ID = LoadoutMod.makeID("CardShredder");
-    private static final Texture IMG = (isIsaacMode) ? TextureLoader.getTexture(makeRelicPath("shredder_relic_alt.png")): TextureLoader.getTexture(makeRelicPath("shredder_relic.png"));
-    private static final Texture OUTLINE = (isIsaacMode) ? TextureLoader.getTexture(makeRelicOutlinePath("shredder_relic_alt.png")): TextureLoader.getTexture(makeRelicOutlinePath("shredder_relic.png"));
-
+    private static Texture IMG = null;
+    private static Texture OUTLINE = null;
 
     public CardShredder() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.DELETE);
