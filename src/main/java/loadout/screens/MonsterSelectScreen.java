@@ -29,6 +29,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.BottledMonster;
+import loadout.relics.TildeKey;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -226,7 +227,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             }
 
 
-            if(this.hb.clicked) {
+            if(this.hb.hovered && InputHelper.justReleasedClickLeft) {
                 this.hb.clicked = false;
                 if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
 
@@ -281,9 +282,11 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                         r.onSpawnMonster(m);
                     }
                 }
+            } else if (this.hb.hovered && InputHelper.justReleasedClickRight) {
+                //TildeKey.morphPlayer(AbstractDungeon.player, this.instance);
             }
         }
-        public static float calculateSmartDistance(AbstractMonster m1, AbstractMonster m2) {
+        public static float calculateSmartDistance(AbstractCreature m1, AbstractCreature m2) {
             return (m1.hb_w + m2.hb_w)/2.0F;
         }
 

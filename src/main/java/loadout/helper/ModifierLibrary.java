@@ -41,6 +41,7 @@ public class ModifierLibrary {
         modifiers.put(LifestealMod.ID, LifestealMod.class);
         modifiers.put(InevitableMod.ID, InevitableMod.class);
         modifiers.put(InfiniteUpgradeMod.ID, InfiniteUpgradeMod.class);
+        modifiers.put(DieNextTurnMod.ID, DieNextTurnMod.class);
 
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();
@@ -50,6 +51,7 @@ public class ModifierLibrary {
         GainDamageOnKill.onLoad();
         GainMagicOnKillMod.onLoad();
         LifestealMod.onLoad();
+        DieNextTurnMod.onLoad();
     }
 
     public static AbstractCardModifier getModifier(String id) {

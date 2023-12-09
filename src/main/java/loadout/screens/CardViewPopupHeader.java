@@ -94,6 +94,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus makeInevitableButton;
 
     private final HeaderButtonPlus makeInfUpgradeButton;
+    private final HeaderButtonPlus makeDieNextTurnButton;
 
     private final CardEffectButton costButton;
     private final CardEffectButton damageButton;
@@ -391,6 +392,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.makeInfUpgradeButton = new HeaderButtonPlus(TEXT[22],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
+        makeDieNextTurnButton = new HeaderButtonPlus(DieNextTurnMod.description.replace("NL","").trim(),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
 
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
@@ -410,7 +413,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.cardModButton, this.renameButton, this.descEditButton};
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.cardModButton, this.renameButton, this.descEditButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -595,9 +598,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, LifestealMod.ID);
                 else if(button == this.makeInevitableButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
-                else if (button == this.makeInfUpgradeButton) {
+                else if (button == this.makeInfUpgradeButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
-                }
+                else if (button == this.makeDieNextTurnButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
             }
         }
 
@@ -635,6 +639,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeLifestealButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, LifestealMod.ID);
             this.makeInevitableButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
+            this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
         }
@@ -883,6 +888,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, InfiniteUpgradeMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new InfiniteUpgradeMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeDieNextTurnButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, DieNextTurnMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new DieNextTurnMod());
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.cardModButton) {
