@@ -29,7 +29,13 @@ public class SkinManager {
 
     public SkinManager() {
         uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("Skins"));
-        skinNames = uiStrings.TEXT_DICT;
+        //fail safe
+        if(uiStrings == null || uiStrings.TEXT_DICT == null) {
+            skinNames = new HashMap<>();
+            skinNames.put("default","Default");
+        } else
+            skinNames = uiStrings.TEXT_DICT;
+
     }
 
     private void updateRelics(String skinName) {
