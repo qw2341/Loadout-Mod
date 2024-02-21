@@ -710,13 +710,15 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
     public static void resetPlayerMorph() {
+        if(currentMorph == null || currentMorph.equals("")) return;
+
         if(skeletonBackup != null) ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton",skeletonBackup);
         if(atlasBackup != null) ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "atlas",atlasBackup);
         if(stateBackup != null) AbstractDungeon.player.state = stateBackup;
         if(stateDataBackup != null)ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "stateData", stateDataBackup);
 
         AbstractDungeon.player.hb.resize(hbWBackup, hbHBackup);
-        AbstractDungeon.player.hb.move(morphee.drawX, morphee.drawY);
+        AbstractDungeon.player.hb.move(AbstractDungeon.player.drawX, AbstractDungeon.player.drawY);
         AbstractDungeon.player.flipHorizontal = false;
         currentMorph = "";
     }
