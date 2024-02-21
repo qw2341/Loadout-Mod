@@ -191,6 +191,11 @@
 			"복제",
 			"모핑"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"플레이어 모양 재설정"
+		]
 	}
 
 

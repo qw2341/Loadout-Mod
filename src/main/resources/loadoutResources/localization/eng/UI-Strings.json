@@ -192,5 +192,10 @@
 			"Replicate",
 			"Morph"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"Reset Player Look"
+		]
 	}
 }

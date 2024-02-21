@@ -191,6 +191,11 @@
 			"複製",
 			"モーフ"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"プレーヤーの外観をリセットする"
+		]
 	}
 
 

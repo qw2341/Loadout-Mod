@@ -190,5 +190,10 @@
 			"複制",
 			"變形"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"重置玩家外觀"
+		]
 	}
 }

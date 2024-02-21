@@ -95,7 +95,7 @@ public class LoadoutMod implements
         EditStringsSubscriber, EditKeywordsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
 
@@ -1363,5 +1363,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static boolean isCHN() {
         return Settings.language == Settings.GameLanguage.ZHS;
+    }
+
+    @Override
+    public void receivePostDeath() {
+        TildeKey.resetPlayerMorph();
     }
 }

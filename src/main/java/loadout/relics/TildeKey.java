@@ -6,13 +6,13 @@ import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
-import com.evacipated.cardcrawl.mod.stslib.patches.tempHp.BattleEnd;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.ending.SpireShield;
 import com.megacrit.cardcrawl.monsters.exordium.ApologySlime;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
@@ -49,13 +50,12 @@ import loadout.screens.AbstractSelectScreen;
 import loadout.screens.CharacterSkinSelectScreen;
 import loadout.screens.MonsterSelectScreen;
 import loadout.screens.StatModSelectScreen;
-import loadout.util.TextureLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
-import static loadout.LoadoutMod.*;
 import static loadout.LoadoutMod.logger;
 
 public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.StatModButton> implements OnReceivePowerRelic, OnPlayerDeathRelic, CustomSavable<HashMap<String,String>> {
@@ -149,6 +149,15 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static AbstractCreature morphee;
 
+    public static Skeleton skeletonBackup;
+    public static TextureAtlas atlasBackup;
+    public static AnimationState stateBackup;
+    public static AnimationStateData stateDataBackup;
+    public static float hbWBackup = 100f;
+    public static float hbHBackup = 100f;
+
+    public static HashSet<String> NO_FLIP_LIST = new HashSet<>();
+
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
         this.gKey = new InputAction(Input.Keys.G);
@@ -171,8 +180,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
     public void openMorphMenu() {
+        AllInOneBag.getInstance().closeAllScreens();
         if(morphMenu == null) morphMenu = new CharacterSkinSelectScreen(this);
-        morphMenu.open();
+        if(!morphMenu.isOpen()) morphMenu.open();
     }
 
     @Override
@@ -608,11 +618,21 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         logger.info("Morphing " + morphee.name + " to " + morphTarget.name);
 
+        if(morphee instanceof AbstractPlayer && (currentMorph == null || currentMorph.equals(""))) {
+            //if first time
+            skeletonBackup = ReflectionHacks.getPrivate(morphee, AbstractCreature.class, "skeleton");
+            atlasBackup = ReflectionHacks.getPrivate(morphee, AbstractCreature.class, "atlas");
+            stateBackup = morphee.state;
+            stateDataBackup = ReflectionHacks.getPrivate(morphee, AbstractCreature.class, "stateData");
+            hbWBackup = morphee.hb_w;
+            hbHBackup = morphee.hb_h;
+        }
+
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "skeleton", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "skeleton"));
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "atlas", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "atlas"));
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "stateData", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "stateData"));
         morphee.state = morphTarget.state;
-        morphee.name = morphTarget.name;
+        if(! (morphee instanceof  AbstractPlayer)) morphee.name = morphTarget.name;
         morphee.hb.resize(morphTarget.hb.width,morphTarget.hb.height);
         morphee.hb.move(morphee.drawX, morphee.drawY);
 
@@ -643,11 +663,12 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         if(morphee instanceof AbstractPlayer) {
             //if player
             currentMorph = morphTarget.getClass().getName();
-            morphee.flipHorizontal = true;
+            morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphTarget.getClass().getName());;
         }
-
-        if(morphee.drawX <= AbstractDungeon.player.drawX )
-            morphee.flipHorizontal = true;
+        else {
+            morphee.flipHorizontal = morphee.drawX < AbstractDungeon.player.drawX;
+            if (NO_FLIP_LIST.contains(morphTarget.getClass().getName())) morphee.flipHorizontal = !morphee.flipHorizontal;
+        }
 
     }
 
@@ -675,16 +696,32 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static void flipPlayer() {
         if (currentMorph != null && !currentMorph.equals("")) {
-            AbstractDungeon.player.flipHorizontal = true;
+            AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
         }
     }
 
     public static void morphAndFlip() {
         if(currentMorph != null && !currentMorph.equals("")) {
             morph(AbstractDungeon.player,getMorphTarget(currentMorph));
-            AbstractDungeon.player.flipHorizontal = true;
+            AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
             Skeleton pSk = ReflectionHacks.getPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton");
             pSk.setFlipX(AbstractDungeon.player.flipHorizontal);
         }
+    }
+
+    public static void resetPlayerMorph() {
+        if(skeletonBackup != null) ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton",skeletonBackup);
+        if(atlasBackup != null) ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "atlas",atlasBackup);
+        if(stateBackup != null) AbstractDungeon.player.state = stateBackup;
+        if(stateDataBackup != null)ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "stateData", stateDataBackup);
+
+        AbstractDungeon.player.hb.resize(hbWBackup, hbHBackup);
+        AbstractDungeon.player.hb.move(morphee.drawX, morphee.drawY);
+        AbstractDungeon.player.flipHorizontal = false;
+        currentMorph = "";
+    }
+
+    static {
+        NO_FLIP_LIST.add(SpireShield.class.getName());
     }
 }

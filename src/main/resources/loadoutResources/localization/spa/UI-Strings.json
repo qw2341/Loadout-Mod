@@ -192,6 +192,11 @@
 			"Replicar",
 			"Morpho"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"Restablecer el Aspecto del Jugador"
+		]
 	}
 
 }

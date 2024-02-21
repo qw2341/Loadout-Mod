@@ -191,6 +191,11 @@
 			"Répliquer",
 			"Morphe"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"Réinitialiser le Look du Joueur"
+		]
 	}
 
 

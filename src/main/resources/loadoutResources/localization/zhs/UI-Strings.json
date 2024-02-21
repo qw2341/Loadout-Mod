@@ -191,6 +191,11 @@
 			"复制",
 			"变形"
 		]
+	},
+	"loadout:CharacterSkinSortHeader": {
+		"TEXT": [
+			"重置玩家外观"
+		]
 	}
 
 }
