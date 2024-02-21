@@ -21,6 +21,7 @@ import loadout.patches.RelicPopUpPatch;
 import loadout.screens.AbstractSelectScreen;
 import loadout.util.TextureLoader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

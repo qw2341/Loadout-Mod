@@ -42,6 +42,11 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
         return new MonsterSelectScreen(this);
     }
 
+    public ArrayList<MonsterSelectScreen.MonsterButton> getMonsterButtons() {
+        if(this.selectScreen == null) this.selectScreen = getNewSelectScreen();
+        return this.selectScreen.getList();
+    }
+
     @Override
     public void onCtrlRightClick() {
         if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {

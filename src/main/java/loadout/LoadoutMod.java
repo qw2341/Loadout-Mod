@@ -38,6 +38,7 @@ import com.megacrit.cardcrawl.relics.HandDrill;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDDodecahedron;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -869,6 +870,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         TildeKey.resetToDefault();
 
+
     }
 
     private void init() {
@@ -1170,6 +1172,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receiveStartGame() {
         init();
+        TildeKey.morphAndFlip();
     }
     public static void createCardList() {
         cardsToDisplay.clear();

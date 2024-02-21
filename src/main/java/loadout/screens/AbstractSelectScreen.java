@@ -409,4 +409,11 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         selectedItems.clear();
         return ret;
     }
+
+    public ArrayList<T> getList() {
+        if(this.itemsClone == null || this.itemsClone.isEmpty()) {
+            this.callOnOpen();
+        }
+        return this.itemsClone;
+    }
 }

@@ -159,6 +159,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         for(AbstractCustomScreenRelic<?> r : customScreenRelics) {
             if(r.isSelectionScreenUp()) r.selectScreen.close();
         }
+        if (tildeKey.morphMenu != null && tildeKey.morphMenu.isOpen()) tildeKey.morphMenu.close();
         for(AbstractCardScreenRelic r : cardScreenRelics) {
             if(r.isSelectionScreenUp()) r.selectScreen.close();
         }

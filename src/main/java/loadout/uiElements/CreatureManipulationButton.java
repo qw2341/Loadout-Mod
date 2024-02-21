@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import loadout.helper.Action;
 
 public class CreatureManipulationButton implements UIElement {
 
@@ -111,7 +112,5 @@ public class CreatureManipulationButton implements UIElement {
         this.hb.move(x, y);
     }
 
-    public interface Action {
-        void execute();
-    }
+
 }

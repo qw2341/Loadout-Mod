@@ -76,6 +76,11 @@ public class CreatureManipulationPanel implements UIElement {
         this.buttons.add(new CreatureManipulationButton(TEXT[1], () -> {
             AllInOneBag.getInstance().powerGiver.openSingle(creature);
         }));
+        //morph
+        this.buttons.add(new CreatureManipulationButton(TEXT[5], () -> {
+            TildeKey.morphee = creature;
+            AllInOneBag.getInstance().tildeKey.openMorphMenu();
+        }));
         //kill
         this.buttons.add(new CreatureManipulationButton(TEXT[2], () -> {
             AbstractDungeon.actionManager.addToTop(new InstantKillAction(creature));
@@ -104,7 +109,7 @@ public class CreatureManipulationPanel implements UIElement {
         //super lazy simple solution here
         int i = 0;
         for(CreatureManipulationButton cb : buttons) {
-            if(i == 3 && creature == AbstractDungeon.player) break;
+            if(i == 4 && creature == AbstractDungeon.player) break;
             cb.render(sb);
             i++;
         }
