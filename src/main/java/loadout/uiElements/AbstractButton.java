@@ -20,6 +20,8 @@ public abstract class AbstractButton implements UIElement  {
 
     public String id;
 
+    public String modID = "Slay the Spire";
+
     public float x = 0f;
     public float y = 0f;
 

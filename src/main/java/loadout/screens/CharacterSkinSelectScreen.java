@@ -1,7 +1,9 @@
 package loadout.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
@@ -18,6 +20,11 @@ import java.util.*;
 
 public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSkinSelectScreen.CharacterButton>{
 
+    private static final Comparator<CharacterButton> BY_NAME = Comparator.comparing(c -> c.labelText);
+    private static final Comparator<CharacterButton> BY_ID = Comparator.comparing(c -> c.id);
+
+    private static final Comparator<CharacterButton> BY_MOD = Comparator.comparing(c -> c.modID);
+
     static HashSet<String> EXCLUSIONS = new HashSet<>();
     static {
         EXCLUSIONS.add("Hexaghost");
@@ -26,6 +33,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         super(owner);
         this.sortHeader = new CharacterSkinSortHeader(this);
 
+        this.defaultSortType = SortType.MOD;
     }
 
     private boolean testTextFilter(CharacterButton cb) {
@@ -41,13 +49,53 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         return textCheck;
     }
 
+    public void sortAlphabetically(boolean isAscending){
+        if (isAscending) {
+            this.currentSortOrder = SortOrder.ASCENDING;
+            if (shouldSortById()) this.items.sort(BY_ID);
+            else this.items.sort(BY_NAME);
+        } else {
+            this.currentSortOrder = SortOrder.DESCENDING;
+            if (shouldSortById()) this.items.sort(BY_ID.reversed());
+            else this.items.sort(BY_NAME.reversed());
+        }
+        this.currentSortType = SortType.NAME;
+        scrolledUsingBar(0.0F);
+    }
+
+    public void sortByMod(boolean isAscending){
+
+        if (isAscending) {
+            this.currentSortOrder = SortOrder.ASCENDING;
+            if (shouldSortById()) this.items.sort(BY_MOD.thenComparing(BY_ID));
+            else this.items.sort(BY_MOD.thenComparing(BY_NAME));
+        } else {
+            this.currentSortOrder = SortOrder.DESCENDING;
+            if (shouldSortById()) this.items.sort(BY_MOD.reversed().thenComparing(BY_ID));
+            else this.items.sort(BY_MOD.reversed().thenComparing(BY_NAME));
+        }
+        this.currentSortType = SortType.MOD;
+        scrolledUsingBar(0.0F);
+    }
+
     @Override
     public void sort(boolean isAscending) {
-
+        switch (currentSortType){
+            case NAME:
+                sortAlphabetically(isAscending);
+                break;
+            case MOD:
+                sortByMod(isAscending);
+                break;
+        }
     }
 
     @Override
     protected void callOnOpen() {
+        this.currentSortOrder = SortOrder.ASCENDING;
+        this.currentSortType = SortType.MOD;
+        updateFilters();
+
         if(this.itemsClone == null || this.itemsClone.isEmpty()) {
             ArrayList<MonsterSelectScreen.MonsterButton> ml = AllInOneBag.getInstance().bottledMonster.getMonsterButtons();
 
@@ -69,6 +117,9 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
 
         }
         this.items = new ArrayList<>(this.itemsClone);
+
+        targetY = scrollLowerBound;
+        scrollY = Settings.HEIGHT - 400.0f * Settings.scale;
     }
 
     @Override
@@ -106,10 +157,60 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         float curX;
         float curY;
 
-
+        char prevFirst = '\0';
+        String prevMod = "";
+        scrollTitleCount = 0;
 
         for (Iterator<CharacterButton> it = list.iterator(); it.hasNext();) {
             CharacterButton cb = it.next();
+
+            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+                if (currentSortType == SortType.NAME) {
+                    char rFirst = (shouldSortById() || cb.labelText == null) ? cb.id.toUpperCase().charAt(0) : cb.labelText.toUpperCase().charAt(0);
+                    if (rFirst != prevFirst) {
+                        row++;
+                        scrollTitleCount++;
+
+                        //if new type, render new texts
+                        prevFirst = rFirst;
+
+                        String msg = "Undefined:";
+                        String desc = "Error";
+                        if (prevFirst != '\0') {
+                            msg = String.valueOf(prevFirst).toUpperCase() + ":";
+                            desc = "";
+                        }
+
+                        FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
+                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+
+                                FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
+                        row++;
+                        col = 0;
+                    } else if (currentSortType == SortType.MOD) {
+                        String rMod = cb.modID;
+                        if (!rMod.equals(prevMod)) {
+                            row++;
+                            scrollTitleCount++;
+
+                            //if new type, render new texts
+                            prevMod = rMod;
+
+                            String msg = "Undefined:";
+                            String desc = "";
+                            if (prevMod != null) {
+                                msg = prevMod + ":";
+                            }
+                            FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
+                            if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+
+                                    FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
+                            row++;
+                            col = 0;
+                        }
+                    }
+                }
+            }
 
             if (col == itemsPerLine) {
                 col = 0;
@@ -138,8 +239,9 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
 
         public CharacterButton(MonsterSelectScreen.MonsterButton mb) {
             super(mb.name, mb.id);
+            this.modID = mb.modID;
             this.onHoverRender = (sb) -> {
-
+                //mb.instance.render(sb);
             };
 
             this.onRelease = () -> {
