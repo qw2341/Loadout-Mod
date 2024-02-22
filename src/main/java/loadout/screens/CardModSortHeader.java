@@ -17,6 +17,7 @@ public class CardModSortHeader extends AbstractSortHeader{
         f.add(0,CardSelectSortHeader.TEXT[0]);
         this.modNameDropdown = new DropdownMenu(this, f, FontHelper.panelNameFont, Settings.CREAM_COLOR);
 
+        this.searchBox = new TextSearchBox(this, 0f, 250f*Settings.scale, false);
 
         this.buttons = new HeaderButtonPlus[] {};
         this.dropdownMenuHeaders = new String[] {"Mod"};

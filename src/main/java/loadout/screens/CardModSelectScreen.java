@@ -18,6 +18,7 @@ import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.OrbBox;
 import loadout.savables.Favorites;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -180,12 +181,22 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
         this.confirmButton.isDisabled = true;
     }
 
+    private boolean testTextFilter(CardModButton cb) {
+        if (cb.id != null && StringUtils.containsIgnoreCase(cb.id,sortHeader.searchBox.filterText)) return true;
+        if (cb.name != null && StringUtils.containsIgnoreCase(cb.name,sortHeader.searchBox.filterText)) return true;
+        if (cb.tips != null) {
+            return cb.tips.stream().anyMatch((t) -> StringUtils.containsIgnoreCase(t.body, sortHeader.searchBox.filterText));
+        }
+        return false;
+    }
+
     @Override
     protected boolean testFilters(CardModButton item) {
         String modID = item.modID;
 //        if (modID == null) modID = "Slay the Spire";
         boolean modCheck = this.filterMod == null || modID.equals(this.filterMod);
-        return modCheck;
+        boolean textCheck = sortHeader == null || sortHeader.searchBox.filterText.equals("") || testTextFilter(item);
+        return modCheck && textCheck;
     }
 
     @Override
