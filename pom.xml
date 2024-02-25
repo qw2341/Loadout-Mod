@@ -118,6 +118,14 @@
             <systemPath>${Steam.path}/workshop/content/646570/2384072973/TogetherInSpire.jar</systemPath>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>lor</groupId>
+            <artifactId>lor</artifactId>
+            <version>1.1.6</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2405293544/lor.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 

@@ -292,6 +292,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                                 LoadoutMod.relicsToAdd.add(clickStartedItem.makeCopy());
                                 LoadoutBag.lastRelics.add(clickStartedItem.makeCopy());
                             }
+
                         }
 
                     }
@@ -332,6 +333,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         show = false;
         owner.setIsSelectionScreenUp(false);
         showLoadoutRelics();
+        hoveredItem = null;
     }
     @Override
     public void update() {
