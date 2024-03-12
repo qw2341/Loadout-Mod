@@ -3,12 +3,14 @@ package loadout.patches;
 import basemod.BaseMod;
 import basemod.eventUtil.AddEventParams;
 import basemod.patches.com.megacrit.cardcrawl.screens.CombatRewardScreen.RewardsScrolling;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
+import io.chaofan.sts.chaofanmod.utils.ChaofanModEnums;
 import loadout.relics.TildeKey;
 
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ public class RewardsPatch {
                             rewardItems.add(tempReward);
                         }
                         break;
+
                     case SAPPHIRE_KEY:
                         if(relicLinkee != null) {
                             ri.relicLink = relicLinkee;
@@ -86,6 +89,14 @@ public class RewardsPatch {
                     case STOLEN_GOLD:
                     case EMERALD_KEY:
                     default:
+                        if(Loader.isModLoaded("chaofanmod")) {
+                            if(ri.type == ChaofanModEnums.CHAOFAN_MOD_RUBY_KEY) {
+                                if(relicLinkee != null) {
+                                    ri.relicLink = relicLinkee;
+                                    relicLinkee.relicLink = ri;
+                                }
+                            }
+                        }
                         rewardItems.add(ri);
                         break;
                 }
