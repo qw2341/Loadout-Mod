@@ -1,6 +1,10 @@
 package loadout.screens;
 
+import basemod.BaseMod;
+import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -102,6 +106,12 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
             this.itemsClone = new ArrayList<>();
 
             //characters
+            for(AbstractPlayer ap : CardCrawlGame.characterManager.getAllCharacters()) {
+                if(EXCLUSIONS.contains(ap.getClass().getSimpleName())) continue;
+
+                this.itemsClone.add(new CharacterButton(ap));
+            }
+
 
             //monsters
             for (MonsterSelectScreen.MonsterButton mb : ml) {
@@ -250,6 +260,22 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
                 AllInOneBag.getInstance().closeAllScreens();
             };
 
+        }
+
+        public CharacterButton(AbstractPlayer ap) {
+            super(ap.title, ap.id);
+            this.modID = WhatMod.findModID(ap.getClass());
+            if(this.modID == null) this.modID = "Slay the Spire";
+
+            this.onHoverRender = (sb) -> {
+                //mb.instance.render(sb);
+            };
+
+            this.onRelease = () -> {
+                if(!this.pressStarted) return;
+                TildeKey.morph(TildeKey.morphee, ap);
+                AllInOneBag.getInstance().closeAllScreens();
+            };
         }
 
         public CharacterButton setOnReleaseAction(Action onReleaseAction) {

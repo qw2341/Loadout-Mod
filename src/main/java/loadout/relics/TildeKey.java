@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.spine.Animation;
-import com.esotericsoftware.spine.AnimationState;
-import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.*;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -27,21 +24,23 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.beyond.GiantHead;
 import com.megacrit.cardcrawl.monsters.ending.SpireShield;
 import com.megacrit.cardcrawl.monsters.exordium.ApologySlime;
+import com.megacrit.cardcrawl.monsters.exordium.Lagavulin;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.powers.DexterityPower;
-import com.megacrit.cardcrawl.powers.FocusPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
+import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
@@ -51,6 +50,7 @@ import loadout.screens.CharacterSkinSelectScreen;
 import loadout.screens.MonsterSelectScreen;
 import loadout.screens.StatModSelectScreen;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -327,7 +327,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
             if (monster != null) {
                 AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
-                if(!isKillAllMode) {
+                if(!isKillAllMode || !Settings.FAST_MODE) {
                     AbstractDungeon.actionManager.addToTop((AbstractGameAction)new WaitAction(0.8F));
                     AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(monster.hb.cX, monster.hb.cY)));
                 }
@@ -637,39 +637,75 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         morphee.hb.move(morphee.drawX, morphee.drawY);
 
         AnimationStateData stateData = ((AnimationStateData)ReflectionHacks.getPrivate(morphee,AbstractCreature.class,"stateData"));
-        Array<Animation> anim = stateData.getSkeletonData().getAnimations();
-        Animation hit = null;
-        Animation idle = null;
+        if (stateData != null) {
+            SkeletonData sd = stateData.getSkeletonData();
+            if(sd != null) {
+                Array<Animation> anim = sd.getAnimations();
+                Animation hit = null;
+                Animation idle = null;
+                if(anim != null && anim.size > 0) {
+                    //Exceptions
+                    if (morphTarget instanceof GiantHead) {
+                        AnimationState.TrackEntry e = morphee.state.setAnimation(0, "idle_open", true);
+                        e.setTime(e.getEndTime() * MathUtils.random());
+                        e.setTimeScale(0.5F);
+                    } else {
+                        for (Animation an: anim) {
+                            if (idle == null && (an.getName().equalsIgnoreCase("idle") || an.getName().contains("idle") || an.getName().contains("Idle"))) {
+                                idle = an;
+                            }
+                            if (hit == null && (an.getName().equalsIgnoreCase("hit") || an.getName().contains("hit") || an.getName().contains("Hit"))) {
+                                hit = an;
+                            }
+                        }
 
-        for (Animation an: anim) {
-            if (idle == null && (an.getName().equalsIgnoreCase("idle") || an.getName().contains("idle") || an.getName().contains("Idle"))) {
-                idle = an;
-            }
-            if (hit == null && (an.getName().equalsIgnoreCase("hit") || an.getName().contains("hit") || an.getName().contains("Hit"))) {
-                hit = an;
+                        if (idle == null) idle = anim.get(0);
+                        if (hit == null) hit = anim.size > 1 ? anim.get(1) : anim.get(0);
+                        try {
+                            AnimationState.TrackEntry e = morphee.state.setAnimation(0, idle, true);
+                            stateData.setMix(hit, idle, 0.1F);
+                            e.setTimeScale(0.6F);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+
             }
         }
-        if (idle == null) idle = anim.get(0);
-        if (hit == null) hit = anim.size > 1 ? anim.get(1) : anim.get(0);
 
-        try {
-            AnimationState.TrackEntry e = morphee.state.setAnimation(0, idle, true);
-            stateData.setMix(hit, idle, 0.1F);
-            e.setTimeScale(0.6F);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         if(morphee instanceof AbstractPlayer) {
             //if player
             currentMorph = morphTarget.getClass().getName();
-            morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphTarget.getClass().getName());;
+            if(morphTarget instanceof AbstractMonster)
+                morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphTarget.getClass().getName());
+            else if (morphTarget instanceof AbstractPlayer)
+                morphee.flipHorizontal = false;
         }
         else {
-            morphee.flipHorizontal = morphee.drawX < AbstractDungeon.player.drawX;
-            if (NO_FLIP_LIST.contains(morphTarget.getClass().getName())) morphee.flipHorizontal = !morphee.flipHorizontal;
+            if(morphTarget instanceof AbstractMonster) {
+                morphee.flipHorizontal = morphee.drawX < AbstractDungeon.player.drawX;
+                if (NO_FLIP_LIST.contains(morphTarget.getClass().getName())) morphee.flipHorizontal = !morphee.flipHorizontal;
+            } else if (morphTarget instanceof AbstractPlayer) {
+                morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphee.getClass().getName());
+            }
+
         }
 
+    }
+
+    public static boolean shouldFlip() {
+        Class<?> clazz;
+
+        try {
+            clazz = Class.forName(currentMorph);
+            return AbstractMonster.class.isAssignableFrom(clazz);
+        } catch (ClassNotFoundException e) {
+            return true;
+        }
     }
 
     public static AbstractCreature getMorphTarget(String id) {
@@ -679,31 +715,44 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 //            return MonsterSelectScreen.MonsterButton.createMonster(monsterMap.get(id));
 //        }
         AbstractCreature target = null;
+        Class<?> clazz;
+
         try {
-            target = MonsterSelectScreen.MonsterButton.createMonster((Class<? extends AbstractMonster>) Class.forName(id));
+            clazz = Class.forName(id);
+            if (AbstractPlayer.class.isAssignableFrom(clazz)){
+                Constructor con = clazz.getDeclaredConstructor(String.class);
+                con.setAccessible(true);
+                target = (AbstractPlayer) con.newInstance(AbstractDungeon.name);
+            }
+            else if (AbstractMonster.class.isAssignableFrom(clazz))
+                target = MonsterSelectScreen.MonsterButton.createMonster((Class<? extends AbstractMonster>) clazz);
+            else
+                target = (AbstractCreature) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
+            e.printStackTrace();
             target = new ApologySlime();
         }
 
         return target;
     }
 
-    @Override
-    public void onEnterRoom(AbstractRoom room) {
-        logger.info("Current Morph is: " + currentMorph);
-        flipPlayer();
-    }
 
     public static void flipPlayer() {
-        if (currentMorph != null && !currentMorph.equals("")) {
-            AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
+        if (currentMorph != null && !currentMorph.equals("") ) {
+            if(shouldFlip()) AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
+//            if(AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() instanceof MonsterRoom && AbstractDungeon.lastCombatMetricKey.equals(MonsterHelper.SHIELD_SPEAR_ENC)){
+//                if(AbstractDungeon.getMonsters().monsters.get(1).hasPower(BackAttackPower.POWER_ID)) AbstractDungeon.player.flipHorizontal = !AbstractDungeon.player.flipHorizontal;
+//            }
+
+            //logger.info("Flipping result is " + AbstractDungeon.player.flipHorizontal);
         }
     }
 
     public static void morphAndFlip() {
         if(currentMorph != null && !currentMorph.equals("")) {
-            morph(AbstractDungeon.player,getMorphTarget(currentMorph));
-            AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
+            AbstractCreature creature = getMorphTarget(currentMorph);
+            morph(AbstractDungeon.player,creature);
+            flipPlayer();
             Skeleton pSk = ReflectionHacks.getPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton");
             pSk.setFlipX(AbstractDungeon.player.flipHorizontal);
         }

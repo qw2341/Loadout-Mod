@@ -29,6 +29,7 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
@@ -447,6 +448,11 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     @Override
     public void onObtainCard(AbstractCard c) {
         cardModifier.onObtainCard(c);
+    }
+
+    @Override
+    public void onEnterRoom(AbstractRoom room) {
+
     }
 
     @Override
