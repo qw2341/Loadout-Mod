@@ -250,6 +250,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         public CharacterButton(MonsterSelectScreen.MonsterButton mb) {
             super(mb.name, mb.id);
             this.modID = mb.modID;
+            if(this.modID == null) this.modID = "Slay the Spire";
             this.onHoverRender = (sb) -> {
                 //mb.instance.render(sb);
             };
@@ -263,7 +264,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         }
 
         public CharacterButton(AbstractPlayer ap) {
-            super(ap.title, ap.id);
+            super(ap.title, ap.getClass().getName());
             this.modID = WhatMod.findModID(ap.getClass());
             if(this.modID == null) this.modID = "Slay the Spire";
 
