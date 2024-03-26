@@ -133,7 +133,18 @@
 			"Appliquer le changement de semence",
 			"Annulez tous les debuffs",
 			"Intention de l’ennemi de la force",
-			"Faire défiler Modifier le compteur de reliques"
+			"Faire défiler Modifier le compteur de reliques",
+			"En entrant dans la pièce, met les PV de tous les ennemis à 0.",
+			"Prévient les dommages, la perte de HP et la mort.",
+			"Définit l'énergie à 999 à chaque image.",
+			"Allez dans n'importe quelle pièce sans patron.",
+			"À la fin des tours, commence un autre tour de joueur.",
+			"Si la taille de la main est inférieure à la limite de la main, dessinez jusqu'à la limite.",
+			"Modifiez la valeur des paramètres.graine.",
+			"Régénérez les RNG du donjon en fonction de la graine donnée.",
+			"Empêche les buffs négatifs d'être appliqués au joueur.",
+			"Forcer l'ennemi à utiliser uniquement cette intention.",
+			"Faites défiler vers le haut pour augmenter, vice versa. Cliquez sur le bouton du milieu pour le régler sur max, puis sur zéro."
 		]
 	},
 	"loadout:StatModSelectScreen": {

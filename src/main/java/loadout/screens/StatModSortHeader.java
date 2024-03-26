@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
@@ -75,6 +76,7 @@ public class StatModSortHeader extends AbstractSortHeader {
         yPosition -= SPACE_Y;
         this.modifyRelicCounterButton = new HeaderButtonPlus(TEXT[10], xPosition,yPosition,  this, false, true, HeaderButtonPlus.Alignment.CENTER);
         this.modifyRelicCounterButton.isAscending = TildeKey.enableRelicCounterEdit;
+        this.modifyRelicCounterButton.tips.add(new PowerTip(TEXT[10], TEXT[21]));
         yPosition -= SPACE_Y;
 
 

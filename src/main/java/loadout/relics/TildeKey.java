@@ -3,6 +3,8 @@ package loadout.relics;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomSavable;
+import code.ui.TransmutationTable;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.*;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.TalkAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
@@ -135,8 +138,14 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public static boolean isDrawPerTurnLocked = false;
     private static final String isDrawPerTurnLockedKey = "isDrawPerTurnLocked";
 
+    public static boolean isEMCLocked = false;
+    private static final String isEMCLockedKey = "isEMCLocked";
+    public static int EMCLockAmount = 3;
+    private static final String EMCLockAmountKey = "EMCLockAmount";
+
     private final InputAction gKey;
     private final InputAction kKey;
+
 
     public static int playerAttackMult = 100;
     private static final String playerAttackMultKey = "playerAttackMult";
@@ -155,6 +164,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public static AnimationStateData stateDataBackup;
     public static float hbWBackup = 100f;
     public static float hbHBackup = 100f;
+    public boolean justClickedMiddle = false;
 
     public static HashSet<String> NO_FLIP_LIST = new HashSet<>();
 
@@ -207,7 +217,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             morphMenu.update();
         }
 
+
+
         if (AbstractDungeon.isPlayerInDungeon() && this.isObtained) {
+
+
             if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
             if(isMaxHealthLocked) AbstractDungeon.player.maxHealth = maxHealthLockAmount;
             if(isGoldLocked) {
@@ -224,6 +238,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                 if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
             }
 
+            if(Loader.isModLoaded("projecte")) {
+                if(isEMCLocked) {
+                    TransmutationTable.PLAYER_EMC = EMCLockAmount;
+                }
+            }
 
             if(enableRelicCounterEdit) {
                 Iterator<AbstractRelic> it = AbstractDungeon.player.relics.iterator();
@@ -237,6 +256,15 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                 if(r != null) {
                     if(InputHelper.scrolledUp) r.counter++;
                     if(InputHelper.scrolledDown) r.counter--;
+                    if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+                        if(!justClickedMiddle){
+                            if(r.counter != Integer.MAX_VALUE) r.counter = Integer.MAX_VALUE;
+                            else r.counter = 0;
+                            justClickedMiddle = true;
+                        }
+                    } else {
+                        justClickedMiddle = false;
+                    }
                 }
             }
 
@@ -305,6 +333,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         isDrawPerTurnLocked = false;
         drawPerTurn = 5;
 
+        isEMCLocked = false;
+        EMCLockAmount = 0;
+
         playerAttackMult = 100;
         currentMorph = "";
     }
@@ -327,7 +358,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
             if (monster != null) {
                 AbstractDungeon.actionManager.addToTop(new InstantKillAction(monster));
-                if(!isKillAllMode || !Settings.FAST_MODE) {
+                if(!isKillAllMode && !Settings.FAST_MODE) {
                     AbstractDungeon.actionManager.addToTop((AbstractGameAction)new WaitAction(0.8F));
                     AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(monster.hb.cX, monster.hb.cY)));
                 }
@@ -494,6 +525,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         sav.put(enemyAttackMultKey, String.valueOf(enemyAttackMult));
         sav.put(maxHandSizeKey, String.valueOf(maxHandSize));
         sav.put(isDrawPerTurnLockedKey, String.valueOf(isDrawPerTurnLocked));
+        sav.put(isEMCLockedKey, String.valueOf(isEMCLocked));
+        sav.put(EMCLockAmountKey, String.valueOf(EMCLockAmount));
 
         drawPerTurn = AbstractDungeon.player.masterHandSize;
         sav.put(drawPerTurnKey, String.valueOf(drawPerTurn));
@@ -542,6 +575,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             enemyAttackMult = Integer.parseInt(sav.get(enemyAttackMultKey));
             maxHandSize = Integer.parseInt(sav.get(maxHandSizeKey));
             BaseMod.MAX_HAND_SIZE = maxHandSize;
+
+            isEMCLocked = Boolean.parseBoolean(sav.getOrDefault(isEMCLockedKey, "false"));
+            EMCLockAmount = Integer.parseInt(sav.getOrDefault(EMCLockAmountKey, "0"));
 
             isDrawPerTurnLocked = Boolean.parseBoolean(sav.get(isDrawPerTurnLockedKey));
             drawPerTurn = Integer.parseInt(sav.get(drawPerTurnKey));

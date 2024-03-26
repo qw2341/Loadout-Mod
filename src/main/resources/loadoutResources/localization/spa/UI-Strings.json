@@ -134,7 +134,18 @@
 			"Aplicar cambio de semillas",
 			"Niega todos los debuffs",
 			"Fuerza de intención enemigo",
-			"Scroll Edit de contador de reliquias"
+			"Scroll Edit de contador de reliquias",
+			"Al entrar en la habitación, establece todos los HP de los enemigos en 0 .",
+			"Previene daños, pérdida de HP y muerte .",
+			"Establece la energía en 999 en cada fotograma .",
+			"Ve a cualquier habitación que no sea de jefe .",
+			"Al finalizar turnos, comienza otro turno de jugador .",
+			"Si el tamaño de la mano es menor que el límite de la mano, roba hasta el límite.",
+			"Cambie el valor de la configuración .semilla.",
+			"Regenera los RNG de dungeon en función de la semilla dada .",
+			"Evita que se apliquen beneficios negativos al jugador .",
+			"Obliga al enemigo a usar solo esta intención.",
+			"Desplácese hacia arriba para aumentar, y viceversa . Haga clic en el botón central para establecerlo en máx., luego en cero."
 		]
 	},
 	"loadout:StatModSelectScreen": {

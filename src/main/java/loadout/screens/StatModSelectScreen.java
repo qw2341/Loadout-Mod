@@ -525,7 +525,8 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
 
                 @Override
                 public void onBoolChange(boolean boolToChange, int amount) {
-
+                    TildeKey.isEMCLocked = boolToChange;
+                    if(boolToChange) TildeKey.EMCLockAmount = amount;
                 }
             }));
         }

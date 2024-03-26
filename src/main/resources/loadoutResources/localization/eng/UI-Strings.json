@@ -134,7 +134,18 @@
 			"Apply Seed Change",
 			"Negate All Debuffs",
 			"Force Enemy Intent",
-			"Scroll Edit Relic Counter"
+			"Scroll Edit Relic Counter",
+			"Upon entering room, sets all enemies HP to 0.",
+			"Prevents damage, HP loss, and death.",
+			"Sets energy to 999 every frame.",
+			"Go to any non-boss rooms.",
+			"When ending turns, starts another player turn.",
+			"If hand size is less than hand limit, draw until limit.",
+			"Change the value of Settings.seed.",
+			"Regenerate dungeon's RNGs based on the given seed.",
+			"Prevents negative buffs being applied to player.",
+			"Force enemy to use this intent only.",
+			"When hovering a relic, scroll up to increase its counter, vice versa. Click middle button to set it to max, then to zero."
 		]
 	},
 	"loadout:StatModSelectScreen": {

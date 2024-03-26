@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
 import jdk.javadoc.internal.doclets.formats.html.markup.Head;
+
+import java.util.ArrayList;
 
 public class HeaderButtonPlus extends SortHeaderButton {
     public Hitbox hb;
@@ -36,6 +36,8 @@ public class HeaderButtonPlus extends SortHeaderButton {
         LEFT,CENTER,RIGHT
     }
     public Alignment alignment;
+
+    public ArrayList<PowerTip> tips = new ArrayList<>();
 
     public HeaderButtonPlus(String text, float cx, float cy) {
         super(text, cx, cy);
@@ -172,6 +174,7 @@ public class HeaderButtonPlus extends SortHeaderButton {
             }
         }
         this.hb.render(sb);
+        if(hb.hovered) TipHelper.queuePowerTips(InputHelper.mX + 50f,InputHelper.mY - 50f, tips);
     }
 
     public void reset() {
