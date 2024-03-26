@@ -2,12 +2,14 @@ package loadout.screens;
 
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import code.ui.TransmutationTable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.codedisaster.steamworks.SteamUtils;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.actions.unique.RemoveDebuffsAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.curses.AscendersBane;
@@ -509,6 +511,24 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
+        if(Loader.isModLoaded("projecte")) {
+            this.items.add(new StatModButton("EMC", false, ImageMaster.MAP_NODE_REST, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
+                @Override
+                public int getAmount() {
+                    return (int) TransmutationTable.PLAYER_EMC;
+                }
+
+                @Override
+                public void setAmount(int amountToSet) {
+                    TransmutationTable.PLAYER_EMC = amountToSet;
+                }
+
+                @Override
+                public void onBoolChange(boolean boolToChange, int amount) {
+
+                }
+            }));
+        }
     }
 
 
