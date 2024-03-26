@@ -1,0 +1,16 @@
+{
+  "Keyword":[
+    {
+      "NAMES": [
+        "inevitable"
+      ],
+      "DESCRIPTION": "Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar."
+    },
+    {
+      "NAMES": [
+        "actualización infinita"
+      ],
+      "DESCRIPTION": "Capaz de actualizarse indefinidamente."
+    }
+  ]
+}

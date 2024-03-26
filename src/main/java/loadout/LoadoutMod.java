@@ -52,6 +52,7 @@ import loadout.savables.Favorites;
 import loadout.screens.CardViewPopupHeader;
 import loadout.screens.SidePanel;
 import loadout.util.*;
+import lor.helper.LORHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,6 +66,7 @@ import relicupgradelib.arch.UpgradeBranch;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -73,6 +75,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
+import static basemod.BaseMod.customRewardTypeExists;
 import static basemod.BaseMod.gson;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
@@ -1358,7 +1361,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receiveEditKeywords() {
-        BaseMod.addKeyword(new String[]{CardViewPopupHeader.TEXT[20].toLowerCase()},CardViewPopupHeader.TEXT[21]);
+        KeywordsAdder.addKeywords();
     }
 
     public static boolean isCHN() {
