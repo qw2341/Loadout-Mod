@@ -86,7 +86,8 @@ public class RelicClassComparator implements Comparator<AbstractRelic> {
     }
 
     private void getClasses() {
-        classList.addAll(LoadoutMod.customRelics.keySet());
+        if(LoadoutMod.customRelics != null)
+            classList.addAll(LoadoutMod.customRelics.keySet());
     }
 
     private void createCustomRelicPool() {
