@@ -563,7 +563,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             this.owner.flash();
             TildeKey.killAllMonsters();
         }
-        if(TildeKey.isNegatingDebuffs && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+        if(TildeKey.isNegatingDebuffs && AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
             AbstractDungeon.actionManager.addToTop(new RemoveDebuffsAction(AbstractDungeon.player));
         }
     }

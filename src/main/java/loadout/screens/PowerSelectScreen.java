@@ -403,7 +403,7 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
     }
 
     private boolean isCombat() {
-        return AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
+        return AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
     }
 
     public void addPowerToPlayer(AbstractPower p, int stackAmount) {

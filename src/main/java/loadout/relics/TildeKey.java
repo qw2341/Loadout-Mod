@@ -190,7 +190,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
     public void openMorphMenu() {
-        AllInOneBag.getInstance().closeAllScreens();
+        AllInOneBag.INSTANCE.closeAllScreens();
         if(morphMenu == null) morphMenu = new CharacterSkinSelectScreen(this);
         if(!morphMenu.isOpen()) morphMenu.open();
     }
@@ -229,7 +229,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                 AbstractDungeon.player.displayGold = goldLockAmount;
             }
 
-            if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            if(AbstractDungeon.getCurrRoom()!= null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                 if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
                 if(!isInfiniteEnergy) {
                     if(isEnergyLocked) EnergyPanel.totalCount = energyLockAmount;

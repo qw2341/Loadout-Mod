@@ -183,7 +183,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
 
     }
     private boolean isCombat() {
-        return AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
+        return AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT;
     }
     @Override
     protected void updateItemClickLogic() {

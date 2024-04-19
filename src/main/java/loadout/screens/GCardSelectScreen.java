@@ -244,7 +244,7 @@ public class GCardSelectScreen
         if(this.currentMode == CardDisplayMode.OBTAIN && this.cardSelectSortHeader != null)
             this.cardSelectSortHeader.update();
         else if ((this.currentMode == CardDisplayMode.DELETE || this.currentMode == CardDisplayMode.UPGRADE) && this.combatCardSelectSortHeader != null)
-            if(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)
+            if(AbstractDungeon.getCurrRoom()!=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)
                 this.combatCardSelectSortHeader.update();
 
         if (this.isJustForConfirming) {
@@ -737,7 +737,7 @@ public class GCardSelectScreen
         }
 
 
-        if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
+        if (AbstractDungeon.getCurrRoom() !=null && (AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
             this.peekButton.hideInstantly();
             this.peekButton.show();
         }
@@ -1033,14 +1033,14 @@ public class GCardSelectScreen
         if(currentMode == CardDisplayMode.OBTAIN)
             this.cardSelectSortHeader.render(sb);
         else if (currentMode == CardDisplayMode.DELETE || currentMode == CardDisplayMode.UPGRADE) {
-            if(AbstractDungeon.getCurrRoom().phase== AbstractRoom.RoomPhase.COMBAT)
+            if(AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase== AbstractRoom.RoomPhase.COMBAT)
                 this.combatCardSelectSortHeader.render(sb);
         }
 
 
 
         if (this.hoveredCard != null) {
-            if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
+            if (AbstractDungeon.getCurrRoom() !=null && (AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
                 this.targetGroup.renderExceptOneCard(sb, this.hoveredCard);
             } else {
                 this.targetGroup.renderExceptOneCardShowBottled(sb, this.hoveredCard);
@@ -1053,7 +1053,7 @@ public class GCardSelectScreen
 
 
 
-            if ((AbstractDungeon.getCurrRoom()).phase != AbstractRoom.RoomPhase.COMBAT) {
+            if (AbstractDungeon.getCurrRoom() !=null && (AbstractDungeon.getCurrRoom()).phase != AbstractRoom.RoomPhase.COMBAT) {
                 if (this.hoveredCard.inBottleFlame) {
                     AbstractRelic tmp = RelicLibrary.getRelic("Bottled Flame");
                     float prevX = tmp.currentX;

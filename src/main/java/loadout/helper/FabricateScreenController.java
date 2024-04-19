@@ -68,12 +68,12 @@ public class FabricateScreenController {
 
     private static void refreshCardPrinterCards() {
         if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID))
-            ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).cardPrinter.selectScreen.updateFilters();
+            AllInOneBag.INSTANCE.cardPrinter.selectScreen.updateFilters();
     }
 
     private static void replaceSCardPopupCard(AbstractCard card) {
         if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID))
-            ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).cardModifier.selectScreen.getSCardPopup().replaceCurrentCard(card);
+            AllInOneBag.INSTANCE.cardModifier.selectScreen.getSCardPopup().replaceCurrentCard(card);
     }
 
     private static boolean replaceCardInList(List<AbstractCard> cards, AbstractCard original, AbstractCard replacer) {

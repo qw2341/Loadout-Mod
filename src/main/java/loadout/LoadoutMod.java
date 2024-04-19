@@ -8,6 +8,7 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -98,7 +99,7 @@ public class LoadoutMod implements
         EditStringsSubscriber, EditKeywordsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber, PostUpdateSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
 
@@ -373,28 +374,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(makeID("OptionsMenu"));
         String[] SettingText = UIStrings.TEXT;
         // Create the on/off button:
-        ModLabeledToggleButton enableAsStartingButton = new ModLabeledToggleButton(SettingText[0],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableLegacyLayout, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-            
-            enableLegacyLayout = button.enabled; // The boolean true/false will be whether the button is enabled or not
-            try {
-                // And based on that boolean, set the settings and save them
-                config.setBool(ENABLE_LEGACY_LAYOUT, enableLegacyLayout);
-                config.save();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        
-        settingsPanel.addUIElement(enableAsStartingButton); // Add the button to the settings panel. Button is a go.
-
-
-        settingXPos = startingXPos;
-        settingYPos -= lineSpacing;
 
         ModLabeledToggleButton ignoreUnlocksButton = new ModLabeledToggleButton(SettingText[1],
                 350.0f, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
@@ -651,23 +630,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             tempXPos += FontHelper.getSmartWidth(FontHelper.charDescFont, skinName,99999.0f,20.0f) + 50.0f * Settings.scale;
         }
 
-
-//        ModLabeledToggleButton enableIsaacIconsButton = new ModLabeledToggleButton(SettingText[14],
-//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-//                enableIsaacIcons, // Boolean it uses
-//                settingsPanel, // The mod panel in which this button will be in
-//                (label) -> {}, // thing??????? idk
-//                (button) -> { // The actual button:
-//                    enableIsaacIcons = button.enabled;
-//                    try {
-//                        config.setBool(USE_ISAAC_ICONS, enableIsaacIcons);
-//                        config.save();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                });
-//        settingsPanel.addUIElement(enableIsaacIconsButton);
-
         settingYPos -= lineSpacing;
 
         ModLabeledToggleButton enableCreatureManipButton = new ModLabeledToggleButton(SettingText[18],
@@ -724,6 +686,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         createStuffLists();
         logger.info("Done initializing stuffs");
 
+        //AllInOneBag Save Load
+        BaseMod.addSaveField(AllInOneBag.ID, AllInOneBag.INSTANCE);
 
 
         //CardModifications.modifyCards();
@@ -760,24 +724,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             logger.error("Error starting skin manager");
             e.printStackTrace();
         }
-        
-        // This adds a relic to the Shared pool. Every character can find this relic.
-        if(enableLegacyLayout){
-            BaseMod.addRelic(new LoadoutBag(), RelicType.SHARED);
-            BaseMod.addRelic(new TrashBin(), RelicType.SHARED);
-            BaseMod.addRelic(new LoadoutCauldron(), RelicType.SHARED);
-            BaseMod.addRelic(new CardPrinter(), RelicType.SHARED);
-            BaseMod.addRelic(new CardShredder(), RelicType.SHARED);
-            BaseMod.addRelic(new CardModifier(), RelicType.SHARED);
-            BaseMod.addRelic(new EventfulCompass(), RelicType.SHARED);
-            BaseMod.addRelic(new PowerGiver(), RelicType.SHARED);
-            BaseMod.addRelic(new TildeKey(), RelicType.SHARED);
-            BaseMod.addRelic(new BottledMonster(), RelicType.SHARED);
-            BaseMod.addRelic(new OrbBox(), RelicType.SHARED);
-            BaseMod.addRelic(new BlightChest(), RelicType.SHARED);
-        }
 
-        BaseMod.addRelic(new AllInOneBag(), RelicType.SHARED);
+        AllInOneBag.INSTANCE = new AllInOneBag();
+
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
@@ -852,24 +801,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 TipTracker.neverShowAgain("RELIC_TIP");
             }
         }
-
-
-
-        if(enableLegacyLayout) {
-            if(!AbstractDungeon.player.hasRelic(LoadoutBag.ID)) new LoadoutBag().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(TrashBin.ID)) new TrashBin().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(LoadoutCauldron.ID)) new LoadoutCauldron().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(CardPrinter.ID)) new CardPrinter().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(CardShredder.ID)) new CardShredder().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(CardModifier.ID)) new CardModifier().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(EventfulCompass.ID)) new EventfulCompass().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(PowerGiver.ID)) new PowerGiver().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(TildeKey.ID)) new TildeKey().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(BottledMonster.ID)) new BottledMonster().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(OrbBox.ID)) new OrbBox().instantObtain();
-            if(!AbstractDungeon.player.hasRelic(BlightChest.ID)) new BlightChest().instantObtain();
-        }
-        if(!enableLegacyLayout && !AbstractDungeon.player.hasRelic(AllInOneBag.ID)) new AllInOneBag().instantObtain();
 
         TildeKey.resetToDefault();
 
@@ -1308,8 +1239,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     @Override
-    public void receiveRender(SpriteBatch spriteBatch) {
-        if(sidePanel != null) sidePanel.render(spriteBatch);
+    public void receiveRender(SpriteBatch sb) {
+        sb.setColor(Color.WHITE);
+        if(sidePanel != null) sidePanel.render(sb);
+        if(AbstractDungeon.isPlayerInDungeon()) {
+            AllInOneBag.INSTANCE.renderInTopPanel(sb);
+            if(AllInOneBag.INSTANCE.hb.hovered) AllInOneBag.INSTANCE.renderTip(sb);
+        }
     }
 
 
@@ -1371,5 +1307,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receivePostDeath() {
         TildeKey.resetPlayerMorph();
+    }
+
+    @Override
+    public void receivePostUpdate() {
+        if(AbstractDungeon.isPlayerInDungeon()) AllInOneBag.INSTANCE.update();
     }
 }

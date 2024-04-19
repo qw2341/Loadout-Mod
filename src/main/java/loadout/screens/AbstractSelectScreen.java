@@ -194,10 +194,10 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         this.selectedItems.clear();
     }
     public static void hideLoadoutRelics() {
-        if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).hideAllRelics();
+        if(AbstractDungeon.isPlayerInDungeon()) AllInOneBag.INSTANCE.hideAllRelics();
     }
     public static void showLoadoutRelics() {
-        if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).showRelics();
+        if(AbstractDungeon.isPlayerInDungeon()) AllInOneBag.INSTANCE.showRelics();
     }
 
     protected void updateHotkeyControls() {

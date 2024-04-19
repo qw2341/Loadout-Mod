@@ -74,12 +74,12 @@ public class CreatureManipulationPanel implements UIElement {
         }));
         //edit
         this.buttons.add(new CreatureManipulationButton(TEXT[1], () -> {
-            AllInOneBag.getInstance().powerGiver.openSingle(creature);
+            AllInOneBag.INSTANCE.powerGiver.openSingle(creature);
         }));
         //morph
         this.buttons.add(new CreatureManipulationButton(TEXT[5], () -> {
             TildeKey.morphee = creature;
-            AllInOneBag.getInstance().tildeKey.openMorphMenu();
+            AllInOneBag.INSTANCE.tildeKey.openMorphMenu();
         }));
         //kill
         this.buttons.add(new CreatureManipulationButton(TEXT[2], () -> {

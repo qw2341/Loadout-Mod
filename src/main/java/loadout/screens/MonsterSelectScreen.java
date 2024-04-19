@@ -229,7 +229,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
 
             if(this.hb.hovered && InputHelper.justReleasedClickLeft) {
                 this.hb.clicked = false;
-                if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
 
                     BottledMonster.lastMonster = this.mClass;
 

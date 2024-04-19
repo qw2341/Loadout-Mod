@@ -12,17 +12,21 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
@@ -30,6 +34,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
+import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
@@ -37,6 +43,7 @@ import loadout.uiElements.XGGGIcon;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;
@@ -70,10 +77,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     Color color = new Color();
 
     static final float SIDE_PANEL_X = 50.0F * Settings.scale;
+    static float panelRelicRenderScale = 1;
 
     XGGGIcon xgggIcon;
     boolean showXGGG;
     float showXGGGTimer;
+
+    public static AllInOneBag INSTANCE;
 
     public AllInOneBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
@@ -143,6 +153,15 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             showXGGG = false;
             showXGGGTimer = 0.0f;
         }
+
+        isObtained = true;
+        initBagPos();
+
+        for(AbstractRelic cr: loadoutRelics){
+            cr.currentX = currentX;
+            cr.currentY = currentY;
+            cr.scale = 0;
+        }
     }
 
     @Override
@@ -196,15 +215,25 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         if (r.hb != null) {
-           if(isSelectionScreenUp) r.hb.move(r.currentX, r.currentY);
+           if(isSelectionScreenUp || r == this) r.hb.move(r.currentX, r.currentY);
            else r.hb.move(-100.0f * Settings.scale,-100.0f * Settings.scale);
         }
     }
+
+    public void initBagPos() {
+        currentY = Settings.HEIGHT / 2f;
+        targetY = currentY;
+        currentX = SIDE_PANEL_X + hb.width;
+        targetX = currentX;
+    }
+
     public void showRelics(){
         float xPos = SIDE_PANEL_X;
-
+        targetX = xPos + hb.width;
+        targetY = Settings.HEIGHT / 2f;
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
+        panelRelicRenderScale = 1;
         for (CustomRelic cr : loadoutRelics) {
             yPos -= spaceY;
             cr.targetX = xPos;
@@ -212,11 +241,17 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
     private void hideRelics(){
-        hideAllRelics();
+        targetX = hb.width / 2;
+        panelRelicRenderScale = 0;
+        for (CustomRelic cr : loadoutRelics) {
+            cr.targetX = -100;
+        }
     }
     public void hideAllRelics(){
+        panelRelicRenderScale = 0;
+        targetX = -100 * Settings.scale;
         for (CustomRelic cr : loadoutRelics) {
-            cr.targetX = -SIDE_PANEL_X;
+            cr.targetX = -100;
         }
     }
 
@@ -234,7 +269,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public void update()
     {
         super.update();
-        if(isXggg() && isInScreen()) {
+        if(isXggg()) {
             if(this.hovered()) {
                 showXGGG();
             } else {
@@ -249,6 +284,14 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
                 }
             }
             this.xgggIcon.update();
+        }
+        moveRelic(this);
+
+        if(this.hb.hovered && (InputHelper.justClickedLeft || InputHelper.justClickedRight)) {
+            InputHelper.justClickedLeft = false;
+            InputHelper.justClickedRight = false;
+
+            this.onRightClick();
         }
 
         if(isObtained) {
@@ -275,29 +318,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     @Override
     public void renderInTopPanel(SpriteBatch sb)
     {
-        if (!Settings.hideRelics) {
-            if(isXggg() && isInScreen()) {
-                if(xgggIcon.getX() != this.currentX || xgggIcon.getY() != this.currentY) {
-                    xgggIcon.render(sb);
-                }
-            }
-            this.renderOutline(sb, true);
-            if (this.grayscale) {
-                ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
-            }
-            updateColor();
-            sb.setColor(this.color);
-            sb.draw(this.img, this.currentX - 64.0F + (float) getOffsetX(), this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
-            if (this.grayscale) {
-                ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
-            }
-
-            this.renderCounter(sb, true);
-            this.renderFlash(sb, true);
-            this.hb.render(sb);
-        }
-
         for (CustomRelic cr : loadoutRelics) {
+            cr.scale = MathHelper.scaleLerpSnap(cr.scale, panelRelicRenderScale);
             cr.renderInTopPanel(sb);
             if (cr.hb.hovered) {
                 Configurator.setLevel(TipHelper.class.getName(), Level.FATAL);
@@ -305,6 +327,27 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
                 Configurator.setLevel(TipHelper.class.getName(), Level.INFO);
             }
         }
+
+        if(isXggg() && isInScreen()) {
+            if(xgggIcon.getX() != this.currentX || xgggIcon.getY() != this.currentY) {
+                xgggIcon.render(sb);
+            }
+        }
+
+        this.renderOutline(sb, true);
+        if (this.grayscale) {
+            ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
+        }
+        updateColor();
+        sb.setColor(this.color);
+        sb.draw(this.img, this.currentX - 64.0F + (float) getOffsetX(), this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+        if (this.grayscale) {
+            ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
+        }
+
+        this.renderCounter(sb, true);
+        this.renderFlash(sb, true);
+        this.hb.render(sb);
 
     }
 
@@ -383,6 +426,11 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     @Override
+    public Type savedType() {
+        return new TypeToken<RelicSavables>(){}.getType();
+    }
+
+    @Override
     public RelicSavables onSave() {
         return new RelicSavables(cardModifier.onSave(), powerGiver.onSave(), tildeKey.onSave());
     }
@@ -450,10 +498,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         cardModifier.onObtainCard(c);
     }
 
-    @Override
-    public void onEnterRoom(AbstractRoom room) {
-
-    }
 
     @Override
     public void onMonsterDeath(AbstractMonster m) {
@@ -482,7 +526,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     public static void XGGGSay(String msg) {
-        if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).xgggSay(msg);
+        AllInOneBag.INSTANCE.xgggSay(msg);
     }
 
     @Override
@@ -490,7 +534,4 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         return tildeKey.atDamageModify(damage, c);
     }
 
-    public static AllInOneBag getInstance() {
-        return (AllInOneBag) AbstractDungeon.player.getRelic(ID);
-    }
 }

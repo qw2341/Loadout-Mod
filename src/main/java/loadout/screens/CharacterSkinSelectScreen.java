@@ -101,7 +101,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         updateFilters();
 
         if(this.itemsClone == null || this.itemsClone.isEmpty()) {
-            ArrayList<MonsterSelectScreen.MonsterButton> ml = AllInOneBag.getInstance().bottledMonster.getMonsterButtons();
+            ArrayList<MonsterSelectScreen.MonsterButton> ml = AllInOneBag.INSTANCE.bottledMonster.getMonsterButtons();
 
             this.itemsClone = new ArrayList<>();
 
@@ -258,7 +258,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
             this.onRelease = () -> {
                 if(!this.pressStarted) return;
                 TildeKey.morph(TildeKey.morphee, MonsterSelectScreen.MonsterButton.createMonster(mb.mClass));
-                AllInOneBag.getInstance().closeAllScreens();
+                AllInOneBag.INSTANCE.closeAllScreens();
             };
 
         }
@@ -275,7 +275,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
             this.onRelease = () -> {
                 if(!this.pressStarted) return;
                 TildeKey.morph(TildeKey.morphee, ap);
-                AllInOneBag.getInstance().closeAllScreens();
+                AllInOneBag.INSTANCE.closeAllScreens();
             };
         }
 

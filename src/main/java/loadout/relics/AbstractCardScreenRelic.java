@@ -119,7 +119,7 @@ public abstract class AbstractCardScreenRelic extends CustomRelic implements Cli
         }
         if (isOtherRelicScreenOpen()) {
             if(RelicPopUpPatch.IsInsideAnotherRelicField.isInsideAnother.get(this)) {
-                if(AbstractDungeon.player.hasRelic(AllInOneBag.ID)) ((AllInOneBag)AbstractDungeon.player.getRelic(AllInOneBag.ID)).closeAllScreens();
+                AllInOneBag.INSTANCE.closeAllScreens();
             } else {
                 LoadoutRelicHelper.closeAllScreens();
             }
