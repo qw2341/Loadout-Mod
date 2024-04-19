@@ -228,15 +228,19 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                 AbstractDungeon.player.gold = goldLockAmount;
                 AbstractDungeon.player.displayGold = goldLockAmount;
             }
-
-            if(AbstractDungeon.getCurrRoom()!= null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
-                if(!isInfiniteEnergy) {
-                    if(isEnergyLocked) EnergyPanel.totalCount = energyLockAmount;
-                    if(isMaxEnergyLocked) AbstractDungeon.player.energy.energy = maxEnergyLockAmount;
+            try {
+                if(AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+                    if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
+                    if(!isInfiniteEnergy) {
+                        if(isEnergyLocked) EnergyPanel.totalCount = energyLockAmount;
+                        if(isMaxEnergyLocked) AbstractDungeon.player.energy.energy = maxEnergyLockAmount;
+                    }
+                    if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
                 }
-                if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
+            } catch (NullPointerException npe) {
+
             }
+
 
             if(Loader.isModLoaded("projecte")) {
                 if(isEMCLocked) {

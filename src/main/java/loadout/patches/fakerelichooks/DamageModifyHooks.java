@@ -1,5 +1,6 @@
 package loadout.patches.fakerelichooks;
 
+import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatches2;
@@ -13,8 +14,8 @@ public class DamageModifyHooks {
             @SpirePatch2(clz = AbstractCard.class, method = "calculateCardDamage")})
     public static class NonmultiDamage {
         @SpireInsertPatch(locator = PlayerRelicsLocator.class, localvars = {"tmp"})
-        public static void Insert(AbstractCard __instance, float tmp) {
-            tmp = AllInOneBag.INSTANCE.atDamageModify(tmp, __instance);
+        public static void Insert(AbstractCard __instance, @ByRef float[] tmp) {
+            tmp[0] = AllInOneBag.INSTANCE.atDamageModify(tmp[0], __instance);
         }
     }
 
