@@ -9,6 +9,7 @@ import loadout.relics.AllInOneBag;
 @SpirePatch2(clz = CardCrawlGame.class, method = "startOverButShowCredits")})
 public class SaveAndQuitPatch {
     public static void Prefix() {
+        AllInOneBag.isSelectionScreenUp = false;
         AllInOneBag.INSTANCE.hideAllRelics();
     }
 }

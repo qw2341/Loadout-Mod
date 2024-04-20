@@ -258,7 +258,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
             this.onRelease = () -> {
                 if(!this.pressStarted) return;
                 TildeKey.morph(TildeKey.morphee, MonsterSelectScreen.MonsterButton.createMonster(mb.mClass));
-                AllInOneBag.INSTANCE.closeAllScreens();
+                AllInOneBag.INSTANCE.tildeKey.morphMenu.close();
             };
 
         }
@@ -275,7 +275,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
             this.onRelease = () -> {
                 if(!this.pressStarted) return;
                 TildeKey.morph(TildeKey.morphee, ap);
-                AllInOneBag.INSTANCE.closeAllScreens();
+                AllInOneBag.INSTANCE.tildeKey.morphMenu.close();
             };
         }
 

@@ -194,7 +194,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
     public void openMorphMenu() {
-        AllInOneBag.INSTANCE.closeAllScreens();
+//        AllInOneBag.INSTANCE.closeAllScreens();
         if(morphMenu == null) morphMenu = new CharacterSkinSelectScreen(this);
         if(!morphMenu.isOpen()) morphMenu.open();
     }

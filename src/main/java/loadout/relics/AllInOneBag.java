@@ -159,8 +159,10 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         initBagPos();
 
         for(AbstractRelic cr: loadoutRelics){
-            cr.currentX = currentX;
+            cr.currentX = -100f;
+            cr.targetX = -100f;
             cr.currentY = currentY;
+            cr.targetY = targetY;
             cr.scale = 0;
         }
 
@@ -230,7 +232,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         targetX = currentX;
     }
 
+    public void showButton() {
+        targetX = hb.width / 2;
+        targetY = Settings.HEIGHT / 2f;
+    }
+
     public void showRelics(){
+        isSelectionScreenUp = true;
         float xPos = SIDE_PANEL_X;
         targetX = xPos + this.hb.width * 1.5f;
         targetY = Settings.HEIGHT / 2f;
@@ -244,6 +252,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
     private void hideRelics(){
+        isSelectionScreenUp = false;
         targetX = hb.width / 2;
         panelRelicRenderScale = 0;
         for (CustomRelic cr : loadoutRelics) {
@@ -251,6 +260,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
     public void hideAllRelics(){
+        isSelectionScreenUp = false;
         panelRelicRenderScale = 0;
         targetX = -100 * Settings.scale;
         for (CustomRelic cr : loadoutRelics) {
@@ -260,8 +270,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
     private void showXGGG() {
         if(this.xgggIcon != null) {
-            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
-            this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 15.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
+            this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 40.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
             this.xgggIcon.scale = 0.5f;
         }
 
@@ -325,11 +335,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
 
         } else {
-            if (AbstractDungeon.player != null && AbstractDungeon.player.relics.indexOf(this) / MAX_RELICS_PER_PAGE == relicPage) {
-                this.hb.update();
-            } else {
-                this.hb.hovered = false;
-            }
+            this.hb.update();
+
             this.scale = MathHelper.scaleLerpSnap(this.scale, Settings.scale);
         }
 
@@ -351,10 +358,14 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
         moveRelic(this);
 
+        if(this.hb.justHovered) {
+            CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
+        }
+
         if(this.hb.hovered && (InputHelper.justClickedLeft || InputHelper.justClickedRight)) {
             InputHelper.justClickedLeft = false;
             InputHelper.justClickedRight = false;
-
+            CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
             this.onRightClick();
         }
 
@@ -363,7 +374,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             moveRelic(cr);
             cr.update();
             cr.hb.update();
-            if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) ((ClickableRelic)cr).onRightClick();
+            if(cr.hb.justHovered) {
+                CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
+            }
+            if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) {
+                cr.playLandingSFX();
+                ((ClickableRelic)cr).onRightClick();
+            }
         }
 
     }
@@ -403,8 +420,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
         updateColor();
         sb.setColor(this.color);
-        sb.draw(SIDE_PANEL_TAB, this.currentX - 52.0F * Settings.scale, this.currentY - 64.0F * Settings.scale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
-        sb.draw(SIDE_PANEL_ARROW,this.currentX - 70.0F * Settings.scale, this.currentY - 64.0F * Settings.scale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, isSelectionScreenUp, false);
+        sb.draw(SIDE_PANEL_TAB, this.currentX - 52.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+        sb.draw(SIDE_PANEL_ARROW,this.currentX - 70.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, isSelectionScreenUp, false);
         if (this.grayscale) {
             ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
         }

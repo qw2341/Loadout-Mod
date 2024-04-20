@@ -1107,7 +1107,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receiveStartGame() {
         init();
         TildeKey.morphAndFlip();
-        AllInOneBag.INSTANCE.showRelics();
+        AllInOneBag.INSTANCE.hideAllRelics();
+        AllInOneBag.isSelectionScreenUp = false;
+        AllInOneBag.INSTANCE.showButton();
     }
     public static void createCardList() {
         cardsToDisplay.clear();
