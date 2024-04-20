@@ -1,21 +1,13 @@
 package loadout.util;
 
 import basemod.ReflectionHacks;
-import com.badlogic.gdx.Gdx;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import loadout.LoadoutMod;
 import loadout.helper.LoadoutRelicHelper;
-import loadout.relics.LoadoutBag;
+import loadout.relics.AllInOneBag;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SkinManager {
@@ -59,6 +51,9 @@ public class SkinManager {
                 }
             }
         }
+
+        AllInOneBag.SIDE_PANEL_TAB = TextureLoader.getTexture(SkinManager.makeRelicSkinPath(skinName,"SidePanelTab"));
+        AllInOneBag.SIDE_PANEL_ARROW = TextureLoader.getTexture(SkinManager.makeRelicSkinPath(skinName,"SidePanelArrow"));
     }
 
     private void setSkinForRelicClass(Class relicClass, String skinName) {

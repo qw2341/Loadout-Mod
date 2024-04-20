@@ -19,23 +19,18 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
-import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
-import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
@@ -85,19 +80,25 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
 
     public static AllInOneBag INSTANCE;
 
+    public static Texture SIDE_PANEL_TAB;
+    public static Texture SIDE_PANEL_ARROW;
+
     public AllInOneBag() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
-        if(LoadoutMod.isIsaac()) {
-            try {
-                RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
-                tips.clear();
-                flavorText = relicStrings.FLAVOR;
-                tips.add(new PowerTip(relicStrings.NAME, description));
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        this.hb.resize(36.0f * Settings.scale,128.0f * Settings.scale);
+
+//        if(LoadoutMod.isIsaac()) {
+//            try {
+//                RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
+//                tips.clear();
+//                flavorText = relicStrings.FLAVOR;
+//                tips.add(new PowerTip(relicStrings.NAME, description));
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         this.loadoutBag = new LoadoutBag();
         this.trashBin = new TrashBin();
         this.loadoutCauldron = new LoadoutCauldron();
@@ -149,7 +150,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         if(isXggg()) {
             xgggIcon = new XGGGIcon(this.currentX, this.currentY);
             xgggIcon.setAngle(330.0f);
-            xgggIcon.scale = 0.75F;
+            xgggIcon.scale = 0.5F;
             showXGGG = false;
             showXGGGTimer = 0.0f;
         }
@@ -162,6 +163,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             cr.currentY = currentY;
             cr.scale = 0;
         }
+
+        this.tips.clear();
     }
 
     @Override
@@ -223,13 +226,13 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public void initBagPos() {
         currentY = Settings.HEIGHT / 2f;
         targetY = currentY;
-        currentX = SIDE_PANEL_X + hb.width;
+        currentX = SIDE_PANEL_X + this.hb.width * 1.5f;
         targetX = currentX;
     }
 
     public void showRelics(){
         float xPos = SIDE_PANEL_X;
-        targetX = xPos + hb.width;
+        targetX = xPos + this.hb.width * 1.5f;
         targetY = Settings.HEIGHT / 2f;
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
@@ -259,14 +262,16 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         if(this.xgggIcon != null) {
             this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
             this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+            this.xgggIcon.scale = 0.5f;
         }
 
     }
 
     private void hideXGGG() {
         if(this.xgggIcon != null) {
-            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX -10.0f * Settings.scale,Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
             this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+            this.xgggIcon.scale = MathUtils.lerp(this.xgggIcon.scale, 0,Gdx.graphics.getDeltaTime() * 6.0F * 2.0F);
         }
     }
 
@@ -371,7 +376,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     private float getOffsetX() {
-        return ReflectionHacks.getPrivateStatic(AbstractRelic.class, "offsetX");
+        return 0;
     }
 
     @Override
@@ -393,19 +398,17 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
         }
 
-        this.renderOutline(sb, true);
         if (this.grayscale) {
             ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
         }
         updateColor();
         sb.setColor(this.color);
-        sb.draw(this.img, this.currentX - 64.0F + (float) getOffsetX(), this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+        sb.draw(SIDE_PANEL_TAB, this.currentX - 52.0F * Settings.scale, this.currentY - 64.0F * Settings.scale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
+        sb.draw(SIDE_PANEL_ARROW,this.currentX - 70.0F * Settings.scale, this.currentY - 64.0F * Settings.scale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, isSelectionScreenUp, false);
         if (this.grayscale) {
             ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
         }
 
-        this.renderCounter(sb, true);
-        this.renderFlash(sb, true);
         this.hb.render(sb);
 
     }
@@ -441,20 +444,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
         } else {
             sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
-        }
-
-        if (this.hb.hovered && !CardCrawlGame.relicPopup.isOpen) {
-            if (!this.isSeen) {
-                if ((float)InputHelper.mX < 1400.0F * Settings.scale) {
-                    TipHelper.renderGenericTip((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 50.0F * Settings.scale, LABEL[1], MSG[1]);
-                } else {
-                    TipHelper.renderGenericTip((float)InputHelper.mX - 350.0F * Settings.scale, (float)InputHelper.mY - 50.0F * Settings.scale, LABEL[1], MSG[1]);
-                }
-
-                return;
-            }
-
-            this.renderTip(sb);
         }
 
         this.hb.render(sb);
