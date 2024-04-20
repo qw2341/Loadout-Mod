@@ -168,6 +168,10 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static HashSet<String> NO_FLIP_LIST = new HashSet<>();
 
+    public static int merchantPriceMult = 100;
+
+    public static final String merchantPriceMultKey = "merchantPriceMult";
+
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
         this.gKey = new InputAction(Input.Keys.G);
@@ -342,6 +346,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         playerAttackMult = 100;
         currentMorph = "";
+
+        merchantPriceMult = 100;
     }
 
     public static void spareAllMonsters() {
@@ -537,6 +543,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         sav.put(playerAttackMultKey, String.valueOf(playerAttackMult));
         sav.put(playerMorphKey, currentMorph);
+
+        sav.put(merchantPriceMultKey, String.valueOf(merchantPriceMult));
         return sav;
     }
 
@@ -592,6 +600,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
             playerAttackMult = Integer.parseInt(sav.get(playerAttackMultKey));
             currentMorph = sav.get(playerMorphKey);
+
+            merchantPriceMult = Integer.parseInt(sav.get(merchantPriceMultKey));
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();

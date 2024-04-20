@@ -157,7 +157,8 @@
 			"Multiplicateur de dégâts ennemis %",
 			"Taille de la main",
 			"Tirage Au Sort Par Tour",
-			"Dégâts du joueur Multi %"
+			"Dégâts du joueur Multi %",
+			"Multiplicateur de prix d’achat %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

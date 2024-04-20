@@ -158,7 +158,8 @@
 			"Enemy Damage Mult %",
 			"Hand Size",
 			"Draw Per Turn",
-			"Player Damage Mult %"
+			"Player Damage Mult %",
+			"Shop Price Mult %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

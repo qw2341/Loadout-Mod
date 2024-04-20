@@ -511,6 +511,27 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             }
         }));
 
+        this.items.add(new StatModButton(TEXT[9], false, ImageMaster.MAP_NODE_MERCHANT, GOLD_NUM_OFFSET_X, Color.GOLD,
+                new StatModActions() {
+                    @Override
+                    public int getAmount() {
+                        return TildeKey.merchantPriceMult;
+                    }
+
+                    @Override
+                    public void setAmount(int amountToSet) {
+                        TildeKey.merchantPriceMult = amountToSet;
+                        if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.shopScreen != null) {
+                            AbstractDungeon.shopScreen.applyDiscount(TildeKey.merchantPriceMult / 100f, true);
+                        }
+                    }
+
+                    @Override
+                    public void onBoolChange(boolean boolToChange, int amount) {
+
+                    }
+                }));
+
         if(Loader.isModLoaded("projecte")) {
             this.items.add(new StatModButton("EMC", false, ImageMaster.MAP_NODE_REST, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
                 @Override

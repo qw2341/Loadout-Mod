@@ -77,7 +77,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     Color color = new Color();
 
     static final float SIDE_PANEL_X = 50.0F * Settings.scale;
-    static float panelRelicRenderScale = 1;
+    static float panelRelicRenderScale = Settings.scale;
 
     XGGGIcon xgggIcon;
     boolean showXGGG;
@@ -233,7 +233,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         targetY = Settings.HEIGHT / 2f;
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
-        panelRelicRenderScale = 1;
+        panelRelicRenderScale = Settings.scale;
         for (CustomRelic cr : loadoutRelics) {
             yPos -= spaceY;
             cr.targetX = xPos;
@@ -256,19 +256,78 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     private void showXGGG() {
-        this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
-        this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+        if(this.xgggIcon != null) {
+            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + 25.0F * Settings.scale + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F));
+            this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY + 25.0F * Settings.scale, Gdx.graphics.getDeltaTime() * 6.0F));
+        }
+
     }
 
     private void hideXGGG() {
-        this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
-        this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+        if(this.xgggIcon != null) {
+            this.xgggIcon.setX(MathUtils.lerp(xgggIcon.getX(), this.currentX + getOffsetX(),Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+            this.xgggIcon.setY(MathUtils.lerp(xgggIcon.getY(), this.currentY, Gdx.graphics.getDeltaTime() * 6.0F * 2.0F));
+        }
     }
 
     @Override
     public void update()
     {
-        super.update();
+        if (!this.isDone) {
+            if (this.isAnimating) {
+                if (this.hb.hovered) {
+                    this.scale = Settings.scale * 1.5F;
+                } else {
+                    this.scale = MathHelper.scaleLerpSnap(this.scale, Settings.scale * 1.1F);
+                }
+            } else if (this.hb.hovered) {
+                this.scale = Settings.scale * 1.25F;
+            } else {
+                this.scale = MathHelper.scaleLerpSnap(this.scale, Settings.scale);
+            }
+
+
+            ReflectionHacks.setPrivate(this, AbstractRelic.class, "rotation", 0.0F);
+
+            if (this.currentX != this.targetX) {
+                this.currentX = MathUtils.lerp(this.currentX, this.targetX, Gdx.graphics.getDeltaTime() * 6.0F);
+                if (Math.abs(this.currentX - this.targetX) < 0.5F) {
+                    this.currentX = this.targetX;
+                }
+            }
+
+            if (this.currentY != this.targetY) {
+                this.currentY = MathUtils.lerp(this.currentY, this.targetY, Gdx.graphics.getDeltaTime() * 6.0F);
+                if (Math.abs(this.currentY - this.targetY) < 0.5F) {
+                    this.currentY = this.targetY;
+                }
+            }
+
+            if (this.currentY == this.targetY && this.currentX == this.targetX) {
+                this.isDone = true;
+                if (AbstractDungeon.topPanel != null) {
+                    AbstractDungeon.topPanel.adjustRelicHbs();
+                }
+
+                this.hb.move(this.currentX, this.currentY);
+            }
+
+            this.scale = Settings.scale;
+
+
+            if (this.hb != null) {
+                this.hb.update();
+            }
+
+        } else {
+            if (AbstractDungeon.player != null && AbstractDungeon.player.relics.indexOf(this) / MAX_RELICS_PER_PAGE == relicPage) {
+                this.hb.update();
+            } else {
+                this.hb.hovered = false;
+            }
+            this.scale = MathHelper.scaleLerpSnap(this.scale, Settings.scale);
+        }
+
         if(isXggg()) {
             if(this.hovered()) {
                 showXGGG();
@@ -294,14 +353,14 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             this.onRightClick();
         }
 
-        if(isObtained) {
-            for (CustomRelic cr : loadoutRelics) {
-                moveRelic(cr);
-                cr.update();
-                cr.hb.update();
-                if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) ((ClickableRelic)cr).onRightClick();
-            }
+
+        for (CustomRelic cr : loadoutRelics) {
+            moveRelic(cr);
+            cr.update();
+            cr.hb.update();
+            if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) ((ClickableRelic)cr).onRightClick();
         }
+
     }
 
     private void updateColor() {
