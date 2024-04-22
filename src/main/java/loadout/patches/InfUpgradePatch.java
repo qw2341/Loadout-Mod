@@ -16,11 +16,14 @@ import static loadout.LoadoutMod.logger;
 
 @SpirePatch(clz = AbstractCard.class, method = "upgradeName")
 public class InfUpgradePatch {
+    public static boolean isInfUpgrade(AbstractCard card) {
+        return CardModifierManager.hasModifier(card, InfiniteUpgradeMod.ID);
+    }
     @SpireInsertPatch(locator = Locator.class)
     public static void Insert(AbstractCard __instance) {
-        if(CardModifierManager.hasModifier(__instance, InfiniteUpgradeMod.ID)) {
+        if(isInfUpgrade(__instance)) {
             try {
-                logger.info("upgrading " + __instance.cardID + " with upgradeTimes: " + __instance.timesUpgraded);
+                //logger.info("upgrading " + __instance.cardID + " with upgradeTimes: " + __instance.timesUpgraded);
                 __instance.name = __instance.originalName + "+" + __instance.timesUpgraded;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -32,9 +35,9 @@ public class InfUpgradePatch {
 
     @SpirePostfixPatch
     public static void Postfix(AbstractCard __instance) {
-        if(CardModifierManager.hasModifier(__instance, InfiniteUpgradeMod.ID)) {
+        if(isInfUpgrade(__instance)) {
             __instance.upgraded = false;
-            logger.info("Setting " + __instance.cardID + " upgraded to " + __instance.upgraded);
+            //logger.info("Setting " + __instance.cardID + " upgraded to " + __instance.upgraded);
 
         }
 
@@ -50,7 +53,7 @@ public class InfUpgradePatch {
     }
 
     public static void changeCardName(AbstractCard card) {
-        if(CardModifierManager.hasModifier(card,InfiniteUpgradeMod.ID)) {
+        if(isInfUpgrade(card)) {
             try {
                 card.name = ((CardStrings) ReflectionHacks.getPrivateStatic(card.getClass(), "cardStrings")).NAME + "+" + card.timesUpgraded;
                 ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
