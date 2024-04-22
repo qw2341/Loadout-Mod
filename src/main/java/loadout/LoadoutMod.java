@@ -731,11 +731,11 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         // If you don't have this it won't be visible in the compendium until you see them in game
         // (the others are all starters so they're marked as seen in the character file)
 
-        if(Loader.isModLoaded("RelicUpgradeLib")) {
-            Proxy p = new Proxy(new AllInOneBag());
-            p.addBranch(new UpgradeBranch(new AllInOneBagUp(), true, true, true));
-            ProxyManager.register(p);
-        }
+//        if(Loader.isModLoaded("RelicUpgradeLib")) {
+//            Proxy p = new Proxy(new AllInOneBag());
+//            p.addBranch(new UpgradeBranch(new AllInOneBagUp(), true, true, true));
+//            ProxyManager.register(p);
+//        }
         logger.info("Done adding relics!");
     }
     
@@ -1247,7 +1247,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         if(sidePanel != null) sidePanel.render(sb);
         if(AbstractDungeon.isPlayerInDungeon()) {
             AllInOneBag.INSTANCE.renderInTopPanel(sb);
-            if(AllInOneBag.INSTANCE.hb.hovered) AllInOneBag.INSTANCE.renderTip(sb);
         }
     }
 

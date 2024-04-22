@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
 import com.google.gson.reflect.TypeToken;
-import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -21,19 +18,16 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.MathHelper;
-import com.megacrit.cardcrawl.helpers.PowerTip;
-import com.megacrit.cardcrawl.helpers.ShaderHelper;
-import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
+import loadout.uiElements.UIElement;
 import loadout.uiElements.XGGGIcon;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -44,9 +38,7 @@ import java.util.ArrayList;
 import static loadout.LoadoutMod.*;
 
 
-public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSavable<RelicSavables>, OnReceivePowerRelic, OnPlayerDeathRelic {
-    protected static final Sfx landingSfx = AbstractCustomScreenRelic.landingSfx;
-
+public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
     public static boolean isSelectionScreenUp = true;
 
     public static final String ID = LoadoutMod.makeID("AllInOneBag");
@@ -83,10 +75,24 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     public static Texture SIDE_PANEL_TAB;
     public static Texture SIDE_PANEL_ARROW;
 
-    public AllInOneBag() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+    public boolean isDone;
+    public boolean isAnimating;
 
-        this.hb.resize(36.0f * Settings.scale,128.0f * Settings.scale);
+    public Hitbox hb;
+
+    private float rotation;
+
+    public float currentX;
+    public float currentY;
+    public float targetX;
+    public float targetY;
+    public float scale;
+
+    public AllInOneBag() {
+        this.scale = Settings.scale;
+        this.isDone = false;
+        this.isAnimating = false;
+        this.hb = new Hitbox(36.0f * Settings.scale,128.0f * Settings.scale);
 
 //        if(LoadoutMod.isIsaac()) {
 //            try {
@@ -155,7 +161,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             showXGGGTimer = 0.0f;
         }
 
-        isObtained = true;
         initBagPos();
 
         for(AbstractRelic cr: loadoutRelics){
@@ -166,20 +171,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             cr.scale = 0;
         }
 
-        this.tips.clear();
     }
 
-    @Override
-    public String getUpdatedDescription() {
-        return DESCRIPTIONS[0];
-    }
-
-    @Override
-    public void relicTip() {}
-    @Override
-    public void onUnequip() {
-        closeAllScreens();
-    }
     public void closeAllScreens() {
         for(AbstractCustomScreenRelic<?> r : customScreenRelics) {
             if(r.isSelectionScreenUp()) r.selectScreen.close();
@@ -190,12 +183,8 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
     }
 
-    @Override
     public void onRightClick() {
-        if (!isObtained) {
-            // If it has been used this turn, the player doesn't actually have the relic (i.e. it's on display in the shop room), or it's the enemy's turn
-            return; // Don't do anything.
-        }
+
         isSelectionScreenUp = !isSelectionScreenUp;
         if(isSelectionScreenUp){
             showRelics();
@@ -220,8 +209,28 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         if (r.hb != null) {
-           if(isSelectionScreenUp || r == this) r.hb.move(r.currentX, r.currentY);
+           if(isSelectionScreenUp) r.hb.move(r.currentX, r.currentY);
            else r.hb.move(-100.0f * Settings.scale,-100.0f * Settings.scale);
+        }
+    }
+
+    private void move() {
+        if (this.currentX != this.targetX) {
+            this.currentX = MathUtils.lerp(this.currentX, this.targetX, Gdx.graphics.getDeltaTime() * 6.0F);
+            if (Math.abs(this.currentX - this.targetX) < 0.5F) {
+                this.currentX = this.targetX;
+            }
+        }
+
+        if (this.currentY != this.targetY) {
+            this.currentY = MathUtils.lerp(this.currentY, this.targetY, Gdx.graphics.getDeltaTime() * 6.0F);
+            if (Math.abs(this.currentY - this.targetY) < 0.5F) {
+                this.currentY = this.targetY;
+            }
+        }
+
+        if (this.hb != null) {
+            this.hb.move(this.currentX, this.currentY);
         }
     }
 
@@ -286,6 +295,11 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
     }
 
     @Override
+    public void render(SpriteBatch sb) {
+        this.renderInTopPanel(sb);
+    }
+
+    @Override
     public void update()
     {
         if (!this.isDone) {
@@ -341,7 +355,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         }
 
         if(isXggg()) {
-            if(this.hovered()) {
+            if(this.hb.hovered) {
                 showXGGG();
             } else {
                 if(showXGGG) {
@@ -356,7 +370,7 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
             this.xgggIcon.update();
         }
-        moveRelic(this);
+        move();
 
         if(this.hb.justHovered) {
             CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
@@ -396,7 +410,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         return 0;
     }
 
-    @Override
     public void renderInTopPanel(SpriteBatch sb)
     {
         for (CustomRelic cr : loadoutRelics) {
@@ -415,79 +428,18 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
             }
         }
 
-        if (this.grayscale) {
-            ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE);
-        }
         updateColor();
         sb.setColor(this.color);
         sb.draw(SIDE_PANEL_TAB, this.currentX - 52.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
         sb.draw(SIDE_PANEL_ARROW,this.currentX - 70.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, isSelectionScreenUp, false);
-        if (this.grayscale) {
-            ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
-        }
 
         this.hb.render(sb);
 
     }
 
-    @Override
-    public void render(SpriteBatch sb, boolean renderAmount, Color outlineColor) {
-        if(isXggg() && isInScreen()) {
-            if(xgggIcon.getX() != this.currentX || xgggIcon.getY() != this.currentY) {
-                xgggIcon.render(sb);
-            }
-        }
-
-        if (this.isSeen) {
-            this.renderOutline(outlineColor, sb, false);
-        } else {
-            this.renderOutline(Color.LIGHT_GRAY, sb, false);
-        }
-
-        if (this.isSeen) {
-            updateColor();
-            sb.setColor(this.color);
-        } else if (this.hb.hovered) {
-            sb.setColor(Settings.HALF_TRANSPARENT_BLACK_COLOR);
-        } else {
-            sb.setColor(Color.BLACK);
-        }
-
-        if (AbstractDungeon.screen != null && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NEOW_UNLOCK) {
-            if (this.largeImg == null) {
-                sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, Settings.scale * 2.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 15.0F, Settings.scale * 2.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 15.0F, 0.0F, 0, 0, 128, 128, false, false);
-            } else {
-                sb.draw(this.largeImg, this.currentX - 128.0F, this.currentY - 128.0F, 128.0F, 128.0F, 256.0F, 256.0F, Settings.scale * 1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 30.0F, Settings.scale * 1.0F + MathUtils.cosDeg((float)(System.currentTimeMillis() / 5L % 360L)) / 30.0F, 0.0F, 0, 0, 256, 256, false, false);
-            }
-        } else {
-            sb.draw(this.img, this.currentX - 64.0F, this.currentY - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
-        }
-
-        this.hb.render(sb);
-    }
 
     private boolean isInScreen() {
         return this.currentX > 0 && this.currentX < Settings.WIDTH && this.currentY > 0 && this.currentY < Settings.HEIGHT;
-    }
-
-    @Override
-    public void playLandingSFX() {
-        if (LoadoutMod.isIsaac()) {
-            if (CardCrawlGame.MUTE_IF_BG && Settings.isBackgrounded) {
-                return;
-            } else if (landingSfx != null) {
-                landingSfx.play(Settings.SOUND_VOLUME * Settings.MASTER_VOLUME);
-            } else {
-                logger.info("Missing landing sound!");
-            }
-        } else {
-            super.playLandingSFX();
-        }
-    }
-
-    @Override
-    public AbstractRelic makeCopy() {
-        return new AllInOneBag();
     }
 
     @Override
@@ -508,7 +460,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         tildeKey.onLoad(save.tildeKeySave);
     }
 
-    @Override
     public void onSpawnMonster(AbstractMonster monster) {
         powerGiver.onSpawnMonster(monster);
         tildeKey.onSpawnMonster(monster);
@@ -518,53 +469,43 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         powerGiver.battleStartPreDraw();
     }
 
-    @Override
     public void atBattleStart() {
         tildeKey.atBattleStart();
     }
 
-    @Override
     public void atTurnStart() {
         tildeKey.atTurnStart();
     }
 
-    @Override
     public void onRefreshHand() {
         tildeKey.onRefreshHand();
     }
 
-    @Override
     public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
         return tildeKey.onAttackedToChangeDamage(info, damageAmount);
     }
 
-    @Override
     public boolean onPlayerDeath(AbstractPlayer abstractPlayer, DamageInfo damageInfo) {
         return tildeKey.onPlayerDeath(abstractPlayer, damageInfo);
     }
 
-    @Override
     public boolean onReceivePower(AbstractPower abstractPower, AbstractCreature abstractCreature) {
         return tildeKey.onReceivePower(abstractPower, abstractCreature);
     }
 
-    @Override
     public int onReceivePowerStacks(AbstractPower power, AbstractCreature source, int stackAmount) {
         return tildeKey.onReceivePowerStacks(power, source, stackAmount);
     }
 
-    @Override
     public void onPreviewObtainCard(AbstractCard c) {
         cardModifier.onPreviewObtainCard(c);
     }
 
-    @Override
     public void onObtainCard(AbstractCard c) {
         cardModifier.onObtainCard(c);
     }
 
 
-    @Override
     public void onMonsterDeath(AbstractMonster m) {
         this.showXGGG = true;
         switch (m.type) {
@@ -594,7 +535,6 @@ public class AllInOneBag extends CustomRelic implements ClickableRelic, CustomSa
         AllInOneBag.INSTANCE.xgggSay(msg);
     }
 
-    @Override
     public float atDamageModify(float damage, AbstractCard c) {
         return tildeKey.atDamageModify(damage, c);
     }
