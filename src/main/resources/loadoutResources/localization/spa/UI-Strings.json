@@ -135,7 +135,7 @@
 			"Aplicar cambio de semillas",
 			"Niega todos los debuffs",
 			"Fuerza de intención enemigo",
-			"Scroll Edit de contador de reliquias",
+			"Modo de Edición del Contador de Reliquias",
 			"Al entrar en la habitación, establece todos los HP de los enemigos en 0 .",
 			"Previene daños, pérdida de HP y muerte .",
 			"Establece la energía en 999 en cada fotograma .",
@@ -146,7 +146,7 @@
 			"Regenera los RNG de dungeon en función de la semilla dada .",
 			"Evita que se apliquen beneficios negativos al jugador .",
 			"Obliga al enemigo a usar solo esta intención.",
-			"Desplácese hacia arriba para aumentar, y viceversa . Haga clic en el botón central para establecerlo en máx., luego en cero."
+			"Desplácese hacia arriba para aumentar, y viceversa . Haga clic en el botón central para establecerlo en máx., luego en cero. Haga clic en el botón izquierdo para bloquear / desbloquear el contador."
 		]
 	},
 	"loadout:StatModSelectScreen": {

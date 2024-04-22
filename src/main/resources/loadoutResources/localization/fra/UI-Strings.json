@@ -145,7 +145,7 @@
 			"Régénérez les RNG du donjon en fonction de la graine donnée.",
 			"Empêche les buffs négatifs d'être appliqués au joueur.",
 			"Forcer l'ennemi à utiliser uniquement cette intention.",
-			"Faites défiler vers le haut pour augmenter, vice versa. Cliquez sur le bouton du milieu pour le régler sur max, puis sur zéro."
+			"Faites défiler vers le haut pour augmenter, vice versa. Cliquez sur le bouton du milieu pour le régler sur max, puis sur zéro. Cliquez sur le bouton gauche pour verrouiller / déverrouiller le compteur."
 		]
 	},
 	"loadout:StatModSelectScreen": {

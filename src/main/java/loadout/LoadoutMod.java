@@ -50,6 +50,7 @@ import loadout.helper.dynamicvariables.MiscVariable;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
+import loadout.savables.RelicStateSavables;
 import loadout.screens.CardViewPopupHeader;
 import loadout.screens.SidePanel;
 import loadout.util.*;
@@ -689,7 +690,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         //AllInOneBag Save Load
         BaseMod.addSaveField(AllInOneBag.ID, AllInOneBag.INSTANCE);
-
+        BaseMod.addSaveField(RelicStateSavables.ID, new RelicStateSavables());
 
         //CardModifications.modifyCards();
 
