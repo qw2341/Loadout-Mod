@@ -160,7 +160,8 @@
 			"Tamaño de la mano",
 			"Empate por turno",
 			"%de Daño múltiple del jugador",
-			"%del multiplicador del precio de la tienda"
+			"%del multiplicador del precio de la tienda",
+			"%de multiplicador de potencia de poción"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

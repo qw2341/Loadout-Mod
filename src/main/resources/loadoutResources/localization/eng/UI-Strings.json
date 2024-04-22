@@ -160,7 +160,8 @@
 			"Hand Size",
 			"Draw Per Turn",
 			"Player Damage Mult %",
-			"Shop Price Mult %"
+			"Shop Price Mult %",
+			"Potion Potency Mult %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

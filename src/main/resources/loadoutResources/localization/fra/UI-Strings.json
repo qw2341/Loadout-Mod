@@ -159,7 +159,8 @@
 			"Taille de la main",
 			"Tirage Au Sort Par Tour",
 			"Dégâts du joueur Multi %",
-			"Multiplicateur de prix d’achat %"
+			"Multiplicateur de prix d’achat %",
+			"Multiplicateur de Puissance de Potion %"
 		]
 	},
 	"loadout:MasterDeckViewSortHeader": {

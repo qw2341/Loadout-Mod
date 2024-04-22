@@ -40,6 +40,7 @@ import com.megacrit.cardcrawl.monsters.exordium.ApologySlime;
 import com.megacrit.cardcrawl.monsters.exordium.Lagavulin;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -171,6 +172,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public static int merchantPriceMult = 100;
 
     public static final String merchantPriceMultKey = "merchantPriceMult";
+
+    public static int potionPotencyMult = 100;
+    public static final String potionPotencyMultKey = "potionPotencyMult";
 
     public TildeKey() {
         super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
@@ -348,6 +352,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         currentMorph = "";
 
         merchantPriceMult = 100;
+        potionPotencyMult = 100;
     }
 
     public static void spareAllMonsters() {
@@ -545,6 +550,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         sav.put(playerMorphKey, currentMorph);
 
         sav.put(merchantPriceMultKey, String.valueOf(merchantPriceMult));
+        sav.put(potionPotencyMultKey, String.valueOf(potionPotencyMult));
         return sav;
     }
 
@@ -602,6 +608,15 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             currentMorph = sav.get(playerMorphKey);
 
             merchantPriceMult = Integer.parseInt(sav.get(merchantPriceMultKey));
+            if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.shopScreen != null) {
+                AbstractDungeon.shopScreen.applyDiscount(TildeKey.merchantPriceMult / 100f, true);
+            }
+            potionPotencyMult = Integer.parseInt(sav.get(potionPotencyMultKey));
+            if(AbstractDungeon.isPlayerInDungeon()) {
+                for (AbstractPotion p : AbstractDungeon.player.potions) {
+                    p.initializeData();
+                }
+            }
         } catch (Exception e) {
             logger.info("Loading save for TildeKey failed, reverting to default");
             e.printStackTrace();

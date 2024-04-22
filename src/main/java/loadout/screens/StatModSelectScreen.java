@@ -29,6 +29,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
@@ -42,6 +43,7 @@ import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.TildeKey;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScreen.StatModButton> {
@@ -530,7 +532,32 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                     public void onBoolChange(boolean boolToChange, int amount) {
 
                     }
-                }));
+                })
+        );
+
+        this.items.add(new StatModButton(TEXT[10], false, ImageMaster.POTION_FAIRY_CONTAINER, GOLD_NUM_OFFSET_X, Color.GOLD,
+                new StatModActions() {
+                    @Override
+                    public int getAmount() {
+                        return TildeKey.potionPotencyMult;
+                    }
+
+                    @Override
+                    public void setAmount(int amountToSet) {
+                        TildeKey.potionPotencyMult = amountToSet;
+                        if(AbstractDungeon.isPlayerInDungeon()) {
+                            for (AbstractPotion p : AbstractDungeon.player.potions) {
+                                p.initializeData();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onBoolChange(boolean boolToChange, int amount) {
+
+                    }
+                })
+        );
 
         if(Loader.isModLoaded("projecte")) {
             this.items.add(new StatModButton("EMC", false, ImageMaster.MAP_NODE_REST, GOLD_NUM_OFFSET_X, Color.WHITE, new StatModActions() {
