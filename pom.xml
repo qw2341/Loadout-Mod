@@ -142,6 +142,14 @@
             <systemPath>${Steam.path}/workshop/content/646570/3166835720/ProjectE.jar</systemPath>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>VUPShion</groupId>
+            <artifactId>VUPShionMod</artifactId>
+            <version>7.3.2</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2568224579/VUPShionMod.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 

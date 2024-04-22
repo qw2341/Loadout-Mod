@@ -146,6 +146,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     //show isaac icons regardless of isaac mod installation?
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
     public static boolean FABRICATE_MOD_LOADED = false;
+    public static boolean VUPSHION_MOD_LOADED = false;
 
     public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelics;
 
@@ -279,7 +280,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         //mod checks
         FABRICATE_MOD_LOADED = Loader.isModLoaded("pinacolada-fabricate");
-
+        VUPSHION_MOD_LOADED = Loader.isModLoaded("VUPShionMod");
 
 
         autoAddCardMods();

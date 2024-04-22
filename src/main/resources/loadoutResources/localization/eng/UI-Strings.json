@@ -106,7 +106,8 @@
 			"Card Modifiers",
 			"Edit with Fabricate",
 			"Rename",
-			"Modify Description"
+			"Modify Description",
+			"Magic Number 2"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

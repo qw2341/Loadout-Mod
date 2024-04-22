@@ -106,7 +106,8 @@
 			"Modificadores de Cartas",
 			"Editar con Fabricar",
 			"Renombrar",
-			"Modificar descripción"
+			"Modificar descripción",
+			"Número mágico 2"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

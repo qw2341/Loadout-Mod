@@ -1,6 +1,7 @@
 package loadout.screens;
 
 
+import VUPShionMod.cards.AbstractVUPShionCard;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import basemod.cardmods.EtherealMod;
@@ -16,6 +17,7 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayFie
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -115,6 +117,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final CardEffectButton miscButton;
 
+    private CardEffectButton secondaryMagicNumberButtonShion = null;
+
     private final DropdownMenu rarityButton;
     private final DropdownMenu classButton;
 
@@ -134,7 +138,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
-    public CardEffectButton[] cardEffectButtons;
+    public ArrayList<CardEffectButton> cardEffectButtons;
     public DropdownMenu[] dropdownMenus;
     public int selectionIndex = -1;
 
@@ -146,6 +150,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     public SCardViewPopup cardViewScreen;
 
     private boolean isCardFabricated = false;
+    private boolean isCardFromShion = false;
     private boolean isRenaming = true;
     public TextPopup textPopup;
 
@@ -320,6 +325,37 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }, this);
         yPosition -= SPACE_Y;
 
+        if (VUPSHION_MOD_LOADED) {
+            this.secondaryMagicNumberButtonShion = new CardEffectButton(null, xPosition, yPosition, TEXT[28], new StatModSelectScreen.StatModActions() {
+                @Override
+                public int getAmount() {
+                    AbstractCard c = getCard();
+                    if(c instanceof VUPShionMod.cards.AbstractVUPShionCard)
+                        return ((VUPShionMod.cards.AbstractVUPShionCard)c).baseSecondaryM;
+                    else return -1;
+                }
+
+                @Override
+                public void setAmount(int amountToSet) {
+                    AbstractCard c = getCard();
+
+                    if(c instanceof VUPShionMod.cards.AbstractVUPShionCard) {
+                        int diff = ((VUPShionMod.cards.AbstractVUPShionCard)c).secondaryM - ((VUPShionMod.cards.AbstractVUPShionCard)c).baseSecondaryM;
+                        ((VUPShionMod.cards.AbstractVUPShionCard)c).baseSecondaryM = amountToSet;
+                        ((AbstractVUPShionCard)c).secondaryM = amountToSet + diff;
+                        setCardModded(true);
+                    }
+                }
+
+                @Override
+                public void onBoolChange(boolean boolToChange, int amount) {
+
+                }
+            }, this);
+            yPosition -= SPACE_Y;
+        }
+
+
         xPosition += 0.5f * SPACE_X;
         yPosition -= SPACE_Y;
         this.restoreDefaultButton = new HeaderButtonPlus(TEXT[4], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_REST);
@@ -428,7 +464,18 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
 
 
-        this.cardEffectButtons = new CardEffectButton[] {this.costButton, this.damageButton, this.blockButton, this.magicNumberButton, this.healButton, this.drawButton, this.discardButton, this.miscButton};
+        this.cardEffectButtons = new ArrayList<CardEffectButton>() ;
+        this.cardEffectButtons.add(this.costButton);
+        this.cardEffectButtons.add(this.damageButton);
+        this.cardEffectButtons.add(this.blockButton);
+        this.cardEffectButtons.add(this.magicNumberButton);
+        this.cardEffectButtons.add(this.healButton);
+        this.cardEffectButtons.add(this.drawButton);
+        this.cardEffectButtons.add(this.discardButton);
+        this.cardEffectButtons.add(this.miscButton);
+        if(VUPSHION_MOD_LOADED) {
+            this.cardEffectButtons.add(this.secondaryMagicNumberButtonShion);
+        }
 
         ArrayList<String> a = new ArrayList<>();
         for (AbstractCard.CardColor cc : AbstractCard.CardColor.values()) {
@@ -464,6 +511,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             button.update();
         }
         for (CardEffectButton button : this.cardEffectButtons) {
+            if(button == this.secondaryMagicNumberButtonShion && !isCardFromShion) continue;
             button.update();
         }
 
@@ -613,8 +661,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             if(!button.isToggle)
                 button.reset();
         }
-        for (int i = 0;i<this.cardEffectButtons.length;i++) {
-            CardEffectButton button = cardEffectButtons[i];
+        for (int i = 0;i<this.cardEffectButtons.size();i++) {
+            CardEffectButton button = cardEffectButtons.get(i);
             button.reset();
         }
         AbstractCard card = cardViewScreen.card;
@@ -642,6 +690,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
+            if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
         }
 
 
@@ -941,6 +990,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }
 
         for (CardEffectButton b : this.cardEffectButtons) {
+            if(b == this.secondaryMagicNumberButtonShion) {
+                if(!isCardFromShion) continue;
+            }
             b.render(sb);
         }
 
