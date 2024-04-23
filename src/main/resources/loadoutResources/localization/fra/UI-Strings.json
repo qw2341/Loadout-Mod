@@ -27,7 +27,8 @@
 			"Effacer les données de modification de la carte?",
 			"#rAVERTISSEMENT: La désactivation de la relique du modificateur entraînera un dysfonctionnement de toutes les modifications de la carte, y compris les modifications permanentes!",
 			"Activer Tout le Sac [Expérimental]",
-			"Activer l'édition par clic droit sur les entités"
+			"Activer l'édition par clic droit sur les entités",
+			"Sélection de la peau"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

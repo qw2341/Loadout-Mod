@@ -602,6 +602,9 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
+        settingsPanel.addUIElement(new ModLabel(SettingText[19],settingXPos, settingYPos, settingsPanel,(label)->{}));
+        settingYPos -= lineSpacing;
+
         float tempXPos = settingXPos;
         ArrayList<ModLabeledToggleButton> skinRadioButtons = new ArrayList<>();
 
@@ -792,20 +795,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
                 getModID() + "Resources/localization/"+languageSupport()+"/LoadoutMod-Relic-Strings.json");
     }
 
-    /**
-     * Using this as a way to avoid starting relic conflicts
-     */
     @Override
     public void receivePostDungeonInitialize() {
-        //patch to fix crash from a fresh new game
-        if (TipTracker.relicCounter < 20) {
-            if (!(Boolean)TipTracker.tips.get("RELIC_TIP")) {
-                TipTracker.neverShowAgain("RELIC_TIP");
-            }
-        }
 
-        TildeKey.resetToDefault();
-
+        AllInOneBag.INSTANCE.onStartingNewRun();
 
     }
 

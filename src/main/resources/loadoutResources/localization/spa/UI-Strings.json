@@ -27,7 +27,8 @@
 			"¿Borrar datos de modificación de la tarjeta?",
 			"#rwarning: ¡Deshabilitar la reliquia del modificador causará modificaciones de la tarjeta #rall, incluidas modificaciones permanentes al mal funcionamiento!",
 			"Habilitar todo Bag [Experimental]",
-			"Habilite la edición con el botón derecho en las entidades"
+			"Habilite la edición con el botón derecho en las entidades",
+			"Selección de pieles"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

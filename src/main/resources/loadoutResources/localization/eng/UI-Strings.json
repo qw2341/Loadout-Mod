@@ -27,7 +27,8 @@
 			"Clear card modification data?",
 			"#rWARNING: Disabling the Modifier Relic will cause #rALL card modifications including permanent modifications to malfunction!",
 			"Enable Everything Bag [Experimental]",
-			"Enable right click edit on entities"
+			"Enable right click edit on entities",
+			"Skin Selection"
 		]
 	},
 	"loadout:RelicSelectionScreen": {
