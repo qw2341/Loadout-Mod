@@ -386,7 +386,10 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
             if(cr.hb.justHovered) {
                 CardCrawlGame.sound.playA("UI_HOVER", -0.3F);
             }
-            if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) {
+            if(cr.hb.hovered && (InputHelper.justClickedRight || InputHelper.justClickedLeft || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) {
+                InputHelper.justClickedLeft = false;
+                InputHelper.justClickedRight = false;
+
                 cr.playLandingSFX();
                 cr.onRightClick();
             }

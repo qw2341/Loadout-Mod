@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>Adds a debug panel that gives you stuffs.</description>
 
     <properties>
@@ -148,6 +148,14 @@
             <version>7.3.2</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/2568224579/VUPShionMod.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>Tetraminus</groupId>
+            <artifactId>RiskOfRelics</artifactId>
+            <version>2.3.10</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/2826958891/RiskOfRelics.jar</systemPath>
             <optional>true</optional>
         </dependency>
     </dependencies>
