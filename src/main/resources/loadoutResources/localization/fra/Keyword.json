@@ -1,14 +1,17 @@
 {
   "Keyword":[
     {
+      "PROPER_NAME": "Inévitable",
       "NAMES": [
         "inévitable"
       ],
       "DESCRIPTION": "Remettez une copie à votre main lorsque vous êtes épuisé. Au pont pour le retrait."
     },
     {
+      "PROPER_NAME": "Mise à Niveau Infinie",
       "NAMES": [
-        "mise à niveau infinie"
+        "mise à niveau infinie",
+        "mise_à_niveau_infinie"
       ],
       "DESCRIPTION": "Peut être mis à niveau indéfiniment."
     }

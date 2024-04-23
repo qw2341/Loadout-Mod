@@ -1,12 +1,14 @@
 {
   "Keyword":[
     {
+      "PROPER_NAME": "Inevitable",
       "NAMES": [
         "inevitable"
       ],
       "DESCRIPTION": "Devuelve una copia a tu mano tras el agotamiento. A la cubierta al retirar."
     },
     {
+      "PROPER_NAME": "Actualización Infinita",
       "NAMES": [
         "actualización infinita"
       ],

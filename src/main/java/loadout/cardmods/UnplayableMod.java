@@ -1,11 +1,17 @@
 package loadout.cardmods;
 
+import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.TooltipInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
+import loadout.util.KeywordsAdder;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnplayableMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("UnplayableCardModifier");
@@ -13,7 +19,7 @@ public class UnplayableMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return StringUtils.capitalize(GameDictionary.UNPLAYABLE.NAMES[0]) + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return KeywordsAdder.getKeywordString(StringUtils.capitalize(GameDictionary.UNPLAYABLE.NAMES[0]),null) + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override
@@ -43,5 +49,11 @@ public class UnplayableMod extends AbstractCardModifier {
         return ID;
     }
 
-
+    @Override
+    public List<TooltipInfo> additionalTooltips(AbstractCard card) {
+        if(!LoadoutMod.isCHN()) return null;
+        ArrayList<TooltipInfo> tips = new ArrayList<>();
+        tips.add(new TooltipInfo(GameDictionary.UNPLAYABLE.NAMES[0], GameDictionary.UNPLAYABLE.DESCRIPTION));
+        return tips;
+    }
 }

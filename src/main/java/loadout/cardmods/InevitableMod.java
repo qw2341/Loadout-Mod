@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.screens.CardViewPopupHeader;
+import loadout.util.KeywordsAdder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class InevitableMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return CardViewPopupHeader.TEXT[20] + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return KeywordsAdder.getKeywordString(CardViewPopupHeader.TEXT[20], LoadoutMod.getModID()) + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
     @Override

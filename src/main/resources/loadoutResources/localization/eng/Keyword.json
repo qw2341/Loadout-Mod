@@ -1,14 +1,17 @@
 {
   "keywords":[
     {
+      "PROPER_NAME": "Inevitable",
       "NAMES": [
         "inevitable"
       ],
       "DESCRIPTION": "Return a copy to your hand upon exhaustion. To deck upon removal."
     },
     {
+      "PROPER_NAME": "Infinite Upgrade",
       "NAMES": [
-        "infinite upgrade"
+        "infinite upgrade",
+        "infinite_upgrade"
       ],
       "DESCRIPTION": "Able to be upgraded indefinitely."
     }

@@ -1298,7 +1298,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
 
     public static boolean isCHN() {
-        return Settings.language == Settings.GameLanguage.ZHS;
+        return Settings.language == Settings.GameLanguage.ZHS || Settings.language == Settings.GameLanguage.ZHT || Settings.language == Settings.GameLanguage.JPN;
     }
 
     @Override
