@@ -238,4 +238,9 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
             lastPowers.forEach(p -> p.execute(this));
         }
     }
+
+    public void resetPowers() {
+        savedPowersPlayer.clear();
+        savedPowersMonster.clear();
+    }
 }
