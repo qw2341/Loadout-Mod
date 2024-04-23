@@ -363,7 +363,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
                     hideXGGG();
                 }
             }
-            this.xgggIcon.update();
+            if(this.xgggIcon != null) this.xgggIcon.update();
         }
         move();
 
@@ -428,8 +428,11 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
 
         updateColor();
         sb.setColor(this.color);
-        sb.draw(SIDE_PANEL_TAB, this.currentX - 52.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, false, false);
-        sb.draw(SIDE_PANEL_ARROW,this.currentX - 70.0F * Settings.xScale, this.currentY - 64.0F * Settings.yScale, 64.0F, 64.0F, 128.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 128, 128, isSelectionScreenUp, false);
+        sb.draw(SIDE_PANEL_TAB, this.currentX - 15.0f, this.currentY - 64.0F, 15.5F, 64.0F, 31.0F, 128.0F, this.scale, this.scale, 0.0F, 0, 0, 31, 128, false, false);
+        sb.draw(SIDE_PANEL_ARROW,this.currentX - 16.0f, this.currentY - 16.0F, 16.0F, 16.0F, 32.0F, 32.0F, this.scale, this.scale, 0.0F, 0, 0, 32, 32, isSelectionScreenUp, false);
+//        sb.draw(ImageMaster.COLOR_TAB_COLORLESS, this.hb.cX - 137.0F, this.hb.cY - 34.0F + 53.0F * Settings.scale, 137.0F, 34.0F, 274.0F, 68.0F, Settings.xScale * 0.5f, Settings.scale * 0.5f, 270.0F, 0, 0, 274, 68, false, false);
+//        sb.draw(ImageMaster.FILTER_ARROW, this.hb.cX - 16.0F + 16.0F * Settings.xScale, this.hb.cY - 16.0F, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 270.0F, 0, 0, 32, 32, false, isSelectionScreenUp);
+
 
         this.hb.render(sb);
 
@@ -537,4 +540,9 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         return tildeKey.atDamageModify(damage, c);
     }
 
+    public void onStartingNewRun() {
+        powerGiver.resetPowers();
+        TildeKey.resetToDefault();
+        tildeKey.selectScreen = tildeKey.getNewSelectScreen();
+    }
 }
