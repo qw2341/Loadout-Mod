@@ -3,6 +3,7 @@ package loadout.relics;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.OrbSelectScreen;
@@ -19,7 +20,7 @@ public class OrbBox extends AbstractCustomScreenRelic<OrbSelectScreen.OrbButton>
 
 
     public OrbBox() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.MAGICAL);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.MAGICAL);
     }
 
     @Override

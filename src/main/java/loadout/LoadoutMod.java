@@ -1182,7 +1182,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
             }catch (Exception e) {
                 logger.info("Error occurred while adding test relics");
             }
-
+                relics.add(new AllInOneBagUp());
         }
 
         if (Loader.isModLoaded("RelicUpgradeLib")) {

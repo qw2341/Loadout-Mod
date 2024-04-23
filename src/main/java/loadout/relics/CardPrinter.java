@@ -31,7 +31,7 @@ public class CardPrinter extends AbstractCardScreenRelic {
     public static final ArrayList<AbstractCard> lastCards = new ArrayList<>();
 
     public CardPrinter() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.OBTAIN);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.OBTAIN);
     }
 
     @Override
@@ -68,10 +68,6 @@ public class CardPrinter extends AbstractCardScreenRelic {
         this.flash();
     }
 
-    @Override
-    public AbstractRelic makeCopy() {
-        return new CardPrinter();
-    }
 
     @Override
     public void onCtrlRightClick() {

@@ -177,7 +177,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public static final String potionPotencyMultKey = "potionPotencyMult";
 
     public TildeKey() {
-        super(ID, IMG, OUTLINE, AbstractRelic.RelicTier.SPECIAL, AbstractRelic.LandingSound.CLINK);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.CLINK);
         this.gKey = new InputAction(Input.Keys.G);
         this.kKey = new InputAction(Input.Keys.K);
 
@@ -307,11 +307,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         }
     }
 
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new TildeKey();
-    }
 
     public static void resetToDefault() {
         isHealthLocked = false;
@@ -400,8 +395,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
 
-
-    @Override
     public void atBattleStart() {
         if(isKillAllMode) {
             this.flash();
@@ -420,7 +413,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         }
     }
 
-    @Override
     public void onSpawnMonster(AbstractMonster monster) {
 
         if(isKillAllMode)  {
@@ -438,7 +430,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         }
     }
 
-    @Override
     public void atTurnStart() {
         if(isKillAllMode) {
             this.flash();
@@ -453,27 +444,21 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     }
 
-
-
-    @Override
     public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
         return isGodMode ? 0 : damageAmount;
     }
 
-    @Override
     public void onRefreshHand() {
         if ( isDrawCardsTillLimit && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.player.hasPower("No Draw") && !AbstractDungeon.isScreenUp && !AbstractDungeon.actionManager.turnHasEnded) {
             if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player.hand.size() < BaseMod.MAX_HAND_SIZE && (
                 AbstractDungeon.player.discardPile.size() > 0 || AbstractDungeon.player.drawPile.size() > 0)) {
                 flash();
-                addToTop((AbstractGameAction)new RelicAboveCreatureAction((AbstractCreature)AbstractDungeon.player, this));
                 addToBot((AbstractGameAction)new DrawCardAction((AbstractCreature)AbstractDungeon.player, BaseMod.MAX_HAND_SIZE - AbstractDungeon.player.hand.size()));
             }
         }
         if(isOrbLocked && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp ) {
             if ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player.maxOrbs != orbLockAmount) {
                 flash();
-                addToTop((AbstractGameAction)new RelicAboveCreatureAction((AbstractCreature)AbstractDungeon.player, this));
                 modifyPlayerOrbs(orbLockAmount - AbstractDungeon.player.maxOrbs);
             }
         }
@@ -672,7 +657,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     }
 
-    @Override
     public float atDamageModify(float damage, AbstractCard c) {
         return damage * (playerAttackMult / 100.0f);
     }

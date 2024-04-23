@@ -19,7 +19,7 @@ public class BlightChest extends AbstractCustomScreenRelic<AbstractBlight>{
     public static Texture IMG = null;
     private static Texture OUTLINE = null;
     public BlightChest() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.HEAVY);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.HEAVY);
     }
 
     @Override
@@ -34,10 +34,6 @@ public class BlightChest extends AbstractCustomScreenRelic<AbstractBlight>{
         }
     }
 
-    @Override
-    public AbstractRelic makeCopy() {
-        return new BlightChest();
-    }
 
     public static void obtainBlight(String blightName){
         if(!AbstractDungeon.isPlayerInDungeon()) return;

@@ -21,7 +21,7 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
     public static int numLoadoutRelics = 0;
     public static int loadoutRelicsStartIdx = -1;
     public TrashBin() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.FLAT);
     }
 
     @Override
@@ -54,11 +54,5 @@ public class TrashBin extends AbstractCustomScreenRelic<AbstractRelic> {
         }
 
         return relics;
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new TrashBin();
     }
 }

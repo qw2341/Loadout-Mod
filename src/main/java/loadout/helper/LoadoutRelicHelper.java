@@ -64,28 +64,4 @@ public class LoadoutRelicHelper {
 
     }
 
-    public static ArrayList<AbstractCustomScreenRelic<?>> getPlayerCustomScreenRelics() {
-        ArrayList<AbstractCustomScreenRelic<?>> ret = new ArrayList<>();
-        if(AbstractDungeon.isPlayerInDungeon() && !AbstractDungeon.player.relics.isEmpty()) {
-            for(String rID : customScreenRelicIds) {
-                if(AbstractDungeon.player.hasRelic(rID)) ret.add((AbstractCustomScreenRelic<?>) AbstractDungeon.player.getRelic(rID));
-            }
-        }
-        return ret;
-    }
-
-    public static ArrayList<AbstractCardScreenRelic> getPlayerCardScreenRelics() {
-        ArrayList<AbstractCardScreenRelic> ret = new ArrayList<>();
-        if(AbstractDungeon.isPlayerInDungeon() && !AbstractDungeon.player.relics.isEmpty()) {
-            for(String rID : cardScreenRelicIds) {
-                if(AbstractDungeon.player.hasRelic(rID)) ret.add((AbstractCardScreenRelic) AbstractDungeon.player.getRelic(rID));
-            }
-        }
-        return ret;
-    }
-
-    public static void closeAllScreens() {
-        for(AbstractCustomScreenRelic<?> r : getPlayerCustomScreenRelics()) if(r.isSelectionScreenUp()) r.selectScreen.close();
-        for(AbstractCardScreenRelic r : getPlayerCardScreenRelics()) if(r.isSelectionScreenUp()) r.selectScreen.close();
-    }
 }

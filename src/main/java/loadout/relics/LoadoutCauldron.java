@@ -24,7 +24,7 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
     public static AbstractPotion lastPotion = null;
 
     public LoadoutCauldron() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.FLAT);
     }
 
     @Override
@@ -35,12 +35,6 @@ public class LoadoutCauldron extends AbstractCustomScreenRelic<AbstractPotion> {
     @Override
     protected void doneSelectionLogics() {
 
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new LoadoutCauldron();
     }
 
     @Override

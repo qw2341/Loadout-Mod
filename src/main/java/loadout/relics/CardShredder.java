@@ -25,7 +25,7 @@ public class CardShredder extends AbstractCardScreenRelic {
     private static Texture OUTLINE = null;
 
     public CardShredder() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.DELETE);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.DELETE);
     }
 
     @Override
@@ -85,9 +85,4 @@ public class CardShredder extends AbstractCardScreenRelic {
 
     }
 
-
-    @Override
-    public AbstractRelic makeCopy() {
-        return new CardShredder();
-    }
 }

@@ -85,7 +85,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
 
     public static final ArrayList<PowerAction> lastPowers = new ArrayList<>();
     public PowerGiver() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.FLAT);
         if (savedPowersPlayer == null) {
             savedPowersPlayer = new HashMap<>();
         }
@@ -109,12 +109,6 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
     @Override
     protected void doneSelectionLogics() {
 
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new PowerGiver();
     }
 
     public void modifyAmountPlayer(String pID, int modAmt) {
@@ -230,7 +224,6 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         }
     }
 
-    @Override
     public void onSpawnMonster(AbstractMonster monster) {
         savedPowersMonster.keySet().forEach(id -> {
             int amount = savedPowersMonster.get(id);

@@ -29,7 +29,7 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
     public static EventSelectScreen.EventButton lastEvent = null;
 
     public EventfulCompass() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.CLINK);
     }
 
     @Override
@@ -40,12 +40,6 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
     @Override
     protected void doneSelectionLogics() {
 
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new EventfulCompass();
     }
 
     public static void goToRoom(AbstractRoom destination) {

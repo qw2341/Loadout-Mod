@@ -12,30 +12,30 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 
 public class RelicPopUpPatch {
-    @SpirePatch(clz = AbstractRelic.class, method = "updateRelicPopupClick")
-    public static class PopUpPatch {
-        @SpirePrefixPatch
-        public static SpireReturn<Void> Prefix(AbstractRelic __instance) {
-            if(__instance.hb.hovered && InputHelper.justClickedLeft && IsInsideAnotherRelicField.isInsideAnother.get(__instance)) {
-                if(__instance instanceof ClickableRelic) {
-                    ((ClickableRelic) __instance).onRightClick();
-                }
-                return SpireReturn.Return();
-            } else return SpireReturn.Continue();
-        }
-    }
-    @SpirePatch(clz = AbstractRelic.class, method = SpirePatch.CLASS)
-    public static class IsInsideAnotherRelicField {
-        public static SpireField<Boolean> isInsideAnother = new SpireField<Boolean>(() -> Boolean.FALSE);
-    }
-    @SpirePatch(clz = AbstractRelic.class, method = "renderTip")
-    public static class TipPatch {
-        @SpirePrefixPatch
-        public static SpireReturn<Void> Prefix(AbstractRelic __instance) {
-            if(IsInsideAnotherRelicField.isInsideAnother.get(__instance)) {
-                TipHelper.queuePowerTips((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 30.0F * Settings.scale, __instance.tips);
-                return SpireReturn.Return();
-            } else return SpireReturn.Continue();
-        }
-    }
+//    @SpirePatch(clz = AbstractRelic.class, method = "updateRelicPopupClick")
+//    public static class PopUpPatch {
+//        @SpirePrefixPatch
+//        public static SpireReturn<Void> Prefix(AbstractRelic __instance) {
+//            if(__instance.hb.hovered && InputHelper.justClickedLeft && IsInsideAnotherRelicField.isInsideAnother.get(__instance)) {
+//                if(__instance instanceof ClickableRelic) {
+//                    ((ClickableRelic) __instance).onRightClick();
+//                }
+//                return SpireReturn.Return();
+//            } else return SpireReturn.Continue();
+//        }
+//    }
+//    @SpirePatch(clz = AbstractRelic.class, method = SpirePatch.CLASS)
+//    public static class IsInsideAnotherRelicField {
+//        public static SpireField<Boolean> isInsideAnother = new SpireField<Boolean>(() -> Boolean.FALSE);
+//    }
+//    @SpirePatch(clz = AbstractRelic.class, method = "renderTip")
+//    public static class TipPatch {
+//        @SpirePrefixPatch
+//        public static SpireReturn<Void> Prefix(AbstractRelic __instance) {
+//            if(IsInsideAnotherRelicField.isInsideAnother.get(__instance)) {
+//                TipHelper.queuePowerTips((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 30.0F * Settings.scale, __instance.tips);
+//                return SpireReturn.Return();
+//            } else return SpireReturn.Continue();
+//        }
+//    }
 }

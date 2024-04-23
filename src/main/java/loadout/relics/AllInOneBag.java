@@ -1,7 +1,6 @@
 package loadout.relics;
 
 import basemod.ReflectionHacks;
-import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -23,9 +21,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
-import loadout.patches.RelicPopUpPatch;
 import loadout.savables.RelicSavables;
 import loadout.uiElements.UIElement;
 import loadout.uiElements.XGGGIcon;
@@ -57,7 +53,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
     public BottledMonster bottledMonster;
     public OrbBox orbBox;
     public BlightChest blightChest;
-    public ArrayList<CustomRelic> loadoutRelics;
+    public ArrayList<LoadoutRelic> loadoutRelics;
     public ArrayList<AbstractCustomScreenRelic<?>> customScreenRelics;
     public ArrayList<AbstractCardScreenRelic> cardScreenRelics;
 
@@ -130,9 +126,8 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         loadoutRelics.add(this.bottledMonster);
         loadoutRelics.add(this.orbBox);
         loadoutRelics.add(this.blightChest);
-        loadoutRelics.forEach(customRelic -> {
-            customRelic.isObtained = true;
-            RelicPopUpPatch.IsInsideAnotherRelicField.isInsideAnother.set(customRelic, Boolean.TRUE);
+        loadoutRelics.forEach(lr -> {
+            lr.isObtained = true;
         });
         customScreenRelics = new ArrayList<>();
         customScreenRelics.add(this.loadoutBag);
@@ -163,7 +158,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
 
         initBagPos();
 
-        for(AbstractRelic cr: loadoutRelics){
+        for(LoadoutRelic cr: loadoutRelics){
             cr.currentX = -100f;
             cr.targetX = -100f;
             cr.currentY = currentY;
@@ -193,7 +188,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
             hideRelics();
         }
     }
-    private void moveRelic(AbstractRelic r) {
+    private void moveRelic(LoadoutRelic r) {
         if (r.currentX != r.targetX) {
             r.currentX = MathUtils.lerp(r.currentX, r.targetX, Gdx.graphics.getDeltaTime() * 6.0F);
             if (Math.abs(r.currentX - r.targetX) < 0.5F) {
@@ -254,7 +249,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         float yPos = Settings.HEIGHT - 180.0F * Settings.yScale;
         float spaceY = 65.0F * Settings.scale;
         panelRelicRenderScale = Settings.scale;
-        for (CustomRelic cr : loadoutRelics) {
+        for (LoadoutRelic cr : loadoutRelics) {
             yPos -= spaceY;
             cr.targetX = xPos;
             cr.targetY = yPos;
@@ -264,7 +259,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         isSelectionScreenUp = false;
         targetX = hb.width / 2;
         panelRelicRenderScale = 0;
-        for (CustomRelic cr : loadoutRelics) {
+        for (LoadoutRelic cr : loadoutRelics) {
             cr.targetX = -100;
         }
     }
@@ -272,7 +267,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         isSelectionScreenUp = false;
         panelRelicRenderScale = 0;
         targetX = -100 * Settings.scale;
-        for (CustomRelic cr : loadoutRelics) {
+        for (LoadoutRelic cr : loadoutRelics) {
             cr.targetX = -100;
         }
     }
@@ -316,7 +311,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
             }
 
 
-            ReflectionHacks.setPrivate(this, AbstractRelic.class, "rotation", 0.0F);
+            this.rotation = 0f;
 
             if (this.currentX != this.targetX) {
                 this.currentX = MathUtils.lerp(this.currentX, this.targetX, Gdx.graphics.getDeltaTime() * 6.0F);
@@ -384,7 +379,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         }
 
 
-        for (CustomRelic cr : loadoutRelics) {
+        for (LoadoutRelic cr : loadoutRelics) {
             moveRelic(cr);
             cr.update();
             cr.hb.update();
@@ -393,7 +388,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
             }
             if(cr.hb.hovered && (InputHelper.justClickedRight || CInputHelper.isJustPressed(Input.Keys.BUTTON_A))) {
                 cr.playLandingSFX();
-                ((ClickableRelic)cr).onRightClick();
+                cr.onRightClick();
             }
         }
 
@@ -412,7 +407,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
 
     public void renderInTopPanel(SpriteBatch sb)
     {
-        for (CustomRelic cr : loadoutRelics) {
+        for (LoadoutRelic cr : loadoutRelics) {
             cr.scale = MathHelper.scaleLerpSnap(cr.scale, panelRelicRenderScale);
             cr.renderInTopPanel(sb);
             if (cr.hb.hovered) {

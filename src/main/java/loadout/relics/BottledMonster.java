@@ -30,7 +30,7 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
 
 
     public BottledMonster() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.FLAT);
 
         if (LoadoutMod.isXggg()) {
             this.tips.get(0).header = XGGG_NAME;
@@ -85,11 +85,5 @@ public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScree
         copy.maxHealth = original.maxHealth;
         copy.currentHealth = original.currentHealth;
         copy.currentBlock = original.currentBlock;
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new BottledMonster();
     }
 }

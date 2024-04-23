@@ -55,7 +55,7 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
     private HashMap<Integer, String[]> nameDescMap;
 
     public CardModifier() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.UPGRADE);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.CLINK, GCardSelectScreen.CardDisplayMode.UPGRADE);
         nameDescMap = new HashMap<>();
     }
 
@@ -124,12 +124,6 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
         }
         return card;
-    }
-
-
-    @Override
-    public AbstractRelic makeCopy() {
-        return new CardModifier();
     }
 
 
@@ -297,12 +291,10 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
         return null;
     }
 
-    @Override
     public void onPreviewObtainCard(AbstractCard c) {
         onObtainCard(c);
     }
 
-    @Override
     public void onObtainCard(AbstractCard c) {
         if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(c.cardID)) {
             try {

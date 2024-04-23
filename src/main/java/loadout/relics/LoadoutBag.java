@@ -25,7 +25,7 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
 
     public static final ArrayList<AbstractRelic> lastRelics = new ArrayList<>();
     public LoadoutBag() {
-        super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.FLAT);
+        super(ID, IMG, OUTLINE, AbstractRelic.LandingSound.FLAT);
     }
 
 
@@ -49,12 +49,6 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
             }
         }
 
-    }
-
-    @Override
-    public AbstractRelic makeCopy()
-    {
-        return new LoadoutBag();
     }
 
     @Override
