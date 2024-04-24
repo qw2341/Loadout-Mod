@@ -336,22 +336,7 @@ public abstract class LoadoutRelic implements UIElement {
     }
 
     public void renderTip(SpriteBatch sb) {
-        if ((float) InputHelper.mX < 1400.0F * Settings.scale) {
-            if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
-                TipHelper.queuePowerTips(180.0F * Settings.scale, (float)Settings.HEIGHT * 0.7F, this.tips);
-            } else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && this.tips.size() > 2 && !AbstractDungeon.player.hasRelic(this.relicId)) {
-                TipHelper.queuePowerTips((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY + 180.0F * Settings.scale, this.tips);
-            } else if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(this.relicId)) {
-                TipHelper.queuePowerTips((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 30.0F * Settings.scale, this.tips);
-            } else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
-                TipHelper.queuePowerTips(360.0F * Settings.scale, (float)InputHelper.mY + 50.0F * Settings.scale, this.tips);
-            } else {
-                TipHelper.queuePowerTips((float)InputHelper.mX + 50.0F * Settings.scale, (float)InputHelper.mY + 50.0F * Settings.scale, this.tips);
-            }
-        } else {
-            TipHelper.queuePowerTips((float)InputHelper.mX - 350.0F * Settings.scale, (float)InputHelper.mY - 50.0F * Settings.scale, this.tips);
-        }
-
+        TipHelper.queuePowerTips((float)InputHelper.mX + 60.0F * Settings.scale, (float)InputHelper.mY - 30.0F * Settings.scale, this.tips);
     }
 
     public void playLandingSFX() {
