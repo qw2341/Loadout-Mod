@@ -256,7 +256,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                 }
             }
 
-            if(enableRelicCounterEdit) {
+            if(enableRelicCounterEdit && AbstractDungeon.player != null && AbstractDungeon.player.relics != null) {
                 Iterator<AbstractRelic> it = AbstractDungeon.player.relics.iterator();
                 AbstractRelic r = null;
                 while(it.hasNext()) {
