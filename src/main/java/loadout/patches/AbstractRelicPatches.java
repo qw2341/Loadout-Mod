@@ -21,17 +21,19 @@ public class AbstractRelicPatches {
     public static class RelicUpdatePatch {
         @SpirePrefixPatch
         public static void Prefix(AbstractRelic __instance) {
-            if(RelicCounterFields.isCounterLocked.get(__instance)){
-                __instance.counter = RelicCounterFields.counterLockAmount.get(__instance);
-            }
+            if(__instance.isObtained) {
+                if(RelicCounterFields.isCounterLocked.get(__instance)){
+                    __instance.counter = RelicCounterFields.counterLockAmount.get(__instance);
+                }
 
-            if(TildeKey.enableRelicCounterEdit) {
-                __instance.hb.update();
-                if(__instance.hb.clicked) {
-                    __instance.hb.clicked = false;
-                    RelicCounterFields.isCounterLocked.set(__instance, !RelicCounterFields.isCounterLocked.get(__instance));
-                    if(RelicCounterFields.isCounterLocked.get(__instance)) {
-                        RelicCounterFields.counterLockAmount.set(__instance, __instance.counter);
+                if(TildeKey.enableRelicCounterEdit) {
+                    __instance.hb.update();
+                    if(__instance.hb.clicked) {
+                        __instance.hb.clicked = false;
+                        RelicCounterFields.isCounterLocked.set(__instance, !RelicCounterFields.isCounterLocked.get(__instance));
+                        if(RelicCounterFields.isCounterLocked.get(__instance)) {
+                            RelicCounterFields.counterLockAmount.set(__instance, __instance.counter);
+                        }
                     }
                 }
             }
