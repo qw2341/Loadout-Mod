@@ -53,7 +53,7 @@ public class CardModifications
         if (s == null) return;
         else cardMap = s;
 
-        modifyCards();
+//        modifyCards();
 
     }
 
@@ -76,20 +76,20 @@ public class CardModifications
     }
 
     public static void modifyCards() {
-        LoadoutMod.logger.info("Loading Custom Card Modifications into CardLib");
-        for (String cardId:cardMap.keySet()) {
-//            try{
-//                AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
-//                if(cardId != null && CardLibrary.cards.containsKey(cardId))
-//                    CardLibrary.cards.put(cardId,moddedCard);
-//            } catch (Exception e) {
-//                LoadoutMod.logger.info("Exception occurred while modding card with id = " + cardId);
-//                e.printStackTrace();
-//            }
-            if(CardLibrary.isACard(cardId)) modifyOnlyNumberIfExist(CardLibrary.getCard(cardId));
-
-        }
-        LoadoutMod.logger.info("Done Loading Custom Card Modifications");
+//        LoadoutMod.logger.info("Loading Custom Card Modifications into CardLib");
+//        for (String cardId:cardMap.keySet()) {
+////            try{
+////                AbstractCard moddedCard = SerializableCard.toAbstractCard(cardMap.get(cardId));
+////                if(cardId != null && CardLibrary.cards.containsKey(cardId))
+////                    CardLibrary.cards.put(cardId,moddedCard);
+////            } catch (Exception e) {
+////                LoadoutMod.logger.info("Exception occurred while modding card with id = " + cardId);
+////                e.printStackTrace();
+////            }
+//            if(CardLibrary.isACard(cardId)) modifyOnlyNumberIfExist(CardLibrary.getCard(cardId));
+//
+//        }
+//        LoadoutMod.logger.info("Done Loading Custom Card Modifications");
     }
 
     public static void modifyCard(AbstractCard card, SerializableCard sc) throws Exception {
@@ -201,12 +201,12 @@ public class CardModifications
     }
 
     public static void modifyOnlyNumberIfExist(AbstractCard card) {
-        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID)) {
-            try {
-                CardModifications.modifyCardNumberOnly(card,CardModifications.cardMap.get(card.cardID));
-            } catch (Exception e) {
-                LoadoutMod.logger.info("Failed to modify: " + card.cardID + " during its constructor call");
-            }
-        }
+//        if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID)) {
+//            try {
+//                CardModifications.modifyCardNumberOnly(card,CardModifications.cardMap.get(card.cardID));
+//            } catch (Exception e) {
+//                LoadoutMod.logger.info("Failed to modify: " + card.cardID + " during its constructor call");
+//            }
+//        }
     }
 }

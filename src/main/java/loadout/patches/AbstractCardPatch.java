@@ -24,31 +24,6 @@ import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 
 public class AbstractCardPatch {
-    @SpirePatch(clz = AbstractCard.class, method = "makeStatEquivalentCopy")
-    public static class CopyPatch {
-        @SpireInsertPatch(rloc = 10, localvars = {"card"})
-        public static void Insert(AbstractCard __instance, AbstractCard card) {
-            card.rarity = __instance.rarity;
-            card.type = __instance.type;
-            card.color = __instance.color;
-            card.magicNumber = __instance.baseMagicNumber;
-
-            card.originalName = __instance.originalName;
-            card.name = __instance.name;
-            card.rawDescription = __instance.rawDescription;
-        }
-
-        /**
-         * Patch to prevent double modifying
-         * @param __instance
-         * @param card
-         */
-        @SpireInsertPatch(rloc = 2, localvars = {"card"})
-        public static void Insert2(AbstractCard __instance, AbstractCard card) {
-            if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(card.cardID))CardModifierManager.removeAllModifiers(card, false);
-            //CardModifierManager.copyModifiers(__instance, card, false, true, false);
-        }
-    }
 
     /**
      * From Hubris Zylophone patch
@@ -109,44 +84,7 @@ public class AbstractCardPatch {
         CardModificationFields.isCardModifiedByModifier.set(ac,isModified);
     }
 
-    @SpirePatch(clz = AbstractCard.class, method = "<ctor>", paramtypez={
-            String.class,
-            String.class,
-            String.class,
-            int.class,
-            String.class,
-            AbstractCard.CardType.class,
-            AbstractCard.CardColor.class,
-            AbstractCard.CardRarity.class,
-            AbstractCard.CardTarget.class,
-            DamageInfo.DamageType.class
-    })
-    public static class CardModApplicatorPatch {
-        @SpirePostfixPatch
-        public static void PostFix(AbstractCard __instance, String id, String name, String imgUrl, int cost, String rawDescription, AbstractCard.CardType type, AbstractCard.CardColor color, AbstractCard.CardRarity rarity, AbstractCard.CardTarget target, DamageInfo.DamageType dType) {
-            CardModifications.modifyIfExist(__instance);
-        }
-    }
-    @SpirePatch(clz = CardLibrary.class, method = "getCopy", paramtypez = {String.class, int.class, int.class})
-    public static class CardLibraryGetCopyMethodPatch {
-        @SpirePostfixPatch
-        public static AbstractCard PostFix(AbstractCard __result, String key, int upgradeTime, int misc) {
-            if(CardModifications.cardMap != null && CardModifications.cardMap.containsKey(__result.cardID)) {
-                AbstractCard ret = SerializableCard.toAbstractCard(CardModifications.cardMap.get(__result.cardID)) ;
-                if(ret.timesUpgraded < upgradeTime) {
-                    int upgradesNeeded = upgradeTime - ret.timesUpgraded;
-                    for (int i = 0; i < upgradesNeeded; i++) {ret.upgrade();}
-                }
-                if(ret.misc != misc) {
-                    ret.misc = misc;
-                }
 
-                return ret;
-            }
-            return __result;
-        }
-
-    }
 
     @SpirePatch(clz = SearingBlow.class, method = "upgrade")
     public static class upgradeNamePatch {
