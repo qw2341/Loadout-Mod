@@ -665,6 +665,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         if(morphee == null || morphTarget == null) return;
 
+        if(morphee instanceof AbstractPlayer && morphTarget.getClass().getName().equals(morphee.getClass().getName())) {
+            resetPlayerMorph();
+            return;
+        }
+
         logger.info("Morphing " + morphee.name + " to " + morphTarget.name);
 
         if(morphee instanceof AbstractPlayer && (currentMorph == null || currentMorph.equals(""))) {
@@ -729,10 +734,10 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         if(morphee instanceof AbstractPlayer) {
             //if player
             currentMorph = morphTarget.getClass().getName();
-            if(morphTarget instanceof AbstractMonster)
-                morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphTarget.getClass().getName());
-            else if (morphTarget instanceof AbstractPlayer)
-                morphee.flipHorizontal = false;
+//            if(morphTarget instanceof AbstractMonster)
+//                morphee.flipHorizontal = !NO_FLIP_LIST.contains(morphTarget.getClass().getName());
+//            else if (morphTarget instanceof AbstractPlayer)
+//                morphee.flipHorizontal = false;
         }
         else {
             if(morphTarget instanceof AbstractMonster) {
@@ -748,7 +753,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static boolean shouldFlip() {
         Class<?> clazz;
-
+        if(currentMorph == null || currentMorph.isEmpty() || NO_FLIP_LIST.contains(currentMorph)) return false;
         try {
             clazz = Class.forName(currentMorph);
             return AbstractMonster.class.isAssignableFrom(clazz);
@@ -785,29 +790,41 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         return target;
     }
 
+    public static boolean isNotFightingSurrounded() {
+        return AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() instanceof MonsterRoom && !AbstractDungeon.lastCombatMetricKey.equals(MonsterHelper.SHIELD_SPEAR_ENC);
+    }
 
     public static void flipPlayer() {
-        if (currentMorph != null && !currentMorph.equals("") ) {
-            if(shouldFlip()) AbstractDungeon.player.flipHorizontal = !NO_FLIP_LIST.contains(currentMorph);
+//        if (currentMorph != null && !currentMorph.equals("") ) {
+//            if(shouldFlip()) {
+//                if(!NO_FLIP_LIST.contains(currentMorph))
+//                    AbstractDungeon.player.flipHorizontal = isNotFightingSurrounded();
+//            }
 //            if(AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() instanceof MonsterRoom && AbstractDungeon.lastCombatMetricKey.equals(MonsterHelper.SHIELD_SPEAR_ENC)){
 //                if(AbstractDungeon.getMonsters().monsters.get(1).hasPower(BackAttackPower.POWER_ID)) AbstractDungeon.player.flipHorizontal = !AbstractDungeon.player.flipHorizontal;
 //            }
 
             //logger.info("Flipping result is " + AbstractDungeon.player.flipHorizontal);
-        }
+//        }
     }
 
     public static void morphAndFlip() {
         if(currentMorph != null && !currentMorph.equals("")) {
             AbstractCreature creature = getMorphTarget(currentMorph);
             morph(AbstractDungeon.player,creature);
-            flipPlayer();
-            Skeleton pSk = ReflectionHacks.getPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton");
-            pSk.setFlipX(AbstractDungeon.player.flipHorizontal);
+//            flipPlayer();
+//            Skeleton pSk = ReflectionHacks.getPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton");
+//            pSk.setFlipX(AbstractDungeon.player.flipHorizontal);
         }
     }
 
     public static void resetPlayerMorph() {
+        logger.info("Resetting player morph");
+        restorePlayerMorph();
+        currentMorph = "";
+    }
+
+    public static void restorePlayerMorph() {
         if(currentMorph == null || currentMorph.equals("")) return;
 
         if(skeletonBackup != null) ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton",skeletonBackup);
@@ -818,7 +835,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         AbstractDungeon.player.hb.resize(hbWBackup, hbHBackup);
         AbstractDungeon.player.hb.move(AbstractDungeon.player.drawX, AbstractDungeon.player.drawY);
         AbstractDungeon.player.flipHorizontal = false;
-        currentMorph = "";
     }
 
     static {

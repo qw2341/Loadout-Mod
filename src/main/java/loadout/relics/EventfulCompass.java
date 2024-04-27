@@ -8,9 +8,7 @@ import com.megacrit.cardcrawl.helpers.EventHelper;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.EventRoom;
-import com.megacrit.cardcrawl.rooms.RestRoom;
+import com.megacrit.cardcrawl.rooms.*;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.EventSelectScreen;
@@ -129,6 +127,11 @@ public class EventfulCompass extends AbstractCustomScreenRelic<EventSelectScreen
         } else {
             AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
         }
+
+//        LoadoutMod.logger.info("...flipping player in {}", mapRoomNode2.room.getClass().getSimpleName());
+//        if((mapRoomNode2.room instanceof MonsterRoom || mapRoomNode2.room instanceof EventRoom || mapRoomNode2.room instanceof ShopRoom) && AbstractDungeon.player != null) {
+//            TildeKey.flipPlayer();
+//        }
     }
 
     @Override
