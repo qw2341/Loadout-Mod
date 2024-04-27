@@ -25,6 +25,22 @@ import loadout.savables.SerializableCard;
 
 public class AbstractCardPatch {
 
+    @SpirePatch(clz = AbstractCard.class, method = "makeStatEquivalentCopy")
+    public static class CopyPatch {
+        @SpireInsertPatch(rloc = 10, localvars = {"card"})
+        public static void Insert(AbstractCard __instance, AbstractCard card) {
+            card.rarity = __instance.rarity;
+            card.type = __instance.type;
+            card.color = __instance.color;
+            card.magicNumber = __instance.baseMagicNumber;
+
+            card.originalName = __instance.originalName;
+            card.name = __instance.name;
+            card.rawDescription = __instance.rawDescription;
+        }
+    }
+
+
     /**
      * From Hubris Zylophone patch
      */
