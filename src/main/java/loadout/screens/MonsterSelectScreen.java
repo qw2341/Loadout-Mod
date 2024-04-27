@@ -223,7 +223,13 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 this.instance.hb.move(x,y);
                 this.instance.drawX = x;
                 this.instance.drawY = y;
-                if(this.hb.hovered || MonsterSelectScreen.showPreviews) this.instance.update();
+                if(this.hb.hovered || MonsterSelectScreen.showPreviews) {
+                    try {
+                        this.instance.update();
+                    } catch (Exception ignored) {
+
+                    }
+                }
             }
 
 
