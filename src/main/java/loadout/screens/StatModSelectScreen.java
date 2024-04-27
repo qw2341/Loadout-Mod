@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.ui.panels.SeedPanel;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
@@ -39,6 +40,7 @@ import com.megacrit.cardcrawl.vfx.AscensionLevelUpTextEffect;
 import loadout.LoadoutMod;
 import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
+import loadout.patches.ShopPatch;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.TildeKey;
 
@@ -524,7 +526,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
                     public void setAmount(int amountToSet) {
                         TildeKey.merchantPriceMult = amountToSet;
                         if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.shopScreen != null) {
-                            AbstractDungeon.shopScreen.applyDiscount(TildeKey.merchantPriceMult / 100f, true);
+                            ShopPatch.modifyPrices(AbstractDungeon.shopScreen);
                         }
                     }
 

@@ -10,11 +10,18 @@ import com.megacrit.cardcrawl.shop.StoreRelic;
 import loadout.relics.TildeKey;
 
 public class ShopPatch {
+
+    public static void modifyPrices(ShopScreen shopScreen) {
+        int oldActualCost = ShopScreen.actualPurgeCost;
+        shopScreen.applyDiscount(TildeKey.merchantPriceMult/ 100f, true);
+        ShopScreen.actualPurgeCost = Math.round(oldActualCost * (TildeKey.merchantPriceMult/ 100f));
+    }
+
     @SpirePatch2(clz = ShopScreen.class, method = "init")
     public static class InitPatch {
         @SpirePostfixPatch
         public static void Postfix(ShopScreen __instance) {
-            __instance.applyDiscount(TildeKey.merchantPriceMult/ 100f, true);
+            modifyPrices(__instance);
         }
     }
 
@@ -40,6 +47,14 @@ public class ShopPatch {
         @SpirePostfixPatch
         public static void Postfix(ShopScreen __instance, AbstractCard card) {
             card.price = MathUtils.round((float)card.price * (TildeKey.merchantPriceMult/ 100f));
+        }
+    }
+
+    @SpirePatch2(clz = ShopScreen.class, method = "purgeCard")
+    public static class PurgeCardPatch {
+        @SpirePostfixPatch
+        public static void Postfix() {
+
         }
     }
 }
