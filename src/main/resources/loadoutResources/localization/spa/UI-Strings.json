@@ -205,7 +205,8 @@
 			"Matar",
 			"Eliminar",
 			"Replicar",
-			"Morpho"
+			"Morpho",
+			"Editar estado"
 		]
 	},
 	"loadout:CharacterSkinSortHeader": {

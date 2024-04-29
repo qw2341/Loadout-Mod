@@ -205,7 +205,8 @@
 			"Kill",
 			"Remove",
 			"Replicate",
-			"Morph"
+			"Morph",
+			"Edit Stat"
 		]
 	},
 	"loadout:CharacterSkinSortHeader": {

@@ -204,7 +204,8 @@
 			"秒杀",
 			"移除",
 			"复制",
-			"变形"
+			"变形",
+			"编辑属性"
 		]
 	},
 	"loadout:CharacterSkinSortHeader": {

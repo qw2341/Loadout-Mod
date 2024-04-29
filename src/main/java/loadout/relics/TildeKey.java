@@ -49,10 +49,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
-import loadout.screens.AbstractSelectScreen;
-import loadout.screens.CharacterSkinSelectScreen;
-import loadout.screens.MonsterSelectScreen;
-import loadout.screens.StatModSelectScreen;
+import loadout.screens.*;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -157,7 +154,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public AbstractSelectScreen<CharacterSkinSelectScreen.CharacterButton> morphMenu;
 
+    public MonsterEditScreen monsterEditMenu;
+
     public static AbstractCreature morphee;
+
+    public static AbstractCreature target;
 
     public static Skeleton skeletonBackup;
     public static TextureAtlas atlasBackup;
@@ -203,6 +204,11 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         if(!morphMenu.isOpen()) morphMenu.open();
     }
 
+    public void openMonsterEditMenu() {
+        if(monsterEditMenu == null) monsterEditMenu = new MonsterEditScreen(this);
+        if(!monsterEditMenu.isOpen()) monsterEditMenu.open();
+    }
+
     @Override
     protected void doneSelectionLogics() {
 
@@ -214,6 +220,9 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         if (morphMenu != null && morphMenu.isOpen()) {
             morphMenu.render(sb);
         }
+        if(monsterEditMenu != null && monsterEditMenu.isOpen()) {
+            monsterEditMenu.render(sb);
+        }
     }
 
     @Override
@@ -223,6 +232,10 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
         if(morphMenu != null && morphMenu.isOpen()) {
             morphMenu.update();
+        }
+
+        if(monsterEditMenu != null && monsterEditMenu.isOpen()) {
+            monsterEditMenu.update();
         }
 
 

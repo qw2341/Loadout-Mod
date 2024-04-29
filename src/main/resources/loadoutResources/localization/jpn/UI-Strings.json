@@ -204,7 +204,8 @@
 			"殺す",
 			"取り去る",
 			"複製",
-			"モーフ"
+			"モーフ",
+			"状態の編集"
 		]
 	},
 	"loadout:CharacterSkinSortHeader": {

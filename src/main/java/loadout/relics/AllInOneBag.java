@@ -217,7 +217,8 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
     public void initBagPos() {
         currentY = Settings.HEIGHT / 2f;
         targetY = currentY;
-        currentX = SIDE_PANEL_X + this.hb.width * 1.5f;
+//        currentX = SIDE_PANEL_X + this.hb.width * 1.5f;
+        currentX = -100f;
         targetX = currentX;
     }
 

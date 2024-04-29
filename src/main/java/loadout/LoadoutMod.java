@@ -186,6 +186,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     public static long startTime;
 
+    private static boolean isGameLoaded = false;
+
     //This is for the in-game mod settings panel.
     private static final String MODNAME = "Loadout Mod";
     private static final String AUTHOR = "JasonW"; // And pretty soon - You!
@@ -692,7 +694,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addSaveField(RelicStateSavables.ID, new RelicStateSavables());
 
         //CardModifications.modifyCards();
-
+        isGameLoaded = true;
     }
     
     // =============== / POST-INITIALIZE/ =================
@@ -1235,9 +1237,12 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receiveRender(SpriteBatch sb) {
-        sb.setColor(Color.WHITE);
+
         if(sidePanel != null) sidePanel.render(sb);
-        AllInOneBag.INSTANCE.renderInTopPanel(sb);
+        if(isGameLoaded){
+            sb.setColor(Color.WHITE);
+            AllInOneBag.INSTANCE.renderInTopPanel(sb);
+        }
     }
 
 
@@ -1279,7 +1284,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receiveRelicGet(AbstractRelic r) {
-        if(isXggg()) {
+        if(isXggg() && isCHN()) {
             if(r.relicId.equals(HandDrill.ID)) {
                 AllInOneBag.XGGGSay("7点钟还能用电钻的吗?");
             }
@@ -1303,6 +1308,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receivePostUpdate() {
-        AllInOneBag.INSTANCE.update();
+        if(isGameLoaded) AllInOneBag.INSTANCE.update();
     }
 }

@@ -204,7 +204,8 @@
 			"Tuer",
 			"Enlever",
 			"Répliquer",
-			"Morphe"
+			"Morphe",
+			"Modifier l'état"
 		]
 	},
 	"loadout:CharacterSkinSortHeader": {

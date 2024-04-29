@@ -46,6 +46,7 @@ import loadout.relics.TildeKey;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 
 public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScreen.StatModButton> {
@@ -84,7 +85,9 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         private Texture icon;
         private float iconOffset;
         private Color textColor;
-        public StatModButton(String text, boolean isLocked, Texture icon, float iconOffset, Color textColor, StatModActions actions) {
+
+        private Supplier<Boolean> supplier;
+        public StatModButton(String text, boolean isLocked, Texture icon, float iconOffset, Color textColor, StatModActions actions, Supplier<Boolean> supplier) {
             //this.modType = mt;
 
             this.x = 0;
@@ -108,6 +111,11 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             this.lockButton.isAscending = this.isLocked;
 
             this.isTyping = false;
+            this.supplier = supplier;
+        }
+
+        public StatModButton(String text, boolean isLocked, Texture icon, float iconOffset, Color textColor, StatModActions actions) {
+            this(text, isLocked, icon, iconOffset, textColor, actions, null);
         }
 
         public Hitbox updateControllerInput() {
@@ -250,6 +258,11 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         @Override
         public String getTextField() {
             return this.amount;
+        }
+
+        public void refreshBool() {
+            if(this.supplier != null) this.isLocked = this.supplier.get();
+            this.lockButton.isAscending = this.isLocked;
         }
     }
 

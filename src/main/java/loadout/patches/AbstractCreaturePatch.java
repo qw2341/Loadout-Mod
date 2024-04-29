@@ -19,6 +19,13 @@ public class AbstractCreaturePatch {
     @SpirePatch(clz = AbstractCreature.class, method = SpirePatch.CLASS)
     public static class PanelField {
         public static SpireField<CreatureManipulationPanel> manipulationPanel = new SpireField<>(() -> null);
+
+        public static SpireField<Boolean> isCurrentHPLocked = new SpireField<>(() -> Boolean.FALSE);
+        public static SpireField<Integer> currentHPLockAmount = new SpireField<>(() -> 0);
+        public static SpireField<Boolean> isMaxHPLocked = new SpireField<>(() -> Boolean.FALSE);
+        public static SpireField<Integer> maxHPLockAmount = new SpireField<>(() -> 0);
+        public static SpireField<Boolean> isBlockLocked = new SpireField<>(() -> Boolean.FALSE);
+        public static SpireField<Integer> blockLockAmount = new SpireField<>(() -> 0);
     }
 
 
@@ -56,6 +63,16 @@ public class AbstractCreaturePatch {
                 panel.isHidden = true;
 
             panel.update();
+
+            if(PanelField.isCurrentHPLocked.get(__instance)) {
+                __instance.currentHealth = PanelField.currentHPLockAmount.get(__instance);
+            }
+            if(PanelField.isMaxHPLocked.get(__instance)) {
+                __instance.maxHealth = PanelField.maxHPLockAmount.get(__instance);
+            }
+            if(PanelField.isBlockLocked.get(__instance)) {
+                __instance.currentBlock = PanelField.blockLockAmount.get(__instance);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -87,11 +88,12 @@ public class CreatureManipulationPanel implements UIElement {
             if(!Settings.FAST_MODE) AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(creature.hb.cX, creature.hb.cY)));
         }));
         //remove
-//        if(!creature.isPlayer) this.buttons.add(new CreatureManipulationButton(TEXT[3], () -> {
-//            AbstractDungeon.getCurrRoom().monsters.monsters.remove(creature);
-//        }));
+        this.buttons.add(new CreatureManipulationButton(TEXT[6], () -> {
+            TildeKey.target = creature;
+            AllInOneBag.INSTANCE.tildeKey.openMonsterEditMenu();
+        }));
         //dupe
-        this.buttons.add(new CreatureManipulationButton(TEXT[4], () -> {
+        if(creature instanceof AbstractMonster) this.buttons.add(new CreatureManipulationButton(TEXT[4], () -> {
             AbstractRoom ar = AbstractDungeon.getCurrRoom();
             if(ar!=null && ar.monsters!= null) {
                 AbstractMonster monsterTemp = MonsterSelectScreen.spawnMonster((Class<? extends AbstractMonster>) creature.getClass(),creature.drawX - calculateSmartDistance(creature, creature) + 30.0F * (float) Math.random(), creature.drawY + 20.0F * (float) Math.random());
@@ -106,12 +108,8 @@ public class CreatureManipulationPanel implements UIElement {
     public void render(SpriteBatch sb) {
         if(isHidden) return;
 
-        //super lazy simple solution here
-        int i = 0;
         for(CreatureManipulationButton cb : buttons) {
-            if(i == 4 && creature == AbstractDungeon.player) break;
             cb.render(sb);
-            i++;
         }
     }
 
