@@ -775,13 +775,13 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         }
     }
 
-    public static AbstractCreature getMorphTarget(String id) {
+    public static AbstractCreature getMorphTarget(String id) throws ClassNotFoundException {
 //        if(baseGameMonsterMap.containsKey(id)) {
 //            return MonsterSelectScreen.MonsterButton.createMonster(baseGameMonsterMap.get(id));
 //        } else if (monsterMap.containsKey(id)) {
 //            return MonsterSelectScreen.MonsterButton.createMonster(monsterMap.get(id));
 //        }
-        AbstractCreature target = null;
+        final AbstractCreature[] target = {null};
         Class<?> clazz;
 
         try {
@@ -789,18 +789,29 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             if (AbstractPlayer.class.isAssignableFrom(clazz)){
                 Constructor con = clazz.getDeclaredConstructor(String.class);
                 con.setAccessible(true);
-                target = (AbstractPlayer) con.newInstance(AbstractDungeon.name);
+                target[0] = (AbstractPlayer) con.newInstance(AbstractDungeon.name);
             }
             else if (AbstractMonster.class.isAssignableFrom(clazz))
-                target = MonsterSelectScreen.MonsterButton.createMonster((Class<? extends AbstractMonster>) clazz);
+                target[0] = MonsterSelectScreen.MonsterButton.createMonster((Class<? extends AbstractMonster>) clazz);
             else
-                target = (AbstractCreature) clazz.getDeclaredConstructor().newInstance();
+                target[0] = (AbstractCreature) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
-            target = new ApologySlime();
+
+            logger.info("Failed to obtain morph target, trying a different approach");
+            if(AllInOneBag.INSTANCE.bottledMonster.selectScreen != null) {
+                AllInOneBag.INSTANCE.bottledMonster.selectScreen.getList().forEach(mb -> {
+                    if(mb.mClass.getName().equals(id)) {
+                        target[0] = mb.instance;
+                    }
+                });
+            }
+
         }
 
-        return target;
+        if(target[0] == null) throw new ClassNotFoundException();
+
+        return target[0];
     }
 
     public static boolean isNotFightingSurrounded() {
@@ -823,8 +834,15 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
     public static void morphAndFlip() {
         if(currentMorph != null && !currentMorph.equals("")) {
-            AbstractCreature creature = getMorphTarget(currentMorph);
-            morph(AbstractDungeon.player,creature);
+            try {
+                AbstractCreature creature = getMorphTarget(currentMorph);
+                morph(AbstractDungeon.player,creature);
+            } catch (Exception e) {
+                logger.info("Failed to morph and flip, here's why: ");
+                e.printStackTrace();
+                restorePlayerMorph();
+            }
+
 //            flipPlayer();
 //            Skeleton pSk = ReflectionHacks.getPrivate(AbstractDungeon.player, AbstractCreature.class, "skeleton");
 //            pSk.setFlipX(AbstractDungeon.player.flipHorizontal);
