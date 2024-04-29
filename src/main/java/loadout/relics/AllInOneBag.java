@@ -90,17 +90,6 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         this.isAnimating = false;
         this.hb = new Hitbox(36.0f * Settings.scale,128.0f * Settings.scale);
 
-//        if(LoadoutMod.isIsaac()) {
-//            try {
-//                RelicStrings relicStrings = CardCrawlGame.languagePack.getRelicStrings(ID+"Alt");
-//                tips.clear();
-//                flavorText = relicStrings.FLAVOR;
-//                tips.add(new PowerTip(relicStrings.NAME, description));
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
         this.loadoutBag = new LoadoutBag();
         this.trashBin = new TrashBin();
         this.loadoutCauldron = new LoadoutCauldron();
@@ -145,16 +134,11 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
         cardScreenRelics.add(this.cardShredder);
         cardScreenRelics.add(this.cardModifier);
 
-        if(isSelectionScreenUp) showRelics();
-        else hideRelics();
-
-        if(isXggg()) {
-            xgggIcon = new XGGGIcon(this.currentX, this.currentY);
-            xgggIcon.setAngle(330.0f);
-            xgggIcon.scale = 0.5F;
-            showXGGG = false;
-            showXGGGTimer = 0.0f;
-        }
+        xgggIcon = new XGGGIcon(this.currentX, this.currentY);
+        xgggIcon.setAngle(330.0f);
+        xgggIcon.scale = 0.5F;
+        showXGGG = false;
+        showXGGGTimer = 0.0f;
 
         initBagPos();
 
@@ -166,6 +150,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
             cr.scale = 0;
         }
 
+        isSelectionScreenUp = false;
     }
 
     public void closeAllScreens() {

@@ -41,6 +41,7 @@ import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
+import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import javassist.ClassPool;
 import javassist.CtClass;
 import loadout.helper.ModifierLibrary;
@@ -53,6 +54,7 @@ import loadout.savables.Favorites;
 import loadout.savables.RelicStateSavables;
 import loadout.screens.CardViewPopupHeader;
 import loadout.screens.SidePanel;
+import loadout.uiElements.ModLabeledDropdown;
 import loadout.util.*;
 import lor.helper.LORHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -602,41 +604,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         settingYPos -= lineSpacing;
 
-        settingsPanel.addUIElement(new ModLabel(SettingText[19],settingXPos, settingYPos, settingsPanel,(label)->{}));
-        settingYPos -= lineSpacing;
-
-        float tempXPos = settingXPos;
-        ArrayList<ModLabeledToggleButton> skinRadioButtons = new ArrayList<>();
-
-        for(String skinID : skinManager.skinNames.keySet()) {
-            String skinName = skinManager.skinNames.get(skinID);
-            ModLabeledToggleButton mb = new ModLabeledToggleButton( skinName,
-                    tempXPos, settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont,
-                    skinID.equalsIgnoreCase(SkinManager.currentSkin), settingsPanel,
-                    (label) -> {}, (button) -> {
-
-                    for(ModLabeledToggleButton otherB : skinRadioButtons) {
-                        otherB.toggle.enabled = false;
-                    }
-                    try {
-                        skinManager.switchSkin(skinID);
-                        config.setString(SkinManager.SKIN_SELECTION, SkinManager.currentSkin);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    button.enabled = true;
-
-
-            });
-            skinRadioButtons.add(mb);
-            settingsPanel.addUIElement(mb);
-            tempXPos += FontHelper.getSmartWidth(FontHelper.charDescFont, skinName,99999.0f,20.0f) + 50.0f * Settings.scale;
-        }
-
-        settingYPos -= lineSpacing;
-
         ModLabeledToggleButton enableCreatureManipButton = new ModLabeledToggleButton(SettingText[18],
                 settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
                 enableCreatureManipulation, // Boolean it uses
@@ -654,6 +621,35 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         settingsPanel.addUIElement(enableCreatureManipButton);
 
         settingYPos -= lineSpacing;
+
+        ModLabeledDropdown skinSeletion = new ModLabeledDropdown(SettingText[19],null,
+                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, skinManager.skinNameList,
+                (label) -> {}, (dropdownMenu) -> {
+            if(dropdownMenu.getHitbox().justHovered) {
+                AllInOneBag.INSTANCE.showRelics();
+            }
+            if (!dropdownMenu.getHitbox().hovered && AllInOneBag.isSelectionScreenUp) {
+//                skinManager.switchSkin(SkinManager.currentSkin);
+                AllInOneBag.INSTANCE.hideAllRelics();
+            }
+            //RIP Dropdown row got private access, cant show individual skin when hovered :(
+
+        },
+                (i, skinName) -> {
+                    try {
+                        skinManager.switchSkin(i);
+                        config.setString(SkinManager.SKIN_SELECTION, SkinManager.currentSkin);
+                        config.save();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        skinSeletion.dropdownMenu.setSelectedIndex(skinManager.getSkinIndex(SkinManager.currentSkin));
+        settingsPanel.addUIElement(skinSeletion);
+
+        settingYPos -= lineSpacing * 2;
+
+
 
 
         settingYPos -= lineSpacing;
@@ -731,6 +727,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
 
         AllInOneBag.INSTANCE = new AllInOneBag();
+        AllInOneBag.INSTANCE.hideAllRelics();
 
         // Mark relics as seen - makes it visible in the compendium immediately
         // If you don't have this it won't be visible in the compendium until you see them in game
@@ -1240,9 +1237,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receiveRender(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
         if(sidePanel != null) sidePanel.render(sb);
-        if(AbstractDungeon.isPlayerInDungeon()) {
-            AllInOneBag.INSTANCE.renderInTopPanel(sb);
-        }
+        AllInOneBag.INSTANCE.renderInTopPanel(sb);
     }
 
 
@@ -1308,6 +1303,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receivePostUpdate() {
-        if(AbstractDungeon.isPlayerInDungeon()) AllInOneBag.INSTANCE.update();
+        AllInOneBag.INSTANCE.update();
     }
 }

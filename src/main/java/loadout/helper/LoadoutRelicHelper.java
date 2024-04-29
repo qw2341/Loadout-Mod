@@ -28,7 +28,7 @@ public class LoadoutRelicHelper {
         loadoutRelicIds.add(TildeKey.ID);
         loadoutRelicIds.add(BottledMonster.ID);
         loadoutRelicIds.add(OrbBox.ID);
-        loadoutRelicIds.add(AllInOneBag.ID);
+//        loadoutRelicIds.add(AllInOneBag.ID);
         loadoutRelicIds.add(BlightChest.ID);
 
         customScreenRelicIds = new HashSet<>();
@@ -47,7 +47,7 @@ public class LoadoutRelicHelper {
         cardScreenRelicIds.add(CardShredder.ID);
         cardScreenRelicIds.add(CardModifier.ID);
 
-        LOADOUT_RELIC_CLASSES.add(AllInOneBag.class);
+//        LOADOUT_RELIC_CLASSES.add(AllInOneBag.class);
         LOADOUT_RELIC_CLASSES.add(AllInOneBagUp.class);
         LOADOUT_RELIC_CLASSES.add(LoadoutBag.class);
         LOADOUT_RELIC_CLASSES.add(TrashBin.class);
