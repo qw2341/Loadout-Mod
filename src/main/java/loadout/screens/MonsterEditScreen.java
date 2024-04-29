@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import loadout.patches.AbstractCreaturePatch;
 import loadout.relics.AbstractCustomScreenRelic;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -64,7 +65,7 @@ public class MonsterEditScreen extends AbstractSelectScreen<StatModSelectScreen.
                 }
             }
         }, () -> AbstractCreaturePatch.PanelField.isMaxHPLocked.get(target)));
-        this.items.add(new StatModSelectScreen.StatModButton(BaseMod.getKeywordTitle("block"), false, ImageMaster.BLOCK_ICON, StatModSelectScreen.HP_NUM_OFFSET_X,  new Color(0.9F, 0.9F, 0.9F, 1.0F), new StatModSelectScreen.StatModActions() {
+        this.items.add(new StatModSelectScreen.StatModButton(StringUtils.capitalize(GameDictionary.BLOCK.NAMES[0]), false, ImageMaster.BLOCK_ICON, StatModSelectScreen.HP_NUM_OFFSET_X,  new Color(0.9F, 0.9F, 0.9F, 1.0F), new StatModSelectScreen.StatModActions() {
             @Override
             public int getAmount() {
                 return target.currentBlock;
