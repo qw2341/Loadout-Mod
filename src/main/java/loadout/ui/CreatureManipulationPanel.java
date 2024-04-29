@@ -86,7 +86,7 @@ public class CreatureManipulationPanel implements UIElement {
         this.buttons.add(new CreatureManipulationButton(TEXT[2], () -> {
             AbstractDungeon.actionManager.addToTop(new InstantKillAction(creature));
             if(!Settings.FAST_MODE) AbstractDungeon.actionManager.addToTop((AbstractGameAction)new VFXAction((AbstractGameEffect)new WeightyImpactEffect(creature.hb.cX, creature.hb.cY)));
-        }));
+        }, true));
         //remove
         this.buttons.add(new CreatureManipulationButton(TEXT[6], () -> {
             TildeKey.target = creature;
@@ -132,6 +132,12 @@ public class CreatureManipulationPanel implements UIElement {
 
         if(!isHoveringButtons && (InputHelper.justClickedLeft || InputHelper.justClickedRight)) {
             this.isHidden = true;
+        }
+    }
+
+    public void resetAllButtons() {
+        for(CreatureManipulationButton cb : buttons) {
+            cb.askingConfirmation = false;
         }
     }
 }

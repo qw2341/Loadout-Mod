@@ -7,6 +7,8 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.ui.buttons.CardSelectConfirmButton;
+import com.megacrit.cardcrawl.ui.buttons.ConfirmButton;
 import loadout.helper.Action;
 
 public class CreatureManipulationButton implements UIElement {
@@ -17,6 +19,9 @@ public class CreatureManipulationButton implements UIElement {
     public Action onPress;
     public Action onRelease;
     public Action onHold;
+
+    private boolean requiresConfirmation = false;
+    public boolean askingConfirmation = false;
     public static final float ROW_HEIGHT;
     public static final float ROW_WIDTH;
     public static final float ROW_RENDER_HEIGHT;
@@ -46,6 +51,10 @@ public class CreatureManipulationButton implements UIElement {
         this(labelText, () -> {}, onRelease, () -> {});
     }
 
+    public CreatureManipulationButton(String labelText, Action onRelease, boolean requiresConfirmation) {
+        this(labelText, () -> {}, onRelease, () -> {}, requiresConfirmation);
+    }
+
     public CreatureManipulationButton(String labelText, Action onPress, Action onRelease, Action onHold) {
         this.labelText = labelText;
         this.onRelease = onRelease;
@@ -53,6 +62,11 @@ public class CreatureManipulationButton implements UIElement {
         this.onPress = onPress;
         this.hb = new Hitbox(ROW_WIDTH, ROW_RENDER_HEIGHT);
         isHidden = false;
+    }
+
+    public CreatureManipulationButton(String labelText, Action onPress, Action onRelease, Action onHold, boolean requiresConfirmation) {
+        this(labelText, onPress, onRelease, onHold);
+        this.requiresConfirmation = requiresConfirmation;
     }
 
     @Override
@@ -66,7 +80,8 @@ public class CreatureManipulationButton implements UIElement {
             Color textColor = this.getTextColor();
             float textY = this.hb.cY + ROW_TEXT_Y_OFFSET;
             float textX = this.hb.x + ROW_TEXT_LEADING_OFFSET;
-            FontHelper.renderFont(sb, FontHelper.topPanelInfoFont, this.labelText, textX, textY, textColor);
+            String renderText = askingConfirmation ? CardSelectConfirmButton.TEXT[0] : this.labelText;
+            FontHelper.renderFont(sb, FontHelper.topPanelInfoFont, renderText, textX, textY, textColor);
 
             this.hb.render(sb);
         }
@@ -76,10 +91,22 @@ public class CreatureManipulationButton implements UIElement {
     public void update() {
         this.hb.update();
         if(!this.isHidden && this.hb.hovered) {
-            if(InputHelper.isMouseDown) {
+            if (InputHelper.justClickedLeft) {
+                this.onPress.execute();
+            } else if(InputHelper.isMouseDown) {
                 this.onHold.execute();
             } else if (InputHelper.justReleasedClickLeft) {
-                this.onRelease.execute();
+                if(requiresConfirmation)
+                    if(!this.askingConfirmation) {
+                        this.askingConfirmation = true;
+                    } else {
+                        this.onRelease.execute();
+                        this.askingConfirmation = false;
+                    }
+                else {
+                    this.onRelease.execute();
+                }
+
             }
         }
     }
@@ -89,6 +116,8 @@ public class CreatureManipulationButton implements UIElement {
 
         if (this.hb.hovered && InputHelper.isMouseDown) {
             bgColor = ROW_SELECT_COLOR;
+        } else if(this.askingConfirmation) {
+            bgColor = Color.SALMON;
         } else if (this.hb.hovered) {
             bgColor = ROW_HOVER_COLOR;
         }

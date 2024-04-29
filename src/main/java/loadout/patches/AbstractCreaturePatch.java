@@ -62,6 +62,8 @@ public class AbstractCreaturePatch {
                     AbstractDungeon.player.inSingleTargetMode)
                 panel.isHidden = true;
 
+            if(panel.isHidden) panel.resetAllButtons();
+
             panel.update();
 
             if(PanelField.isCurrentHPLocked.get(__instance)) {
