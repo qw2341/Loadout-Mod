@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class RewardsPatch {
     @SpirePostfixPatch
     public static void Postfix(CombatRewardScreen __instance) {
-        if(__instance.rewards != null) {
+        if(__instance.rewards != null && TildeKey.rewardMultiplier != 1) {
             ArrayList<RewardItem> rewardItems = new ArrayList<>();
             RewardItem relicLinkee = null;
             for(RewardItem ri : __instance.rewards) {
