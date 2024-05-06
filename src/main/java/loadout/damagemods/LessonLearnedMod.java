@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class LessonLearnedMod extends AbstractOnKillMod{
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
-        ArrayList<AbstractCard> possibleCards = new ArrayList();
+        ArrayList<AbstractCard> possibleCards = new ArrayList<>();
         AbstractCard theCard = null;
 
         for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
