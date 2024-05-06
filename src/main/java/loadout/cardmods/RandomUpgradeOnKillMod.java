@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.GreedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -17,6 +18,8 @@ import loadout.damagemods.LessonLearnedMod;
 public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
     private static String description = "";
+
+    private static AbstractDamageModifier lessonLearnedMod = new LessonLearnedMod();
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -37,7 +40,12 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        DamageModifierManager.addModifier(card, new LessonLearnedMod());
+        DamageModifierManager.addModifier(card, lessonLearnedMod);
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        DamageModifierManager.removeModifier(card, lessonLearnedMod);
     }
 
     @Override
