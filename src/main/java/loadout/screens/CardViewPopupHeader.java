@@ -781,12 +781,21 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if (button == this.makeExhaustButton) {
             clearActiveButtons();
             if (!button.isAscending) {
-                CardModifierManager.removeModifiersById(cardViewScreen.card, ExhaustMod.ID, true);
-                CardModifierManager.addModifier(cardViewScreen.card, new UnexhaustMod());
+                //removing exhaust
+                if(CardModifierManager.hasModifier(getCard(),ExhaustMod.ID)) {
+                    CardModifierManager.removeModifiersById(cardViewScreen.card, ExhaustMod.ID, true);
+                } else {
+                    CardModifierManager.addModifier(cardViewScreen.card, new UnexhaustMod());
+                }
+
             }
             else {
-                CardModifierManager.removeModifiersById(cardViewScreen.card, UnexhaustMod.ID, true);
-                CardModifierManager.addModifier(cardViewScreen.card, new ExhaustMod());
+                //adding exhaust
+                if(CardModifierManager.hasModifier(getCard(),UnexhaustMod.ID)){
+                    CardModifierManager.removeModifiersById(cardViewScreen.card, UnexhaustMod.ID, true);
+                } else {
+                    CardModifierManager.addModifier(cardViewScreen.card, new ExhaustMod());
+                }
             }
             setCardModded(true);
             resetOtherButtons();
