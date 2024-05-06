@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.GreedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -29,6 +30,8 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GainGoldOnKillModifier");
     private static String description = "";
 
+    private static AbstractDamageModifier greedMod = new GreedMod();
+
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return rawDescription + " NL " + description;
@@ -41,7 +44,12 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        DamageModifierManager.addModifier(card, new GreedMod());
+        DamageModifierManager.addModifier(card, greedMod);
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        DamageModifierManager.removeModifier(card, greedMod);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.FeedAction;
 import com.megacrit.cardcrawl.actions.unique.RitualDaggerAction;
@@ -20,6 +21,8 @@ public class GainDamageOnKill extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GDOKMod");
     private static String description = "";
 
+    private static AbstractDamageModifier daggerMod = new RitualDaggerMod();
+
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return rawDescription + description + LocalizedStrings.PERIOD;
@@ -32,7 +35,12 @@ public class GainDamageOnKill extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        DamageModifierManager.addModifier(card, new RitualDaggerMod());
+        DamageModifierManager.addModifier(card, daggerMod);
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        DamageModifierManager.removeModifier(card, daggerMod);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.FeedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -21,6 +22,8 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GainHpOnKillModifier");
     private static String description = "";
 
+    private static AbstractDamageModifier feedMod = new FeastMod();
+
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return rawDescription + description + LocalizedStrings.PERIOD;
@@ -33,7 +36,12 @@ public class GainHpOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        DamageModifierManager.addModifier(card, new FeastMod());
+        DamageModifierManager.addModifier(card, feedMod);
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        DamageModifierManager.removeModifier(card, feedMod);
     }
 
     @Override
