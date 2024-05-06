@@ -1,4 +1,4 @@
-package code.util;
+package loadout.util;
 
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;

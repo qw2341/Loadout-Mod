@@ -1,4 +1,4 @@
-package code.actions;
+package loadout.actions;
 
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
