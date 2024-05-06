@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 public class UnexhaustMod  extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("UnexhaustMod");
+    private static final String EXHAUST_STRING = StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD;
 
     public UnexhaustMod() {
         super();
@@ -20,13 +21,18 @@ public class UnexhaustMod  extends AbstractCardModifier {
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
 
-        String regEx = "(NL\\s)*" + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + (Settings.lineBreakViaCharacter ? " " : "") + LocalizedStrings.PERIOD;
+        String regEx = "(NL\\s)*" + EXHAUST_STRING + "(?!.*" + EXHAUST_STRING + ")";
         return StringUtils.replacePattern(rawDescription, regEx, "");
     }
 
     @Override
     public void onInitialApplication(AbstractCard card) {
         card.exhaust = false;
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        card.exhaust = true;
     }
 
     @Override
