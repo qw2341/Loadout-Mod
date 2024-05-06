@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.GreedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -16,6 +17,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
+import loadout.damagemods.GreedMod;
+import loadout.util.Wiz;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
@@ -37,9 +40,8 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     }
 
     @Override
-    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-
-        AbstractDungeon.actionManager.addToBottom(new GreedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.misc));
+    public void onInitialApplication(AbstractCard card) {
+        DamageModifierManager.addModifier(card, new GreedMod());
     }
 
     @Override

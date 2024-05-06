@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -8,6 +9,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.actions.GMOKAction;
+import loadout.damagemods.MagicDaggerMod;
 import loadout.screens.CardViewPopupHeader;
 
 public class GainMagicOnKillMod extends AbstractCardModifier {
@@ -26,9 +28,8 @@ public class GainMagicOnKillMod extends AbstractCardModifier {
     }
 
     @Override
-    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-
-        AbstractDungeon.actionManager.addToBottom(new GMOKAction(target, card.misc, card.uuid));
+    public void onInitialApplication(AbstractCard card) {
+        DamageModifierManager.addModifier(card, new MagicDaggerMod());
     }
 
     @Override

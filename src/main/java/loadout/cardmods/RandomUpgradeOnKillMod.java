@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.GreedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.actions.watcher.LessonLearnedAction;
@@ -11,6 +12,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
+import loadout.damagemods.LessonLearnedMod;
 
 public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
@@ -26,10 +28,16 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
         return ID;
     }
 
-    @Override
-    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
+//    @Override
+//    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
+//
+//        AbstractDungeon.actionManager.addToBottom(new LessonLearnedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType)));
+//    }
 
-        AbstractDungeon.actionManager.addToBottom(new LessonLearnedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType)));
+
+    @Override
+    public void onInitialApplication(AbstractCard card) {
+        DamageModifierManager.addModifier(card, new LessonLearnedMod());
     }
 
     @Override

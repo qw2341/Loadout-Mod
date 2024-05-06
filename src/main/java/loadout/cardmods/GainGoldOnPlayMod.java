@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainGoldAction;
 import com.megacrit.cardcrawl.actions.unique.GreedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -30,7 +31,9 @@ public class GainGoldOnPlayMod extends AbstractCardModifier {
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
         AbstractDungeon.effectList.add(new RainingGoldEffect(card.misc * 2, true));
-        AbstractDungeon.actionManager.addToBottom(new GainGoldAction(card.misc));
+        AbstractGameAction aga = new GainGoldAction(card.misc);
+        aga.actionType = AbstractGameAction.ActionType.DAMAGE;
+        AbstractDungeon.actionManager.addToBottom(aga);
     }
 
     @Override

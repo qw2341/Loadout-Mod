@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
@@ -19,6 +20,7 @@ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.FlyingOrbEffect;
 import loadout.LoadoutMod;
 import loadout.actions.LifestealAction;
+import loadout.damagemods.LifestealDamageMod;
 
 public class LifestealMod extends AbstractCardModifier {
 
@@ -35,11 +37,16 @@ public class LifestealMod extends AbstractCardModifier {
         return ID;
     }
 
-    @Override
-    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new LifestealAction(AbstractDungeon.player, target));
-    }
+//    @Override
+//    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
+//        AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new LifestealAction(AbstractDungeon.player, target));
+//    }
 
+
+    @Override
+    public void onInitialApplication(AbstractCard card) {
+        DamageModifierManager.addModifier(card, new LifestealDamageMod());
+    }
 
     @Override
     public AbstractCardModifier makeCopy() {

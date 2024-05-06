@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.megacrit.cardcrawl.actions.unique.FeedAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -10,6 +11,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
+import loadout.damagemods.FeastMod;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -30,9 +32,8 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     }
 
     @Override
-    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-
-        AbstractDungeon.actionManager.addToBottom(new FeedAction(target,new DamageInfo(AbstractDungeon.player, 0,action.damageType), card.misc));
+    public void onInitialApplication(AbstractCard card) {
+        DamageModifierManager.addModifier(card, new FeastMod());
     }
 
     @Override
