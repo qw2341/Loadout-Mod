@@ -13,6 +13,7 @@ import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPat
 import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.RenderCardDescriptors;
 import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.ShrinkLongDescription;
 import basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup.CustomRendering;
+import basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup.RenderCustomDynamicVariable;
 import basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup.TitleFontSize;
 import basemod.patches.com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen.EverythingFix;
 import com.badlogic.gdx.Gdx;
@@ -823,7 +824,7 @@ public class SCardViewPopup {
             }
             List<String> descriptors = new ArrayList<>();
             descriptors.add(typeText);
-            descriptors.addAll(((CustomCard)this.card).getCardDescriptors());
+            descriptors.addAll(RenderCardDescriptors.getAllDescriptors(this.card));
             if (descriptors.size() > 1) {
                 String text = String.join(" | ", (Iterable)descriptors);
                 GlyphLayout gl = new GlyphLayout();
@@ -962,6 +963,17 @@ public class SCardViewPopup {
         if (!this.card.isLocked && this.card.isSeen) {
             BitmapFont font = FontHelper.SCP_cardDescFont;
             float draw_y = this.current_y + 100.0F * Settings.scale;
+
+            current_x = (float)Settings.WIDTH / 2.0F + 6.0F * Settings.scale;
+            if (card.description.size() > 5) {
+                draw_y -= 18.0F * Settings.scale * card.drawScale;
+            }
+
+            float scale = (Float) ShrinkLongDescription.Scale.descriptionScale.get(card);
+            if (scale != 1.0F) {
+                font.getData().setScale(font.getScaleX() * scale, font.getScaleY() * scale);
+            }
+
             draw_y += (float)this.card.description.size() * font.getCapHeight() * 0.775F - font.getCapHeight() * 0.375F;
             float spacing = 1.53F * -font.getCapHeight() / Settings.scale / this.drawScale;
             GlyphLayout gl = new GlyphLayout();
@@ -983,9 +995,8 @@ public class SCardViewPopup {
                     String updateTmp = null;
 
 
-                    if (tmp.startsWith("$")) {
+                    if (tmp.startsWith("$") || tmp.equals("D")) {
                         String key = tmp;
-
                         Pattern pattern = Pattern.compile("\\$(.+)\\$\\$");
                         Matcher matcher = pattern.matcher(key);
                         if (matcher.find()) {
@@ -995,13 +1006,13 @@ public class SCardViewPopup {
                         DynamicVariable dv = (DynamicVariable)BaseMod.cardDynamicVariableMap.get(key);
                         if (dv != null) {
                             if (dv.isModified(card)) {
-                                if (dv.value(card) >= dv.baseValue(card)) {
+                                if (dv.value(card) >= dv.modifiedBaseValue(card)) {
                                     tmp = "[#" + dv.getIncreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
                                 } else {
                                     tmp = "[#" + dv.getDecreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
                                 }
                             } else {
-                                tmp = Integer.toString(dv.baseValue(card));
+                                tmp = Integer.toString(dv.modifiedBaseValue(card));
                             }
                         }
                     }
@@ -1123,6 +1134,8 @@ public class SCardViewPopup {
                         FontHelper.renderRotatedText(sb, font, punctuation, this.current_x, this.current_y, start_x - this.current_x + gl.width / 2.0F, (float)i * 1.53F * -font.getCapHeight() + draw_y - this.current_y + -12.0F, 0.0F, true, Settings.CREAM_COLOR);
                         gl.setText(font, punctuation);
                         start_x += gl.width;
+                    } else if(RenderCustomDynamicVariable.Inner.checkDynamicVariable(tmp)) {
+                        start_x += renderDynamicVariable(this, tmp, start_x, draw_y, i, font, sb);
                     } else if (tmp.charAt(0) == '!') {
                         if (tmp.length() == 4) {
                             start_x += myRenderDynamicVariable(this, tmp, tmp.charAt(1), start_x, draw_y, i, font, sb, (Character)null);
@@ -1209,6 +1222,9 @@ public class SCardViewPopup {
                 break;
             case STATUS:
                 label = TEXT[7];
+                break;
+            default:
+                label = AbstractCard.TEXT[5];
         }
         RenderCardDescriptors.Text.Insert(this.card, sb, TEXT);
         FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, label, (float)Settings.WIDTH / 2.0F + 3.0F * Settings.scale, (float)Settings.HEIGHT / 2.0F - 40.0F * Settings.scale, CARD_TYPE_COLOR);
@@ -1256,14 +1272,27 @@ public class SCardViewPopup {
         return gl.width;
     }
 
+    public static float renderDynamicVariable(SCardViewPopup __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb) {
+        String pre = "";
+        String end = "";
+        Matcher matcher = DynamicVariable.variablePattern.matcher(key);
+        if (matcher.find()) {
+            pre = matcher.group(1);
+            key = matcher.group(2);
+            end = matcher.group(3);
+        }
+
+        return subRenderDynamicVariable(__obj_instance, pre, key, end, start_x, draw_y, i, font, sb);
+    }
+
     public static float myRenderDynamicVariable(SCardViewPopup sCardViewPopup, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
         return subRenderDynamicVariable(sCardViewPopup, "", "" + ckey, cend == null ? "" : "" + cend, start_x, draw_y, i, font, sb);
     }
 
     public static float subRenderDynamicVariable(SCardViewPopup sCardViewPopup, String pre, String key, String end, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb) {
-        AbstractCard card = (AbstractCard) ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "card");
-        float current_x = (Float)ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "current_x");
-        float current_y = (Float)ReflectionHacks.getPrivate(sCardViewPopup, SCardViewPopup.class, "current_y");
+        AbstractCard card = sCardViewPopup.card;
+        float current_x = sCardViewPopup.current_x;
+        float current_y = sCardViewPopup.current_y;
         Color c = Settings.CREAM_COLOR;
         int num = 0;
         DynamicVariable dv = (DynamicVariable)BaseMod.cardDynamicVariableMap.get(key);
@@ -1368,6 +1397,9 @@ public class SCardViewPopup {
             FontHelper.renderFontCentered(sb, FontHelper.SCP_cardTitleFont_small, TEXT[5], (float)Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F + 338.0F * Settings.scale, Settings.CREAM_COLOR);
         }
 
+        if (savedFont != null) {
+            FontHelper.SCP_cardTitleFont_small = savedFont;
+        }
     }
 
     private void renderCost(SpriteBatch sb) {
