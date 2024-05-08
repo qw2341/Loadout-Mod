@@ -2,8 +2,10 @@ package loadout.screens;
 
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import basemod.abstracts.AbstractCardModifier;
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.DynamicVariable;
+import basemod.helpers.CardModifierManager;
 import basemod.helpers.TooltipInfo;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -1519,6 +1521,16 @@ public class SCardViewPopup {
                 List<TooltipInfo> tooltips = card.getCustomTooltipsTop();
                 if (tooltips != null) {
                     t.addAll((Collection<? extends PowerTip>)tooltips.stream().map(TooltipInfo::toPowerTip).collect(Collectors.toList()));
+                }
+            }
+
+            Iterator var7 = CardModifierManager.modifiers(this.card).iterator();
+
+            while(var7.hasNext()) {
+                AbstractCardModifier modifier = (AbstractCardModifier)var7.next();
+                List<TooltipInfo> tooltips = modifier.additionalTooltips(this.card);
+                if (tooltips != null) {
+                    t.addAll(tooltips.stream().map(TooltipInfo::toPowerTip).collect(Collectors.toList()));
                 }
             }
         }
