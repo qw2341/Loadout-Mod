@@ -50,6 +50,7 @@ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.WeightyImpactEffect;
 import loadout.LoadoutMod;
 import loadout.screens.*;
+import loadout.util.Wiz;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -240,7 +241,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
 
 
 
-        if (AbstractDungeon.isPlayerInDungeon() && this.isObtained) {
+        if (AbstractDungeon.isPlayerInDungeon() && Wiz.adp() != null && this.isObtained) {
 
 
             if(isHealthLocked) AbstractDungeon.player.currentHealth = healthLockAmount;
