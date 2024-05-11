@@ -1306,6 +1306,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receivePostDeath() {
         TildeKey.resetPlayerMorph();
+        TildeKey.resetToDefault();
     }
 
     @Override
