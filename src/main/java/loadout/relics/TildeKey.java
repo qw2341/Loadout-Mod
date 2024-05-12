@@ -396,6 +396,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     }
 
     public static void setMonsterDamage(AbstractMonster am, int damagePercent) {
+        if (am == null) return;
+
         float mult = (damagePercent / 100.0f);
         for(DamageInfo di : am.damage) {
             di.output = di.base;
