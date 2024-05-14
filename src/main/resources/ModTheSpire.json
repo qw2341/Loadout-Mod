@@ -9,5 +9,5 @@
   "mts_version": "${ModTheSpire.version}",
   "dependencies": ["basemod", "stslib"],
   "update_json": "",
-  "optional_dependencies": ["RelicUpgradeLib","pinacolada-fabricate", "extendedui", "CardAugments", "ruina", "LazyManKits", "spireTogether", "Library of Ruina", "chaofanmod","VUPShionMod","RiskOfRelics"]
+  "optional_dependencies": ["RelicUpgradeLib","pinacolada-fabricate", "extendedui", "CardAugments", "ruina", "LazyManKits", "spireTogether", "Library of Ruina", "chaofanmod","VUPShionMod","RiskOfRelics","pokeRegions"]
 }

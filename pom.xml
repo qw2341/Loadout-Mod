@@ -158,6 +158,14 @@
             <systemPath>${Steam.path}/workshop/content/646570/2826958891/RiskOfRelics.jar</systemPath>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>pokeregions</groupId>
+            <artifactId>pokeRegions</artifactId>
+            <version>1.4.0</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/3148450452/PokemonRegions.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 
