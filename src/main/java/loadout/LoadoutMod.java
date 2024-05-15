@@ -4,16 +4,13 @@ import basemod.*;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
-import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,9 +36,6 @@ import com.megacrit.cardcrawl.relics.HandDrill;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDDodecahedron;
 import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
-import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import javassist.ClassPool;
 import javassist.CtClass;
 import loadout.helper.ModifierLibrary;
@@ -52,25 +46,18 @@ import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
 import loadout.savables.RelicStateSavables;
-import loadout.screens.CardViewPopupHeader;
 import loadout.screens.SidePanel;
-import loadout.uiElements.ModLabeledDropdown;
 import loadout.util.*;
-import lor.helper.LORHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import loadout.relics.*;
 import org.clapper.util.classutil.*;
 import pinacolada.cards.base.PCLCustomCardSlot;
-import relicupgradelib.arch.Proxy;
 import relicupgradelib.arch.ProxyManager;
-import relicupgradelib.arch.UpgradeBranch;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -79,7 +66,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-import static basemod.BaseMod.customRewardTypeExists;
 import static basemod.BaseMod.gson;
 import static loadout.screens.PowerSelectScreen.dummyPlayer;
 
@@ -105,46 +91,6 @@ PostDungeonInitializeSubscriber,
 StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber, PostUpdateSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
-
-    // Mod-settings settings. This is if you want an on/off savable button
-    public static SpireConfig config = null;
-    public static Properties theDefaultDefaultSettings = new Properties();
-    public static final String ENABLE_LEGACY_LAYOUT = "enableLegacyLayout";
-    public static boolean enableLegacyLayout = true; // The boolean we'll be setting on/off (true/false)
-
-    public static final String IGNORE_UNLOCK_PROGRESS = "ignoreUnlockProgress";
-    public static boolean ignoreUnlock = false;
-    public static final String ENABLE_STARTER_POOL = "enableStarterPool";
-    public static boolean enableStarterPool = true;
-    public static final String ENABLE_COMMON_POOL = "enableCommonPool";
-    public static boolean enableCommonPool = true;
-    public static final String ENABLE_UNCOMMON_POOL = "enableUncommonPool";
-    public static boolean enableUncommonPool = true;
-    public static final String ENABLE_RARE_POOL = "enableRarePool";
-    public static boolean enableRarePool = true;
-    public static final String ENABLE_BOSS_POOL = "enableBossPool";
-    public static boolean enableBossPool = true;
-    public static final String ENABLE_SHOP_POOL = "enableShopPool";
-    public static boolean enableShopPool = true;
-    public static final String ENABLE_EVENT_POOL = "enableEventPool";
-    public static boolean enableEventPool = true;
-    public static final String ENABLE_DEPRECATED_POOL = "enableDeprecatedPool";
-    public static boolean enableDeprecatedPool = false;
-    public static final String ENABLE_CATEGORY = "enableCategory";
-    public static boolean enableCategory = true;
-    public static final String ENABLE_DESC = "enableDescriptions";
-    public static boolean enableDesc = true;
-    public static final String ENABLE_DRAG_SELECT = "enableDragSelection";
-    public static boolean enableDrag = true;
-
-    public static final String ENABLE_CREATURE_MANIPULATION = "enableCreatureManipulation";
-    public static boolean enableCreatureManipulation = true;
-
-    public static final String RELIC_OBTAIN_AMOUNT = "amountOfRelicToObtain";
-    public static int relicObtainMultiplier = 1;
-
-    public static final String REMOVE_RELIC_FROM_POOLS = "removeRelicFromPools";
-    public static boolean enableRemoveFromPool = false;
 
     //show isaac icons regardless of isaac mod installation?
     public static final String USE_ISAAC_ICONS = "useIsaacIcons";
@@ -189,16 +135,13 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     private static boolean isGameLoaded = false;
 
     //This is for the in-game mod settings panel.
-    private static final String MODNAME = "Loadout Mod";
-    private static final String AUTHOR = "JasonW"; // And pretty soon - You!
-    private static final String DESCRIPTION = "A mod to give you any relic you want.";
+    public static final String MODNAME = "Loadout Mod";
+    public static final String AUTHOR = "JasonW";
+    public static final String DESCRIPTION = "A mod to give you any relic you want.";
     
     // =============== INPUT TEXTURE LOCATION =================
 
-    public static final String SETTINGS_STRINGS = "loadoutResources/localization/eng/UI-Strings.json";
 
-    //Mod Badge - A small icon that appears in the mod settings menu next to your mod.
-    public static final String BADGE_IMAGE = "loadoutResources/images/Badge.png";
 
     public static String makeSoundPath(String soundPath) {
         return getModID() + "Resources/sounds/" + soundPath;
@@ -238,51 +181,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         logger.info("Adding mod settings");
         // This loads the mod settings.
         // The actual mod Button is added below in receivePostInitialize()
-        theDefaultDefaultSettings.setProperty(ENABLE_LEGACY_LAYOUT, "FALSE"); // This is the default setting. It's actually set...
-
-        theDefaultDefaultSettings.setProperty(IGNORE_UNLOCK_PROGRESS, "FALSE");
-        theDefaultDefaultSettings.setProperty(ENABLE_STARTER_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_COMMON_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_UNCOMMON_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_RARE_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_BOSS_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_SHOP_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_EVENT_POOL,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_DEPRECATED_POOL,"FALSE");
-        theDefaultDefaultSettings.setProperty(ENABLE_CATEGORY,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_DESC,"TRUE");
-        theDefaultDefaultSettings.setProperty(ENABLE_DRAG_SELECT,"TRUE");
-        theDefaultDefaultSettings.setProperty(RELIC_OBTAIN_AMOUNT,"1");
-        theDefaultDefaultSettings.setProperty(REMOVE_RELIC_FROM_POOLS,"FALSE");
-        theDefaultDefaultSettings.setProperty(SkinManager.SKIN_SELECTION, "default");
-        theDefaultDefaultSettings.setProperty(ENABLE_CREATURE_MANIPULATION, "TRUE");
-
-        try {
-            config = new SpireConfig("loadoutMod", "theLoadoutConfig", theDefaultDefaultSettings); // ...right here
-            // the "fileName" parameter is the name of the file MTS will create where it will save our setting.
-            config.load(); // Load the setting and set the boolean to equal it
-            enableLegacyLayout = config.getBool(ENABLE_LEGACY_LAYOUT);
-
-            ignoreUnlock = config.getBool(IGNORE_UNLOCK_PROGRESS);
-            enableStarterPool = config.getBool(ENABLE_STARTER_POOL);
-            enableCommonPool = config.getBool(ENABLE_COMMON_POOL);
-            enableUncommonPool = config.getBool(ENABLE_UNCOMMON_POOL);
-            enableRarePool = config.getBool(ENABLE_RARE_POOL);
-            enableBossPool = config.getBool(ENABLE_BOSS_POOL);
-            enableShopPool = config.getBool(ENABLE_SHOP_POOL);
-            enableEventPool = config.getBool(ENABLE_EVENT_POOL);
-            enableDeprecatedPool = config.getBool(ENABLE_DEPRECATED_POOL);
-            enableCategory = config.getBool(ENABLE_CATEGORY);
-            enableDesc = config.getBool(ENABLE_DESC);
-            enableDrag = config.getBool(ENABLE_DRAG_SELECT);
-            relicObtainMultiplier = config.getInt(RELIC_OBTAIN_AMOUNT);
-            enableRemoveFromPool = config.getBool(REMOVE_RELIC_FROM_POOLS);
-
-            SkinManager.currentSkin = config.getString(SkinManager.SKIN_SELECTION);
-            enableCreatureManipulation = config.getBool(ENABLE_CREATURE_MANIPULATION);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ModConfig.initModSettings();
         logger.info("Done adding mod settings");
 
         //mod checks
@@ -369,313 +268,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receivePostInitialize() {
         logger.info("Loading badge image and mod options");
         
-        // Load the Mod Badge
-        Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
-        
-        // Create the Mod Menu
-        ModPanel settingsPanel = new ModPanel();
-        float startingXPos = 350.0f;
-        float settingXPos = startingXPos;
-        float xSpacing = 250.0f;
-        float settingYPos = 750.0f;
-        float lineSpacing = 50.0f;
-        UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(makeID("OptionsMenu"));
-        String[] SettingText = UIStrings.TEXT;
-        // Create the on/off button:
-
-        ModLabeledToggleButton ignoreUnlocksButton = new ModLabeledToggleButton(SettingText[1],
-                350.0f, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                ignoreUnlock, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    ignoreUnlock = button.enabled;
-                    try {
-                        config.setBool(IGNORE_UNLOCK_PROGRESS, ignoreUnlock);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(ignoreUnlocksButton);
-
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableStarterPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[1]),
-                SettingText[2], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableStarterPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableStarterPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_STARTER_POOL, enableStarterPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableStarterPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableCommonPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[3]),
-                SettingText[3], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableCommonPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableCommonPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_COMMON_POOL, enableCommonPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableCommonPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableUncommonPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[5]),
-                SettingText[4], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableUncommonPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableUncommonPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_UNCOMMON_POOL, enableUncommonPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableUncommonPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableRarePoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[7]),
-                SettingText[5], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableRarePool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableRarePool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_RARE_POOL, enableRarePool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableRarePoolButton);
-
-        settingXPos = startingXPos;
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableBossPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[9]),
-                SettingText[6], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableBossPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableBossPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_BOSS_POOL, enableBossPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableBossPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableShopPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[13]),
-                SettingText[7], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableShopPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableShopPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_SHOP_POOL, enableShopPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableShopPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableEventPoolButton = new ModLabeledToggleButton(StringUtils.chop(RelicViewScreen.TEXT[11]),
-                SettingText[8], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableEventPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableEventPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_EVENT_POOL, enableEventPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableEventPoolButton);
-
-        settingXPos += xSpacing;
-
-        ModLabeledToggleButton enableDeprecatedPoolButton = new ModLabeledToggleButton(SettingText[9],
-                SettingText[9], settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableDeprecatedPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableDeprecatedPool = button.enabled;
-                    try {
-                        config.setBool(ENABLE_DEPRECATED_POOL, enableDeprecatedPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        //TODO
-        settingsPanel.addUIElement(enableDeprecatedPoolButton);
-
-        settingXPos = startingXPos;
-        settingYPos -= lineSpacing;
-
-
-        ModLabeledToggleButton enableDescButton = new ModLabeledToggleButton(SettingText[12],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableDesc, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableDesc = button.enabled;
-                    try {
-                        config.setBool(ENABLE_DESC, enableDesc);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableDescButton);
-
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableCategoryButton = new ModLabeledToggleButton(SettingText[11],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableCategory, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableCategory = button.enabled;
-                    if (!button.enabled && enableDescButton.toggle.enabled) {
-                        //enableDesc = button.enabled;
-                        enableDescButton.toggle.toggle();
-                    }
-
-                    try {
-                        config.setBool(ENABLE_CATEGORY, enableCategory);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableCategoryButton);
-
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableRemoveFromPoolButton = new ModLabeledToggleButton(SettingText[13],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableRemoveFromPool, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableRemoveFromPool = button.enabled;
-                    try {
-                        config.setBool(REMOVE_RELIC_FROM_POOLS, enableRemoveFromPool);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableRemoveFromPoolButton);
-
-        settingYPos -= lineSpacing;
-
-        ModLabeledToggleButton enableCreatureManipButton = new ModLabeledToggleButton(SettingText[18],
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
-                enableCreatureManipulation, // Boolean it uses
-                settingsPanel, // The mod panel in which this button will be in
-                (label) -> {}, // thing??????? idk
-                (button) -> { // The actual button:
-                    enableCreatureManipulation = button.enabled;
-                    try {
-                        config.setBool(ENABLE_CREATURE_MANIPULATION, enableCreatureManipulation);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        settingsPanel.addUIElement(enableCreatureManipButton);
-
-        settingYPos -= lineSpacing;
-
-        ModLabeledDropdown skinSeletion = new ModLabeledDropdown(SettingText[19],null,
-                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, skinManager.skinNameList,
-                (label) -> {}, (dropdownMenu) -> {
-            if(dropdownMenu.getHitbox().justHovered) {
-                AllInOneBag.INSTANCE.showRelics();
-            }
-            if (!dropdownMenu.getHitbox().hovered && AllInOneBag.isSelectionScreenUp) {
-//                skinManager.switchSkin(SkinManager.currentSkin);
-                AllInOneBag.INSTANCE.hideAllRelics();
-            }
-            //RIP Dropdown row got private access, cant show individual skin when hovered :(
-
-        },
-                (i, skinName) -> {
-                    try {
-                        skinManager.switchSkin(i);
-                        config.setString(SkinManager.SKIN_SELECTION, SkinManager.currentSkin);
-                        config.save();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-        skinSeletion.dropdownMenu.setSelectedIndex(skinManager.getSkinIndex(SkinManager.currentSkin));
-        settingsPanel.addUIElement(skinSeletion);
-
-        settingYPos -= lineSpacing * 2;
-
-
-
-
-        settingYPos -= lineSpacing;
-        settingXPos += 800.0f;
-
-        ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,
-                (button) -> {
-                    //restore the changes in CardLib
-                    CardModifications.restoreAllCardsInLibrary();
-
-                    CardModifications.cardMap.clear();
-
-                    try {
-                        cardModifications.save();
-                    } catch (IOException e) {
-                        logger.error("Error occurred while saving card modification after clearing");
-                    }
-                });
-        settingsPanel.addUIElement(removeModificationsButton);
-
-        BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
-
+        ModConfig.initModConfigMenu();
         logger.info("Done loading badge Image and mod options");
 
         logger.info("Initializing relic maps");
@@ -1111,11 +704,11 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         cardsToDisplay.clear();
 
         for (AbstractCard c : CardLibrary.cards.values()) {
-            if(ignoreUnlock)
+            if(ModConfig.ignoreUnlock)
                 c.isSeen = true;
             cardsToDisplay.add(c);
         }
-        if(enableDeprecatedPool){
+        if(ModConfig.enableDeprecatedPool){
             addBaseGameDeprecatedCards();
         }
         if(FABRICATE_MOD_LOADED){
@@ -1142,21 +735,21 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     private void createRelicList() {
         relicsToDisplay.clear();
         ArrayList<AbstractRelic> relics = new ArrayList<>();
-        if (LoadoutMod.enableStarterPool)
+        if (ModConfig.enableStarterPool)
             relics.addAll(RelicLibrary.starterList);
-        if (LoadoutMod.enableCommonPool)
+        if (ModConfig.enableCommonPool)
             relics.addAll(RelicLibrary.commonList);
-        if (LoadoutMod.enableUncommonPool)
+        if (ModConfig.enableUncommonPool)
             relics.addAll(RelicLibrary.uncommonList);
-        if (LoadoutMod.enableRarePool)
+        if (ModConfig.enableRarePool)
             relics.addAll(RelicLibrary.rareList);
-        if (LoadoutMod.enableBossPool)
+        if (ModConfig.enableBossPool)
             relics.addAll(RelicLibrary.bossList);
-        if (LoadoutMod.enableShopPool)
+        if (ModConfig.enableShopPool)
             relics.addAll(RelicLibrary.shopList);
-        if (LoadoutMod.enableEventPool)
+        if (ModConfig.enableEventPool)
             relics.addAll(RelicLibrary.specialList);
-        if(LoadoutMod.enableDeprecatedPool) {
+        if(ModConfig.enableDeprecatedPool) {
             try {
                 //relics.add(new DEPRECATED_DarkCore());
                 relics.add(new DerpRock());
@@ -1215,7 +808,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         }
         if(relicsToAdd.size()>0){
             for (AbstractRelic r : relicsToAdd) {
-                if(enableRemoveFromPool) removeRelicFromPools(r.relicId);
+                if(ModConfig.enableRemoveFromPool) removeRelicFromPools(r.relicId);
                 AbstractDungeon.getCurrRoom().spawnRelicAndObtain((float)Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F, r);
             }
             relicsToAdd.clear();

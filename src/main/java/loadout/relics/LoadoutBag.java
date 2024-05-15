@@ -1,12 +1,11 @@
 package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.RelicSelectScreen;
-import loadout.util.TextureLoader;
+import loadout.util.ModConfig;
 
 import java.util.*;
 
@@ -40,7 +39,7 @@ public class LoadoutBag extends AbstractCustomScreenRelic<AbstractRelic> {
         if(!relics.isEmpty()) {
             lastRelics.clear();
             for (AbstractRelic r : relics) {
-                for(int i = 0; i< relicObtainMultiplier; i++) {
+                for(int i = 0; i< ModConfig.relicObtainMultiplier; i++) {
                     relicsToAdd.add(r.makeCopy());
                     lastRelics.add(r.makeCopy());
                     r.playLandingSFX();

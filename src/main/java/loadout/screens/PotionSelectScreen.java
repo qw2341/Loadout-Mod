@@ -15,12 +15,12 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import loadout.LoadoutMod;
 import loadout.helper.*;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.LoadoutCauldron;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -314,7 +314,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
 
         for (Iterator<AbstractPotion> it = list.iterator(); it.hasNext(); ) {
             AbstractPotion p = it.next();
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.RARITY) {
                     if (p.rarity != prevRarity) {
                         row++;
@@ -355,7 +355,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -412,7 +412,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F * Settings.scale, Settings.CREAM_COLOR);
                         row++;
@@ -437,7 +437,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -466,7 +466,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                         row++;

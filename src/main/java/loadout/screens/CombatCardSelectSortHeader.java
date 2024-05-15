@@ -1,30 +1,21 @@
 package loadout.screens;
 
-import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
+import loadout.util.ModConfig;
 
 import static loadout.LoadoutMod.*;
 
@@ -102,7 +93,7 @@ public class CombatCardSelectSortHeader implements HeaderButtonPlusListener, Dro
         b[0]= rTEXT[8];
         b[1]= rTEXT[9];
         this.selectionModeButton = new DropdownMenu(this,b,FontHelper.panelNameFont, Settings.CREAM_COLOR);
-        this.selectionModeButton.setSelectedIndex(LoadoutMod.enableDrag ? 0 : 1);
+        this.selectionModeButton.setSelectedIndex(ModConfig.enableDrag ? 0 : 1);
 
         this.dropdownMenus = new DropdownMenu[] {this.selectionModeButton};
         this.dropdownMenuHeaders = new String[] {TEXT[1]};
@@ -186,7 +177,7 @@ public class CombatCardSelectSortHeader implements HeaderButtonPlusListener, Dro
             if (ddm != this.selectionModeButton) {
                 ddm.setSelectedIndex(0);
             } else {
-                this.selectionModeButton.setSelectedIndex(LoadoutMod.enableDrag ? 0 : 1);
+                this.selectionModeButton.setSelectedIndex(ModConfig.enableDrag ? 0 : 1);
             }
         }
 
@@ -278,10 +269,10 @@ public class CombatCardSelectSortHeader implements HeaderButtonPlusListener, Dro
     @Override
     public void changedSelectionTo(DropdownMenu dropdownMenu, int i, String s) {
         if (dropdownMenu == this.selectionModeButton) {
-            LoadoutMod.enableDrag = i == 0;
+            ModConfig.enableDrag = i == 0;
             try {
-                LoadoutMod.config.setBool(ENABLE_DRAG_SELECT, enableDrag);
-                LoadoutMod.config.save();
+                ModConfig.config.setBool(ModConfig.ENABLE_DRAG_SELECT, ModConfig.enableDrag);
+                ModConfig.config.save();
             } catch (NullPointerException nPE) {
                 logger.debug("null pointer exception caught, caused by selection mode dropdown");
             } catch (Exception e) {

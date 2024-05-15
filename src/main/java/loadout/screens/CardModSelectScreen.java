@@ -12,16 +12,12 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
-import loadout.relics.AbstractCustomScreenRelic;
-import loadout.relics.OrbBox;
 import loadout.savables.Favorites;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -363,7 +359,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
 
         for (Iterator<CardModButton> it = list.iterator(); it.hasNext(); ) {
             CardModButton cardModButton = it.next();
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
 
                     char pFirst = (shouldSortById() || cardModButton.name== null || cardModButton.name.length() == 0) ?   cardModButton.id.toUpperCase().charAt(0) : cardModButton.name.toUpperCase().charAt(0);
@@ -383,7 +379,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -413,7 +409,7 @@ public class CardModSelectScreen extends AbstractSelectScreen<CardModSelectScree
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                         row++;

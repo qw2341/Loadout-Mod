@@ -24,6 +24,7 @@ import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import loadout.LoadoutMod;
 import loadout.helper.FabricateScreenController;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -161,7 +162,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
         b[0]= rTEXT[8];
         b[1]= rTEXT[9];
         this.selectionModeButton = new DropdownMenu(this,b,FontHelper.panelNameFont, Settings.CREAM_COLOR);
-        this.selectionModeButton.setSelectedIndex(LoadoutMod.enableDrag ? 0 : 1);
+        this.selectionModeButton.setSelectedIndex(ModConfig.enableDrag ? 0 : 1);
 
         ArrayList<String> c = new ArrayList<>();
         c.add(0,TEXT[0]);
@@ -434,7 +435,7 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             if (ddm != this.selectionModeButton) {
                 ddm.setSelectedIndex(0);
             } else {
-                this.selectionModeButton.setSelectedIndex(LoadoutMod.enableDrag ? 0 : 1);
+                this.selectionModeButton.setSelectedIndex(ModConfig.enableDrag ? 0 : 1);
             }
         }
 
@@ -596,10 +597,10 @@ public class CardSelectSortHeader implements HeaderButtonPlusListener, DropdownM
             cardSelectScreen.updateFilters();
         }
         if (dropdownMenu == this.selectionModeButton) {
-            LoadoutMod.enableDrag = i == 0;
+            ModConfig.enableDrag = i == 0;
             try {
-                LoadoutMod.config.setBool(ENABLE_DRAG_SELECT, enableDrag);
-                LoadoutMod.config.save();
+                ModConfig.config.setBool(ModConfig.ENABLE_DRAG_SELECT, ModConfig.enableDrag);
+                ModConfig.config.save();
             } catch (NullPointerException nPE) {
                 logger.debug("null pointer exception caught, caused by selection mode dropdown");
             } catch (Exception e) {

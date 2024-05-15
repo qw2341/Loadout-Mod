@@ -1,11 +1,9 @@
 package loadout.screens;
 
 import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -18,7 +16,6 @@ import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.relics.*;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
-import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBarListener;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
@@ -26,10 +23,10 @@ import loadout.helper.RelicClassComparator;
 import loadout.helper.RelicModComparator;
 import loadout.helper.RelicNameComparator;
 import loadout.helper.RelicTierComparator;
-import loadout.relics.AbstractCardScreenRelic;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.LoadoutBag;
 import loadout.relics.TrashBin;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 //import net.sourceforge.pinyin4j.PinyinHelper;
 
@@ -250,7 +247,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
     @Override
     protected void updateItemClickLogic() {
         if (hoveredItem != null && !isTryingToScroll) {
-            if (LoadoutMod.enableDrag) {
+            if (ModConfig.enableDrag) {
                 if (InputHelper.isMouseDown || CInputActionSet.select.isPressed()) {
                     isDragSelecting = true;
                     if (hoveredItem == clickStartedItem) {
@@ -385,7 +382,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                 //r = r.makeCopy();
                 r.isObtained = false;
             }
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.RARITY) {
                     if (r.tier != prevTier) {
                         row++;
@@ -440,7 +437,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -500,7 +497,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F * Settings.scale, Settings.CREAM_COLOR);
                         row++;
@@ -526,7 +523,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -555,7 +552,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                         row++;
@@ -573,12 +570,12 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
             r.currentX = curX;
             r.currentY = curY;
 
-            if(LoadoutMod.ignoreUnlock) {
+            if(ModConfig.ignoreUnlock) {
                 r.isSeen = true;
             } else {
                 r.isSeen = UnlockTracker.isRelicSeen(r.relicId);
             }
-            if (!isDeleteMode) isRelicLocked = UnlockTracker.isRelicLocked(r.relicId)&&!LoadoutMod.ignoreUnlock;
+            if (!isDeleteMode) isRelicLocked = UnlockTracker.isRelicLocked(r.relicId)&&!ModConfig.ignoreUnlock;
 
             if(isDeleteMode) {
 

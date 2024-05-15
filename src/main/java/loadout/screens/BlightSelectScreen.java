@@ -1,6 +1,5 @@
 package loadout.screens;
 
-import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,17 +10,11 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
-import loadout.helper.RelicClassComparator;
 import loadout.helper.RelicModComparator;
-import loadout.helper.RelicNameComparator;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.BlightChest;
-import loadout.relics.OrbBox;
-import loadout.savables.Favorites;
+import loadout.util.ModConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +44,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
         this.itemHeight = 75.0f;
         for (String b: BlightHelper.blights) {
             AbstractBlight ab = BlightHelper.getBlight(b);
-            if(LoadoutMod.ignoreUnlock) {
+            if(ModConfig.ignoreUnlock) {
                 ab.isSeen = true;
             }
             this.itemsClone.add(ab);
@@ -197,7 +190,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
         scrollTitleCount = 0;
 
         for(AbstractBlight b : list) {
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
 
                     char rFirst = (shouldSortById()) ? b.blightID.toUpperCase().charAt(0) : b.name.toUpperCase().charAt(0);
@@ -216,7 +209,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -246,7 +239,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                         row++;

@@ -31,6 +31,7 @@ import loadout.LoadoutMod;
 import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
 import loadout.uiElements.CardBranchRenderPanel;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -282,7 +283,7 @@ public class GCardSelectScreen
             }
 
             if (this.hoveredCard != null  && !isTryingToScroll) {
-                if (LoadoutMod.enableDrag) {
+                if (ModConfig.enableDrag) {
                     if (InputHelper.isMouseDown) {
                         this.hoveredCard.hb.clickStarted = true;
                         this.isDragSelecting = true;

@@ -1,23 +1,18 @@
 package loadout.screens;
 
-import basemod.BaseMod;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.screens.options.DropdownMenu;
-import loadout.LoadoutMod;
 import loadout.helper.Action;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.AllInOneBag;
-import loadout.relics.BottledMonster;
 import loadout.relics.TildeKey;
 import loadout.uiElements.AbstractButton;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -174,7 +169,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
         for (Iterator<CharacterButton> it = list.iterator(); it.hasNext();) {
             CharacterButton cb = it.next();
 
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                 if (currentSortType == SortType.NAME) {
                     char rFirst = (shouldSortById() || cb.labelText == null) ? cb.id.toUpperCase().charAt(0) : cb.labelText.toUpperCase().charAt(0);
                     if (rFirst != prevFirst) {
@@ -192,7 +187,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -212,7 +207,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
                                 msg = prevMod + ":";
                             }
                             FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                            if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                            if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                     FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                             row++;

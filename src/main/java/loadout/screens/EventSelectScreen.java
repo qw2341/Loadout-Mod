@@ -1,10 +1,8 @@
 package loadout.screens;
 
-import basemod.CustomEventRoom;
 import basemod.ReflectionHacks;
 import basemod.eventUtil.AddEventParams;
 import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -12,19 +10,14 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
-import com.megacrit.cardcrawl.events.RoomEventDialog;
 import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.map.MapEdge;
-import com.megacrit.cardcrawl.map.MapRoomNode;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.mainMenu.ScrollBar;
 import loadout.LoadoutMod;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.EventfulCompass;
+import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
 //import net.sourceforge.pinyin4j.PinyinHelper;
 
@@ -397,7 +390,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
         for (Iterator<EventButton> it = list.iterator(); it.hasNext(); ) {
             EventButton eventButton = it.next();
 
-            if(LoadoutMod.enableCategory&&this.currentSortType!=null) {
+            if(ModConfig.enableCategory&&this.currentSortType!=null) {
                  if (currentSortType == SortType.NAME) {
 
                     char rFirst = (shouldSortById() || eventButton.name == null) ? eventButton.id.toUpperCase().charAt(0) : eventButton.name.toUpperCase().charAt(0);
@@ -416,7 +409,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
                         }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.CREAM_COLOR);
                         row++;
@@ -448,7 +441,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
 //                        }
 
                         FontHelper.renderSmartText(sb, FontHelper.buttonLabelFont, msg, START_X - 50.0F * Settings.scale, this.scrollY + 4.0F * Settings.scale - SPACE * this.row, 99999.0F, 0.0F, Settings.GOLD_COLOR);
-                        if (LoadoutMod.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
+                        if (ModConfig.enableDesc) FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, desc, START_X - 50.0F * Settings.scale +
 
                                 FontHelper.getSmartWidth(FontHelper.buttonLabelFont, msg, 99999.0F, 0.0F), this.scrollY - 0.0F * Settings.scale - SPACE * this.row, 99999.0F, 20.0F, Settings.CREAM_COLOR);
                         row++;

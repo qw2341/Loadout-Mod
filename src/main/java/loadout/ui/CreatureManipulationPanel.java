@@ -6,8 +6,6 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.InstantKillAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
-import com.megacrit.cardcrawl.actions.utility.WaitAction;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -23,9 +21,9 @@ import loadout.relics.AllInOneBag;
 import loadout.relics.BottledMonster;
 import loadout.relics.TildeKey;
 import loadout.screens.MonsterSelectScreen;
-import loadout.screens.PowerSelectScreen;
 import loadout.uiElements.CreatureManipulationButton;
 import loadout.uiElements.UIElement;
+import loadout.util.ModConfig;
 
 import java.util.ArrayList;
 
@@ -115,7 +113,7 @@ public class CreatureManipulationPanel implements UIElement {
 
     @Override
     public void update() {
-        if(AbstractDungeon.isScreenUp || !LoadoutMod.enableCreatureManipulation) this.isHidden = true;
+        if(AbstractDungeon.isScreenUp || !ModConfig.enableCreatureManipulation) this.isHidden = true;
         if(isHidden) return;
 
         boolean isHoveringButtons = false;
