@@ -28,7 +28,9 @@
 			"#rWARNING: Disabling the Modifier Relic will cause #rALL card modifications including permanent modifications to malfunction!",
 			"Enable Everything Bag [Experimental]",
 			"Enable right click edit on entities",
-			"Skin Selection"
+			"Skin Selection",
+			"Enable ID Display",
+			"Shows developer information, like ID, class, and ModID, in tips when hovered"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

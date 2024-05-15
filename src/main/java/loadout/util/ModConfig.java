@@ -64,6 +64,9 @@ public class ModConfig {
     public static int relicObtainMultiplier = 1;
     public static boolean enableRemoveFromPool = false;
 
+    public static final String ENABLE_ID_DISPLAY = "enableIDDisplay";
+    public static boolean enableIDDisplay = false;
+
     public static void initModSettings() {
 
         ModConfig.theDefaultDefaultSettings.setProperty(ModConfig.ENABLE_LEGACY_LAYOUT, "FALSE"); // This is the default setting. It's actually set...
@@ -84,6 +87,7 @@ public class ModConfig {
         ModConfig.theDefaultDefaultSettings.setProperty(ModConfig.REMOVE_RELIC_FROM_POOLS,"FALSE");
         ModConfig.theDefaultDefaultSettings.setProperty(SkinManager.SKIN_SELECTION, "default");
         ModConfig.theDefaultDefaultSettings.setProperty(ModConfig.ENABLE_CREATURE_MANIPULATION, "TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_ID_DISPLAY,"FALSE");
 
         try {
             ModConfig.config = new SpireConfig("loadoutMod", "theLoadoutConfig", ModConfig.theDefaultDefaultSettings); // ...right here
@@ -108,6 +112,7 @@ public class ModConfig {
 
             SkinManager.currentSkin = ModConfig.config.getString(SkinManager.SKIN_SELECTION);
             ModConfig.enableCreatureManipulation = ModConfig.config.getBool(ModConfig.ENABLE_CREATURE_MANIPULATION);
+            enableIDDisplay = config.getBool(ENABLE_ID_DISPLAY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -371,7 +376,23 @@ public class ModConfig {
         settingsPanel.addUIElement(enableCreatureManipButton);
 
         settingYPos -= lineSpacing;
-
+//        ModLabeledToggleButton enableIDDisplayButton = new ModLabeledToggleButton(SettingText[20],SettingText[21],
+//                settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, // Position (trial and error it), color, font
+//                enableIDDisplay, // Boolean it uses
+//                settingsPanel, // The mod panel in which this button will be in
+//                (label) -> {}, // thing??????? idk
+//                (button) -> { // The actual button:
+//                    enableIDDisplay = button.enabled;
+//                    try {
+//                        config.setBool(ENABLE_ID_DISPLAY, enableIDDisplay);
+//                        config.save();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//        settingsPanel.addUIElement(enableIDDisplayButton);
+//
+//        settingYPos -= lineSpacing;
         ModLabeledDropdown skinSeletion = new ModLabeledDropdown(SettingText[19],null,
                 settingXPos, settingYPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, skinManager.skinNameList,
                 (label) -> {}, (dropdownMenu) -> {
