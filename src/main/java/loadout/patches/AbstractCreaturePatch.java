@@ -52,11 +52,11 @@ public class AbstractCreaturePatch {
         @SpirePostfixPatch
         public static void PostFix(AbstractCreature __instance) {
             CreatureManipulationPanel panel = PanelField.manipulationPanel.get(__instance);
-            if(__instance.hb.hovered && InputHelper.justClickedRight && !InputHelper.isMouseDown && !__instance.isDeadOrEscaped()) {
+            if(__instance.hb.hovered && InputHelper.justClickedRight && !InputHelper.isMouseDown && !__instance.isDead && !__instance.isEscaping) {
                 panel.isHidden = !panel.isHidden;
                 //LoadoutMod.logger.info("Panel is now: {}", panel.isHidden);
             }
-            if(__instance.isDeadOrEscaped() ||
+            if(__instance.isDead || __instance.isEscaping ||
                     AbstractDungeon.player.cardInUse != null ||
                     AbstractDungeon.player.isDraggingCard ||
                     AbstractDungeon.player.inSingleTargetMode)
