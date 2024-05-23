@@ -26,7 +26,7 @@ public class PlayerRenderPatch {
                     if(m.getClassName().equals(SpriteBatch.class.getName())
                             && m.getMethodName().equals("draw")) {
                         m.replace("if(loadout.relics.TildeKey.isPlayerMorphed()) {" +
-                                "loadout.patches.PlayerRenderPatch.myPlayerRender($0, this)} else {" +
+                                "loadout.patches.PlayerRenderPatch.myPlayerRender($0, this);} else {" +
                                 "$_ = $proceed($$);}");
                     }
                 }
