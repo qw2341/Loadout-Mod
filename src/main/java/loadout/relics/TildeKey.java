@@ -872,10 +872,6 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         AbstractDungeon.player.flipHorizontal = false;
     }
 
-    public static boolean isPlayerMorphed() {
-        return !(currentMorph == null || currentMorph.equals(""));
-    }
-
     static {
         NO_FLIP_LIST.add(SpireShield.class.getName());
     }
