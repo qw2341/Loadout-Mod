@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.esotericsoftware.spine.Skeleton;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -33,8 +31,6 @@ import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.BottledMonster;
 import loadout.util.ModConfig;
 import org.apache.commons.lang3.StringUtils;
-import pokeregions.cards.AbstractAllyPokemonCard;
-import pokeregions.monsters.AbstractPokemonAlly;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -164,31 +160,6 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 return new SpikeSlime_S(0,0,0);
             } else if(amClass.getName().equals("monsters.pet.ScapeGoatPet")) {
                 return new ApologySlime();
-            }
-
-            if(LoadoutMod.POKEMON_REGIONS_MOD_LOADED) {
-                if(AbstractPokemonAlly.class.isAssignableFrom(amClass)) {
-                    AbstractMonster apa = null;
-
-                    try {
-                        apa = amClass.getConstructor(float.class, float.class, AbstractAllyPokemonCard.class).newInstance(0, 0, new AbstractAllyPokemonCard("MISSING_NO", AbstractCard.CardRarity.SPECIAL) {
-                            @Override
-                            public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster) {
-
-                            }
-
-                            @Override
-                            public AbstractPokemonAlly getAssociatedPokemon(float v, float v1) {
-                                return null;
-                            }
-                        });
-                        return apa;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
             }
 
 
