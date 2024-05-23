@@ -404,12 +404,12 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
         this.items.add(new StatModButton(TEXT[4], TildeKey.isMaxEnergyLocked, ImageMaster.ORB_PLASMA, GOLD_NUM_OFFSET_X, Color.FIREBRICK, new StatModActions() {
             @Override
             public int getAmount() {
-                return AbstractDungeon.player.energy.energy;
+                return AbstractDungeon.player.energy.energyMaster;
             }
 
             @Override
             public void setAmount(int amountToSet) {
-                AbstractDungeon.player.energy.energy = amountToSet;
+                AbstractDungeon.player.energy.energyMaster = amountToSet;
             }
 
             @Override

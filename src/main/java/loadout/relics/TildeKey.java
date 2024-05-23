@@ -256,7 +256,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
                     if(isInfiniteEnergy && EnergyPanel.getCurrentEnergy() <999) EnergyPanel.setEnergy(999);
                     if(!isInfiniteEnergy) {
                         if(isEnergyLocked) EnergyPanel.totalCount = energyLockAmount;
-                        if(isMaxEnergyLocked) AbstractDungeon.player.energy.energy = maxEnergyLockAmount;
+                        if(isMaxEnergyLocked) AbstractDungeon.player.energy.energyMaster = maxEnergyLockAmount;
                     }
                     if(isAlwaysPlayerTurn && !(AbstractDungeon.getCurrRoom()).skipMonsterTurn) (AbstractDungeon.getCurrRoom()).skipMonsterTurn = true;
                 }
