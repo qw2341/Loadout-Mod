@@ -117,7 +117,8 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
                     continue;
                 }
                 //TODO: make modded monster compatible
-                if(mb.modID.equals("Slay the Spire")) this.itemsClone.add(new CharacterButton(mb));
+//                if(mb.modID.equals("Slay the Spire"))
+                    this.itemsClone.add(new CharacterButton(mb));
             }
 
         }
