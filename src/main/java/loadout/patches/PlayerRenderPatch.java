@@ -29,6 +29,11 @@ public class PlayerRenderPatch {
                                 "loadout.patches.PlayerRenderPatch.myPlayerRender($0, this);} else {" +
                                 "$_ = $proceed($$);}");
                     }
+                    if(m.getMethodName().equals("renderPlayerImage")) {
+                        m.replace("if(loadout.relics.TildeKey.isPlayerMorphed()) {" +
+                                "loadout.patches.PlayerRenderPatch.myPlayerRender($$, this);} else {" +
+                                "$_ = $proceed($$);}");
+                    }
                 }
             });
         }

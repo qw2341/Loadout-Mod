@@ -410,6 +410,7 @@ public class StatModSelectScreen extends AbstractSelectScreen<StatModSelectScree
             @Override
             public void setAmount(int amountToSet) {
                 AbstractDungeon.player.energy.energyMaster = amountToSet;
+                AbstractDungeon.player.energy.energy = amountToSet;
             }
 
             @Override
