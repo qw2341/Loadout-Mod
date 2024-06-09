@@ -147,7 +147,7 @@
             <artifactId>VUPShionMod</artifactId>
             <version>7.3.2</version>
             <scope>system</scope>
-            <systemPath>${Steam.path}/workshop/content/646570/2568224579/VUPShionMod.jar</systemPath>
+            <systemPath>${Steam.path}/workshop/content/646570/3242483596/VUPShionMod.jar</systemPath>
             <optional>true</optional>
         </dependency>
         <dependency>
