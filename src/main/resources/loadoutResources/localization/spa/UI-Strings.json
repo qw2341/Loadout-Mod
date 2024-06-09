@@ -108,7 +108,9 @@
 			"Editar con Fabricar",
 			"Renombrar",
 			"Modificar descripción",
-			"Número mágico 2"
+			"Número mágico 2",
+			"Crea una Tarjeta Combinada",
+			"Seleccionar cartas para combinar"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

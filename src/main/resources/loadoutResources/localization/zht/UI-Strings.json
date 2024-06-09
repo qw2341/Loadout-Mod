@@ -107,7 +107,9 @@
 			"使用Fabricate修改",
 			"重命名",
 			"修改描述",
-			"魔法數字2"
+			"魔法數字2",
+			"縫合卡牌",
+			"選擇任意卡牌來縫合"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

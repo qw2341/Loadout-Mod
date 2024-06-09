@@ -1,0 +1,6 @@
+{
+  "${project.artifactId}:SutureCard": {
+    "NAME": "Card Combination",
+    "DESCRIPTION": "If you see this, something is wrong or you just created a blank combination card."
+  }
+}

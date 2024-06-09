@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.actions.common.SelectCardsAction;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.BranchingUpgradesCard;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -28,10 +29,12 @@ import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import com.megacrit.cardcrawl.ui.buttons.PeekButton;
 import com.megacrit.cardcrawl.vfx.FastCardObtainEffect;
 import loadout.LoadoutMod;
+import loadout.cards.SutureCard;
 import loadout.helper.FabricateScreenController;
 import loadout.relics.*;
 import loadout.uiElements.CardBranchRenderPanel;
 import loadout.util.ModConfig;
+import loadout.util.Wiz;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -44,7 +47,7 @@ import java.util.stream.Collectors;
 
 
 public class GCardSelectScreen
-        implements ScrollBarListener
+        implements ScrollBarListener, HeaderButtonPlusListener
 {
     private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("GridCardSelectScreen");
     public static final String[] TEXT = uiStrings.TEXT; private static float drawStartX; private static float drawStartY;
@@ -141,6 +144,8 @@ public class GCardSelectScreen
 
     public CardBranchRenderPanel branchRenderPanel;
 
+    private HeaderButtonPlus sutureCardButton;
+
 
     public GCardSelectScreen(CardDisplayMode currentMode,  AbstractCardScreenRelic caller) {
         this.caller = caller;
@@ -163,6 +168,8 @@ public class GCardSelectScreen
 
         this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+
+        this.sutureCardButton = new HeaderButtonPlus(CardViewPopupHeader.TEXT[29], 100.0F * Settings.scale,Settings.HEIGHT / 2f + 150.0f * Settings.scale,this,true,ImageMaster.MAP_NODE_EVENT);
 
         switch (currentMode) {
 
@@ -190,15 +197,18 @@ public class GCardSelectScreen
             }
         }
 
-
-        if (this.currentMode == CardDisplayMode.UPGRADE && this.cardModScreen != null && this.cardModScreen.isOpen) {
-            this.cardModScreen.update();
-            return;
-        } else if (this.currentMode == CardDisplayMode.UPGRADE && this.branchRenderPanel.shown) {
-            this.branchRenderPanel.update();
-            updateScrolling();
-            return;
+        if(this.currentMode == CardDisplayMode.UPGRADE) {
+            if (this.cardModScreen != null && this.cardModScreen.isOpen) {
+                this.cardModScreen.update();
+                return;
+            } else if (this.branchRenderPanel.shown) {
+                this.branchRenderPanel.update();
+                updateScrolling();
+                return;
+            }
+            this.sutureCardButton.update();
         }
+
 
         if (PeekButton.isPeeking) {
             return;
@@ -1026,6 +1036,10 @@ public class GCardSelectScreen
                 this.cardModScreen.render(sb);
                 return;
             }
+
+            if(this.sutureCardButton != null) {
+                this.sutureCardButton.render(sb);
+            }
         }
 
         if (shouldShowScrollBar()) {
@@ -1210,6 +1224,21 @@ public class GCardSelectScreen
 
     public SCardViewPopup getSCardPopup() {
         return this.cardModScreen;
+    }
+
+    @Override
+    public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
+        if(button==this.sutureCardButton) {
+            this.close();
+//            AbstractDungeon.gridSelectScreen.open(AbstractDungeon.player.masterDeck, 999, true, CardViewPopupHeader.TEXT[30]);
+            Wiz.atb(new SelectCardsAction(AbstractDungeon.player.masterDeck.group, 999, CardViewPopupHeader.TEXT[30], true,
+                    (c) -> !(c instanceof SutureCard), (list) -> {
+                SutureCard sc = new SutureCard(new ArrayList<>(list));
+                for (AbstractCard ac : list)
+                    Wiz.adp().masterDeck.group.remove(ac);
+                Wiz.adp().masterDeck.group.add(sc);
+            }));
+        }
     }
 }
 

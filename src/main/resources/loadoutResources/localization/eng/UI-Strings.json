@@ -110,7 +110,9 @@
 			"Edit with Fabricate",
 			"Rename",
 			"Modify Description",
-			"Magic Number 2"
+			"Magic Number 2",
+			"Create a Combination Card",
+			"Select Cards to Combine"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

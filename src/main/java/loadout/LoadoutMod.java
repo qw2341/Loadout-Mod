@@ -38,6 +38,7 @@ import com.megacrit.cardcrawl.relics.deprecated.DEPRECATEDYin;
 import com.megacrit.cardcrawl.relics.deprecated.DerpRock;
 import javassist.ClassPool;
 import javassist.CtClass;
+import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.helper.dynamicvariables.HealVariable;
@@ -848,6 +849,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receiveEditCards() {
+        BaseMod.addCard(new SutureCard());
+
         logger.info("loading card modifications");
 
         BaseMod.addDynamicVariable(new HealVariable());

@@ -107,7 +107,9 @@
 			"Modifier avec Fabriquer",
 			"Renommer",
 			"Modifier la description",
-			"Chiffre magique 2"
+			"Chiffre magique 2",
+			"Créer une carte combinée",
+			"Sélectionnez les cartes à combiner"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

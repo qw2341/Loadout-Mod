@@ -125,7 +125,8 @@ public class SutureCard extends CustomCard implements CustomSavable<ArrayList<Se
     @Override
     public void initializeDescription() {
         this.description.clear();
-        for(AbstractCard c:this.sutureCards) {
+        if(this.sutureCards != null)
+            for(AbstractCard c:this.sutureCards) {
             c.initializeDescription();
             this.description.addAll(c.description);
         }
