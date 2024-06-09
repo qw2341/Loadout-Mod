@@ -4,6 +4,7 @@ import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import loadout.cards.SutureCard;
 import loadout.patches.AbstractCardPatch;
 
 import java.io.Serializable;
@@ -25,6 +26,10 @@ public class SerializableDeck implements Serializable {
     public SerializableDeck(ArrayList<AbstractCard> deck) {
         this();
         for(AbstractCard ac : deck) {
+            if(ac instanceof SutureCard){
+                //TODO: Add Suture Card Compatibility
+                ac = new Madness();
+            }
             if(AbstractCardPatch.isCardModified(ac) || !CardModifierManager.modifiers(ac).isEmpty()){
                 moddedDeck.add(SerializableCardLite.toObjectArray(ac));
             } else {

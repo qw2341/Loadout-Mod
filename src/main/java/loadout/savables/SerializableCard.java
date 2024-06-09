@@ -6,6 +6,7 @@ import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
@@ -90,6 +91,12 @@ public class SerializableCard implements Serializable {
 
     public static SerializableCard toSerializableCard(AbstractCard card) {
         SerializableCard sc = new SerializableCard();
+
+        if(card instanceof SutureCard) {
+            //TODO: Add Suture Card Compatibility
+            card = new Madness();
+        }
+
         sc.id = card.cardID;
         sc.cost = card.cost;
         sc.baseDamage = card.baseDamage;

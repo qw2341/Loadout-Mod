@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
+import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
@@ -20,6 +21,10 @@ public class SerializableCardLite {
 
     public static Object[] toObjectArray(AbstractCard ac) {
         Object[] cardArray = new Object[18];
+        if(ac instanceof SutureCard){
+            //TODO: Add Suture Card Compatibility
+            ac = new Madness();
+        }
         cardArray[0] = ac.cardID;
             cardArray[1] = AbstractCardPatch.isCardModified(ac);
             //get an unmodded copy and compare whats changed
