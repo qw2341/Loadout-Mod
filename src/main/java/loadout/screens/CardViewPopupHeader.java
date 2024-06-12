@@ -434,6 +434,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         xPosition += SPACE_X;
         this.makeStickyButton = new HeaderButtonPlus(TEXT[29],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
@@ -453,7 +454,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.cardModButton, this.renameButton, this.descEditButton};
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.cardModButton, this.renameButton, this.descEditButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
