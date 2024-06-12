@@ -13,6 +13,13 @@
         "actualización infinita"
       ],
       "DESCRIPTION": "Capaz de actualizarse indefinidamente."
+    },
+    {
+      "PROPER_NAME": "Pegajoso",
+      "NAMES": [
+        "pegajoso"
+      ],
+      "DESCRIPTION": "Cuando se usa o se descarta de la mano, vuelve a la mano."
     }
   ]
 }

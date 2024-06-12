@@ -108,7 +108,9 @@
 			"Editar con Fabricar",
 			"Renombrar",
 			"Modificar descripción",
-			"Número mágico 2"
+			"Número mágico 2",
+			"Pegajoso",
+			"Cuando se usa o se descarta de la mano, vuelve a la mano."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

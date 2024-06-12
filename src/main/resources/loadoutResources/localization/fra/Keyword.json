@@ -14,6 +14,13 @@
         "mise_à_niveau_infinie"
       ],
       "DESCRIPTION": "Peut être mis à niveau indéfiniment."
+    },
+    {
+      "PROPER_NAME" : "Collant",
+      "NAMES" : [
+        "collant"
+      ],
+      "DESCRIPTION" : "Lorsqu'il est utilisé ou défaussé de la main, retourne en main."
     }
   ]
 }

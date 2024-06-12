@@ -107,7 +107,9 @@
 			"Modifier avec Fabriquer",
 			"Renommer",
 			"Modifier la description",
-			"Chiffre magique 2"
+			"Chiffre magique 2",
+			"Collant",
+			"Lorsqu'il est utilisé ou défaussé de la main, retourne en main."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
