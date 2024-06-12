@@ -37,6 +37,8 @@ public class AbstractCardPatch {
             card.originalName = __instance.originalName;
             card.name = __instance.name;
             card.rawDescription = __instance.rawDescription;
+
+            CardModificationFields.isCardModifiedByModifier.set(card, CardModificationFields.isCardModifiedByModifier.get(__instance));
         }
     }
 
