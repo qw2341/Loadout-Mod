@@ -108,13 +108,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final CardEffectButton magicNumberButton;
 
 
-    private final CardEffectButton healButton;
-
-
-    private final CardEffectButton drawButton;
-
-
-    private final CardEffectButton discardButton;
+//    private final CardEffectButton healButton;
+//
+//
+//    private final CardEffectButton drawButton;
+//
+//
+//    private final CardEffectButton discardButton;
 
     private final CardEffectButton miscButton;
 
@@ -250,62 +250,62 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
 
 
-        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseHeal;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseHeal = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
-
-        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseDraw;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseDraw = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
-
-        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseDiscard;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseDiscard = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
+//        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseHeal;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseHeal = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
+//
+//        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseDraw;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseDraw = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
+//
+//        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseDiscard;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseDiscard = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
 
         this.miscButton = new CardEffectButton(null, xPosition, yPosition, "Misc", new StatModSelectScreen.StatModActions() {
             @Override
