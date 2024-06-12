@@ -110,7 +110,9 @@
 			"Edit with Fabricate",
 			"Rename",
 			"Modify Description",
-			"Magic Number 2"
+			"Magic Number 2",
+			"Sticky",
+			"When used or discarded from hand, returns to hand."
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

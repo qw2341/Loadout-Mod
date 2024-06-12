@@ -97,6 +97,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus makeInfUpgradeButton;
     private final HeaderButtonPlus makeDieNextTurnButton;
+    private final HeaderButtonPlus makeStickyButton;
 
     private final CardEffectButton costButton;
     private final CardEffectButton damageButton;
@@ -428,7 +429,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.makeInfUpgradeButton = new HeaderButtonPlus(TEXT[22],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
+
         makeDieNextTurnButton = new HeaderButtonPlus(DieNextTurnMod.description.replace("NL","").trim(),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeStickyButton = new HeaderButtonPlus(TEXT[29],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
 
         yPosition -= SPACE_Y;
@@ -650,6 +654,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
                 else if (button == this.makeDieNextTurnButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
+                else if (button == this.makeStickyButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
             }
         }
 
@@ -688,6 +694,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeInevitableButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
             this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
+            this.makeStickyButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
             if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
@@ -954,6 +961,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, DieNextTurnMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new DieNextTurnMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeStickyButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, StickyMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new StickyMod());
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.cardModButton) {
