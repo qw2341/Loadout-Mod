@@ -473,9 +473,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardEffectButtons.add(this.damageButton);
         this.cardEffectButtons.add(this.blockButton);
         this.cardEffectButtons.add(this.magicNumberButton);
-        this.cardEffectButtons.add(this.healButton);
-        this.cardEffectButtons.add(this.drawButton);
-        this.cardEffectButtons.add(this.discardButton);
+//        this.cardEffectButtons.add(this.healButton);
+//        this.cardEffectButtons.add(this.drawButton);
+//        this.cardEffectButtons.add(this.discardButton);
         this.cardEffectButtons.add(this.miscButton);
         if(VUPSHION_MOD_LOADED) {
             this.cardEffectButtons.add(this.secondaryMagicNumberButtonShion);
