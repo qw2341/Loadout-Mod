@@ -6,6 +6,7 @@ import com.evacipated.cardcrawl.mod.stslib.patches.PersistPatch;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.OnPersistPower;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPersistRelic;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.utility.DiscardToHandAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -73,16 +74,13 @@ public class StickModPatches {
 
     @SpirePatch2(clz = CardGroup.class, method = "moveToDiscardPile")
     public static class MoveToDiscard {
-        @SpirePrefixPatch
-        public static SpireReturn<Void> Prefix(CardGroup __instance, AbstractCard c) {
+        @SpirePostfixPatch
+        public static void Postfix(CardGroup __instance, AbstractCard c) {
             if(CardModifierManager.hasModifier(c , StickyMod.ID)) {
                 if(__instance == Wiz.adp().hand) {
-                    c.flash();
-                    return SpireReturn.Return();
+                    Wiz.att(new DiscardToHandAction(c));
                 }
             }
-
-            return SpireReturn.Continue();
         }
     }
 }
