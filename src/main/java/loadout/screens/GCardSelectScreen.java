@@ -169,7 +169,7 @@ public class GCardSelectScreen
         this.shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
         this.ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
 
-        this.sutureCardButton = new HeaderButtonPlus(CardViewPopupHeader.TEXT[29], 100.0F * Settings.scale,Settings.HEIGHT / 2f + 150.0f * Settings.scale,this,true,ImageMaster.MAP_NODE_EVENT);
+        this.sutureCardButton = new HeaderButtonPlus(CardViewPopupHeader.TEXT[31], 100.0F * Settings.scale,Settings.HEIGHT / 2f + 150.0f * Settings.scale,this,true,ImageMaster.MAP_NODE_EVENT);
 
         switch (currentMode) {
 
@@ -1231,7 +1231,7 @@ public class GCardSelectScreen
         if(button==this.sutureCardButton) {
             this.close();
 //            AbstractDungeon.gridSelectScreen.open(AbstractDungeon.player.masterDeck, 999, true, CardViewPopupHeader.TEXT[30]);
-            Wiz.atb(new SelectCardsAction(AbstractDungeon.player.masterDeck.group, 999, CardViewPopupHeader.TEXT[30], true,
+            Wiz.atb(new SelectCardsAction(AbstractDungeon.player.masterDeck.group, 999, CardViewPopupHeader.TEXT[32], true,
                     (c) -> !(c instanceof SutureCard), (list) -> {
                 SutureCard sc = new SutureCard(new ArrayList<>(list));
                 for (AbstractCard ac : list)
