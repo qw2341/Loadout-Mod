@@ -705,6 +705,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         cardsToDisplay.clear();
 
         for (AbstractCard c : CardLibrary.cards.values()) {
+
+            if(Objects.equals(c.cardID, SutureCard.ID)) continue;
             if(ModConfig.ignoreUnlock)
                 c.isSeen = true;
             cardsToDisplay.add(c);
