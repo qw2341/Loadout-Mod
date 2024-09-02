@@ -97,6 +97,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final HeaderButtonPlus makeInfUpgradeButton;
     private final HeaderButtonPlus makeDieNextTurnButton;
+    private final HeaderButtonPlus makeStickyButton;
 
     private final CardEffectButton costButton;
     private final CardEffectButton damageButton;
@@ -107,13 +108,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final CardEffectButton magicNumberButton;
 
 
-    private final CardEffectButton healButton;
-
-
-    private final CardEffectButton drawButton;
-
-
-    private final CardEffectButton discardButton;
+//    private final CardEffectButton healButton;
+//
+//
+//    private final CardEffectButton drawButton;
+//
+//
+//    private final CardEffectButton discardButton;
 
     private final CardEffectButton miscButton;
 
@@ -249,62 +250,62 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
 
 
-        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseHeal;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseHeal = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
-
-        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseDraw;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseDraw = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
-
-        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
-            @Override
-            public int getAmount() {
-                return getCard().baseDiscard;
-            }
-
-            @Override
-            public void setAmount(int amountToSet) {
-                getCard().baseDiscard = amountToSet;
-                setCardModded(true);
-            }
-
-            @Override
-            public void onBoolChange(boolean boolToChange, int amount) {
-
-            }
-        }, this);
-        yPosition -= SPACE_Y;
+//        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseHeal;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseHeal = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
+//
+//        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseDraw;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseDraw = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
+//
+//        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
+//            @Override
+//            public int getAmount() {
+//                return getCard().baseDiscard;
+//            }
+//
+//            @Override
+//            public void setAmount(int amountToSet) {
+//                getCard().baseDiscard = amountToSet;
+//                setCardModded(true);
+//            }
+//
+//            @Override
+//            public void onBoolChange(boolean boolToChange, int amount) {
+//
+//            }
+//        }, this);
+//        yPosition -= SPACE_Y;
 
         this.miscButton = new CardEffectButton(null, xPosition, yPosition, "Misc", new StatModSelectScreen.StatModActions() {
             @Override
@@ -428,8 +429,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.makeInfUpgradeButton = new HeaderButtonPlus(TEXT[22],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
+
         makeDieNextTurnButton = new HeaderButtonPlus(DieNextTurnMod.description.replace("NL","").trim(),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeStickyButton = new HeaderButtonPlus(TEXT[29],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
 
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
@@ -449,7 +454,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.cardModButton, this.renameButton, this.descEditButton};
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.cardModButton, this.renameButton, this.descEditButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -469,9 +474,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardEffectButtons.add(this.damageButton);
         this.cardEffectButtons.add(this.blockButton);
         this.cardEffectButtons.add(this.magicNumberButton);
-        this.cardEffectButtons.add(this.healButton);
-        this.cardEffectButtons.add(this.drawButton);
-        this.cardEffectButtons.add(this.discardButton);
+//        this.cardEffectButtons.add(this.healButton);
+//        this.cardEffectButtons.add(this.drawButton);
+//        this.cardEffectButtons.add(this.discardButton);
         this.cardEffectButtons.add(this.miscButton);
         if(VUPSHION_MOD_LOADED) {
             this.cardEffectButtons.add(this.secondaryMagicNumberButtonShion);
@@ -650,6 +655,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
                 else if (button == this.makeDieNextTurnButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
+                else if (button == this.makeStickyButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
             }
         }
 
@@ -688,6 +695,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeInevitableButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InevitableMod.ID);
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
             this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
+            this.makeStickyButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
             if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
@@ -954,6 +962,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, DieNextTurnMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new DieNextTurnMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeStickyButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, StickyMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new StickyMod());
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.cardModButton) {

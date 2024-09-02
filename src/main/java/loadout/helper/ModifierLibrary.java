@@ -43,6 +43,8 @@ public class ModifierLibrary {
         modifiers.put(InfiniteUpgradeMod.ID, InfiniteUpgradeMod.class);
         modifiers.put(DieNextTurnMod.ID, DieNextTurnMod.class);
 
+        modifiers.put(StickyMod.ID, StickyMod.class);
+
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();
         GainGoldOnPlayMod.onLoad();
