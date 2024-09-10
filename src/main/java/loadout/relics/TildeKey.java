@@ -166,6 +166,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
     public static TextureAtlas atlasBackup;
     public static AnimationState stateBackup;
     public static AnimationStateData stateDataBackup;
+    public static Texture imgBackup;
     public static float hbWBackup = 100f;
     public static float hbHBackup = 100f;
     public boolean justClickedMiddle = false;
@@ -695,6 +696,8 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             atlasBackup = ReflectionHacks.getPrivate(morphee, AbstractCreature.class, "atlas");
             stateBackup = morphee.state;
             stateDataBackup = ReflectionHacks.getPrivate(morphee, AbstractCreature.class, "stateData");
+            imgBackup = ReflectionHacks.getPrivate(morphee, AbstractPlayer.class, "img");
+
             hbWBackup = morphee.hb_w;
             hbHBackup = morphee.hb_h;
         }
@@ -702,9 +705,16 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "skeleton", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "skeleton"));
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "atlas", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "atlas"));
         ReflectionHacks.setPrivate(morphee, AbstractCreature.class, "stateData", ReflectionHacks.getPrivate(morphTarget, AbstractCreature.class, "stateData"));
+        if (morphTarget instanceof AbstractMonster) {
+            Class<?> clz = morphee instanceof AbstractPlayer ? AbstractPlayer.class : AbstractMonster.class;
+            ReflectionHacks.setPrivate(morphee, clz, "img",
+                    ReflectionHacks.getPrivate(morphTarget, AbstractMonster.class, "img"));
+        }
         morphee.state = morphTarget.state;
         if(! (morphee instanceof  AbstractPlayer)) morphee.name = morphTarget.name;
         morphee.hb.resize(morphTarget.hb.width,morphTarget.hb.height);
+        morphee.hb_w = morphee.hb.width;
+        morphee.hb_h = morphee.hb.height;
         morphee.hb.move(morphee.drawX, morphee.drawY);
 
         AnimationStateData stateData = ((AnimationStateData)ReflectionHacks.getPrivate(morphee,AbstractCreature.class,"stateData"));
@@ -867,7 +877,13 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
         if(stateBackup != null) AbstractDungeon.player.state = stateBackup;
         if(stateDataBackup != null)ReflectionHacks.setPrivate(AbstractDungeon.player, AbstractCreature.class, "stateData", stateDataBackup);
 
+        if (imgBackup != null) {
+            AbstractDungeon.player.img = imgBackup;
+        }
+
         AbstractDungeon.player.hb.resize(hbWBackup, hbHBackup);
+        AbstractDungeon.player.hb_w = morphee.hb.width;
+        AbstractDungeon.player.hb_h = morphee.hb.height;
         AbstractDungeon.player.hb.move(AbstractDungeon.player.drawX, AbstractDungeon.player.drawY);
         AbstractDungeon.player.flipHorizontal = false;
     }
