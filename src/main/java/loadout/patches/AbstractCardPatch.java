@@ -23,6 +23,9 @@ import loadout.cardmods.XCostMod;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AbstractCardPatch {
 
     @SpirePatch(clz = AbstractCard.class, method = "makeStatEquivalentCopy")
@@ -92,6 +95,34 @@ public class AbstractCardPatch {
     @SpirePatch(clz = AbstractCard.class, method = "<class>")
     public static class CardModificationFields {
         public static SpireField<Boolean> isCardModifiedByModifier = new SpireField<>(() -> Boolean.valueOf(false));
+        public static SpireField<Map<String, Integer>> additionalMagicNumbers = new SpireField<>(HashMap::new);
+    }
+
+    public static int getMagicNumber(AbstractCard ac, String cardModID) {
+        return CardModificationFields.additionalMagicNumbers.get(ac).get(cardModID);
+    }
+    public static void setMagicNumber(AbstractCard ac, String cardModID, int numberToSet) {
+        CardModificationFields.additionalMagicNumbers.get(ac).replace(cardModID, numberToSet);
+    }
+    public static String serializeAdditionalMagicNumbers(AbstractCard ac) {
+        Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : numberMap.entrySet()) {
+            sb.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+        }
+        return sb.toString();
+    }
+
+     public static void deserializeAdditionalMagicNumbers(AbstractCard ac, String data) {
+        Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
+        numberMap.clear();
+        String[] pairs = data.split(";");
+        for (String pair : pairs) {
+            if (!pair.isEmpty()) {
+                String[] keyValue = pair.split(":");
+                numberMap.put(keyValue[0], Integer.parseInt(keyValue[1]));
+            }
+        }
     }
 
     public static boolean isCardModified(AbstractCard ac) {
