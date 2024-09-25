@@ -19,6 +19,8 @@ import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.damagemods.GreedMod;
+import loadout.helper.ModifierLibrary;
+import loadout.patches.AbstractCardPatch;
 import loadout.util.Wiz;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,9 +30,9 @@ import java.util.regex.Pattern;
 public class GainGoldOnKillMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GainGoldOnKillModifier");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[0];
 
-    private static AbstractDamageModifier greedMod = new GreedMod();
+    private static AbstractDamageModifier greedMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -44,6 +46,7 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
+        greedMod = new GreedMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, greedMod);
     }
 
@@ -58,14 +61,14 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        String txtToAdd;
-        String desc = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION;
-        if(desc.contains("NL")) {
-            txtToAdd = desc.split("NL")[1];
-        } else {
-            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-        }
-
-        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
+//        String txtToAdd;
+//        String desc = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION;
+//        if(desc.contains("NL")) {
+//            txtToAdd = desc.split("NL")[1];
+//        } else {
+//            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
+//        }
+//
+//        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }

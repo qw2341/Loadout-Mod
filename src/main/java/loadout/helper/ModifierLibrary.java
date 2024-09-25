@@ -6,6 +6,8 @@ import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
 import basemod.helpers.CardModifierManager;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
 
@@ -14,6 +16,8 @@ import java.util.HashMap;
 
 public class ModifierLibrary {
     public static HashMap<String,Class<? extends AbstractCardModifier>> modifiers = new HashMap<>();
+    private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("CardModifierStrings"));
+    public static String[] TEXT = uiStrings.TEXT;
     public static void initialize() {
         modifiers.put(EtherealMod.ID,EtherealMod.class);
         modifiers.put(ExhaustMod.ID,ExhaustMod.class);

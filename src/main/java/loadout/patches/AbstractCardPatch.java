@@ -20,6 +20,7 @@ import javassist.expr.MethodCall;
 import loadout.LoadoutMod;
 import loadout.actions.MultiUseAction;
 import loadout.cardmods.XCostMod;
+import loadout.damagemods.MagicDaggerMod;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 
@@ -42,6 +43,8 @@ public class AbstractCardPatch {
             card.rawDescription = __instance.rawDescription;
 
             CardModificationFields.isCardModifiedByModifier.set(card, CardModificationFields.isCardModifiedByModifier.get(__instance));
+
+            CardModificationFields.additionalMagicNumbers.set(card, new HashMap<String, Integer>(CardModificationFields.additionalMagicNumbers.get(__instance)));
         }
     }
 
@@ -99,16 +102,26 @@ public class AbstractCardPatch {
     }
 
     public static int getMagicNumber(AbstractCard ac, String cardModID) {
-        return CardModificationFields.additionalMagicNumbers.get(ac).get(cardModID);
+        return CardModificationFields.additionalMagicNumbers.get(ac).getOrDefault(cardModID, 0);
     }
     public static void setMagicNumber(AbstractCard ac, String cardModID, int numberToSet) {
         CardModificationFields.additionalMagicNumbers.get(ac).replace(cardModID, numberToSet);
     }
+
+    public static void addMagicNumber(AbstractCard ac, String cardModID, int numberToSet) {
+        CardModificationFields.additionalMagicNumbers.get(ac).putIfAbsent(cardModID, numberToSet);
+    }
+
+    public static void removeMagicNumber(AbstractCard ac, String cardModID) {
+        CardModificationFields.additionalMagicNumbers.get(ac).remove(cardModID);
+    }
+
+    public static final String MAGIC_NUMBER_DELIMITER = ";";
     public static String serializeAdditionalMagicNumbers(AbstractCard ac) {
         Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Integer> entry : numberMap.entrySet()) {
-            sb.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+            sb.append(entry.getKey()).append("|").append(entry.getValue()).append(MAGIC_NUMBER_DELIMITER);
         }
         return sb.toString();
     }
@@ -116,10 +129,10 @@ public class AbstractCardPatch {
      public static void deserializeAdditionalMagicNumbers(AbstractCard ac, String data) {
         Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
         numberMap.clear();
-        String[] pairs = data.split(";");
+        String[] pairs = data.split(MAGIC_NUMBER_DELIMITER);
         for (String pair : pairs) {
             if (!pair.isEmpty()) {
-                String[] keyValue = pair.split(":");
+                String[] keyValue = pair.split("\\|");
                 numberMap.put(keyValue[0], Integer.parseInt(keyValue[1]));
             }
         }

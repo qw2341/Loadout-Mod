@@ -9,8 +9,13 @@ import com.megacrit.cardcrawl.helpers.GetAllInBattleInstances;
 
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class RitualDaggerMod extends AbstractOnKillMod{
+    public RitualDaggerMod(Supplier<Integer> getValue) {
+        super(getValue);
+    }
+
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
         Iterator<AbstractCard> var1 = AbstractDungeon.player.masterDeck.group.iterator();
@@ -34,6 +39,6 @@ public class RitualDaggerMod extends AbstractOnKillMod{
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new RitualDaggerMod();
+        return new RitualDaggerMod(getValue);
     }
 }

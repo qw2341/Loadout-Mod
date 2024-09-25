@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import loadout.patches.AbstractCardPatch;
 
 public abstract class AbstractLoadoutDamageMod extends AbstractDamageModifier {
 
@@ -19,10 +20,10 @@ public abstract class AbstractLoadoutDamageMod extends AbstractDamageModifier {
                 targetHit.currentHealth > 0 && !targetHit.halfDead;
     }
 
-    protected int getMiscAmount(DamageInfo info) {
+    protected int getAmount(DamageInfo info, String numberModID) {
         Object instigator = DamageModifierManager.getInstigator(info);
         if(instigator instanceof com.megacrit.cardcrawl.cards.AbstractCard) {
-            return ((AbstractCard) instigator).misc;
+            return AbstractCardPatch.getMagicNumber((AbstractCard) instigator, numberModID);
         }
         return 0;
     }

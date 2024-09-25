@@ -43,10 +43,7 @@ import org.apache.commons.lang3.StringUtils;
 import pinacolada.cards.base.PCLCard;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static loadout.LoadoutMod.*;
 
@@ -107,14 +104,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
     private final CardEffectButton magicNumberButton;
 
-
-//    private final CardEffectButton healButton;
-//
-//
-//    private final CardEffectButton drawButton;
-//
-//
-//    private final CardEffectButton discardButton;
+    private final ArrayList<CardEffectButton> additionalMagicNumbers;
 
     private final CardEffectButton miscButton;
 
@@ -250,63 +240,6 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
 
 
-//        this.healButton = new CardEffectButton(null, xPosition, yPosition, TEXT[2], new StatModSelectScreen.StatModActions() {
-//            @Override
-//            public int getAmount() {
-//                return getCard().baseHeal;
-//            }
-//
-//            @Override
-//            public void setAmount(int amountToSet) {
-//                getCard().baseHeal = amountToSet;
-//                setCardModded(true);
-//            }
-//
-//            @Override
-//            public void onBoolChange(boolean boolToChange, int amount) {
-//
-//            }
-//        }, this);
-//        yPosition -= SPACE_Y;
-//
-//        this.drawButton = new CardEffectButton(null, xPosition, yPosition, TEXT[3], new StatModSelectScreen.StatModActions() {
-//            @Override
-//            public int getAmount() {
-//                return getCard().baseDraw;
-//            }
-//
-//            @Override
-//            public void setAmount(int amountToSet) {
-//                getCard().baseDraw = amountToSet;
-//                setCardModded(true);
-//            }
-//
-//            @Override
-//            public void onBoolChange(boolean boolToChange, int amount) {
-//
-//            }
-//        }, this);
-//        yPosition -= SPACE_Y;
-//
-//        this.discardButton = new CardEffectButton(null, xPosition, yPosition, TEXT_DISCARD, new StatModSelectScreen.StatModActions() {
-//            @Override
-//            public int getAmount() {
-//                return getCard().baseDiscard;
-//            }
-//
-//            @Override
-//            public void setAmount(int amountToSet) {
-//                getCard().baseDiscard = amountToSet;
-//                setCardModded(true);
-//            }
-//
-//            @Override
-//            public void onBoolChange(boolean boolToChange, int amount) {
-//
-//            }
-//        }, this);
-//        yPosition -= SPACE_Y;
-
         this.miscButton = new CardEffectButton(null, xPosition, yPosition, "Misc", new StatModSelectScreen.StatModActions() {
             @Override
             public int getAmount() {
@@ -355,6 +288,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             }, this);
             yPosition -= SPACE_Y;
         }
+
+        additionalMagicNumbers = new ArrayList<>();
 
 
         xPosition += 0.5f * SPACE_X;
@@ -520,6 +455,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             button.update();
         }
 
+        for (CardEffectButton button : this.additionalMagicNumbers) {
+            button.update();
+        }
+
         for (DropdownMenu dropdownMenu : this.dropdownMenus) {
             if (dropdownMenu.isOpen) {
                 dropdownMenu.update();
@@ -606,6 +545,48 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.typeButton.setSelectedIndex(getCurCardTypeIndex());
     }
 
+    private void regenerateCardEffectButtons() {
+        additionalMagicNumbers.clear();
+        float xPosition = 0, yPosition = 0;
+
+        if(!cardEffectButtons.isEmpty()) {
+            CardEffectButton lastButton =  cardEffectButtons.get(cardEffectButtons.size()-1);
+            xPosition = lastButton.x;
+            yPosition = lastButton.y - SPACE_Y;
+        }
+
+
+
+        for (String key : AbstractCardPatch.CardModificationFields.additionalMagicNumbers.get(cardViewScreen.card).keySet()) {
+            CardEffectButton button = new CardEffectButton(null, xPosition, yPosition, TEXT[1], new StatModSelectScreen.StatModActions() {
+                @Override
+                public int getAmount() {
+                    return AbstractCardPatch.getMagicNumber(getCard(), key);
+                }
+
+                @Override
+                public void setAmount(int amountToSet) {
+                    AbstractCardPatch.setMagicNumber(getCard(), key, amountToSet);
+                    setCardModded(true);
+                }
+
+                @Override
+                public void onBoolChange(boolean boolToChange, int amount) {
+
+                }
+            }, this);
+            yPosition -= SPACE_Y;
+            additionalMagicNumbers.add(button);
+        }
+
+        //adjust positions of the save restore copy buttons
+        this.restoreDefaultButton.y = yPosition;
+        yPosition -= SPACE_Y;
+        this.saveChangesButton.y = yPosition;
+        yPosition -= SPACE_Y;
+        this.getCopyButton.y = yPosition;
+    }
+
     public void resetOtherButtons() {
         int btnIdx = getHoveredIndex();
         for (int i = 0;i<this.buttons.length;i++) {
@@ -661,6 +642,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }
 
         resetDropdownMenus();
+        regenerateCardEffectButtons();
     }
     public void resetAllButtons() {
         for (int i = 0;i<this.buttons.length;i++) {
@@ -706,6 +688,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 //            ddm.setSelectedIndex(0);
 //        }
         resetDropdownMenus();
+        regenerateCardEffectButtons();
     }
 
     private void setCardModded(boolean isModified) {
@@ -878,6 +861,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeGainGoldOnKillButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainGoldOnKillMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnKillMod.ID, true);
             else
@@ -886,6 +870,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeGainHPOnKillButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainHpOnKillMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainHpOnKillMod.ID, true);
             else
@@ -894,6 +879,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeGainGoldOnPlayButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainGoldOnPlayMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnPlayMod.ID, true);
             else
@@ -902,6 +888,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeHealOnPlayButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, HealOnPlayMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, HealOnPlayMod.ID, true);
             else
@@ -910,6 +897,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.randomUpgradeOnKillButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, RandomUpgradeOnKillMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, RandomUpgradeOnKillMod.ID, true);
             else
@@ -918,6 +906,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeGainDamageOnKillButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainDamageOnKill.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainDamageOnKill.ID, true);
             else
@@ -926,6 +915,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             resetOtherButtons();
         } else if(button == this.makeGainMagicOnKillButton) {
             clearActiveButtons();
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainMagicOnKillMod.ID, 0);
             if (!button.isAscending)
                 CardModifierManager.removeModifiersById(cardViewScreen.card, GainMagicOnKillMod.ID, true);
             else
@@ -1018,6 +1008,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             if(b == this.secondaryMagicNumberButtonShion) {
                 if(!isCardFromShion) continue;
             }
+            b.render(sb);
+        }
+
+        for (CardEffectButton b: this.additionalMagicNumbers) {
             b.render(sb);
         }
 

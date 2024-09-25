@@ -216,6 +216,11 @@
 		"TEXT": [
 			"プレーヤーの外観をリセットする"
 		]
+	},
+	"${project.artifactId}:CardModifierStrings": {
+		"TEXT": [
+			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+		]
 	}
 
 

@@ -5,7 +5,13 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import loadout.util.Wiz;
 
+import java.util.function.Supplier;
+
 public class FeastMod extends AbstractOnKillMod {
+
+    public FeastMod(Supplier<Integer> getValue) {
+        super(getValue);
+    }
 
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
@@ -14,6 +20,6 @@ public class FeastMod extends AbstractOnKillMod {
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new FeastMod();
+        return new FeastMod(getValue);
     }
 }

@@ -216,6 +216,11 @@
 		"TEXT": [
 			"Réinitialiser le Look du Joueur"
 		]
+	},
+	"${project.artifactId}:CardModifierStrings": {
+		"TEXT": [
+			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+		]
 	}
 
 

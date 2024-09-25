@@ -11,8 +11,14 @@ import com.megacrit.cardcrawl.vfx.UpgradeShineEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.function.Supplier;
 
 public class LessonLearnedMod extends AbstractOnKillMod{
+    public LessonLearnedMod(Supplier<Integer> getValue) {
+        super(getValue);
+    }
+
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
         ArrayList<AbstractCard> possibleCards = new ArrayList<>();
@@ -24,14 +30,15 @@ public class LessonLearnedMod extends AbstractOnKillMod{
             }
         }
 
-        if (!possibleCards.isEmpty()) {
-            theCard = (AbstractCard) possibleCards.get(AbstractDungeon.miscRng.random(0, possibleCards.size() - 1));
+        int upgradesToPerform = Math.min(getValue.get(), possibleCards.size());
+
+        for (int i = 0; i < upgradesToPerform; i++) {
+            theCard = possibleCards.get(i);
             theCard.upgrade();
             AbstractDungeon.player.bottledCardUpgradeCheck(theCard);
-        }
 
-        if (theCard != null) {
-            AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F));
+            // Add effects for each upgraded card
+            AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
             AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy()));
             addToTop(new WaitAction(Settings.ACTION_DUR_MED));
         }
@@ -39,6 +46,6 @@ public class LessonLearnedMod extends AbstractOnKillMod{
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new LessonLearnedMod();
+        return new LessonLearnedMod(getValue);
     }
 }

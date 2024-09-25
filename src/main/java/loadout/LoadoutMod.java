@@ -855,9 +855,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
         logger.info("loading card modifications");
 
-        BaseMod.addDynamicVariable(new HealVariable());
-        BaseMod.addDynamicVariable(new MiscVariable());
-
         try {
             ModifierLibrary.initialize();
             addCardModIDs();
@@ -865,6 +862,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         } catch (IOException e) {
             logger.error("Error loading card modifications");
         }
+        DynamicVariableAdder.addAllVariables();//must after mod lib init
 
         logger.info("Done loading card modifications");
     }

@@ -14,12 +14,13 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.damagemods.LessonLearnedMod;
+import loadout.patches.AbstractCardPatch;
 
 public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
     private static String description = "";
 
-    private static AbstractDamageModifier lessonLearnedMod = new LessonLearnedMod();
+    private static AbstractDamageModifier lessonLearnedMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -40,6 +41,7 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
+        lessonLearnedMod = new LessonLearnedMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, lessonLearnedMod);
     }
 

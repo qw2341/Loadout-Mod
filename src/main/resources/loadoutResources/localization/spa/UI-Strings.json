@@ -217,6 +217,11 @@
 		"TEXT": [
 			"Restablecer el Aspecto del Jugador"
 		]
+	},
+	"${project.artifactId}:CardModifierStrings": {
+		"TEXT": [
+			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+		]
 	}
 
 }

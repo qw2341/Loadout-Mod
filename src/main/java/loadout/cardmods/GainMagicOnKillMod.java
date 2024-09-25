@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.actions.GMOKAction;
 import loadout.damagemods.MagicDaggerMod;
+import loadout.patches.AbstractCardPatch;
 import loadout.screens.CardViewPopupHeader;
 
 public class GainMagicOnKillMod extends AbstractCardModifier {
@@ -18,7 +19,7 @@ public class GainMagicOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GMOKMod");
     private static String description = "";
 
-    private static AbstractDamageModifier daggerMod = new MagicDaggerMod();
+    private static AbstractDamageModifier daggerMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -32,6 +33,7 @@ public class GainMagicOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
+        daggerMod = new MagicDaggerMod(()-> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, daggerMod);
     }
 

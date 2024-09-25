@@ -215,5 +215,10 @@
 		"TEXT": [
 			"重置玩家外觀"
 		]
+	},
+	"${project.artifactId}:CardModifierStrings": {
+		"TEXT": [
+			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+		]
 	}
 }

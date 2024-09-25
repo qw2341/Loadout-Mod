@@ -7,10 +7,16 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.vfx.GainPennyEffect;
 
+import java.util.function.Supplier;
+
 /**
  * Code modified from Chimera Cards Mod
  */
 public class GreedMod extends AbstractOnKillMod {
+
+    public GreedMod(Supplier<Integer> getValue) {
+        super(getValue);
+    }
 
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
@@ -22,6 +28,6 @@ public class GreedMod extends AbstractOnKillMod {
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new GreedMod();
+        return new GreedMod(getValue);
     }
 }

@@ -219,5 +219,10 @@
 		"TEXT": [
 			"Reset Player Look"
 		]
+	},
+	"loadout:CardModifierStrings": {
+		"TEXT": [
+			"If Fatal, gain !loadout:GainGoldOnKillModifier! Gold."
+		]
 	}
 }

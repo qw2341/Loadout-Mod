@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.damagemods.FeastMod;
+import loadout.patches.AbstractCardPatch;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -22,7 +23,7 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GainHpOnKillModifier");
     private static String description = "";
 
-    private static AbstractDamageModifier feedMod = new FeastMod();
+    private static AbstractDamageModifier feedMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -36,6 +37,7 @@ public class GainHpOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
+        feedMod = new FeastMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, feedMod);
     }
 
