@@ -21,27 +21,32 @@ public class LessonLearnedMod extends AbstractOnKillMod{
 
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
-        ArrayList<AbstractCard> possibleCards = new ArrayList<>();
+        int upgradesToPerform = getValue.get();
+        ArrayList<AbstractCard> possibleCards;
+        possibleCards = new ArrayList<>();
         AbstractCard theCard = null;
-
         for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
             if (c.canUpgrade()) {
                 possibleCards.add(c);
             }
         }
 
-        int upgradesToPerform = Math.min(getValue.get(), possibleCards.size());
-
         for (int i = 0; i < upgradesToPerform; i++) {
-            theCard = possibleCards.get(i);
+            if(possibleCards.isEmpty()) break;
+
+            theCard = possibleCards.get(AbstractDungeon.miscRng.random(0, possibleCards.size() - 1));
             theCard.upgrade();
             AbstractDungeon.player.bottledCardUpgradeCheck(theCard);
 
             // Add effects for each upgraded card
             AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
             AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy()));
-            addToTop(new WaitAction(Settings.ACTION_DUR_MED));
+
+            if (!theCard.canUpgrade()) {
+                possibleCards.remove(theCard);
+            }
         }
+        addToTop(new WaitAction(Settings.ACTION_DUR_MED));
     }
 
     @Override
