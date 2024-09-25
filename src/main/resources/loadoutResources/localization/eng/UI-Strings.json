@@ -114,7 +114,9 @@
 			"Sticky",
 			"When used or discarded from hand, returns to hand.",
 			"Create a Combination Card",
-			"Select Cards to Combine"
+			"Select Cards to Combine",
+			"AOE Damage",
+			"Exhaust Cards"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

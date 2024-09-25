@@ -96,6 +96,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus makeDieNextTurnButton;
     private final HeaderButtonPlus makeStickyButton;
 
+    private final HeaderButtonPlus makeDamageButton;
+    private final HeaderButtonPlus makeDamageAOEButton;
+    private final HeaderButtonPlus makeBlockButton;
+    private final HeaderButtonPlus makeDrawButton;
+    private final HeaderButtonPlus makeDiscardButton;
+    private final HeaderButtonPlus makeExhaustCardButton;
+
     private final CardEffectButton costButton;
     private final CardEffectButton damageButton;
 
@@ -371,6 +378,24 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
 
+        this.makeDamageButton = new HeaderButtonPlus(TEXT[0],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeDamageAOEButton = new HeaderButtonPlus(TEXT[33],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
+
+        this.makeBlockButton = new HeaderButtonPlus(TEXT_BLOCK,xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeDrawButton = new HeaderButtonPlus(TEXT[3],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
+
+        this.makeDiscardButton = new HeaderButtonPlus(TEXT_DISCARD,xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        xPosition += SPACE_X;
+        this.makeExhaustCardButton = new HeaderButtonPlus(TEXT[34],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        yPosition -= SPACE_Y;
+        xPosition -= SPACE_X;
+
         yPosition -= SPACE_Y;
         xPosition += 0.5f * SPACE_X;
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
@@ -389,7 +414,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
-                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.cardModButton, this.renameButton, this.descEditButton};
+                this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.makeDamageButton, this.makeDamageAOEButton, this.makeBlockButton, this.makeDrawButton, this.makeDiscardButton, this.makeExhaustCardButton
+                , this.cardModButton, this.renameButton, this.descEditButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -638,6 +664,13 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
                 else if (button == this.makeStickyButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
+                else if (button == this.makeDamageButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageMod.ID);
+                else if (button == this.makeDamageAOEButton) {}
+                else if (button == this.makeBlockButton) {}
+                else if (button == this.makeDrawButton) {}
+                else if (button == this.makeDiscardButton) {}
+                else if (button == this.makeExhaustCardButton) {}
             }
         }
 
@@ -678,6 +711,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeInfUpgradeButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, InfiniteUpgradeMod.ID);
             this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
             this.makeStickyButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
+            this.makeDamageButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
             if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
@@ -960,6 +994,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, StickyMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new StickyMod());
+            setCardModded(true);
+            resetOtherButtons();
+        } else if(button == this.makeDamageButton) {
+            clearActiveButtons();
+            if (!button.isAscending)
+                CardModifierManager.removeModifiersById(cardViewScreen.card, DamageMod.ID, true);
+            else
+                CardModifierManager.addModifier(cardViewScreen.card, new DamageMod());
             setCardModded(true);
             resetOtherButtons();
         } else if (button == this.cardModButton) {
