@@ -885,7 +885,16 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if(button == this.makeInevitableButton) {
             processModifierButton(this.makeInevitableButton, new InevitableMod());
         } else if(button == this.makeInfUpgradeButton) {
-            processModifierButton(this.makeInfUpgradeButton, new InfiniteUpgradeMod());
+            clearActiveButtons();
+            if (!button.isAscending) {
+                CardModifierManager.removeModifiersById(cardViewScreen.card, InfiniteUpgradeMod.ID, true);
+                cardViewScreen.card.upgraded = cardViewScreen.card.timesUpgraded > 0;
+            } else {
+                CardModifierManager.addModifier(cardViewScreen.card, new InfiniteUpgradeMod());
+                cardViewScreen.card.upgraded = false;
+            }
+            setCardModded(true);
+            resetOtherButtons();
         } else if(button == this.makeDieNextTurnButton) {
             processModifierButton(this.makeDieNextTurnButton, new DieNextTurnMod());
         } else if(button == this.makeStickyButton) {
