@@ -15,7 +15,10 @@ import loadout.relics.CardModifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
+
+import static loadout.LoadoutMod.logger;
 
 public class SerializableCardLite {
 
@@ -41,7 +44,9 @@ public class SerializableCardLite {
             if(unmoddedCopy.baseDamage != ac.baseDamage ) cardArray[5] = ac.baseDamage;
             if(unmoddedCopy.baseBlock != ac.baseBlock ) cardArray[6] = ac.baseBlock;
             if(unmoddedCopy.baseMagicNumber != ac.baseMagicNumber ) cardArray[7] = ac.baseMagicNumber;
-            if(unmoddedCopy.baseHeal != ac.baseHeal ) cardArray[8] = ac.baseHeal;
+        Map<String, Integer> additionalMNs = AbstractCardPatch.CardModificationFields.additionalMagicNumbers.get(ac);
+
+            if(!additionalMNs.isEmpty()) cardArray[8] = AbstractCardPatch.serializeAdditionalMagicNumbers(ac);
             if(unmoddedCopy.baseDraw != ac.baseDraw ) cardArray[9] = ac.baseDraw;
             if(unmoddedCopy.baseDiscard != ac.baseDiscard ) cardArray[10] = ac.baseDiscard;
             if(unmoddedCopy.misc != ac.misc ) cardArray[11] = ac.misc;
@@ -82,7 +87,20 @@ public class SerializableCardLite {
         if(sc[6] != null) card.baseBlock = (int)(double) sc[6];
         if(sc[7] != null) card.baseMagicNumber = (int)(double) sc[7];
         card.magicNumber = card.baseMagicNumber;
-        if(sc[8] != null) card.baseHeal = (int)(double) sc[8];
+        try {
+            if(sc[8] != null) {
+                //check
+                String data = (String) sc[8];
+                //logger.info("Now loading magic number array: {}", data);
+                if (data.contains(AbstractCardPatch.MAGIC_NUMBER_DELIMITER))
+                    AbstractCardPatch.deserializeAdditionalMagicNumbers(card, data);
+                else
+                    card.baseHeal = Integer.parseInt(data);
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to get magic number array while importing from clipboard! received: {}", sc[8]);
+            e.printStackTrace();
+        }
         if(sc[9] != null) card.baseDraw = (int)(double) sc[9];
         if(sc[10] != null) card.baseDiscard = (int)(double) sc[10];
         if(sc[11] != null) card.misc = (int)(double) sc[11];
