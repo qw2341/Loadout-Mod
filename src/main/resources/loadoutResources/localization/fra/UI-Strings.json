@@ -111,7 +111,10 @@
 			"Collant",
 			"Lorsqu'il est utilisé ou défaussé de la main, retourne en main.",
 			"Créer une carte combinée",
-			"Sélectionnez les cartes à combiner"
+			"Sélectionnez les cartes à combiner",
+			"Dégâts AOE",
+			"Cartes d'épuisement",
+			"Var"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -217,9 +220,18 @@
 			"Réinitialiser le Look du Joueur"
 		]
 	},
-	"${project.artifactId}:CardModifierStrings": {
+	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+			"Si Fatal, gagnez !loadout:GainGoldOnKillModifier! Or.",
+			"Si Fatal, augmentez de manière permanente les dégâts de cette carte de !loadout:GDOKMod!.",
+			"Si Fatal, augmentez vos PV max de !loadout:GainHpOnKillModifier!.",
+			"Gagnez !loadout:GainGoldOnPlayModifier! Or.",
+			"Soignez !loadout:HealOnPlayModifier! PV.",
+			"Si Fatal, améliorez !loadout:RandUpOKMod! des cartes aléatoires dans votre deck.",
+			"Si Fatal, augmentez de manière permanente le nombre magique de cette carte de !loadout:GMOKMod!",
+			"Piochez des cartes !loadout:DrawMod!.",
+			"Défaussez les cartes !loadout:DiscardMod!.",
+			"Épuisez les cartes !loadout:ExhaustCMod! dans votre main."
 		]
 	}
 

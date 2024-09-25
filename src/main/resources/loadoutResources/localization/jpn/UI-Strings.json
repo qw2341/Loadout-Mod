@@ -111,7 +111,10 @@
 			"スティッキー",
 			"使用されたり手札から捨てられたりしたとき、手札に戻る。",
 			"組み合わせカードを作成する",
-			"組み合わせるカードを選択"
+			"組み合わせるカードを選択",
+			"AOEダメージ",
+			"排気カード",
+			"Var"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -217,9 +220,18 @@
 			"プレーヤーの外観をリセットする"
 		]
 	},
-	"${project.artifactId}:CardModifierStrings": {
+	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+			"致命的の場合、!loadout:GainGoldOnKillModifier! ゴールドを獲得します。",
+			"致命的の場合、このカードのダメージを !loadout:GDOKMod! だけ永久に増加します。",
+			"致命的の場合、最大 HP を !loadout:GainHpOnKillModifier! だけ増加します。",
+			"!loadout:GainGoldOnPlayModifier! ゴールドを獲得します。",
+			"!loadout:HealOnPlayModifier! HP を回復します。",
+			"致命的の場合、デッキ内の !loadout:RandUpOKMod! ランダム カードをアップグレードします。",
+			"致命的の場合、このカードの魔法の数値を !loadout:GMOKMod! だけ永久に増加します。",
+			"!loadout:DrawMod! カードをドローします。",
+			"!loadout:DiscardMod! カードを破棄します。",
+			"消耗!loadout:ExhaustCMod! カードを手札に持っています。"
 		]
 	}
 

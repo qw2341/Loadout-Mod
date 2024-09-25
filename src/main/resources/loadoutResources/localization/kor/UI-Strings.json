@@ -111,7 +111,10 @@
 			"스티커",
 			"사용하거나 손에서 버리면 손으로 돌아갑니다.",
 			"조합 카드 만들기",
-			"결합 할 카드 선택"
+			"결합 할 카드 선택",
+			"AOE 데미지",
+			"배기 카드",
+			"Var"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -217,9 +220,18 @@
 			"플레이어 모양 재설정"
 		]
 	},
-	"${project.artifactId}:CardModifierStrings": {
+	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+			"치명적일 경우, !loadout:GainGoldOnKillModifier! 골드를 얻습니다.",
+			"치명적일 경우, 이 카드의 데미지를 !loadout:GDOKMod!만큼 영구적으로 증가시킵니다.",
+			"치명적일 경우, 최대 HP를 !loadout:GainHpOnKillModifier!만큼 증가시킵니다.",
+			"!loadout:GainGoldOnPlayModifier! 골드를 얻습니다.",
+			"!loadout:HealOnPlayModifier! HP를 회복시킵니다.",
+			"치명적일 경우, 덱에서 무작위로 !loadout:RandUpOKMod! 카드를 업그레이드합니다.",
+			"치명적일 경우, 이 카드의 마법 숫자를 !loadout:GMOKMod! 만큼 영구적으로 증가시킵니다!",
+			"!loadout:DrawMod! 카드를 뽑습니다.",
+			"!loadout:DiscardMod! 카드를 버립니다.",
+			"소진 !loadout:ExhaustCMod! 카드가 손에 있습니다."
 		]
 	}
 

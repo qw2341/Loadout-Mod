@@ -112,7 +112,10 @@
 			"Pegajoso",
 			"Cuando se usa o se descarta de la mano, vuelve a la mano.",
 			"Crea una Tarjeta Combinada",
-			"Seleccionar cartas para combinar"
+			"Seleccionar cartas para combinar",
+			"Daño AOE",
+			"Cartas de Escape",
+			"Var"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -218,9 +221,18 @@
 			"Restablecer el Aspecto del Jugador"
 		]
 	},
-	"${project.artifactId}:CardModifierStrings": {
+	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+			"Si es Fatal, gana !loadout:GainGoldOnKillModifier! Oro.",
+			"Si es Fatal, aumenta permanentemente el daño de esta carta en !loadout:GDOKMod!.",
+			"Si es Fatal, aumenta tu HP máximo en !loadout:GainHpOnKillModifier!.",
+			"Gana !loadout:GainGoldOnPlayModifier! Oro.",
+			"Cura !loadout:HealOnPlayModifier! HP.",
+			"Si es Fatal, mejora !loadout:RandUpOKMod! cartas aleatorias en tu mazo.",
+			"Si es Fatal, aumenta permanentemente el número mágico de esta carta en !loadout:GMOKMod!",
+			"Roba !loadout:DrawMod! cartas.",
+			"Descarta !loadout:DiscardMod! cartas.",
+			"Agota !loadout:ExhaustCMod! cartas en tu mano."
 		]
 	}
 

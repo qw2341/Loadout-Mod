@@ -230,7 +230,7 @@
 			"If Fatal, raise your Max HP by !loadout:GainHpOnKillModifier!.",
 			"Gain !loadout:GainGoldOnPlayModifier! Gold.",
 			"Heal !loadout:HealOnPlayModifier! HP.",
-			"If Fatal, Upgrade !RandUpOKMod! random cards in your deck.",
+			"If Fatal, Upgrade !loadout:RandUpOKMod! random cards in your deck.",
 			"If Fatal, permanently increase this card's magic number by !loadout:GMOKMod!",
 			"Draw !loadout:DrawMod! cards.",
 			"Discard !loadout:DiscardMod! cards.",

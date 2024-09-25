@@ -111,7 +111,10 @@
 			"粘手",
 			"当使用时或从手牌丢弃时，返回手牌。",
 			"缝合卡牌",
-			"选择任意卡牌来缝合"
+			"选择任意卡牌来缝合",
+			"AOE 伤害",
+			"消耗卡牌",
+			"变量"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -217,9 +220,18 @@
 			"重置玩家外观"
 		]
 	},
-	"${project.artifactId}:CardModifierStrings": {
+	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !${project.artifactId}:GainGoldOnKillModifier! Gold."
+			"斩杀 时，获得 !loadout:GainGoldOnKillModifier! 金币。",
+			"斩杀 时，它在本局游戏中的伤害永久性增加 !loadout:GDOKMod! 。",
+			"斩杀 时，永久获得 !loadout:GainHpOnKillModifier! 点最大生命。",
+			"获得 !loadout:GainGoldOnPlayModifier! 金币。",
+			"回复 !loadout:HealOnPlayModifier! 生命。",
+			"斩杀 时， 升级 你牌组中的 !loadout:RandUpOKMod! 张随机牌。",
+			"斩杀 时，它在本局游戏中的魔法数字永久性增加 !loadout:GMOKMod! 。",
+			"抽 !loadout:DrawMod! 张牌。",
+			"丢弃 !loadout:DiscardMod! 张牌。",
+			"消耗 !loadout:ExhaustCMod! 张牌。"
 		]
 	}
 
