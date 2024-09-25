@@ -6,6 +6,7 @@ import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
 import basemod.helpers.CardModifierManager;
+import com.jcraft.jorbis.Block;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import loadout.LoadoutMod;
@@ -49,6 +50,8 @@ public class ModifierLibrary {
 
         modifiers.put(StickyMod.ID, StickyMod.class);
         modifiers.put(DamageMod.ID, DamageMod.class);
+        modifiers.put(BlockMod.ID, BlockMod.class);
+        modifiers.put(DamageAOEMod.ID, DamageAOEMod.class);
 
         GainGoldOnKillMod.onLoad();
         GainHpOnKillMod.onLoad();
@@ -61,6 +64,8 @@ public class ModifierLibrary {
         DieNextTurnMod.onLoad();
 
         DamageMod.onLoad();
+        BlockMod.onLoad();
+        DamageAOEMod.onLoad();
     }
 
     public static AbstractCardModifier getModifier(String id) {

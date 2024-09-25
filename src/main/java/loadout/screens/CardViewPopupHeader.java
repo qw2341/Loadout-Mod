@@ -4,6 +4,7 @@ package loadout.screens;
 import VUPShionMod.cards.AbstractVUPShionCard;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import basemod.abstracts.AbstractCardModifier;
 import basemod.cardmods.EtherealMod;
 import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
@@ -666,8 +667,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
                 else if (button == this.makeDamageButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageMod.ID);
-                else if (button == this.makeDamageAOEButton) {}
-                else if (button == this.makeBlockButton) {}
+                else if (button == this.makeDamageAOEButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageAOEMod.ID);
+                else if (button == this.makeBlockButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, BlockMod.ID);
                 else if (button == this.makeDrawButton) {}
                 else if (button == this.makeDiscardButton) {}
                 else if (button == this.makeExhaustCardButton) {}
@@ -712,6 +715,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeDieNextTurnButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DieNextTurnMod.ID);
             this.makeStickyButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, StickyMod.ID);
             this.makeDamageButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageMod.ID);
+            this.makeDamageAOEButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageAOEMod.ID);
+            this.makeBlockButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, BlockMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
             if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
@@ -843,168 +848,55 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 CardModifierManager.removeModifiersById(cardViewScreen.card, InnateMod.ID, true);
             else
                 CardModifierManager.addModifier(cardViewScreen.card, new InnateMod());
-            setCardModded(true);
-            resetOtherButtons();
         } else if (button == this.makeRetainButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, RetainMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new RetainMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeRetainButton, new RetainMod());
         } else if (button == this.makeXCostButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, XCostMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new XCostMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeXCostButton, new XCostMod());
         } else if (button == this.makeAutoPlayButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, AutoplayMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new AutoplayMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeAutoPlayButton, new AutoplayMod());
         } else if (button == this.makeSoulBoundButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, SoulboundMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new SoulboundMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeSoulBoundButton, new SoulboundMod());
         }else if (button == this.makeFleetingButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, FleetingMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new FleetingMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeFleetingButton, new FleetingMod());
         }else if (button == this.makeGraveButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GraveMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GraveMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeGraveButton, new GraveMod());
         } else if(button == this.makeGainGoldOnKillButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainGoldOnKillMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnKillMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GainGoldOnKillMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeGainHPOnKillButton, new GainGoldOnKillMod());
         } else if(button == this.makeGainHPOnKillButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainHpOnKillMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GainHpOnKillMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GainHpOnKillMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeGainHPOnKillButton, new GainHpOnKillMod());
         } else if(button == this.makeGainGoldOnPlayButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainGoldOnPlayMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GainGoldOnPlayMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GainGoldOnPlayMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeGainGoldOnPlayButton, new GainGoldOnPlayMod());
         } else if(button == this.makeHealOnPlayButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, HealOnPlayMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, HealOnPlayMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new HealOnPlayMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeHealOnPlayButton, new HealOnPlayMod());
         } else if(button == this.randomUpgradeOnKillButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, RandomUpgradeOnKillMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, RandomUpgradeOnKillMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new RandomUpgradeOnKillMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.randomUpgradeOnKillButton, new RandomUpgradeOnKillMod());
         } else if(button == this.makeGainDamageOnKillButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainDamageOnKill.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GainDamageOnKill.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GainDamageOnKill());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeGainDamageOnKillButton, new GainDamageOnKill());
         } else if(button == this.makeGainMagicOnKillButton) {
-            clearActiveButtons();
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, GainMagicOnKillMod.ID, 0);
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, GainMagicOnKillMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new GainMagicOnKillMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processMagicNumberButton(this.makeGainMagicOnKillButton, new GainMagicOnKillMod());
         } else if(button == this.makeLifestealButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, LifestealMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new LifestealMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeLifestealButton, new LifestealMod());
         } else if(button == this.makeInevitableButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, InevitableMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new InevitableMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeInevitableButton, new InevitableMod());
         } else if(button == this.makeInfUpgradeButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, InfiniteUpgradeMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new InfiniteUpgradeMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeInfUpgradeButton, new InfiniteUpgradeMod());
         } else if(button == this.makeDieNextTurnButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, DieNextTurnMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new DieNextTurnMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeDieNextTurnButton, new DieNextTurnMod());
         } else if(button == this.makeStickyButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, StickyMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new StickyMod());
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeStickyButton, new StickyMod());
         } else if(button == this.makeDamageButton) {
-            clearActiveButtons();
-            if (!button.isAscending)
-                CardModifierManager.removeModifiersById(cardViewScreen.card, DamageMod.ID, true);
-            else
-                CardModifierManager.addModifier(cardViewScreen.card, new DamageMod());
-            setCardModded(true);
-            resetOtherButtons();
-        } else if (button == this.cardModButton) {
+            processModifierButton(this.makeDamageButton, new DamageMod());
+        } else if(button == this.makeDamageAOEButton) {
+            processModifierButton(this.makeDamageAOEButton, new DamageAOEMod());
+        } else if(button == this.makeBlockButton) {
+            processModifierButton(this.makeBlockButton, new BlockMod());
+        } else if(button == this.makeDrawButton) {
+            processModifierButton(this.makeDrawButton, new DamageMod());
+        } else if(button == this.makeDiscardButton) {
+            processModifierButton(this.makeDiscardButton, new DamageMod());
+        }else if(button == this.makeExhaustCardButton) {
+            processModifierButton(this.makeExhaustCardButton, new DamageMod());
+        }  else if (button == this.cardModButton) {
             SCardViewPopup.cardModSelectScreen.open(cardViewScreen.card, cardViewScreen.group.group);
         } else if (button == this.fabricateEditButton) {
             FabricateScreenController.openEditCardScreen(cardViewScreen.card, cardViewScreen.group);
@@ -1023,6 +915,28 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             cardViewScreen.card.initializeDescription();
         }
 
+    }
+    private void processModifierButton(HeaderButtonPlus button, AbstractCardModifier modifier) {
+        clearActiveButtons();
+        if (!button.isAscending)
+            CardModifierManager.removeModifiersById(cardViewScreen.card, modifier.identifier(null), true);
+        else
+            CardModifierManager.addModifier(cardViewScreen.card, modifier);
+        setCardModded(true);
+        resetOtherButtons();
+    }
+
+    private void processMagicNumberButton(HeaderButtonPlus button, AbstractCardModifier modifier) {
+        clearActiveButtons();
+        if (!button.isAscending) {
+            AbstractCardPatch.removeMagicNumber(cardViewScreen.card, modifier.identifier(null));
+            CardModifierManager.removeModifiersById(cardViewScreen.card, modifier.identifier(null), true);
+        } else {
+            AbstractCardPatch.addMagicNumber(cardViewScreen.card, modifier.identifier(null), 0);
+            CardModifierManager.addModifier(cardViewScreen.card, modifier);
+        }
+        setCardModded(true);
+        resetOtherButtons();
     }
 
     public void render(SpriteBatch sb) {
