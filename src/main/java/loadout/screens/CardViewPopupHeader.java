@@ -309,7 +309,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.getCopyButton = new HeaderButtonPlus(TEXT[10], xPosition, yPosition, this, true, ImageMaster.PROFILE_B);
 
 
-        yPosition = START_Y;
+        yPosition = Settings.HEIGHT - 25.0f * Settings.yScale;
         xPosition = Settings.WIDTH - 2 * xPosition;
 
         //this.makeUnplayableButton = new HeaderButtonPlus(TEXT[5], xPosition, yPosition, this, true, ImageMaster.loadImage("images/blights/muzzle.png"));
@@ -398,7 +398,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         xPosition -= SPACE_X;
 
         yPosition -= SPACE_Y;
-        xPosition += 0.5f * SPACE_X;
+        xPosition += SPACE_X;
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
         yPosition -= SPACE_Y;
         this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
