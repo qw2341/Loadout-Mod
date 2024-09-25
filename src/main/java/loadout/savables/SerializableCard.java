@@ -39,6 +39,7 @@ public class SerializableCard implements Serializable {
     public String[] modifiers;
     public String originalName;
     public String rawDescription;
+    public String additionalMagicNumbers;
 
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         if(!CardLibrary.isACard(sc.id)) {
@@ -83,6 +84,10 @@ public class SerializableCard implements Serializable {
             card.initializeDescription();
         }
 
+        if(sc.additionalMagicNumbers != null) {
+            AbstractCardPatch.deserializeAdditionalMagicNumbers(card, sc.additionalMagicNumbers);
+        }
+
 
         InfUpgradePatch.changeCardName(card);
 
@@ -123,6 +128,7 @@ public class SerializableCard implements Serializable {
         sc.originalName = original != null && card.originalName.equals(original.originalName) ? null : card.originalName;
         sc.rawDescription = original != null && card.rawDescription.equals(original.rawDescription) ? null : card.rawDescription;
 
+        sc.additionalMagicNumbers = AbstractCardPatch.serializeAdditionalMagicNumbers(card);
         int i = 0;
         for (AbstractCardModifier acm : cardMods) {
             sc.modifiers[i] = acm.identifier(card);
