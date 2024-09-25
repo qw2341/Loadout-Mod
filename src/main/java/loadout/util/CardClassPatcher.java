@@ -5,6 +5,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import loadout.LoadoutMod;
+import loadout.patches.AdditionalUpgradePatches;
 import loadout.savables.CardModifications;
 import org.clapper.util.classutil.*;
 
@@ -60,6 +61,8 @@ public class CardClassPatcher implements Runnable{
 
         finder.findClasses(list, filter);
         String src = CardModifications.class.getName() + ".modifyIfExist(this);";
+
+        String upgradePatch = AdditionalUpgradePatches.class.getName() + ".additionalUpgrade(this)";
         for(ClassInfo classInfo : list) {
             try {
                 CtClass ctClass = this.clazzPool.get(classInfo.getClassName());
@@ -67,6 +70,7 @@ public class CardClassPatcher implements Runnable{
                     ctor.insertAfter(src);
                 }
 //                LoadoutMod.logger.info("Finished patching {}!", classInfo.getClassName());
+                ctClass.getDeclaredMethod("upgrade").insertAfter(upgradePatch);
             } catch (Exception ignored) {
                 LoadoutMod.logger.info("Error patching {}!", classInfo.getClassName());
             }
