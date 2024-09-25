@@ -13,39 +13,29 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import loadout.LoadoutMod;
+import loadout.util.Wiz;
 
-public class DamageAOEMod extends ExtraEffectModifier{
+public class DamageAOEMod extends AbstractCardModifier{
     public static String ID = LoadoutMod.makeID("DamageAOEMod");
     public static String description = "";
 
-    public DamageAOEMod() {
-        super(ExtraEffectModifier.VariableType.DAMAGE, 0);
-    }
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return rawDescription + " NL " + description;
     }
 
-    @Override
-    public void doExtraEffects(AbstractCard abstractCard, AbstractPlayer abstractPlayer, AbstractCreature abstractCreature, UseCardAction useCardAction) {
-        addToBot(new DamageAllEnemiesAction(abstractPlayer, abstractCard.baseDamage, abstractCard.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL));
-    }
 
     @Override
-    public String getExtraText(AbstractCard abstractCard) {
-        return null;
-    }
-
-    @Override
-    public String getEffectId(AbstractCard abstractCard) {
-        return ID;
+    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
+        addToBot(new DamageAllEnemiesAction(Wiz.adp(), card.baseDamage, card.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL));
     }
 
     @Override
     public void onInitialApplication(AbstractCard card) {
         if(card.target == AbstractCard.CardTarget.SELF)
                 card.target = AbstractCard.CardTarget.ALL;
+//        card.multiDamage = DamageInfo.createDamageMatrix(card.baseDamage);
     }
 
     @Override

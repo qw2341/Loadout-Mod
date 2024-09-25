@@ -16,32 +16,20 @@ import loadout.util.KeywordsAdder;
 import loadout.util.Wiz;
 import org.apache.commons.lang3.StringUtils;
 
-public class DamageMod extends ExtraEffectModifier {
+public class DamageMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("DamageMod");
     public static String description = "";
 
-    public DamageMod() {
-        super(VariableType.DAMAGE, 0);
-    }
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return rawDescription + " NL " + description;
     }
 
-    @Override
-    public void doExtraEffects(AbstractCard abstractCard, AbstractPlayer abstractPlayer, AbstractCreature abstractCreature, UseCardAction useCardAction) {
-        addToBot(new DamageAction(abstractCreature, new DamageInfo(abstractPlayer, abstractCard.damage)));
-    }
 
     @Override
-    public String getExtraText(AbstractCard abstractCard) {
-        return null;
-    }
-
-    @Override
-    public String getEffectId(AbstractCard abstractCard) {
-        return ID;
+    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
+        addToBot(new DamageAction(target, new DamageInfo(Wiz.adp(), card.damage)));
     }
 
     @Override
