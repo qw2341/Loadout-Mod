@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.BindingHelper;
 import com.evacipated.cardcrawl.mod.stslib.extraeffects.ExtraEffectModifier;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
@@ -28,7 +29,7 @@ public class DamageAOEMod extends AbstractCardModifier{
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        addToBot(new DamageAllEnemiesAction(Wiz.adp(), card.baseDamage, card.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL));
+        addToBot(BindingHelper.makeAction(card, new DamageAllEnemiesAction(Wiz.adp(), card.baseDamage, card.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL)));
     }
 
     @Override

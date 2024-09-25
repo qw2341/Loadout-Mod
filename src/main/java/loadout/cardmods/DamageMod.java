@@ -2,6 +2,7 @@ package loadout.cardmods;
 
 import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
+import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
 import com.evacipated.cardcrawl.mod.stslib.extraeffects.ExtraEffectModifier;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -29,7 +30,9 @@ public class DamageMod extends AbstractCardModifier {
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        addToBot(new DamageAction(target, new DamageInfo(Wiz.adp(), card.damage)));
+        DamageInfo di = new DamageInfo(Wiz.adp(), card.damage);
+        DamageModifierManager.bindInstigator(di, card);
+        addToBot(new DamageAction(target, di));
     }
 
     @Override

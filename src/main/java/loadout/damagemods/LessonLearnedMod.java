@@ -40,7 +40,7 @@ public class LessonLearnedMod extends AbstractOnKillMod{
 
             // Add effects for each upgraded card
             AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
-            AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy()));
+            AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy(), (float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
 
             if (!theCard.canUpgrade()) {
                 possibleCards.remove(theCard);
