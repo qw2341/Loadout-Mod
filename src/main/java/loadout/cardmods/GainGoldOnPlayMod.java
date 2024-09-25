@@ -12,11 +12,12 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.vfx.RainingGoldEffect;
 import loadout.LoadoutMod;
+import loadout.helper.ModifierLibrary;
 
 public class GainGoldOnPlayMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GainGoldOnPlayModifier");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[3];
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {

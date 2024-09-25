@@ -385,7 +385,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         yPosition -= SPACE_Y;
         xPosition -= SPACE_X;
 
-        this.makeBlockButton = new HeaderButtonPlus(TEXT_BLOCK,xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
+        this.makeBlockButton = new HeaderButtonPlus(StringUtils.capitalize(TEXT_BLOCK),xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         xPosition += SPACE_X;
         this.makeDrawButton = new HeaderButtonPlus(TEXT[3],xPosition,yPosition,this,false,true, HeaderButtonPlus.Alignment.CENTER);
         yPosition -= SPACE_Y;
@@ -583,9 +583,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }
 
 
-
+        int i = 0;
         for (String key : AbstractCardPatch.CardModificationFields.additionalMagicNumbers.get(cardViewScreen.card).keySet()) {
-            CardEffectButton button = new CardEffectButton(null, xPosition, yPosition, TEXT[1], new StatModSelectScreen.StatModActions() {
+            CardEffectButton button = new CardEffectButton(null, xPosition, yPosition, TEXT[35] + " " + ++i, new StatModSelectScreen.StatModActions() {
                 @Override
                 public int getAmount() {
                     return AbstractCardPatch.getMagicNumber(getCard(), key);
@@ -671,9 +671,12 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageAOEMod.ID);
                 else if (button == this.makeBlockButton)
                     button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, BlockMod.ID);
-                else if (button == this.makeDrawButton) {}
-                else if (button == this.makeDiscardButton) {}
-                else if (button == this.makeExhaustCardButton) {}
+                else if (button == this.makeDrawButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DrawMod.ID);
+                else if (button == this.makeDiscardButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DiscardMod.ID);
+                else if (button == this.makeExhaustCardButton)
+                    button.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, ExhaustCardMod.ID);
             }
         }
 
@@ -717,6 +720,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             this.makeDamageButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageMod.ID);
             this.makeDamageAOEButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DamageAOEMod.ID);
             this.makeBlockButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, BlockMod.ID);
+            this.makeDrawButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DrawMod.ID);
+            this.makeDiscardButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, DiscardMod.ID);
+            this.makeExhaustCardButton.isAscending = CardModifierManager.hasModifier(cardViewScreen.card, ExhaustCardMod.ID);
 
             if(FABRICATE_MOD_LOADED) this.isCardFabricated = cardViewScreen.card instanceof PCLCard;
             if(VUPSHION_MOD_LOADED) this.isCardFromShion = cardViewScreen.card instanceof VUPShionMod.cards.AbstractVUPShionCard;
@@ -861,7 +867,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         }else if (button == this.makeGraveButton) {
             processModifierButton(this.makeGraveButton, new GraveMod());
         } else if(button == this.makeGainGoldOnKillButton) {
-            processMagicNumberButton(this.makeGainHPOnKillButton, new GainGoldOnKillMod());
+            processMagicNumberButton(this.makeGainGoldOnKillButton, new GainGoldOnKillMod());
         } else if(button == this.makeGainHPOnKillButton) {
             processMagicNumberButton(this.makeGainHPOnKillButton, new GainHpOnKillMod());
         } else if(button == this.makeGainGoldOnPlayButton) {
@@ -891,11 +897,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if(button == this.makeBlockButton) {
             processModifierButton(this.makeBlockButton, new BlockMod());
         } else if(button == this.makeDrawButton) {
-            processModifierButton(this.makeDrawButton, new DamageMod());
+            processMagicNumberButton(this.makeDrawButton, new DrawMod());
         } else if(button == this.makeDiscardButton) {
-            processModifierButton(this.makeDiscardButton, new DamageMod());
+            processMagicNumberButton(this.makeDiscardButton, new DiscardMod());
         }else if(button == this.makeExhaustCardButton) {
-            processModifierButton(this.makeExhaustCardButton, new DamageMod());
+            processMagicNumberButton(this.makeExhaustCardButton, new ExhaustCardMod());
         }  else if (button == this.cardModButton) {
             SCardViewPopup.cardModSelectScreen.open(cardViewScreen.card, cardViewScreen.group.group);
         } else if (button == this.fabricateEditButton) {

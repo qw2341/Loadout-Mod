@@ -15,18 +15,19 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.actions.GDOKAction;
 import loadout.damagemods.RitualDaggerMod;
+import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
 public class GainDamageOnKill extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GDOKMod");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[1];
 
     private AbstractDamageModifier daggerMod = null;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return rawDescription + description + LocalizedStrings.PERIOD;
+        return rawDescription + " NL " + description;
     }
 
     @Override
@@ -50,14 +51,4 @@ public class GainDamageOnKill extends AbstractCardModifier {
         return new GainDamageOnKill();
     }
 
-    public static void onLoad() {
-        String desc= CardCrawlGame.languagePack.getCardStrings("RitualDagger").DESCRIPTION;
-        String txtToAdd;
-        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
-            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-        } else {
-            txtToAdd = desc.split("NL")[1];
-        }
-        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
-    }
 }

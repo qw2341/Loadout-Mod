@@ -9,11 +9,12 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import loadout.LoadoutMod;
+import loadout.helper.ModifierLibrary;
 
 public class HealOnPlayMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("HealOnPlayModifier");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[4];
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {

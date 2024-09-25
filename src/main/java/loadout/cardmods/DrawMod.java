@@ -3,7 +3,7 @@ package loadout.cardmods;
 import basemod.abstracts.AbstractCardModifier;
 import com.evacipated.cardcrawl.mod.stslib.extraeffects.ExtraEffectModifier;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
-import com.megacrit.cardcrawl.actions.common.GainBlockAction;
+import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -11,11 +11,12 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import loadout.LoadoutMod;
-import loadout.util.Wiz;
+import loadout.helper.ModifierLibrary;
+import loadout.patches.AbstractCardPatch;
 
-public class BlockMod extends AbstractCardModifier {
-    public static String ID = LoadoutMod.makeID("BlockMod");
-    public static String description = "";
+public class DrawMod extends AbstractCardModifier {
+    public static String ID = LoadoutMod.makeID("DrawMod");
+    public static String description = ModifierLibrary.TEXT[7];
 
 
     @Override
@@ -23,10 +24,9 @@ public class BlockMod extends AbstractCardModifier {
         return rawDescription + " NL " + description;
     }
 
-
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        addToBot(new GainBlockAction(Wiz.adp(), card.block));
+        addToBot(new DrawCardAction(AbstractCardPatch.getMagicNumber(card, ID)));
     }
 
     @Override
@@ -36,10 +36,6 @@ public class BlockMod extends AbstractCardModifier {
 
     @Override
     public AbstractCardModifier makeCopy() {
-        return new BlockMod();
-    }
-
-    public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("Defend_R").DESCRIPTION;
+        return new DrawMod();
     }
 }

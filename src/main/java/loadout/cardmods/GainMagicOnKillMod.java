@@ -11,19 +11,20 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.actions.GMOKAction;
 import loadout.damagemods.MagicDaggerMod;
+import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.screens.CardViewPopupHeader;
 
 public class GainMagicOnKillMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GMOKMod");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[6];
 
     private static AbstractDamageModifier daggerMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return rawDescription + description + LocalizedStrings.PERIOD;
+        return rawDescription + " NL " + description;
     }
 
     @Override

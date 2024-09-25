@@ -116,7 +116,8 @@
 			"Create a Combination Card",
 			"Select Cards to Combine",
 			"AOE Damage",
-			"Exhaust Cards"
+			"Exhaust Cards",
+			"Var"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
@@ -224,7 +225,16 @@
 	},
 	"loadout:CardModifierStrings": {
 		"TEXT": [
-			"If Fatal, gain !loadout:GainGoldOnKillModifier! Gold."
+			"If Fatal, gain !loadout:GainGoldOnKillModifier! Gold.",
+			"If Fatal, permanently increase this card's damage by !loadout:GDOKMod!.",
+			"If Fatal, raise your Max HP by !loadout:GainHpOnKillModifier!.",
+			"Gain !loadout:GainGoldOnPlayModifier! Gold.",
+			"Heal !loadout:HealOnPlayModifier! HP.",
+			"If Fatal, Upgrade !RandUpOKMod! random cards in your deck.",
+			"If Fatal, permanently increase this card's magic number by !loadout:GMOKMod!",
+			"Draw !loadout:DrawMod! cards.",
+			"Discard !loadout:DiscardMod! cards.",
+			"Exhaust !loadout:ExhaustCMod! cards in your hand."
 		]
 	}
 }

@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.damagemods.FeastMod;
+import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
 import java.util.Arrays;
@@ -21,13 +22,13 @@ import java.util.regex.Pattern;
 public class GainHpOnKillMod extends AbstractCardModifier {
 
     public static String ID = LoadoutMod.makeID("GainHpOnKillModifier");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[2];
 
     private static AbstractDamageModifier feedMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return rawDescription + description + LocalizedStrings.PERIOD;
+        return rawDescription + " NL " + description;
     }
 
     @Override
@@ -52,13 +53,13 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     }
 
     public static void onLoad() {
-        String desc= CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION;
-        String txtToAdd;
-        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
-            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-        } else {
-            txtToAdd = desc.split("NL")[1];
-        }
-        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
+//        String desc= CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION;
+//        String txtToAdd;
+//        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
+//            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
+//        } else {
+//            txtToAdd = desc.split("NL")[1];
+//        }
+//        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
     }
 }

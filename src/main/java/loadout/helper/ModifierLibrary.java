@@ -52,14 +52,10 @@ public class ModifierLibrary {
         modifiers.put(DamageMod.ID, DamageMod.class);
         modifiers.put(BlockMod.ID, BlockMod.class);
         modifiers.put(DamageAOEMod.ID, DamageAOEMod.class);
+        modifiers.put(DrawMod.ID, DrawMod.class);
+        modifiers.put(DiscardMod.ID, DiscardMod.class);
+        modifiers.put(ExhaustCardMod.ID, ExhaustCardMod.class);
 
-        GainGoldOnKillMod.onLoad();
-        GainHpOnKillMod.onLoad();
-        GainGoldOnPlayMod.onLoad();
-        HealOnPlayMod.onLoad();
-        RandomUpgradeOnKillMod.onLoad();
-        GainDamageOnKill.onLoad();
-        GainMagicOnKillMod.onLoad();
         LifestealMod.onLoad();
         DieNextTurnMod.onLoad();
 

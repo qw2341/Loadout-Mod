@@ -14,17 +14,18 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.damagemods.LessonLearnedMod;
+import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
 public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
-    private static String description = "";
+    private static String description = ModifierLibrary.TEXT[5];
 
     private static AbstractDamageModifier lessonLearnedMod;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return rawDescription + description + LocalizedStrings.PERIOD;
+        return rawDescription + " NL " + description;
     }
 
     @Override

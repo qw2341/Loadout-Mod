@@ -44,12 +44,8 @@ public class DamageAOEMod extends ExtraEffectModifier{
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        if (card.target != AbstractCard.CardTarget.ALL && card.target != AbstractCard.CardTarget.ALL_ENEMY) {
-            if(card.target == AbstractCard.CardTarget.SELF || card.target == AbstractCard.CardTarget.SELF_AND_ENEMY)
+        if(card.target == AbstractCard.CardTarget.SELF)
                 card.target = AbstractCard.CardTarget.ALL;
-            else if(card.target == AbstractCard.CardTarget.ENEMY)
-                card.target = AbstractCard.CardTarget.ALL_ENEMY;
-        }
     }
 
     @Override
