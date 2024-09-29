@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.vfx.RainingGoldEffect;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
+import loadout.patches.AbstractCardPatch;
 
 public class GainGoldOnPlayMod extends AbstractCardModifier {
 
@@ -31,8 +32,9 @@ public class GainGoldOnPlayMod extends AbstractCardModifier {
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        AbstractDungeon.effectList.add(new RainingGoldEffect(card.misc * 2, true));
-        AbstractGameAction aga = new GainGoldAction(card.misc);
+        int amount = AbstractCardPatch.getMagicNumber(card, ID);
+        AbstractDungeon.effectList.add(new RainingGoldEffect(amount * 2, true));
+        AbstractGameAction aga = new GainGoldAction(amount);
         aga.actionType = AbstractGameAction.ActionType.DAMAGE;
         AbstractDungeon.actionManager.addToBottom(aga);
     }
@@ -42,8 +44,4 @@ public class GainGoldOnPlayMod extends AbstractCardModifier {
         return new GainGoldOnPlayMod();
     }
 
-    public static void onLoad() {
-        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("FameAndFortune").DESCRIPTION;
-        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
-    }
 }

@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
+import loadout.patches.AbstractCardPatch;
 
 public class HealOnPlayMod extends AbstractCardModifier {
 
@@ -29,7 +30,7 @@ public class HealOnPlayMod extends AbstractCardModifier {
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
-        AbstractDungeon.actionManager.addToBottom(new HealAction(AbstractDungeon.player,AbstractDungeon.player,card.misc));
+        AbstractDungeon.actionManager.addToBottom(new HealAction(AbstractDungeon.player,AbstractDungeon.player, AbstractCardPatch.getMagicNumber(card, ID)));
     }
 
     @Override
@@ -37,8 +38,4 @@ public class HealOnPlayMod extends AbstractCardModifier {
         return new HealOnPlayMod();
     }
 
-    public static void onLoad() {
-        String txtToAdd = CardCrawlGame.languagePack.getCardStrings("Bandage Up").DESCRIPTION.split("NL")[0];
-        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
-    }
 }
