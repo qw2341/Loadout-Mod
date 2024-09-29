@@ -15,13 +15,12 @@ import java.util.Collections;
 import java.util.function.Supplier;
 
 public class LessonLearnedMod extends AbstractOnKillMod{
-    public LessonLearnedMod(Supplier<Integer> getValue) {
-        super(getValue);
+    public LessonLearnedMod(String cardmodID) {
+        super(cardmodID);
     }
 
     @Override
     public void onKill(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target, int amount) {
-        int upgradesToPerform = getValue.get();
         ArrayList<AbstractCard> possibleCards;
         possibleCards = new ArrayList<>();
         AbstractCard theCard = null;
@@ -31,7 +30,7 @@ public class LessonLearnedMod extends AbstractOnKillMod{
             }
         }
 
-        for (int i = 0; i < upgradesToPerform; i++) {
+        for (int i = 0; i < amount; i++) {
             if(possibleCards.isEmpty()) break;
 
             theCard = possibleCards.get(AbstractDungeon.miscRng.random(0, possibleCards.size() - 1));
@@ -39,8 +38,8 @@ public class LessonLearnedMod extends AbstractOnKillMod{
             AbstractDungeon.player.bottledCardUpgradeCheck(theCard);
 
             // Add effects for each upgraded card
-            AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
-            AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy(), (float) Settings.WIDTH / (upgradesToPerform + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
+            AbstractDungeon.effectsQueue.add(new UpgradeShineEffect((float) Settings.WIDTH / (amount + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
+            AbstractDungeon.topLevelEffectsQueue.add(new ShowCardBrieflyEffect(theCard.makeStatEquivalentCopy(), (float) Settings.WIDTH / (amount + 1) * (i + 1) , (float) Settings.HEIGHT / 2.0F));
 
             if (!theCard.canUpgrade()) {
                 possibleCards.remove(theCard);
@@ -51,6 +50,6 @@ public class LessonLearnedMod extends AbstractOnKillMod{
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new LessonLearnedMod(getValue);
+        return new LessonLearnedMod(cardmodID);
     }
 }

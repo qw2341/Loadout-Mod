@@ -21,7 +21,7 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
     private static String description = ModifierLibrary.TEXT[5];
 
-    private static AbstractDamageModifier lessonLearnedMod;
+    private static final AbstractDamageModifier lessonLearnedMod = new LessonLearnedMod(ID);
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -42,7 +42,6 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        lessonLearnedMod = new LessonLearnedMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, lessonLearnedMod);
     }
 
@@ -56,14 +55,4 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
         return new RandomUpgradeOnKillMod();
     }
 
-    public static void onLoad() {
-        String desc= CardCrawlGame.languagePack.getCardStrings("LessonLearned").DESCRIPTION;
-        String txtToAdd;
-        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
-            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-        } else {
-            txtToAdd = desc.split("NL")[1];
-        }
-        description = txtToAdd;
-    }
 }

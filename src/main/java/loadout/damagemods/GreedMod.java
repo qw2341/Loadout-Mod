@@ -14,8 +14,8 @@ import java.util.function.Supplier;
  */
 public class GreedMod extends AbstractOnKillMod {
 
-    public GreedMod(Supplier<Integer> getValue) {
-        super(getValue);
+    public GreedMod(String cardmodID) {
+        super(cardmodID);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class GreedMod extends AbstractOnKillMod {
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new GreedMod(getValue);
+        return new GreedMod(cardmodID);
     }
 }

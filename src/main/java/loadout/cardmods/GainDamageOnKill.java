@@ -23,7 +23,7 @@ public class GainDamageOnKill extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GDOKMod");
     private static String description = ModifierLibrary.TEXT[1];
 
-    private AbstractDamageModifier daggerMod = null;
+    private static final AbstractDamageModifier daggerMod = new RitualDaggerMod(ID);
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -37,7 +37,6 @@ public class GainDamageOnKill extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        daggerMod = new RitualDaggerMod(()-> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, daggerMod);
     }
 

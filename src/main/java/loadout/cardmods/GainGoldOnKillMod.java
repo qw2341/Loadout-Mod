@@ -29,10 +29,10 @@ import java.util.regex.Pattern;
 
 public class GainGoldOnKillMod extends AbstractCardModifier {
 
-    public static String ID = LoadoutMod.makeID("GainGoldOnKillModifier");
+    public static final String ID = LoadoutMod.makeID("GainGoldOnKillModifier");
     private static String description = ModifierLibrary.TEXT[0];
 
-    private static AbstractDamageModifier greedMod;
+    private static final AbstractDamageModifier greedMod = new GreedMod(ID);;
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -46,7 +46,6 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        greedMod = new GreedMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, greedMod);
     }
 
@@ -60,15 +59,4 @@ public class GainGoldOnKillMod extends AbstractCardModifier {
         return new GainGoldOnKillMod();
     }
 
-    public static void onLoad() {
-//        String txtToAdd;
-//        String desc = CardCrawlGame.languagePack.getCardStrings("HandOfGreed").DESCRIPTION;
-//        if(desc.contains("NL")) {
-//            txtToAdd = desc.split("NL")[1];
-//        } else {
-//            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-//        }
-//
-//        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
-    }
 }

@@ -24,7 +24,7 @@ public class GainHpOnKillMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("GainHpOnKillModifier");
     private static String description = ModifierLibrary.TEXT[2];
 
-    private static AbstractDamageModifier feedMod;
+    private static final AbstractDamageModifier feedMod = new FeastMod(ID);
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
@@ -38,7 +38,6 @@ public class GainHpOnKillMod extends AbstractCardModifier {
 
     @Override
     public void onInitialApplication(AbstractCard card) {
-        feedMod = new FeastMod(() -> AbstractCardPatch.getMagicNumber(card, ID));
         DamageModifierManager.addModifier(card, feedMod);
     }
 
@@ -52,14 +51,4 @@ public class GainHpOnKillMod extends AbstractCardModifier {
         return new GainHpOnKillMod();
     }
 
-    public static void onLoad() {
-//        String desc= CardCrawlGame.languagePack.getCardStrings("Feed").DESCRIPTION;
-//        String txtToAdd;
-//        if(!LocalizedStrings.PERIOD.equals("") && desc.contains(LocalizedStrings.PERIOD)) {
-//            txtToAdd = desc.split("[" + LocalizedStrings.PERIOD + "]")[1];
-//        } else {
-//            txtToAdd = desc.split("NL")[1];
-//        }
-//        description = txtToAdd.replace("!M!", "!"+LoadoutMod.makeID("Misc")+"!");
-    }
 }

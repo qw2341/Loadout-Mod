@@ -12,8 +12,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MagicDaggerMod extends AbstractOnKillMod{
-    public MagicDaggerMod(Supplier<Integer> getValue) {
-        super(getValue);
+    public MagicDaggerMod(String cardmodID) {
+        super(cardmodID);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class MagicDaggerMod extends AbstractOnKillMod{
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new MagicDaggerMod(getValue);
+        return new MagicDaggerMod(cardmodID);
     }
 }

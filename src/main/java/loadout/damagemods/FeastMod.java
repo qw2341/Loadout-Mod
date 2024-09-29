@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 
 public class FeastMod extends AbstractOnKillMod {
 
-    public FeastMod(Supplier<Integer> getValue) {
-        super(getValue);
+    public FeastMod(String cardmodID) {
+        super(cardmodID);
     }
 
     @Override
@@ -20,6 +20,6 @@ public class FeastMod extends AbstractOnKillMod {
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new FeastMod(getValue);
+        return new FeastMod(cardmodID);
     }
 }

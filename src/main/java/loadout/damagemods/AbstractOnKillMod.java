@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import loadout.patches.AbstractCardPatch;
 
 import java.util.function.Supplier;
 
@@ -14,10 +15,11 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractOnKillMod extends AbstractLoadoutDamageMod {
 
-    protected Supplier<Integer> getValue;
-    public AbstractOnKillMod(Supplier<Integer> getValue) {
+    protected String cardmodID;
+
+    public AbstractOnKillMod(String cardmodID) {
         this.priority = Short.MAX_VALUE;
-        this.getValue = getValue;
+        this.cardmodID = cardmodID;
     }
 
     @Override
@@ -29,7 +31,7 @@ public abstract class AbstractOnKillMod extends AbstractLoadoutDamageMod {
     @Override
     public void onLastDamageTakenUpdate(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target) {
         if(isValidKill(info,lastDamageTaken, target)) {
-            onKill(info, lastDamageTaken, overkillAmount, target, getValue.get());
+            onKill(info, lastDamageTaken, overkillAmount, target, AbstractCardPatch.getMagicNumber(getCard(info), cardmodID));
         }
     }
 

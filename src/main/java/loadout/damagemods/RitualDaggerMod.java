@@ -12,8 +12,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class RitualDaggerMod extends AbstractOnKillMod{
-    public RitualDaggerMod(Supplier<Integer> getValue) {
-        super(getValue);
+    public RitualDaggerMod(String cardmodID) {
+        super(cardmodID);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class RitualDaggerMod extends AbstractOnKillMod{
 
     @Override
     public AbstractDamageModifier makeCopy() {
-        return new RitualDaggerMod(getValue);
+        return new RitualDaggerMod(cardmodID);
     }
 }
