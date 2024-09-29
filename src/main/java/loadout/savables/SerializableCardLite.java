@@ -92,10 +92,13 @@ public class SerializableCardLite {
                 //check
                 String data = (String) sc[8];
                 //logger.info("Now loading magic number array: {}", data);
-                if (data.contains(AbstractCardPatch.MAGIC_NUMBER_DELIMITER))
-                    AbstractCardPatch.deserializeAdditionalMagicNumbers(card, data);
-                else
-                    card.baseHeal = Integer.parseInt(data);
+                if (!data.isEmpty()) {
+                    if (data.contains(AbstractCardPatch.MAGIC_NUMBER_DELIMITER))
+                        AbstractCardPatch.deserializeAdditionalMagicNumbers(card, data);
+                    else
+                        card.baseHeal = Integer.parseInt(data);
+                }
+
             }
         } catch (Exception e) {
             logger.warn("Failed to get magic number array while importing from clipboard! received: {}", sc[8]);

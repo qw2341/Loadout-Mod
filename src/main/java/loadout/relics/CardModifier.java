@@ -144,7 +144,8 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                     cardStat[2] = card.baseDamage;
                     cardStat[3] = card.baseBlock;
                     cardStat[4] = card.baseMagicNumber;
-                    cardStat[5] = AbstractCardPatch.serializeAdditionalMagicNumbers(card);
+                    String magicNumberData = AbstractCardPatch.serializeAdditionalMagicNumbers(card);
+                    cardStat[5] = magicNumberData.isEmpty() ? "0" : magicNumberData;
                     cardStat[6] = card.baseDraw;
                     cardStat[7] = card.baseDiscard;
                     cardStat[8] = card.color.toString();
@@ -205,10 +206,14 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                             //check
                             String data = (String) ret[i][5];
                             //logger.info("Now loading magic number array: {}", data);
-                            if (data.contains(AbstractCardPatch.MAGIC_NUMBER_DELIMITER))
-                                AbstractCardPatch.deserializeAdditionalMagicNumbers(card, data);
-                            else
-                                card.baseHeal = Integer.parseInt(data);
+                            if (!data.isEmpty()) {
+                                if(data.contains(AbstractCardPatch.MAGIC_NUMBER_DELIMITER)) {
+                                    AbstractCardPatch.deserializeAdditionalMagicNumbers(card, data);
+                                } else
+                                    card.baseHeal = Integer.parseInt(data);
+                            } else
+                                logger.warn("Received empty string while parsing additional magic numbers for card: {}", card.cardID);
+
                         } catch (Exception e) {
                             logger.warn("Failed to get magic number array! received: {}", ret[i][5]);
                             e.printStackTrace();
