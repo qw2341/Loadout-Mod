@@ -138,9 +138,8 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
 
                 this.id = id;
-                try {
-                    this.powerStrings = ReflectionHacks.getPrivateStatic(pClass,"powerStrings");
-                } catch (Exception ignored) {
+                this.powerStrings = ReflectionHacks.getPrivateStatic(pClass, "powerStrings");
+                if (this.powerStrings == null) {
                     this.powerStrings = CardCrawlGame.languagePack.getPowerStrings(id);
                 }
 
