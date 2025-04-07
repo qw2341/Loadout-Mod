@@ -1,41 +1,11 @@
 package loadout.relics;
 
-import basemod.abstracts.CustomRelic;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.megacrit.cardcrawl.audio.Sfx;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.MathHelper;
-import com.megacrit.cardcrawl.helpers.PowerTip;
-import com.megacrit.cardcrawl.helpers.ShaderHelper;
-import com.megacrit.cardcrawl.helpers.input.InputAction;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.vfx.FloatyEffect;
-import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
-import loadout.LoadoutMod;
-import loadout.helper.LoadoutRelicHelper;
-import loadout.patches.RelicPopUpPatch;
 import loadout.screens.GCardSelectScreen;
-import loadout.uiElements.UIElement;
-import loadout.util.SkinManager;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import static loadout.LoadoutMod.*;
-import static loadout.LoadoutMod.logger;
 
 public abstract class AbstractCardScreenRelic extends LoadoutRelic {
 

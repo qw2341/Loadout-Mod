@@ -1,16 +1,20 @@
 package loadout.patches.fakerelichooks;
 
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import java.util.ArrayList;
+
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatches2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.city.TheLibrary;
 import com.megacrit.cardcrawl.events.shrines.GremlinMatchGame;
-import com.megacrit.cardcrawl.monsters.beyond.Darkling;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.shop.ShopScreen;
-import loadout.relics.AllInOneBag;
 
-import java.util.ArrayList;
+import loadout.relics.AllInOneBag;
 
 public class OnPreviewObtainCardHooks {
     @SpirePatch2(clz = AbstractDungeon.class, method = "getRewardCards")

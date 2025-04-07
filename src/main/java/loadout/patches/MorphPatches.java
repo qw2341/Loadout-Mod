@@ -1,15 +1,10 @@
 package loadout.patches;
 
-import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.actions.GameActionManager;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.monsters.ending.SpireShield;
-import com.megacrit.cardcrawl.monsters.ending.SpireSpear;
-import com.megacrit.cardcrawl.screens.options.ConfirmPopup;
-import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
-import javassist.CtBehavior;
+
 import loadout.relics.TildeKey;
 
 public class MorphPatches {

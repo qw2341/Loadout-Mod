@@ -1,19 +1,16 @@
 package loadout.cardmods;
 
-import basemod.abstracts.AbstractCardModifier;
+import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.player;
+
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.red.Corruption;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.relics.ChemicalX;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
-import loadout.LoadoutMod;
-import loadout.actions.MultiUseAction;
 
-import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.player;
+import basemod.abstracts.AbstractCardModifier;
+import loadout.LoadoutMod;
 
 public class XCostMod extends AbstractCardModifier {
 

@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFileObfuscator;
 import loadout.LoadoutMod;
-import loadout.screens.MDeckViewSortHeader;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;

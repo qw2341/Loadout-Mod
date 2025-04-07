@@ -1,6 +1,5 @@
 package loadout.relics;
 
-import basemod.ReflectionHacks;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

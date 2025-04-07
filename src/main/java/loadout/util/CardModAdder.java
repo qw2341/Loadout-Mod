@@ -1,7 +1,6 @@
 package loadout.util;
 
 import basemod.abstracts.AbstractCardModifier;
-import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import javassist.CtClass;
 import org.clapper.util.classutil.*;
 

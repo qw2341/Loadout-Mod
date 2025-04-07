@@ -3,9 +3,8 @@ package loadout.damagemods;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import loadout.util.Wiz;
 
-import java.util.function.Supplier;
+import loadout.util.Wiz;
 
 public class FeastMod extends AbstractOnKillMod {
 

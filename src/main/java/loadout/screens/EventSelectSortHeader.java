@@ -1,10 +1,7 @@
 package loadout.screens;
 
 
-import basemod.BaseMod;
 import basemod.DevConsole;
-import basemod.ReflectionHacks;
-import basemod.devcommands.act.ActCommand;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -17,7 +14,6 @@ import com.megacrit.cardcrawl.rewards.chests.*;
 import com.megacrit.cardcrawl.rooms.*;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import com.megacrit.cardcrawl.vfx.combat.BattleStartEffect;
 import loadout.LoadoutMod;
 import loadout.relics.EventfulCompass;

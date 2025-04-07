@@ -1,17 +1,17 @@
 package loadout.helper;
 
-import basemod.ReflectionHacks;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+
+import basemod.ReflectionHacks;
 import loadout.LoadoutMod;
 import loadout.relics.AllInOneBag;
 import pinacolada.cards.base.PCLCustomCardSlot;
 import pinacolada.ui.editor.card.PCLCustomCardEditScreen;
-
-import java.util.List;
-import java.util.Objects;
 
 public class FabricateScreenController {
 

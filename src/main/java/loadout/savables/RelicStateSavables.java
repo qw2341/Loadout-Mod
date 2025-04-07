@@ -1,7 +1,6 @@
 package loadout.savables;
 
 import basemod.abstracts.CustomSavable;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;

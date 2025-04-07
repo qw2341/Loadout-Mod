@@ -5,14 +5,11 @@ import basemod.cardmods.EtherealMod;
 import basemod.cardmods.ExhaustMod;
 import basemod.cardmods.InnateMod;
 import basemod.cardmods.RetainMod;
-import basemod.helpers.CardModifierManager;
-import com.jcraft.jorbis.Block;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import loadout.LoadoutMod;
 import loadout.cardmods.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class ModifierLibrary {

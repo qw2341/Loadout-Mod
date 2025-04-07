@@ -1,15 +1,12 @@
 package loadout.helper;
 
-import basemod.BaseMod;
-import basemod.devcommands.relic.Relic;
-import basemod.patches.whatmod.RelicTips;
-import basemod.patches.whatmod.WhatMod;
+import java.util.Comparator;
+
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import loadout.LoadoutMod;
 
-import java.util.Comparator;
+import basemod.patches.whatmod.WhatMod;
 
 
 public class RelicModComparator implements Comparator<AbstractRelic> {

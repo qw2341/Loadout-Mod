@@ -1,16 +1,16 @@
 package loadout.patches;
 
+import java.net.URL;
+
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+
 import javassist.ClassPool;
 import javassist.CtBehavior;
 import loadout.LoadoutMod;
 import loadout.util.CardClassPatcher;
-import org.clapper.util.classutil.ClassFinder;
-
-import java.net.URL;
 
 @SpirePatch(
         clz= CardCrawlGame.class,

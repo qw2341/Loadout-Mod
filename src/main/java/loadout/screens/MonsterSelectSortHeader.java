@@ -3,17 +3,12 @@ package loadout.screens;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import loadout.LoadoutMod;
 import loadout.relics.BottledMonster;
-
-import java.util.ArrayList;
 
 import static loadout.screens.PowerSelectSortHeader.cTEXT;
 import static loadout.screens.PowerSelectSortHeader.pTEXT;

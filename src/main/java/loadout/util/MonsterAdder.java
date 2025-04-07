@@ -2,7 +2,6 @@ package loadout.util;
 
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import javassist.CtClass;
-import loadout.screens.MonsterSelectScreen;
 import org.clapper.util.classutil.*;
 
 import java.net.URISyntaxException;

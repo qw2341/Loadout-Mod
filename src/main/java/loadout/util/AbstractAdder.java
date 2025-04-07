@@ -3,16 +3,12 @@ package loadout.util;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import javassist.ClassPool;
 import loadout.LoadoutMod;
-import org.clapper.util.classutil.AndClassFilter;
 import org.clapper.util.classutil.ClassFinder;
 import org.clapper.util.classutil.ClassInfo;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import static loadout.LoadoutMod.logger;
 import static loadout.LoadoutMod.startTime;
 

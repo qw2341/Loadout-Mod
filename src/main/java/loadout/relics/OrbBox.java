@@ -7,7 +7,6 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.OrbSelectScreen;
-import loadout.util.TextureLoader;
 
 
 public class OrbBox extends AbstractCustomScreenRelic<OrbSelectScreen.OrbButton> {

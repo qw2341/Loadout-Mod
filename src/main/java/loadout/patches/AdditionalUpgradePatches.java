@@ -1,11 +1,8 @@
 package loadout.patches;
 
-import basemod.ReflectionHacks;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+
+import basemod.ReflectionHacks;
 
 public class AdditionalUpgradePatches {
 //    @SpirePatch2(clz = AbstractCard.class, method = "upgradeDamage")

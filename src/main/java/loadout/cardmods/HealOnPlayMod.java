@@ -1,13 +1,12 @@
 package loadout.cardmods;
 
-import basemod.abstracts.AbstractCardModifier;
-import com.megacrit.cardcrawl.actions.common.GainGoldAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+
+import basemod.abstracts.AbstractCardModifier;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;

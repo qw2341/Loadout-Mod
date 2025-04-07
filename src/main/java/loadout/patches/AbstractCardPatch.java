@@ -1,31 +1,25 @@
 package loadout.patches;
 
-import basemod.helpers.CardModifierManager;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.evacipated.cardcrawl.modthespire.lib.SpireField;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.red.SearingBlow;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.ChemicalX;
-import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+
+import basemod.helpers.CardModifierManager;
 import javassist.CannotCompileException;
-import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
-import loadout.LoadoutMod;
 import loadout.actions.MultiUseAction;
 import loadout.cardmods.XCostMod;
-import loadout.damagemods.MagicDaggerMod;
-import loadout.savables.CardModifications;
-import loadout.savables.SerializableCard;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AbstractCardPatch {
 

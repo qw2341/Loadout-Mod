@@ -1,23 +1,20 @@
 package loadout.patches.cardmods;
 
-import basemod.helpers.CardModifierManager;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.PersistFields;
-import com.evacipated.cardcrawl.mod.stslib.patches.PersistPatch;
-import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.OnPersistPower;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnPersistRelic;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.actions.utility.DiscardToHandAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
+
+import basemod.helpers.CardModifierManager;
 import javassist.CtBehavior;
 import loadout.cardmods.StickyMod;
 import loadout.util.Wiz;
-
-import java.util.Iterator;
 
 public class StickModPatches {
     /**

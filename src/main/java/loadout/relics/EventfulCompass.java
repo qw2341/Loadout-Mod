@@ -4,7 +4,6 @@ import basemod.CustomEventRoom;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.RoomEventDialog;
-import com.megacrit.cardcrawl.helpers.EventHelper;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -12,8 +11,6 @@ import com.megacrit.cardcrawl.rooms.*;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.EventSelectScreen;
-import loadout.util.TextureLoader;
-
 import java.util.ArrayList;
 
 import static loadout.LoadoutMod.*;

@@ -5,12 +5,9 @@ import javassist.CtClass;
 import loadout.LoadoutMod;
 import org.clapper.util.classutil.*;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import static loadout.LoadoutMod.logger;
 
 public class PowerAdder extends AbstractAdder{

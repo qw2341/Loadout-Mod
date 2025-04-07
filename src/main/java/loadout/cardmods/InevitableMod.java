@@ -1,22 +1,20 @@
 package loadout.cardmods;
 
-import basemod.BaseMod;
-import basemod.abstracts.AbstractCardModifier;
-import basemod.helpers.CardModifierManager;
-import basemod.helpers.TooltipInfo;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.CardModifierManager;
+import basemod.helpers.TooltipInfo;
 import loadout.LoadoutMod;
 import loadout.screens.CardViewPopupHeader;
 import loadout.util.KeywordsAdder;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InevitableMod extends AbstractCardModifier {
 

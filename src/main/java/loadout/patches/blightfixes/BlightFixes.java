@@ -2,20 +2,15 @@ package loadout.patches.blightfixes;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatches;
-import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
-import javassist.bytecode.*;
-import javassist.expr.ExprEditor;
-import loadout.LoadoutMod;
 
-import java.util.Arrays;
+import javassist.CannotCompileException;
+import javassist.expr.ExprEditor;
 
 @SpirePatches({@SpirePatch(clz = AbstractDungeon.class, method = "generateMap"),
 @SpirePatch(clz = MonsterRoomElite.class, method = "dropReward"),

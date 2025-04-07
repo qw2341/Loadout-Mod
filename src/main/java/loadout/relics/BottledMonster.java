@@ -2,20 +2,15 @@ package loadout.relics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.MonsterSelectScreen;
-import loadout.util.TextureLoader;
-
 import java.util.ArrayList;
 
-import static loadout.LoadoutMod.*;
 import static loadout.screens.MonsterSelectScreen.MonsterButton.calculateSmartDistance;
 
 public class BottledMonster extends AbstractCustomScreenRelic<MonsterSelectScreen.MonsterButton> {

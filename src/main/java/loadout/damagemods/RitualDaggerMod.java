@@ -1,15 +1,14 @@
 package loadout.damagemods;
 
+import java.util.Iterator;
+import java.util.UUID;
+
 import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.GetAllInBattleInstances;
-
-import java.util.Iterator;
-import java.util.UUID;
-import java.util.function.Supplier;
 
 public class RitualDaggerMod extends AbstractOnKillMod{
     public RitualDaggerMod(String cardmodID) {

@@ -7,9 +7,9 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+
 import loadout.LoadoutMod;
 import loadout.relics.AllInOneBag;
-import loadout.relics.PowerGiver;
 import loadout.relics.TildeKey;
 
 public class AbstractPlayerPatch {

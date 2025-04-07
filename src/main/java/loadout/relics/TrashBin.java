@@ -7,8 +7,6 @@ import loadout.LoadoutMod;
 import loadout.helper.LoadoutRelicHelper;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.RelicSelectScreen;
-import loadout.util.TextureLoader;
-
 import java.util.*;
 
 import static loadout.LoadoutMod.*;

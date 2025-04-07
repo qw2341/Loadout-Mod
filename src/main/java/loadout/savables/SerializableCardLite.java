@@ -6,14 +6,12 @@ import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-import loadout.LoadoutMod;
 import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
 import loadout.relics.CardModifier;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;

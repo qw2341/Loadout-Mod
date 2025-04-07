@@ -1,18 +1,16 @@
 package loadout.cardmods;
 
-import basemod.BaseMod;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
+
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.TooltipInfo;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
 import loadout.screens.CardViewPopupHeader;
 import loadout.util.KeywordsAdder;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InfiniteUpgradeMod extends AbstractCardModifier {
 

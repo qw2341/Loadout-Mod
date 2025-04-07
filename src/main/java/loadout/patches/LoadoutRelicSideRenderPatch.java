@@ -1,18 +1,16 @@
 package loadout.patches;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
-import javassist.expr.ExprEditor;
-import javassist.expr.FieldAccess;
-import javassist.expr.MethodCall;
-import loadout.helper.LoadoutRelicHelper;
-import loadout.relics.AllInOneBag;
 
-import java.util.Collections;
+import javassist.CtBehavior;
+import loadout.relics.AllInOneBag;
 
 public class LoadoutRelicSideRenderPatch {
     @SpirePatch(clz = AbstractPlayer.class, method = "renderRelics", paramtypez = {SpriteBatch.class})

@@ -1,18 +1,21 @@
 package loadout.patches;
 
+import static loadout.LoadoutMod.logger;
+
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.localization.CardStrings;
+
 import basemod.ReflectionHacks;
 import basemod.helpers.CardModifierManager;
-import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.localization.CardStrings;
 import javassist.CtBehavior;
 import loadout.LoadoutMod;
 import loadout.cardmods.InfiniteUpgradeMod;
-
-import java.lang.reflect.InvocationTargetException;
-
-import static loadout.LoadoutMod.logger;
 
 @SpirePatch(clz = AbstractCard.class, method = "upgradeName")
 public class InfUpgradePatch {

@@ -1,8 +1,8 @@
 package loadout.patches;
 
-import basemod.BaseMod;
-import basemod.eventUtil.AddEventParams;
-import basemod.patches.com.megacrit.cardcrawl.screens.CombatRewardScreen.RewardsScrolling;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
@@ -10,11 +10,9 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
+
 import io.chaofan.sts.chaofanmod.utils.ChaofanModEnums;
 import loadout.relics.TildeKey;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @SpirePatch(clz = CombatRewardScreen.class, method = "setupItemReward")
 public class RewardsPatch {

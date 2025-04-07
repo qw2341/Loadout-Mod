@@ -1,6 +1,5 @@
 package loadout.patches;
 
-import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -11,9 +10,9 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import loadout.LoadoutMod;
+
+import basemod.abstracts.CustomMonster;
 import loadout.ui.CreatureManipulationPanel;
-import loadout.uiElements.CreatureManipulationButton;
 
 public class AbstractCreaturePatch {
     @SpirePatch(clz = AbstractCreature.class, method = SpirePatch.CLASS)

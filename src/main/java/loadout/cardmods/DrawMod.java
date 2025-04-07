@@ -1,15 +1,10 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
-import com.evacipated.cardcrawl.mod.stslib.extraeffects.ExtraEffectModifier;
-import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;

@@ -1,12 +1,20 @@
 package loadout.helper;
 
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
-import loadout.LoadoutMod;
-import loadout.relics.*;
-
-import java.util.ArrayList;
 import java.util.HashSet;
+
+import loadout.relics.AllInOneBagUp;
+import loadout.relics.BlightChest;
+import loadout.relics.BottledMonster;
+import loadout.relics.CardModifier;
+import loadout.relics.CardPrinter;
+import loadout.relics.CardShredder;
+import loadout.relics.EventfulCompass;
+import loadout.relics.LoadoutBag;
+import loadout.relics.LoadoutCauldron;
+import loadout.relics.OrbBox;
+import loadout.relics.PowerGiver;
+import loadout.relics.TildeKey;
+import loadout.relics.TrashBin;
 
 public class LoadoutRelicHelper {
     public static HashSet<String> loadoutRelicIds;

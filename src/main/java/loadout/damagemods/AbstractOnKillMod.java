@@ -1,14 +1,9 @@
 package loadout.damagemods;
 
-import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
-import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import loadout.patches.AbstractCardPatch;
 
-import java.util.function.Supplier;
+import loadout.patches.AbstractCardPatch;
 
 /**
  * Some inspirations from chimera cards mod

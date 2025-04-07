@@ -13,7 +13,6 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Took some inspiration from Occult Patch from anniv5, the Packmaster

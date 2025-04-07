@@ -1,18 +1,13 @@
 package loadout.cardmods;
 
-import basemod.abstracts.AbstractCardModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
-import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+
+import basemod.abstracts.AbstractCardModifier;
 import loadout.LoadoutMod;
-import loadout.actions.GMOKAction;
 import loadout.damagemods.MagicDaggerMod;
 import loadout.helper.ModifierLibrary;
-import loadout.patches.AbstractCardPatch;
 import loadout.screens.CardViewPopupHeader;
 
 public class GainMagicOnKillMod extends AbstractCardModifier {

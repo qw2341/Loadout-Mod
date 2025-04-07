@@ -1,5 +1,7 @@
 package loadout.damagemods;
 
+import java.util.ArrayList;
+
 import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -9,10 +11,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.vfx.UpgradeShineEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.function.Supplier;
 
 public class LessonLearnedMod extends AbstractOnKillMod{
     public LessonLearnedMod(String cardmodID) {

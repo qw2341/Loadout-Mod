@@ -1,41 +1,10 @@
 package loadout.relics;
 
-import basemod.abstracts.CustomRelic;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.megacrit.cardcrawl.audio.Sfx;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.GameCursor;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
-import com.megacrit.cardcrawl.helpers.input.InputAction;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
-import com.megacrit.cardcrawl.vfx.FloatyEffect;
-import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
-import loadout.LoadoutMod;
-import loadout.helper.LoadoutRelicHelper;
-import loadout.patches.RelicPopUpPatch;
 import loadout.screens.AbstractSelectScreen;
-import loadout.uiElements.UIElement;
-import loadout.util.TextureLoader;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import static loadout.LoadoutMod.*;
 
 
 public abstract class AbstractCustomScreenRelic<T> extends LoadoutRelic {

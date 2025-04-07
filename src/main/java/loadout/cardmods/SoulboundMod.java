@@ -1,18 +1,19 @@
 package loadout.cardmods;
 
-import basemod.BaseMod;
-import basemod.abstracts.AbstractCardModifier;
-import basemod.helpers.TooltipInfo;
-import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+
+import basemod.BaseMod;
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.TooltipInfo;
 import loadout.LoadoutMod;
 import loadout.util.KeywordsAdder;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SoulboundMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("SoulboundModifier");

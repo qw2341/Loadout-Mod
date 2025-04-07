@@ -1,9 +1,8 @@
 package loadout.helper;
 
-import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
-
 import java.util.Comparator;
+
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 
 public class PotionTierComparator implements Comparator<AbstractPotion> {
 

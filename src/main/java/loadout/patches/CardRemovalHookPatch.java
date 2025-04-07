@@ -1,17 +1,19 @@
 package loadout.patches;
 
-import basemod.helpers.CardModifierManager;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
+
+import basemod.helpers.CardModifierManager;
 import javassist.CtBehavior;
 import loadout.cardmods.InevitableMod;
-import loadout.util.AbstractAdder;
-
-import java.util.Collections;
 
 @SpirePatch(clz = CardGroup.class, method = "removeCard", paramtypez = {AbstractCard.class})
 public class CardRemovalHookPatch {

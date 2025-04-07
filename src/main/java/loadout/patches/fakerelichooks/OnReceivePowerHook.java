@@ -1,15 +1,13 @@
 package loadout.patches.fakerelichooks;
 
 import com.badlogic.gdx.Gdx;
-import com.evacipated.cardcrawl.mod.stslib.blockmods.AbstractBlockModifier;
-import com.evacipated.cardcrawl.mod.stslib.blockmods.BlockInstance;
-import com.evacipated.cardcrawl.mod.stslib.blockmods.BlockModifierManager;
-import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.BetterOnApplyPowerPower;
-import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.OnReceivePowerPower;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnAnyPowerAppliedRelic;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnApplyPowerRelic;
-import com.evacipated.cardcrawl.mod.stslib.relics.OnReceivePowerRelic;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.lib.ByRef;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.utility.TextAboveCreatureAction;
@@ -18,7 +16,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
+
 import javassist.CtBehavior;
 import loadout.relics.AllInOneBag;
 

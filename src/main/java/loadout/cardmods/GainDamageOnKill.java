@@ -3,20 +3,10 @@ package loadout.cardmods;
 import basemod.abstracts.AbstractCardModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.AbstractDamageModifier;
 import com.evacipated.cardcrawl.mod.stslib.damagemods.DamageModifierManager;
-import com.megacrit.cardcrawl.actions.unique.FeedAction;
-import com.megacrit.cardcrawl.actions.unique.RitualDaggerAction;
-import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import loadout.LoadoutMod;
-import loadout.actions.GDOKAction;
 import loadout.damagemods.RitualDaggerMod;
 import loadout.helper.ModifierLibrary;
-import loadout.patches.AbstractCardPatch;
 
 public class GainDamageOnKill extends AbstractCardModifier {
 

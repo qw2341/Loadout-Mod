@@ -8,11 +8,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
-import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
-import jdk.javadoc.internal.doclets.formats.html.markup.Head;
-
 import java.util.ArrayList;
 
 public class HeaderButtonPlus extends SortHeaderButton {

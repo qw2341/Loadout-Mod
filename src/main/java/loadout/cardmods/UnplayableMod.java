@@ -1,17 +1,18 @@
 package loadout.cardmods;
 
-import basemod.BaseMod;
-import basemod.abstracts.AbstractCardModifier;
-import basemod.helpers.TooltipInfo;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.TooltipInfo;
 import loadout.LoadoutMod;
 import loadout.util.KeywordsAdder;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UnplayableMod extends AbstractCardModifier {
     public static String ID = LoadoutMod.makeID("UnplayableCardModifier");

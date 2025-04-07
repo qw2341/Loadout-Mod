@@ -1,25 +1,25 @@
 package loadout.cards;
 
-import basemod.ReflectionHacks;
-import basemod.abstracts.CustomCard;
-import basemod.abstracts.CustomSavable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.stream.Collectors;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.stances.AbstractStance;
+
+import basemod.ReflectionHacks;
+import basemod.abstracts.CustomCard;
+import basemod.abstracts.CustomSavable;
 import loadout.LoadoutMod;
 import loadout.savables.SerializableCard;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.stream.Collectors;
 
 /**
  * Modified from REMEMod: https://github.com/REME-easy/REMEMod/blob/master/src/main/java/REMEMod/Cards/Colorless/Skill/SutureCard.java

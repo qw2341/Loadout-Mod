@@ -2,14 +2,11 @@ package loadout.util;
 
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import javassist.CtClass;
-import loadout.screens.OrbSelectScreen;
 import org.clapper.util.classutil.*;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-
 import static loadout.LoadoutMod.*;
 
 public class OrbAdder extends AbstractAdder{

@@ -1,6 +1,11 @@
 package loadout.helper;
 
-import basemod.BaseMod;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -9,12 +14,8 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
-import loadout.LoadoutMod;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import loadout.LoadoutMod;
 
 public class RelicClassComparator implements Comparator<AbstractRelic> {
 

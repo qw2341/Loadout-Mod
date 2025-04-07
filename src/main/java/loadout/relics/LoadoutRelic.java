@@ -17,17 +17,12 @@ import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.vfx.FloatyEffect;
 import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
 import loadout.LoadoutMod;
-import loadout.helper.LoadoutRelicHelper;
-import loadout.patches.RelicPopUpPatch;
-import loadout.screens.GCardSelectScreen;
 import loadout.uiElements.UIElement;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static loadout.LoadoutMod.logger;

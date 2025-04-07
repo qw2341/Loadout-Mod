@@ -41,8 +41,6 @@ import javassist.CtClass;
 import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
-import loadout.helper.dynamicvariables.HealVariable;
-import loadout.helper.dynamicvariables.MiscVariable;
 import loadout.savables.CardLoadouts;
 import loadout.savables.CardModifications;
 import loadout.savables.Favorites;
