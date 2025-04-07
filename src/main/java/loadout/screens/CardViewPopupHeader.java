@@ -768,7 +768,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             String cardId = cardViewScreen.card.cardID;
             CardModifications.cardMap.put(cardId, SerializableCard.toSerializableCard(cardViewScreen.card));
             //logger.info(CardModifications.cardMap.toString());
-            CardLibrary.cards.put(cardId,cardViewScreen.card);
+            CardLibrary.cards.put(cardId,cardViewScreen.card.makeStatEquivalentCopy());
             //LoadoutMod.createCardList();
             int i = 0;
             boolean found = false;
@@ -781,7 +781,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             }
             if(found) {
                 cardsToDisplay.remove(i);
-                cardsToDisplay.add(i,cardViewScreen.card);
+                cardsToDisplay.add(i,cardViewScreen.card.makeStatEquivalentCopy());
             }
 
             try {
