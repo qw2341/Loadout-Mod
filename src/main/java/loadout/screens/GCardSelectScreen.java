@@ -1021,6 +1021,12 @@ public class GCardSelectScreen
         this.tipMsg = this.lastTip;
     }
 
+    protected void renderCurrentSelectMult(int mult, SpriteBatch sb){
+        if (mult != 1) {
+            FontHelper.renderSmartText(sb, FontHelper.topPanelAmountFont, "x" + mult,
+                    InputHelper.mX + 5.0F * Settings.scale, InputHelper.mY - 55.0F * Settings.scale, 999.0F, 1.0F, Color.GOLD, Settings.scale);
+        }
+    }
     public void render(SpriteBatch sb) {
 
         if(LoadoutMod.FABRICATE_MOD_LOADED){
@@ -1187,7 +1193,7 @@ public class GCardSelectScreen
             FontHelper.renderDeckViewTip(sb, this.tipMsg, 96.0F * Settings.scale, Settings.CREAM_COLOR);
         }
 
-
+        renderCurrentSelectMult(selectMult, sb);
     }
 
 

@@ -87,7 +87,7 @@ public class LoadoutMod implements
         EditStringsSubscriber, EditKeywordsSubscriber,
         PostInitializeSubscriber,
 PostDungeonInitializeSubscriber,
-StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber, PostUpdateSubscriber{
+StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSubscriber, PreUpdateSubscriber, RelicGetSubscriber, PostDeathSubscriber, PostUpdateSubscriber, PostRenderSubscriber{
     public static final Logger logger = LogManager.getLogger(LoadoutMod.class.getName());
     private static String modID;
 
@@ -906,5 +906,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     @Override
     public void receivePostUpdate() {
         if(isGameLoaded) AllInOneBag.INSTANCE.update();
+    }
+
+    @Override
+    public void receivePostRender(SpriteBatch sb) {
+
     }
 }

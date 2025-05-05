@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -199,6 +200,13 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         if(AbstractDungeon.isPlayerInDungeon()) AllInOneBag.INSTANCE.showRelics();
     }
 
+    protected void renderCurrentSelectMult(int mult, SpriteBatch sb){
+        if (mult != 1) {
+            FontHelper.renderSmartText(sb, FontHelper.topPanelAmountFont, "x" + mult,
+                    InputHelper.mX + 5.0F * Settings.scale, InputHelper.mY - 55.0F * Settings.scale, 999.0F, 1.0F, Color.GOLD, Settings.scale);
+        }
+    }
+
     protected void updateHotkeyControls() {
         if (this.shiftKey.isPressed() && this.ctrlKey.isPressed()) {
             selectMult = 50;
@@ -380,6 +388,9 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
         confirmButton.render(sb);
 
         sortHeader.render(sb);
+
+        renderCurrentSelectMult(selectMult, sb);
+
     }
 
     protected abstract void renderList(SpriteBatch sb, ArrayList<T> list);
