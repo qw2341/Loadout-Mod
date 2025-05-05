@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <description>Adds a debug panel that gives you stuffs.</description>
 
     <properties>
@@ -164,6 +164,14 @@
             <version>1.4.0</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/3148450452/PokemonRegions.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>downfall</groupId>
+            <artifactId>downfall</artifactId>
+            <version>5.2.04</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/1610056683/Downfall.jar</systemPath>
             <optional>true</optional>
         </dependency>
     </dependencies>

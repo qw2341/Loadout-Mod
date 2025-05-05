@@ -1,8 +1,13 @@
 package loadout.patches;
 
+import com.evacipated.cardcrawl.modthespire.lib.ByRef;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.ReflectionHacks;
+
+import java.util.Map;
 
 public class AdditionalUpgradePatches {
 //    @SpirePatch2(clz = AbstractCard.class, method = "upgradeDamage")
@@ -28,7 +33,7 @@ public class AdditionalUpgradePatches {
 //            amount[0] = amount[0] + AbstractCardPatch.getCardNormalUpgrade(__instance)[3];
 //        }
 //    }
-
+//
     /**
      * Dynamic Patched
      * @param __instance
@@ -49,6 +54,9 @@ public class AdditionalUpgradePatches {
             ReflectionHacks.privateMethod(AbstractCard.class, "upgradeMagicNumber", int.class).invoke(__instance, magkUpgrade);
         int miscUpgrade = normUpgrades[4];
         __instance.misc += miscUpgrade;
+
+        //Additional magic number upgrade
+//        Map<String, Integer> additionalUpgrades = AbstractCardPatch.getCardAdditionalMagicUpgrade(__instance);
     }
 
 }

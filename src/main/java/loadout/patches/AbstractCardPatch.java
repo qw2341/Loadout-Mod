@@ -95,6 +95,8 @@ public class AbstractCardPatch {
         public static SpireField<Map<String, Integer>> additionalMagicNumbers = new SpireField<>(HashMap::new);
         public static SpireField<Integer[]> additionalNormalUpgrades = new SpireField<>(() -> new Integer[5]);
         public static SpireField<Map<String, Integer>> additionalMagicUpgrades = new SpireField<>(HashMap::new);
+
+        public static SpireField<String[]> additionalModifiers = new SpireField<>(() -> new String[0]);
     }
 
     public static int getMagicNumber(AbstractCard ac, String cardModID) {
@@ -154,6 +156,22 @@ public class AbstractCardPatch {
     public static void setCardNormalUpgrade(AbstractCard ac, Integer... values) {
         if(values.length != 5) return;
         CardModificationFields.additionalNormalUpgrades.set(ac, values);
+    }
+
+    public static Map<String, Integer> getCardAdditionalMagicUpgrade(AbstractCard ac) {
+        return CardModificationFields.additionalMagicUpgrades.get(ac);
+    }
+
+    public static void setCardAdditionalMagicUpgrade(AbstractCard ac, Map<String, Integer> upgrades) {
+        CardModificationFields.additionalMagicUpgrades.set(ac, upgrades);
+    }
+
+    public static String[] getCardAdditionalModifiers(AbstractCard ac) {
+        return CardModificationFields.additionalModifiers.get(ac);
+    }
+
+    public static void setCardAdditionalModifiers(AbstractCard ac, String[] modifiers) {
+        CardModificationFields.additionalModifiers.set(ac, modifiers);
     }
 
 
