@@ -207,7 +207,7 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
         //handle special cases
         if(id.equals(DevaPower.POWER_ID)) {
             AbstractPower devaPower = new DevaPower(AbstractDungeon.player);
-            devaPower.stackPower(amount - 1 );
+            for (int i = 0; i < amount - 1; i++) devaPower.stackPower( 1 ); // workaround since DevaForm doesn't stack normally due to the energy gain being ++ instead of += amount
 
             Wiz.att(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, devaPower));
         } else
