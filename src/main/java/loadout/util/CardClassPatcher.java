@@ -69,7 +69,7 @@ public class CardClassPatcher implements Runnable{
                     ctor.insertAfter(src);
                 }
 //                LoadoutMod.logger.info("Finished patching {}!", classInfo.getClassName());
-                ctClass.getDeclaredMethod("upgrade").insertAfter(upgradePatch);
+//                ctClass.getDeclaredMethod("upgrade").insertAfter(upgradePatch);
             } catch (Exception ignored) {
                 LoadoutMod.logger.info("Error patching {}!", classInfo.getClassName());
             }
