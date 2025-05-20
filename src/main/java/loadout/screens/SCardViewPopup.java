@@ -423,7 +423,12 @@ public class SCardViewPopup {
 
         this.fadeColor.a = Interpolation.pow2In.apply(0.9F, 0.0F, this.fadeTimer * 4.0F);
     }
-
+    protected void renderCurrentSelectMult(int mult, SpriteBatch sb){
+        if (mult != 1) {
+            FontHelper.renderSmartText(sb, FontHelper.topPanelAmountFont, "x" + mult,
+                    InputHelper.mX + 5.0F * Settings.scale, InputHelper.mY - 55.0F * Settings.scale, 999.0F, 1.0F, Color.GOLD, Settings.scale);
+        }
+    }
     public void render(SpriteBatch sb) {
 
         if(cardModSelectScreen != null && cardModSelectScreen.show) {
@@ -487,6 +492,7 @@ public class SCardViewPopup {
         }
 
         this.confirmButton.render(sb);
+        renderCurrentSelectMult(this.cardViewPopupHeader.multiplier, sb);
     }
 
     public void renderCardBack(SpriteBatch sb) {
