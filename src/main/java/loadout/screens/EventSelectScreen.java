@@ -89,13 +89,13 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
                 if (this.hb.hovered) {
                     sb.setBlendFunction(770, 1);
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
-                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+40.0F,y-64.0F, 64.0F, 64.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 256, 256, false, false);
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.GOLD_COLOR);
+                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+75.0F,y-50.0F, 150.0F, 50.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 220, 220, false, false);
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
                     sb.setBlendFunction(770, 771);
 
                     TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
                 } else {
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
                 }
             }
 
@@ -294,7 +294,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
     {
         for (EventButton e : list)
         {
-            e.hb.move(e.x + 150.0f, e.y);
+            e.hb.move(e.x + 150.0f*Settings.scale, e.y);
             e.update();
             if (e.hb.hovered)
             {

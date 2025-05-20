@@ -84,12 +84,12 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
                     sb.setBlendFunction(770, 1);
                     sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
                     sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+40.0F,y-64.0F, 64.0F, 64.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 256, 256, false, false);
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.GOLD_COLOR);
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
                     sb.setBlendFunction(770, 771);
 
                     TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
                 } else {
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f / 2,y + 20.0f,200.0f,25.0f,Settings.CREAM_COLOR);
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
                 }
 //                if (this.amount > 0) {
 //                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
@@ -262,7 +262,7 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
         for (OrbButton o : list)
         {
             o.update();
-            o.hb.move(o.x  + 150.0f, o.y);
+            o.hb.move(o.x  + 150.0f*Settings.scale, o.y);
 
             if (o.hb.hovered)
             {
