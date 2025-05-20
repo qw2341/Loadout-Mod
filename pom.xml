@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <description>Adds a debug panel that gives you stuffs.</description>
 
     <properties>
