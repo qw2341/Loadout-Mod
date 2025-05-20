@@ -6,16 +6,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.cards.purple.DevaForm;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
+import com.megacrit.cardcrawl.powers.watcher.DevaPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import loadout.LoadoutMod;
 import loadout.screens.AbstractSelectScreen;
 import loadout.screens.PowerSelectScreen;
+import loadout.util.Wiz;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,7 +204,14 @@ public class PowerGiver extends AbstractCustomScreenRelic<PowerSelectScreen.Powe
     }
 
     public void applyPowerToPlayer(String id, int amount) {
-        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPower(id, amount, AbstractDungeon.player, placeholderCard), amount));
+        //handle special cases
+        if(id.equals(DevaPower.POWER_ID)) {
+            AbstractPower devaPower = new DevaPower(AbstractDungeon.player);
+            devaPower.stackPower(amount - 1 );
+
+            Wiz.att(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, devaPower));
+        } else
+            AbstractDungeon.actionManager.addToTop(new ApplyPowerAction((AbstractCreature)AbstractDungeon.player, (AbstractCreature)AbstractDungeon.player, getPower(id, amount, AbstractDungeon.player, placeholderCard), amount));
     }
 
     public static void applyPowerToMonster(String id, int amount, AbstractCreature monster) {
