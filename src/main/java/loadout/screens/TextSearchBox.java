@@ -134,8 +134,8 @@ public class TextSearchBox implements TextReceiver {
         sb.draw(this.filterTextBoxImg, this.filterBarX - 50.0F, this.filterBarY - 50.0F, 100.0F, 43.0F, 250.0F, 86.0F, Settings.scale * doop * this.filterTextHb.width / 150.0F / Settings.scale, Settings.yScale * doop, 0.0F, 0, 0, 200, 86, false, false);
         String renderFilterText = filterText.equals("") ? filterTextPlaceholder : filterText;
         Color filterTextColor = isTyping ? Color.CYAN : Settings.GOLD_COLOR;
-        FontHelper.renderSmartText(sb, FontHelper.panelNameFont, renderFilterText, filterBarX, filterBarY, 250.0F, 20.0F, filterTextColor);
-        FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, this.title, filterBarX, filterBarY + 35.0F * Settings.yScale, 250.0F, 20.0F, Settings.GOLD_COLOR);
+        FontHelper.renderSmartText(sb, FontHelper.panelNameFont, renderFilterText, filterBarX, filterBarY, 275.0F*Settings.scale, 20.0F*Settings.scale, filterTextColor);
+        FontHelper.renderSmartText(sb, FontHelper.tipHeaderFont, this.title, filterBarX, filterBarY + 35.0F * Settings.yScale, 250.0F*Settings.scale, 20.0F*Settings.scale, Settings.GOLD_COLOR);
 
     }
 
