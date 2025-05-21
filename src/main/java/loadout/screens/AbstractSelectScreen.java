@@ -1,5 +1,6 @@
 package loadout.screens;
 
+import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,9 +9,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.MathHelper;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -28,7 +27,86 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
+    public static abstract class AbstractSelectButton<V> {
 
+        static final float BUTTON_W = 200.0f * Settings.scale;
+        static final float BUTTON_H = 75.0f * Settings.yScale;
+        static final String PLACEHOLDER_ID  = "No ID Placeholder";
+        static final String STS_MODID = "Slay the Spire";
+        public Class<? extends V> pClass;
+        public V instance;
+        public String id;
+        public String name;
+        public String modID;
+        public String desc;
+        public int amount;
+        public Hitbox hb;
+        public float x;
+        public float y;
+        public ArrayList<PowerTip> tips;
+        public boolean hasAmount = true;
+
+        public AbstractSelectButton(String id, Class<? extends V> pClass) {
+            this();
+            this.pClass = pClass;
+            this.id = id;
+            this.modID = WhatMod.findModID(pClass);
+            if (this.modID == null) this.modID = STS_MODID;
+
+            if(this.id == null) this.id = PLACEHOLDER_ID;
+
+            this.tips.add(new PowerTip("Mod",this.modID));
+        }
+        public AbstractSelectButton(String id) {
+            this();
+            this.id = id;
+            if(this.id == null) this.id = PLACEHOLDER_ID;
+        }
+        public AbstractSelectButton() {
+            this.tips = new ArrayList<>();
+            this.hb = new Hitbox(BUTTON_W,BUTTON_H);
+            this.amount = 0;
+            this.x = 0.0f;
+            this.y = 0.0f;
+        }
+
+        public void update() {
+            this.hb.update();
+        }
+
+        public void renderIcon(SpriteBatch sb, float a) {
+
+        }
+        public void render(SpriteBatch sb) {
+            if (this.hb != null) {
+                this.hb.render(sb);
+                float a = (amount != 0 || this.hb.hovered) ? 1.0f : 0.7f;
+
+                renderIcon(sb, a);
+
+                if (this.hb.hovered) {
+                    sb.setBlendFunction(770, 1);
+                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
+                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x - 150.0f + 128.0f*Settings.scale+ 32.5f*Settings.scale ,y - 50.0f, 150.0F, 50.f, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 220, 220, false, false);
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
+                    sb.setBlendFunction(770, 771);
+
+                    TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
+                } else {
+                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
+                }
+                if(hasAmount) {
+                    if (this.amount > 0) {
+                        FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+30.0f*Settings.scale, y-30.0f*Settings.scale, 3.0f, Settings.GREEN_TEXT_COLOR);
+                    } else if (this.amount < 0) {
+                        FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+30.0f*Settings.scale, y-30.0f*Settings.scale, 3.0f, Settings.RED_TEXT_COLOR);
+                    }
+                }
+
+            }
+        }
+
+    }
 
     protected static final float SPACE = 80.0F * Settings.scale;
     public static final float START_X = 450.0F * Settings.scale;

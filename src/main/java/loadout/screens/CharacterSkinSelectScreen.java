@@ -113,11 +113,11 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
                 //handle exclusions
 
                 //handle exceptions
-                if(EXCLUSIONS.contains(mb.mClass.getSimpleName())) {
+                if(EXCLUSIONS.contains(mb.pClass.getSimpleName())) {
                     continue;
                 }
                 //TODO: make modded monster compatible
-                if(mb.modID.equals("Slay the Spire")) this.itemsClone.add(new CharacterButton(mb));
+                if(mb.modID.equals(AbstractSelectButton.STS_MODID)) this.itemsClone.add(new CharacterButton(mb));
             }
 
         }
@@ -252,7 +252,7 @@ public class CharacterSkinSelectScreen extends AbstractSelectScreen<CharacterSki
 
             this.onRelease = () -> {
                 if(!this.pressStarted) return;
-                TildeKey.morph(TildeKey.morphee, MonsterSelectScreen.MonsterButton.createMonster(mb.mClass));
+                TildeKey.morph(TildeKey.morphee, MonsterSelectScreen.MonsterButton.createMonster(mb.pClass));
                 AllInOneBag.INSTANCE.tildeKey.morphMenu.close();
             };
 

@@ -48,36 +48,25 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         noBGMBossList.add("TheGuardian");
     }
 
-    public static class MonsterButton {
+    public static class MonsterButton extends AbstractSelectScreen.AbstractSelectButton<AbstractMonster> {
 
         private Skeleton skeleton;
         private TextureAtlas atlas;
         private Texture img;
-        public String id;
-        public String name;
 
-        public String modID;
-
-        public int amount;
-        public Hitbox hb;
-        public float x;
-        public float y;
         public AbstractMonster.EnemyType type;
 
         public MonsterStrings monsterStrings;
-        public AbstractMonster instance;
-        public Class<? extends AbstractMonster> mClass;
-        public ArrayList<PowerTip> tips;
+
 
 
         public MonsterButton(Class<?extends AbstractMonster> amClass, boolean isModded) {
-            this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
+            super();
+            this.hasAmount = false;
             if(isModded) this.modID = WhatMod.findModID(amClass);
-            this.x = 0.0f;
-            this.y = 0.0f;
-            if (this.modID == null) this.modID = "Slay the Spire";
-            this.tips = new ArrayList<>();
-            this.mClass = amClass;
+            if (this.modID == null) this.modID = STS_MODID;
+
+            this.pClass = amClass;
             try {
                 try{
                     this.name = (String) amClass.getField("NAME").get(null);
@@ -132,15 +121,10 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 this.id = "Unnamed Monster";
             }
 
-            if(this.id == null || this.id.length() == 0) this.id = "Unnamed Monster";
+            if(this.id == null || this.id.isEmpty()) this.id = "Unnamed Monster";
             if (this.name == null) this.name = "Unnamed Monster";
             if (this.modID == null) this.modID = "Slay the Spire";
             if (this.type == null) this.type = AbstractMonster.EnemyType.NORMAL;
-
-
-
-
-            this.amount = 0;
         }
 
         public MonsterButton(Class<?extends AbstractMonster> amClass) {
@@ -197,14 +181,14 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             return new ApologySlime();
         }
 
+        @Override
         public void update() {
-            //this.hb.move(x,y);
             this.hb.update();
 
             if((this.hb.justHovered || MonsterSelectScreen.showPreviews) && this.instance == null) {
                 //LoadoutMod.logger.info("just hovered, creating class");
                 try{
-                    this.instance = createMonster(this.mClass);
+                    this.instance = createMonster(this.pClass);
                     if(this.type != this.instance.type)
                         this.type = this.instance.type;
                 } catch (Exception|Error e) {
@@ -236,7 +220,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                 this.hb.clicked = false;
                 if(AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.getCurrRoom() !=null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
 
-                    BottledMonster.lastMonster = this.mClass;
+                    BottledMonster.lastMonster = this.pClass;
 
                     MonsterGroup mg = AbstractDungeon.getMonsters();
                     float monsterDX = Settings.WIDTH / 2.0F;
@@ -248,7 +232,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
                         monsterDX = lastMonster.drawX ;
                         monsterDY = lastMonster.drawY;
                     }
-                    AbstractMonster m = createMonster(this.mClass);
+                    AbstractMonster m = createMonster(this.pClass);
                     m.drawX = monsterDX - (lastMonster != null ? calculateSmartDistance(lastMonster,m) : 200.0F) * Settings.scale;
                     m.drawY = monsterDY;
                     if(m.drawX < AbstractDungeon.player.drawX) {
@@ -295,60 +279,14 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
             return (m1.hb_w + m2.hb_w)/2.0F;
         }
 
-        public void render(SpriteBatch sb) {
-            if(this.hb != null) {
-                this.hb.render(sb);
+        @Override
+        public void renderIcon(SpriteBatch sb, float a) {
+            if(this.hb.hovered || MonsterSelectScreen.showPreviews) {
+                try {
+                    if(this.instance != null) this.instance.render(sb);
+                } catch (Exception ignored) {
 
-//                if (atlas == null) {
-//                    sb.setColor(this.instance.tint.color);
-//                    if (this.img != null) {
-//                        sb.draw(this.img, this.instance.drawX - (float)128.0F * Settings.scale / 2.0F + this.instance.animX, this.instance.drawY + this.instance.animY, (float)128.0F * Settings.scale, (float)128.0F * Settings.scale, 0, 0, this.img.getWidth(), this.img.getHeight(), this.instance.flipHorizontal, this.instance.flipVertical);
-//                    }
-//                } else {
-//
-//                    this.instance.state.update(Gdx.graphics.getDeltaTime());
-//                    this.instance.state.apply(skeleton);
-//                    skeleton.updateWorldTransform();
-//                    skeleton.setPosition(this.instance.drawX + this.instance.animX, this.instance.drawY + this.instance.animY);
-//                    skeleton.setColor(this.instance.tint.color);
-//                    skeleton.setFlip(this.instance.flipHorizontal, this.instance.flipVertical);
-//
-//                    sb.end();
-//                    CardCrawlGame.psb.begin();
-//                    sr.draw(CardCrawlGame.psb, skeleton);
-//                    CardCrawlGame.psb.end();
-//                    sb.begin();
-//                    sb.setBlendFunction(770, 771);
-//                }
-//
-//                if (this.hb.hovered && atlas == null) {
-//                    sb.setBlendFunction(770, 1);
-//                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.1F));
-//                    if (this.img != null) {
-//                        sb.draw(this.img, this.instance.drawX - (float)128.0F * Settings.scale / 2.0F + this.instance.animX, this.instance.drawY + this.instance.animY, (float)128.0f * Settings.scale, (float)128.0F * Settings.scale, 0, 0, this.img.getWidth(), this.img.getHeight(), this.instance.flipHorizontal, this.instance.flipVertical);
-//                        sb.setBlendFunction(770, 771);
-//                    }
-//                }
-                if(this.hb.hovered || MonsterSelectScreen.showPreviews) {
-                    try {
-                        if(this.instance != null) this.instance.render(sb);
-                    } catch (Exception ignored) {
-
-                    }
                 }
-                if (this.hb.hovered) {
-                    sb.setBlendFunction(770, 1);
-                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
-                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+75.0F,y-50.0F, 150.0F, 50.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 220, 220, false, false);
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
-                    sb.setBlendFunction(770, 771);
-
-                    TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
-                } else {
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
-                }
-
-                //
             }
         }
     }

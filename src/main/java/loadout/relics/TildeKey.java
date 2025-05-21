@@ -802,7 +802,7 @@ public class TildeKey extends AbstractCustomScreenRelic<StatModSelectScreen.Stat
             logger.info("Failed to obtain morph target, trying a different approach");
             if(AllInOneBag.INSTANCE.bottledMonster.selectScreen != null) {
                 AllInOneBag.INSTANCE.bottledMonster.selectScreen.getList().forEach(mb -> {
-                    if(mb.mClass.getName().equals(id)) {
+                    if(mb.pClass.getName().equals(id)) {
                         target[0] = mb.instance;
                     }
                 });

@@ -25,38 +25,26 @@ import java.util.Iterator;
 
 public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbButton>{
 
-    public static class OrbButton {
-        public AbstractOrb instance;
-        public String id;
-        public String name;
-        public String modID;
-        public Hitbox hb;
-        public float x;
-        public float y;
-        public int amount;
-        public ArrayList<PowerTip> tips;
-
+    public static class OrbButton extends AbstractSelectScreen.AbstractSelectButton<AbstractOrb> {
         public OrbButton(AbstractOrb orb) {
+            super(orb.ID);
             this.instance = orb;
-            this.id = orb.ID;
-            if(id == null) this.id = orb.getClass().getName();
+            if(AbstractSelectButton.PLACEHOLDER_ID.equals(id)) this.id = orb.getClass().getName();
             this.name = this.instance.name;
             if(name == null) this.name = orb.getClass().getSimpleName();
             this.modID = WhatMod.findModID(orb.getClass());
-            if (this.modID == null) this.modID = "Slay the Spire";
+            if (this.modID == null) this.modID = STS_MODID;
 
-            this.x = 0;
-            this.y = 0;
-            this.amount = 0;
-            this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
-            this.tips = new ArrayList<>();
+            hasAmount = false;
+
             this.tips.add(new PowerTip(this.instance.name, this.instance.description));
             ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "scale", Settings.scale);
             ReflectionHacks.setPrivate(this.instance, AbstractOrb.class, "channelAnimTimer", 0.0f);
         }
 
+        @Override
         public void update() {
-            this.hb.update();
+            super.update();
             try {
                 this.instance.update();
                 this.instance.tX = this.x;
@@ -69,37 +57,15 @@ public class OrbSelectScreen extends AbstractSelectScreen<OrbSelectScreen.OrbBut
             }
         }
 
-        public void render(SpriteBatch sb) {
-            if(this.hb != null) {
-                this.hb.render(sb);
-                float a = (amount != 0 || this.hb.hovered) ? 1.0f : 0.7f;
-                try{
-                    this.instance.render(sb);
-                } catch (Exception ignored) {
+        @Override
+        public void renderIcon(SpriteBatch sb, float a) {
+            try{
+                this.instance.render(sb);
+            } catch (Exception ignored) {
 
-                }
-
-
-                if (this.hb.hovered) {
-                    sb.setBlendFunction(770, 1);
-                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
-                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+40.0F,y-64.0F, 64.0F, 64.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 256, 256, false, false);
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
-                    sb.setBlendFunction(770, 771);
-
-                    TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
-                } else {
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
-                }
-//                if (this.amount > 0) {
-//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.GREEN_TEXT_COLOR);
-//                } else if (this.amount < 0) {
-//                    FontHelper.renderFontRightTopAligned(sb, FontHelper.powerAmountFont, Integer.toString(this.amount), x+40.0f, y-30.0f, 3.0f, Settings.RED_TEXT_COLOR);
-//                }
             }
-
-
         }
+
     }
 
     private static final Comparator<OrbButton> BY_NAME = Comparator.comparing(o -> o.name);

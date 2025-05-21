@@ -29,30 +29,17 @@ import java.util.stream.Collectors;
 
 public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.EventButton>
 {
-    public static class EventButton {
-        public String id;
-        public String name;
-        public Hitbox hb;
-        public float x;
-        public float y;
-
-        public Class<? extends AbstractEvent> eventClass;
-        //public Texture img;
-        public String modID;
-
-        public ArrayList<PowerTip> tips;
+    public static class EventButton extends AbstractSelectScreen.AbstractSelectButton<AbstractEvent> {
 
 
         public EventButton(String id, float x, float y, String modID, Class<? extends AbstractEvent> eClass) {
-            this.id = id;
+            super(id, eClass);
             this.x = x;
             this.y = y;
-            this.hb = new Hitbox(200.0f * Settings.scale,75.0f * Settings.yScale);
-            this.eventClass = eClass;
-            this.tips = new ArrayList<>();
+            hasAmount = false;
 
             this.modID = modID;
-            if (this.modID == null) this.modID = "Slay the Spire";
+            if (this.modID == null) this.modID = STS_MODID;
             //this.name = EventHelper.getEventName(id);
             try {
                 //this.name = (String) eClass.getField("NAME").get(null);
@@ -62,54 +49,29 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
 
                 }
 
-                if (this.name == null || this.name.length() == 0) this.name = eClass.getSimpleName();
+                if (this.name == null || this.name.isEmpty()) this.name = eClass.getSimpleName();
                 String[] desc = (String[]) eClass.getField("DESCRIPTIONS").get(null);
                 if(desc != null && desc.length > 0) {
-//                    for (String d : desc)
-//                        this.tips.add(new PowerTip(this.name, d));
                     this.tips.add(new PowerTip(this.name, desc[0]));
                 }
-                this.tips.add(new PowerTip("Mod",this.modID));
 
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 LoadoutMod.logger.error("Failed to get name for event: " + id);
             }
 
-
-
         }
 
-        public void update() {
-            this.hb.update();
-        }
 
-        public void render(SpriteBatch sb) {
-            if (this.hb != null) {
-                this.hb.render(sb);
-                if (this.hb.hovered) {
-                    sb.setBlendFunction(770, 1);
-                    sb.setColor(new Color(1.0F, 1.0F, 1.0F, 0.3F));
-                    sb.draw(ImageMaster.CHAR_OPT_HIGHLIGHT, x+75.0F,y-50.0F, 150.0F, 50.0F, 300.0f, 100.0f, Settings.scale, Settings.scale, 0.0F, 0, 0, 220, 220, false, false);
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.GOLD_COLOR);
-                    sb.setBlendFunction(770, 771);
-
-                    TipHelper.queuePowerTips(InputHelper.mX + 60.0F * Settings.scale, InputHelper.mY + 180.0F * Settings.scale, this.tips);
-                } else {
-                    FontHelper.renderSmartText(sb,FontHelper.buttonLabelFont,this.name,x+150.0f*Settings.scale / 2,y + 20.0f*Settings.scale,200.0f*Settings.scale,25.0f*Settings.scale,Settings.CREAM_COLOR);
-                }
-            }
-
-        }
 
         public AbstractEvent getEvent() {
             AbstractEvent ret;
             try {
-                ret = this.eventClass.getConstructor().newInstance();
+                ret = this.pClass.getConstructor().newInstance();
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
                      NoSuchMethodException e) {
                 e.printStackTrace();
                 try {
-                    ret = this.eventClass.newInstance();
+                    ret = this.pClass.newInstance();
                 } catch (InstantiationException | IllegalAccessException ex) {
                     ex.printStackTrace();
                     ret = EventHelper.getEvent(this.id);
