@@ -13,7 +13,7 @@ public class DamageModifyHooks {
             @SpirePatch2(clz = AbstractCard.class, method = "applyPowers"),
             @SpirePatch2(clz = AbstractCard.class, method = "calculateCardDamage")})
     public static class NonmultiDamage {
-        @SpireInsertPatch(locator = PlayerRelicsLocator.class, localvars = {"tmp"})
+        @SpireInsertPatch(locator = PlayerStanceLocator.class, localvars = {"tmp"})
         public static void Insert(AbstractCard __instance, @ByRef float[] tmp) {
             tmp[0] = AllInOneBag.INSTANCE.atDamageModify(tmp[0], __instance);
         }
@@ -23,7 +23,7 @@ public class DamageModifyHooks {
             @SpirePatch2(clz = AbstractCard.class, method = "applyPowers"),
             @SpirePatch2(clz = AbstractCard.class, method = "calculateCardDamage")})
     public static class MultiDamage {
-        @SpireInsertPatch(locator = PlayerRelicsLocatorLast.class, localvars = {"tmp", "i"})
+        @SpireInsertPatch(locator = PlayerStanceLocatorLast.class, localvars = {"tmp", "i"})
         public static void Insert(AbstractCard __instance, float[] tmp, int i) {
             tmp[i] = AllInOneBag.INSTANCE.atDamageModify(tmp[i], __instance);
         }
