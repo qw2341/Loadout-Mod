@@ -18,10 +18,8 @@ import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.AutoplayFie
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.FleetingField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.GraveField;
 import com.evacipated.cardcrawl.mod.stslib.fields.cards.AbstractCard.SoulboundField;
-import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -135,6 +133,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus renameButton;
     private final HeaderButtonPlus descEditButton;
 
+    private final HeaderButtonPlus upgradeModeScreenButton;
+
     private String[] dropdownMenuHeaders;
     public HeaderButtonPlus[] buttons;
     public ArrayList<CardEffectButton> cardEffectButtons;
@@ -152,6 +152,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private boolean isCardFromShion = false;
     private boolean isRenaming = true;
     public TextPopup textPopup;
+
+    private AbstractCard originalPreupgradeCard;
 
 
     public CardViewPopupHeader(SCardViewPopup sCardViewPopup, float startX) {
@@ -402,6 +404,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
         yPosition -= SPACE_Y;
         this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
+        //TODO: Finish the upgrade mode screen and add it to the buttons
+        yPosition  -= SPACE_Y;
+        this.upgradeModeScreenButton =  new HeaderButtonPlus("Modify Upgrade",xPosition,yPosition,this,true,ImageMaster.CAMPFIRE_SMITH_BUTTON);
 
 //        xPosition = Settings.WIDTH / 2f - 200f * Settings.scale;
 //        yPosition = 10f * Settings.yScale;
@@ -923,7 +928,19 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             isRenaming = false;
             textPopup.setText(getTextField());
             textPopup.open();
-        }else {
+        } else if(button == this.upgradeModeScreenButton) {
+            //switch to from upgrade mode screen
+            this.cardViewScreen.isUpgradeMode = !this.cardViewScreen.isUpgradeMode;
+            if(this.cardViewScreen.isUpgradeMode) {
+                //backup card
+                this.originalPreupgradeCard = cardViewScreen.card;
+                cardViewScreen.card = cardViewScreen.card.makeStatEquivalentCopy();
+                cardViewScreen.card.upgrade();
+            } else {
+                //return the backup
+                cardViewScreen.card = originalPreupgradeCard;
+            }
+        } else {
             return;
         }
         if (cardViewScreen != null && cardViewScreen.card != null) {

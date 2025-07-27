@@ -82,6 +82,8 @@ public class SCardViewPopup {
     private InputAction shiftKey;
     private InputAction ctrlKey;
 
+    public boolean isUpgradeMode = false;
+
     public static CardModSelectScreen cardModSelectScreen;
 
     public SCardViewPopup() {
