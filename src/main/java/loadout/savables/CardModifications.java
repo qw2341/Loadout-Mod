@@ -91,9 +91,9 @@ public class CardModifications
             card.baseHeal = sc.baseHeal;
             card.baseDraw = sc.baseDraw;
             card.baseDiscard = sc.baseDiscard;
-            card.color = AbstractCard.CardColor.values()[sc.color];
-            card.type = AbstractCard.CardType.values()[sc.type];
-            card.rarity = AbstractCard.CardRarity.values()[sc.rarity];
+            card.color = sc.colorString != null ? AbstractCard.CardColor.valueOf(sc.colorString) : AbstractCard.CardColor.values()[sc.color];
+            card.type = sc.typeString != null ? AbstractCard.CardType.valueOf(sc.typeString) : AbstractCard.CardType.values()[sc.type];
+            card.rarity = sc.rarityString != null ? AbstractCard.CardRarity.valueOf(sc.rarityString) : AbstractCard.CardRarity.values()[sc.rarity];
             card.misc = sc.misc;
 
             if (sc.originalName != null) {
