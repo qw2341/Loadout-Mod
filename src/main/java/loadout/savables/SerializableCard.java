@@ -14,6 +14,9 @@ import loadout.relics.CardModifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SerializableCard implements Serializable {
     public String id;
@@ -40,6 +43,9 @@ public class SerializableCard implements Serializable {
     public String originalName;
     public String rawDescription;
     public String additionalMagicNumbers;
+    public Integer[] normalUpgradeDiffs;
+    public Map<String, Integer> additionalMagicUpgradeDiffs;
+    public String[] additionalUpgradeModifiers;
 
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         if(!CardLibrary.isACard(sc.id)) {
@@ -82,6 +88,17 @@ public class SerializableCard implements Serializable {
         if(sc.rawDescription != null) {
             card.rawDescription = sc.rawDescription;
             card.initializeDescription();
+        }
+
+        if(sc.additionalUpgradeModifiers != null) {
+            AbstractCardPatch.setCardAdditionalModifiers(card, Arrays.copyOf(sc.additionalUpgradeModifiers, sc.additionalUpgradeModifiers.length));
+        }
+
+        if(sc.normalUpgradeDiffs != null) {
+            AbstractCardPatch.setCardNormalUpgrade(card, sc.normalUpgradeDiffs);
+        }
+        if(sc.additionalMagicUpgradeDiffs != null) {
+            AbstractCardPatch.setCardAdditionalMagicUpgrade(card, new HashMap<>(sc.additionalMagicUpgradeDiffs));
         }
 
         if(sc.additionalMagicNumbers != null) {
@@ -129,6 +146,12 @@ public class SerializableCard implements Serializable {
         sc.rawDescription = original != null && card.rawDescription.equals(original.rawDescription) ? null : card.rawDescription;
 
         sc.additionalMagicNumbers = AbstractCardPatch.serializeAdditionalMagicNumbers(card);
+        Integer[] normalUpgradeDiffs = AbstractCardPatch.getCardNormalUpgrade(card);
+        sc.normalUpgradeDiffs = normalUpgradeDiffs == null ? null : Arrays.copyOf(normalUpgradeDiffs, normalUpgradeDiffs.length);
+        Map<String, Integer> additionalMagicUpgradeDiffs = AbstractCardPatch.getCardAdditionalMagicUpgrade(card);
+        sc.additionalMagicUpgradeDiffs = additionalMagicUpgradeDiffs == null ? null : new HashMap<>(additionalMagicUpgradeDiffs);
+        String[] additionalUpgradeModifiers = AbstractCardPatch.getCardAdditionalModifiers(card);
+        sc.additionalUpgradeModifiers = additionalUpgradeModifiers == null ? null : Arrays.copyOf(additionalUpgradeModifiers, additionalUpgradeModifiers.length);
         int i = 0;
         for (AbstractCardModifier acm : cardMods) {
             sc.modifiers[i] = acm.identifier(card);

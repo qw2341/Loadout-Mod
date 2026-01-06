@@ -1,25 +1,32 @@
 package loadout.savables;
 
-import basemod.ReflectionHacks;
-import basemod.abstracts.AbstractCardModifier;
-import basemod.abstracts.CustomSavable;
-import basemod.helpers.CardModifierManager;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+
+import basemod.ReflectionHacks;
+import basemod.abstracts.AbstractCardModifier;
+import basemod.abstracts.CustomSavable;
+import basemod.helpers.CardModifierManager;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.relics.CardModifier;
-
-import java.io.*;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class CardModifications
         //implements CustomSavable<HashMap<String,SerializableCard>>
@@ -106,6 +113,17 @@ public class CardModifications
                 card.initializeDescription();
             }
 
+            if(sc.additionalUpgradeModifiers != null) {
+                AbstractCardPatch.setCardAdditionalModifiers(card, Arrays.copyOf(sc.additionalUpgradeModifiers, sc.additionalUpgradeModifiers.length));
+            }
+
+            if(sc.normalUpgradeDiffs != null) {
+                AbstractCardPatch.setCardNormalUpgrade(card, sc.normalUpgradeDiffs);
+            }
+            if(sc.additionalMagicUpgradeDiffs != null) {
+                AbstractCardPatch.setCardAdditionalMagicUpgrade(card, new HashMap<>(sc.additionalMagicUpgradeDiffs));
+            }
+
             for(String modifierId : sc.modifiers) {
                 AbstractCardModifier acm = ModifierLibrary.getModifier(modifierId);
                 if (acm != null)
@@ -122,6 +140,12 @@ public class CardModifications
 
     }
 
+    /**
+     * DEPRECATED modify only numbers no modifiers or name/description
+     * @param card
+     * @param sc
+     * @throws Exception
+     */
     @Deprecated
     public static void modifyCardNumberOnly(AbstractCard card, SerializableCard sc) throws Exception {
 
@@ -139,6 +163,13 @@ public class CardModifications
             card.baseDiscard = sc.baseDiscard;
 
             card.misc = sc.misc;
+
+            if(sc.normalUpgradeDiffs != null) {
+                AbstractCardPatch.setCardNormalUpgrade(card, sc.normalUpgradeDiffs);
+            }
+            if(sc.additionalMagicUpgradeDiffs != null) {
+                AbstractCardPatch.setCardAdditionalMagicUpgrade(card, new HashMap<>(sc.additionalMagicUpgradeDiffs));
+            }
 
 //            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
 //                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "

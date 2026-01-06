@@ -1,18 +1,27 @@
 package loadout.util;
 
+import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+
+import org.clapper.util.classutil.AbstractClassFilter;
+import org.clapper.util.classutil.AndClassFilter;
+import org.clapper.util.classutil.ClassFilter;
+import org.clapper.util.classutil.ClassFinder;
+import org.clapper.util.classutil.ClassInfo;
+import org.clapper.util.classutil.ClassModifiersClassFilter;
+import org.clapper.util.classutil.InterfaceOnlyClassFilter;
+import org.clapper.util.classutil.NotClassFilter;
+
 import com.megacrit.cardcrawl.cards.AbstractCard;
+
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import loadout.LoadoutMod;
 import loadout.patches.AdditionalUpgradePatches;
 import loadout.savables.CardModifications;
-import org.clapper.util.classutil.*;
-
-import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Took some inspiration from Occult Patch from anniv5, the Packmaster
@@ -62,6 +71,9 @@ public class CardClassPatcher implements Runnable{
         String src = CardModifications.class.getName() + ".modifyIfExist(this);";
 
         String upgradePatch = AdditionalUpgradePatches.class.getName() + ".additionalUpgrade(this)";
+        /**
+         * Dynamic Patches
+         */
         for(ClassInfo classInfo : list) {
             try {
                 CtClass ctClass = this.clazzPool.get(classInfo.getClassName());
@@ -69,7 +81,7 @@ public class CardClassPatcher implements Runnable{
                     ctor.insertAfter(src);
                 }
 //                LoadoutMod.logger.info("Finished patching {}!", classInfo.getClassName());
-//                ctClass.getDeclaredMethod("upgrade").insertAfter(upgradePatch);
+                ctClass.getDeclaredMethod("upgrade").insertAfter(upgradePatch);
             } catch (Exception ignored) {
                 LoadoutMod.logger.info("Error patching {}!", classInfo.getClassName());
             }

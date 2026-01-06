@@ -2,6 +2,7 @@ package loadout.patches;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -93,9 +94,19 @@ public class AbstractCardPatch {
     public static class CardModificationFields {
         public static SpireField<Boolean> isCardModifiedByModifier = new SpireField<>(() -> Boolean.valueOf(false));
         public static SpireField<Map<String, Integer>> additionalMagicNumbers = new SpireField<>(HashMap::new);
-        public static SpireField<Integer[]> additionalNormalUpgrades = new SpireField<>(() -> new Integer[5]);
+        public static SpireField<Integer[]> additionalNormalUpgrades = new SpireField<>(() -> {
+            Integer[] array = new Integer[5];
+            Arrays.fill(array, 0);
+            return array;
+        });
         public static SpireField<Map<String, Integer>> additionalMagicUpgrades = new SpireField<>(HashMap::new);
-
+        /**
+         * An array of modifier IDs added on upgrade
+         * format: '+' or '-' followed by modifier ID
+         * e.g. "+ExtraDamageMod", "-WeakenMod"
+         * '+' indicates to add the modifier on upgrade
+         * '-' indicates to remove the modifier on upgrade
+         */
         public static SpireField<String[]> additionalModifiers = new SpireField<>(() -> new String[0]);
     }
 
@@ -112,6 +123,11 @@ public class AbstractCardPatch {
 
     public static void removeMagicNumber(AbstractCard ac, String cardModID) {
         CardModificationFields.additionalMagicNumbers.get(ac).remove(cardModID);
+    }
+
+    public static void upgradeMagicNumber(AbstractCard ac, String cardModID, int amount) {
+        Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
+        numberMap.put(cardModID, numberMap.getOrDefault(cardModID, 0) + amount);
     }
 
     public static final String MAGIC_NUMBER_DELIMITER = ";";
