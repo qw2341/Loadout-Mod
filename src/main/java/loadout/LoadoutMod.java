@@ -6,6 +6,7 @@ import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +27,7 @@ import com.megacrit.cardcrawl.events.city.*;
 import com.megacrit.cardcrawl.events.exordium.*;
 import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.*;
@@ -125,6 +127,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public static SidePanel sidePanel = null;
 
     public static SkinManager skinManager = null;
+
+    public static int universalMultiplier = 1;
+    private static InputAction shiftKey;
+    private static InputAction ctrlKey;
 
     public static int numThreadsTotal = 0;
     public static int numThreadsFinished = 0;
@@ -288,6 +294,10 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addSaveField(RelicStateSavables.ID, new RelicStateSavables());
 
         //CardModifications.modifyCards();
+
+        shiftKey = new InputAction(Input.Keys.SHIFT_LEFT);
+        ctrlKey = new InputAction(Input.Keys.CONTROL_LEFT);
+
         isGameLoaded = true;
     }
     
@@ -905,7 +915,18 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receivePostUpdate() {
-        if(isGameLoaded) AllInOneBag.INSTANCE.update();
+        if(isGameLoaded) {
+            if (shiftKey.isPressed() && ctrlKey.isPressed()) {
+            universalMultiplier = 50;
+            } else if (shiftKey.isPressed()) {
+                universalMultiplier = 10;
+            } else if (ctrlKey.isPressed()) {
+                universalMultiplier = 5;
+            } else {
+                universalMultiplier = 1;
+            }
+            AllInOneBag.INSTANCE.update();
+        }
     }
 
     @Override
