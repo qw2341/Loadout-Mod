@@ -117,7 +117,11 @@
 			"Var",
 			"Modifier l'amelioration",
 			"Reinitialiser la carte avec des mods permanents",
-			"Apercu des changements d'amelioration"
+			"Apercu des changements d'amelioration",
+			"Etes-vous sur ?",
+			"Enregistrer une carte amelioree rendra toutes les cartes futures ameliorees",
+			"Reinitialiser une carte supprimera toutes les modifications temporaires et permanentes",
+			"Enregistrer une carte rendra toutes les cartes futures modifiees comme celle-ci, y compris les modifications d'amelioration"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

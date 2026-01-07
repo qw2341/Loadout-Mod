@@ -154,6 +154,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private boolean isRenaming = true;
     public TextPopup textPopup;
 
+
     private AbstractCard originalPreupgradeCard;
 
 
@@ -751,56 +752,76 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         AbstractCardPatch.setCardModified(cardViewScreen.card,isModified);
     }
 
-    @Override
-    public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
-        if (button == this.restoreDefaultButton) {
-            clearActiveButtons();
-            String cardId = cardViewScreen.card.cardID;
-            int idx = cardViewScreen.group.group.indexOf(cardViewScreen.card);
-
-            if (CardModifications.cardMap.containsKey(cardId)) {
-                CardModifications.cardMap.remove(cardId);
-                try {
-                    cardModifications.save();
-                } catch (IOException e) {
-                    logger.error("Error saving card mods");
-                }
+    private void saveChanges() {
+        String cardId = cardViewScreen.card.cardID;
+        CardModifications.cardMap.put(cardId, SerializableCard.toSerializableCard(cardViewScreen.card));
+        //logger.info(CardModifications.cardMap.toString());
+        CardLibrary.cards.put(cardId,cardViewScreen.card.makeStatEquivalentCopy());
+        //LoadoutMod.createCardList();
+        int i = 0;
+        boolean found = false;
+        for(AbstractCard card : cardsToDisplay) {
+            if(card.cardID.equals(cardId)) {
+                found = true;
+                break;
             }
-            AbstractCard freshCopy = CardLibrary.getCard(cardId).makeCopy();
-            CardLibrary.cards.put(cardId,freshCopy);
-            cardViewScreen.card = freshCopy;
-            cardViewScreen.group.group.remove(idx);
-            cardViewScreen.group.group.add(idx,freshCopy);
+            i++;
+        }
+        if(found) {
+            cardsToDisplay.remove(i);
+            cardsToDisplay.add(i,cardViewScreen.card.makeStatEquivalentCopy());
+        }
 
-            setCardModded(false);
-            resetOtherButtons();
-        } else if (button == this.saveChangesButton) {
-            clearActiveButtons();
-            String cardId = cardViewScreen.card.cardID;
-            CardModifications.cardMap.put(cardId, SerializableCard.toSerializableCard(cardViewScreen.card));
-            //logger.info(CardModifications.cardMap.toString());
-            CardLibrary.cards.put(cardId,cardViewScreen.card.makeStatEquivalentCopy());
-            //LoadoutMod.createCardList();
-            int i = 0;
-            boolean found = false;
-            for(AbstractCard card : cardsToDisplay) {
-                if(card.cardID.equals(cardId)) {
-                    found = true;
-                    break;
-                }
-                i++;
-            }
-            if(found) {
-                cardsToDisplay.remove(i);
-                cardsToDisplay.add(i,cardViewScreen.card.makeStatEquivalentCopy());
-            }
+        try {
+            cardModifications.save();
+        } catch (IOException e) {
+            logger.error("Error saving card mods");
+        }
+        //CardModifications.modifyCards();
+    }
 
+    private void restoreDefault() {
+        String cardId = cardViewScreen.card.cardID;
+        int idx = cardViewScreen.group.group.indexOf(cardViewScreen.card);
+
+        if (CardModifications.cardMap.containsKey(cardId)) {
+            CardModifications.cardMap.remove(cardId);
             try {
                 cardModifications.save();
             } catch (IOException e) {
                 logger.error("Error saving card mods");
             }
-            //CardModifications.modifyCards();
+        }
+        AbstractCard freshCopy = CardLibrary.getCard(cardId).makeCopy();
+        CardLibrary.cards.put(cardId,freshCopy);
+        cardViewScreen.card = freshCopy;
+        cardViewScreen.group.group.remove(idx);
+        cardViewScreen.group.group.add(idx,freshCopy);
+
+        setCardModded(false);
+    }
+
+    @Override
+    public void didChangeOrder(HeaderButtonPlus button, boolean isAscending) {
+        if (button == this.restoreDefaultButton) {
+            clearActiveButtons();
+            cardViewScreen.confirmPopup = new ConfirmPopupPlus(TEXT[39], TEXT[41], this::restoreDefault, () ->{});
+            cardViewScreen.confirmPopup.show();
+            resetOtherButtons();
+        } else if (button == this.saveChangesButton) {
+
+            //Show a popup if the card is an upgraded card telling the player all the cards they find will be upgraded
+            //Ask them "Are you sure?"
+
+            clearActiveButtons();
+
+            if (cardViewScreen.card.timesUpgraded > 0) {
+                cardViewScreen.confirmPopup = new ConfirmPopupPlus(TEXT[39], TEXT[40], this::saveChanges, () ->{});
+                cardViewScreen.confirmPopup.show();
+            } else {
+                cardViewScreen.confirmPopup = new ConfirmPopupPlus(TEXT[39], TEXT[42], this::saveChanges, () ->{});
+                cardViewScreen.confirmPopup.show();
+            }
 
             resetOtherButtons();
         } else if (button == this.getCopyButton) {

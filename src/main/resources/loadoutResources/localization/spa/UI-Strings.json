@@ -118,7 +118,11 @@
 			"Var",
 			"Modificar mejora",
 			"Restablecer carta con mods permanentes",
-			"Previsualizar cambios de mejora"
+			"Previsualizar cambios de mejora",
+			"Estas seguro?",
+			"Guardar una carta mejorada hara que todas las cartas futuras esten mejoradas",
+			"Restablecer una carta eliminara todas las modificaciones temporales y permanentes",
+			"Guardar una carta hara que todas las cartas futuras se modifiquen como esta, incluidas las modificaciones de mejora"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

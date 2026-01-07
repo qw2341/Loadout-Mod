@@ -87,6 +87,8 @@ public class SCardViewPopup {
     public static CardModSelectScreen cardModSelectScreen;
     public static CardUpgradePreviewScreen cardUpgradePreviewScreen;
 
+    public ConfirmPopupPlus confirmPopup;
+
     public SCardViewPopup() {
         this.fadeColor = Color.BLACK.cpy();
         this.upgradeHb = new Hitbox(250.0F * Settings.scale, 80.0F * Settings.scale);
@@ -268,6 +270,11 @@ public class SCardViewPopup {
     }
 
     public void update() {
+
+        if(this.confirmPopup != null && this.confirmPopup.shown) {
+            this.confirmPopup.update();
+            return;
+        }
 
         if(cardUpgradePreviewScreen != null && cardUpgradePreviewScreen.show) {
             cardUpgradePreviewScreen.update();
@@ -514,6 +521,10 @@ public class SCardViewPopup {
 
         this.confirmButton.render(sb);
         renderCurrentSelectMult(this.cardViewPopupHeader.multiplier, sb);
+
+        if(this.confirmPopup != null && this.confirmPopup.shown) {
+            this.confirmPopup.render(sb);
+        }
     }
 
     public void renderCardBack(SpriteBatch sb) {

@@ -120,7 +120,11 @@
 			"Var",
 			"Modify Upgrade",
 			"Reset Temporary Mods",
-			"Preview Upgrade Changes"
+			"Preview Upgrade Changes",
+			"Are you sure?",
+			"Saving an upgraded card will make all future cards upgraded",
+			"Resetting a card will remove all temporary and permanent modifications",
+			"Saving a card will make all future cards modified like this one, including upgrade modifications"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {
