@@ -125,6 +125,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus restoreDefaultButton;
     private final HeaderButtonPlus saveChangesButton;
     private final HeaderButtonPlus getCopyButton;
+    private final HeaderButtonPlus resetWithPermaButton;
 
     private final HeaderButtonPlus cardModButton;
 
@@ -309,6 +310,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.saveChangesButton = new HeaderButtonPlus(TEXT[9], xPosition, yPosition, this, true, ImageMaster.SETTINGS_ICON);
         yPosition -= SPACE_Y;
         this.getCopyButton = new HeaderButtonPlus(TEXT[10], xPosition, yPosition, this, true, ImageMaster.PROFILE_B);
+        yPosition -= SPACE_Y;
+        this.resetWithPermaButton = new HeaderButtonPlus(TEXT[37], xPosition, yPosition, this, true, ImageMaster.MAP_NODE_MERCHANT);
 
 
         yPosition = Settings.HEIGHT - 25.0f * Settings.yScale;
@@ -404,9 +407,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.cardModButton = new HeaderButtonPlus(TEXT[24],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
         yPosition -= SPACE_Y;
         this.fabricateEditButton = new HeaderButtonPlus(TEXT[25],xPosition,yPosition,this,true,ImageMaster.REWARD_CARD_BOSS);
-        //TODO: Finish the upgrade mode screen and add it to the buttons
+        
         yPosition  -= SPACE_Y;
-        this.upgradeModeScreenButton =  new HeaderButtonPlus("Modify Upgrade",xPosition,yPosition,this,true,ImageMaster.CAMPFIRE_SMITH_BUTTON);
+        this.upgradeModeScreenButton =  new HeaderButtonPlus(TEXT[36],xPosition,yPosition,this,true,ImageMaster.CAMPFIRE_SMITH_BUTTON);
 
 
         //Reset to middle
@@ -420,7 +423,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.descEditButton = new HeaderButtonPlus(TEXT[27],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
-                this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
+                this.saveChangesButton, this.getCopyButton, this.resetWithPermaButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
                 this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.makeDamageButton, this.makeDamageAOEButton, this.makeBlockButton, this.makeDrawButton, this.makeDiscardButton, this.makeExhaustCardButton
                 , this.cardModButton, this.renameButton, this.descEditButton, this.upgradeModeScreenButton};
 
@@ -618,6 +621,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         this.saveChangesButton.y = yPosition;
         yPosition -= SPACE_Y;
         this.getCopyButton.y = yPosition;
+        yPosition -= SPACE_Y;
+        this.resetWithPermaButton.y = yPosition;
     }
 
     public void resetOtherButtons() {
@@ -805,6 +810,20 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 AbstractCard cardCopy = cardViewScreen.card.makeStatEquivalentCopy();
                 AbstractCardPatch.CardModificationFields.isCardModifiedByModifier.set(cardCopy,AbstractCardPatch.CardModificationFields.isCardModifiedByModifier.get(cardViewScreen.card));
                 AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(cardCopy, Settings.WIDTH / 2.0F - AbstractCard.IMG_WIDTH / 2.0F, Settings.HEIGHT / 2.0F));
+            }
+
+            resetOtherButtons();
+        } else if (button == this.resetWithPermaButton) {
+            clearActiveButtons();
+            String cardId = cardViewScreen.card.cardID;
+            int idx = cardViewScreen.group.group.indexOf(cardViewScreen.card);
+
+            AbstractCard freshCopy = CardLibrary.getCard(cardId).makeCopy();
+
+            cardViewScreen.card = freshCopy;
+            if (cardViewScreen.group != null) {
+                cardViewScreen.group.group.remove(idx);
+                cardViewScreen.group.group.add(idx,freshCopy);
             }
 
             resetOtherButtons();

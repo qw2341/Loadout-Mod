@@ -117,7 +117,10 @@
 			"Select Cards to Combine",
 			"AOE Damage",
 			"Exhaust Cards",
-			"Var"
+			"Var",
+			"Modify Upgrade",
+			"Reset Temporary Mods",
+			"Preview Upgrade Changes"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

@@ -115,7 +115,10 @@
 			"Seleccionar cartas para combinar",
 			"Daño AOE",
 			"Cartas de Escape",
-			"Var"
+			"Var",
+			"Modificar mejora",
+			"Restablecer carta con mods permanentes",
+			"Previsualizar cambios de mejora"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

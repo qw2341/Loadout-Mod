@@ -114,7 +114,10 @@
 			"Sélectionnez les cartes à combiner",
 			"Dégâts AOE",
 			"Cartes d'épuisement",
-			"Var"
+			"Var",
+			"Modifier l'amelioration",
+			"Reinitialiser la carte avec des mods permanents",
+			"Apercu des changements d'amelioration"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javassist.*;
-import javassist.expr.MethodCall;
 import org.clapper.util.classutil.AbstractClassFilter;
 import org.clapper.util.classutil.AndClassFilter;
 import org.clapper.util.classutil.ClassFilter;
@@ -19,6 +17,12 @@ import org.clapper.util.classutil.NotClassFilter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtMethod;
+import javassist.expr.MethodCall;
 import loadout.LoadoutMod;
 import loadout.patches.AdditionalUpgradePatches;
 import loadout.savables.CardModifications;
@@ -84,7 +88,7 @@ public class CardClassPatcher implements Runnable{
                 }
 //                LoadoutMod.logger.info("Finished patching {}!", classInfo.getClassName());
                 CtMethod upgradeMethod = ctClass.getDeclaredMethod("upgrade");
-                String upgradeMethodStr = upgradeMethod.toString();
+                
                 //Now Scan the method str for calls to upgradeDamage, upgradeBlock, upgradeMagicNumber, upgradeBaseCost
                 //And set the booleans accordingly: cost, damage, block, magic
                 //convert to string and concat the upgrade method call string, and finally inserts it

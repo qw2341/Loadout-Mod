@@ -56,9 +56,13 @@ public class AdditionalUpgradePatches {
    }
 
     public static void upgradeBaseCost(AbstractCard card,int costUpgrade) {
+        //if curse or X cost, does not upgrade cost
+       if (card.cost < 0) {
+            return;
+        }
         int newBaseCost = card.cost + costUpgrade;
         int diff = card.costForTurn - card.cost;
-        card.cost = newBaseCost;
+        card.cost = Math.max(0, newBaseCost);
         if (card.costForTurn > 0) {
             card.costForTurn = card.cost + diff;
         }

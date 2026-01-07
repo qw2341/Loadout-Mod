@@ -1,32 +1,36 @@
 package loadout.screens;
 
+import basemod.patches.whatmod.CardView;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Madness;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import loadout.LoadoutMod;
 import loadout.patches.AbstractCardPatch;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Header that uses CardEffectButtons to tweak upgrade diffs.
  */
 public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardEffectButton.CardStuffProvider {
+
+//    private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("CardUpgradePreviewHeader"));
+//    public static final String[] TEXT = uiStrings.TEXT;
     private static final float START_Y = Settings.HEIGHT - 180.0f * Settings.scale;
     private static final float SPACE_Y = 48.0f * Settings.scale;
+
+    private static final float STAT_BUTTON_X = Settings.WIDTH / 2.0f - 180.0f * Settings.scale;
 
     private final CardUpgradePreviewScreen screen;
 
     private final List<CardEffectButton> normalButtons = new ArrayList<>();
     private final List<CardEffectButton> additionalButtons = new ArrayList<>();
-    private Integer[] cachedNormalDiffs = new Integer[]{0, 0, 0, 0, 0};
-    private Map<String, Integer> cachedAdditionalMagic = new HashMap<>();
 
     public CardUpgradePreviewHeader(CardUpgradePreviewScreen screen) {
         this.screen = screen;
@@ -37,32 +41,29 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
             buildNormalButtons();
         }
         rebuildAdditionalButtons(card);
-        cachedNormalDiffs = screen.getNormalUpgradeDiffs();
-        cachedAdditionalMagic = screen.getAdditionalMagicUpgradeDiffs();
     }
 
     private void buildNormalButtons() {
         normalButtons.clear();
-        float x = Settings.WIDTH / 2.0f - 260.0f * Settings.scale;
+        float x = STAT_BUTTON_X;
         float y = START_Y;
-        addNormalRow("Cost", 0, x, y);
+        addNormalRow(CardViewPopupHeader.clTEXT[3], 0, x, y);
         y -= SPACE_Y;
-        addNormalRow("Damage", 1, x, y);
+        addNormalRow(CardViewPopupHeader.TEXT[0], 1, x, y);
         y -= SPACE_Y;
-        addNormalRow("Block", 2, x, y);
+        addNormalRow(StringUtils.capitalize(CardViewPopupHeader.TEXT_BLOCK), 2, x, y);
         y -= SPACE_Y;
-        addNormalRow("Magic", 3, x, y);
+        addNormalRow(CardViewPopupHeader.TEXT[1], 3, x, y);
         y -= SPACE_Y;
         addNormalRow("Misc", 4, x, y);
     }
 
     private void rebuildAdditionalButtons(AbstractCard card) {
         additionalButtons.clear();
-        float x = Settings.WIDTH / 2.0f - 260.0f * Settings.scale;
         float y = START_Y - SPACE_Y * 5;
 
         for (String key : getAdditionalMagicKeys(card)) {
-            addAdditionalMagicRow(key, x, y);
+            addAdditionalMagicRow(key, STAT_BUTTON_X, y);
             y -= SPACE_Y;
         }
     }
@@ -78,9 +79,7 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
 
             @Override
             public void setAmount(int amountToSet) {
-                int current = getAmount();
-                int delta = amountToSet - current;
-                screen.adjustNormalUpgrade(index, delta);
+                screen.setNormalUpgrade(index, amountToSet);
             }
 
             @Override
@@ -95,14 +94,12 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
         CardEffectButton ceb = new CardEffectButton(null, x, y, key, new StatModSelectScreen.StatModActions() {
             @Override
             public int getAmount() {
-                return screen.getAdditionalMagicUpgradeDiffs().getOrDefault(key, 0);
+                return screen.getAdditionalMagicUpgradeDiffs(key);
             }
 
             @Override
             public void setAmount(int amountToSet) {
-                int current = getAmount();
-                int delta = amountToSet - current;
-                screen.adjustAdditionalMagicUpgrade(key, delta);
+                screen.setAdditionalMagicUpgrade(key, amountToSet);
             }
 
             @Override
@@ -114,8 +111,6 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
     }
 
     public void update() {
-        cachedNormalDiffs = screen.getNormalUpgradeDiffs();
-        cachedAdditionalMagic = screen.getAdditionalMagicUpgradeDiffs();
         for (CardEffectButton ceb : normalButtons) {
             ceb.update();
         }
@@ -125,9 +120,8 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
     }
 
     public void render(SpriteBatch sb) {
-        float titleX = Settings.WIDTH / 2.0f - 260.0f * Settings.scale;
-        float titleY = START_Y + 48.0f * Settings.scale;
-        FontHelper.renderSmartText(sb, FontHelper.cardTitleFont, "Upgrade Diffs", titleX, titleY, Color.GOLD);
+        float titleY = START_Y + 60.0f * Settings.scale;
+        FontHelper.renderSmartText(sb, FontHelper.cardTitleFont, CardViewPopupHeader.TEXT[38], STAT_BUTTON_X, titleY, Color.GOLD);
 
         for (CardEffectButton ceb : normalButtons) {
             ceb.render(sb);
@@ -165,23 +159,7 @@ public class CardUpgradePreviewHeader implements HeaderButtonPlusListener, CardE
         return screen.getSourceCard() == null ? new Madness() : screen.getSourceCard();
     }
 
-    private List<String> getAdditionalMagicKeys(AbstractCard card) {
-        ArrayList<String> keys = new ArrayList<>();
-        if (card == null) {
-            return keys;
-        }
-        String serialized = AbstractCardPatch.serializeAdditionalMagicNumbers(card);
-        if (serialized == null || serialized.isEmpty()) {
-            return keys;
-        }
-        String[] pairs = serialized.split(AbstractCardPatch.MAGIC_NUMBER_DELIMITER);
-        for (String pair : pairs) {
-            if (pair.isEmpty()) continue;
-            String[] kv = pair.split("\\|");
-            if (kv.length > 0) {
-                keys.add(kv[0]);
-            }
-        }
-        return keys;
+    private Set<String> getAdditionalMagicKeys(AbstractCard card) {
+        return AbstractCardPatch.CardModificationFields.additionalMagicNumbers.get(card).keySet();
     }
 }

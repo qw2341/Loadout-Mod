@@ -170,12 +170,26 @@ public class AbstractCardPatch {
         CardModificationFields.additionalNormalUpgrades.set(ac, values);
     }
 
+    public static void setCardNormalUpgrade(AbstractCard ac, int index, int value) {
+        if(index  < 0 || index >= 5) return;
+        CardModificationFields.additionalNormalUpgrades.get(ac)[index] = value;
+    }
+
     public static Map<String, Integer> getCardAdditionalMagicUpgrade(AbstractCard ac) {
         return CardModificationFields.additionalMagicUpgrades.get(ac);
     }
 
     public static void setCardAdditionalMagicUpgrade(AbstractCard ac, Map<String, Integer> upgrades) {
         CardModificationFields.additionalMagicUpgrades.set(ac, upgrades);
+    }
+
+    //Sets the value for  a specific magic number
+    public static void setCardAdditionalMagicUpgrade(AbstractCard ac, String magicID, int upgrade) {
+        CardModificationFields.additionalMagicUpgrades.get(ac).put(magicID,upgrade);
+    }
+
+    public static void adjustCardAdditionalMagicUpgrade(AbstractCard ac, String magicID, int delta) {
+        CardModificationFields.additionalMagicUpgrades.get(ac).merge(magicID, delta, (k, v) -> v + delta);
     }
 
     public static String[] getCardAdditionalModifiers(AbstractCard ac) {
