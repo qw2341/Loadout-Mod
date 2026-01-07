@@ -85,6 +85,7 @@ public class SCardViewPopup {
     public boolean isUpgradeMode = false;
 
     public static CardModSelectScreen cardModSelectScreen;
+    public static CardUpgradePreviewScreen cardUpgradePreviewScreen;
 
     public SCardViewPopup() {
         this.fadeColor = Color.BLACK.cpy();
@@ -115,6 +116,9 @@ public class SCardViewPopup {
 
         if(cardModSelectScreen == null) {
             cardModSelectScreen = new CardModSelectScreen();
+        }
+        if(cardUpgradePreviewScreen == null) {
+            cardUpgradePreviewScreen = new CardUpgradePreviewScreen();
         }
 
         for(int i = 0; i < group.size(); ++i) {
@@ -249,6 +253,9 @@ public class SCardViewPopup {
         this.confirmButton.isDisabled = true;
         //CardCrawlGame.isPopupOpen = false;
         this.isOpen = false;
+        if (cardUpgradePreviewScreen != null) {
+            cardUpgradePreviewScreen.close();
+        }
         if (this.portraitImg != null) {
             this.portraitImg.dispose();
             this.portraitImg = null;
@@ -256,8 +263,16 @@ public class SCardViewPopup {
 
     }
 
+    public int getHeaderMultiplier() {
+        return this.cardViewPopupHeader == null ? 1 : this.cardViewPopupHeader.multiplier;
+    }
+
     public void update() {
 
+        if(cardUpgradePreviewScreen != null && cardUpgradePreviewScreen.show) {
+            cardUpgradePreviewScreen.update();
+            return;
+        }
         if(cardModSelectScreen != null && cardModSelectScreen.show) {
             cardModSelectScreen.update();
             return;
@@ -433,6 +448,10 @@ public class SCardViewPopup {
     }
     public void render(SpriteBatch sb) {
 
+        if(cardUpgradePreviewScreen != null && cardUpgradePreviewScreen.show) {
+            cardUpgradePreviewScreen.render(sb);
+            return;
+        }
         if(cardModSelectScreen != null && cardModSelectScreen.show) {
             cardModSelectScreen.render(sb);
             return;

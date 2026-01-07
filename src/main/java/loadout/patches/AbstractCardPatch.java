@@ -94,11 +94,7 @@ public class AbstractCardPatch {
     public static class CardModificationFields {
         public static SpireField<Boolean> isCardModifiedByModifier = new SpireField<>(() -> Boolean.valueOf(false));
         public static SpireField<Map<String, Integer>> additionalMagicNumbers = new SpireField<>(HashMap::new);
-        public static SpireField<Integer[]> additionalNormalUpgrades = new SpireField<>(() -> {
-            Integer[] array = new Integer[5];
-            Arrays.fill(array, 0);
-            return array;
-        });
+        public static SpireField<Integer[]> additionalNormalUpgrades = new SpireField<>(() -> new Integer[] {0,0,0,0,0});
         public static SpireField<Map<String, Integer>> additionalMagicUpgrades = new SpireField<>(HashMap::new);
         /**
          * An array of modifier IDs added on upgrade

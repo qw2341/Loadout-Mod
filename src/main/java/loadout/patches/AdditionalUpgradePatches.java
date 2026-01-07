@@ -2,6 +2,7 @@ package loadout.patches;
 
 import java.util.Map;
 
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
@@ -19,8 +20,8 @@ public class AdditionalUpgradePatches {
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
             Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
             if (normUpgrades == null) return;
-            System.out.println("Upgrading! The array is: " + java.util.Arrays.toString(normUpgrades));
-           amount[0] = amount[0] + normUpgrades[1];
+            // System.out.println("Upgrading! The array is: " + java.util.Arrays.toString(normUpgrades));
+            amount[0] += normUpgrades[1];
        }
    }
 
@@ -28,9 +29,9 @@ public class AdditionalUpgradePatches {
    public static class UpgradeBlockPatch {
        @SpirePrefixPatch
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
-        Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
+            Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
             if (normUpgrades == null) return;
-           amount[0] = amount[0] + normUpgrades[2];
+            amount[0] += normUpgrades[2];
        }
    }
 
@@ -38,41 +39,59 @@ public class AdditionalUpgradePatches {
    public static class UpgradeMagicNumberPatch {
        @SpirePrefixPatch
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
-        Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
+            Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
             if (normUpgrades == null) return;
-           amount[0] = amount[0] + normUpgrades[3];
+            amount[0] += normUpgrades[3];
        }
    }
 
    @SpirePatch2(clz = AbstractCard.class, method = "upgradeBaseCost")
    public static class UpgradeBaseCostPatch {
-       @SpireInsertPatch(rloc = 1, localvars = {"diff"})
-       public static void Insert(AbstractCard __instance, @ByRef int[] newBaseCost, @ByRef int[] diff) {
-        Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
+       @SpireInsertPatch(rloc = 2)
+       public static void Insert(AbstractCard __instance, @ByRef int[] newBaseCost) {
+            Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
             if (normUpgrades == null) return;
-           diff[0] = diff[0] + normUpgrades[0];
+            __instance.cost += normUpgrades[0];
        }
    }
 
+    public static void upgradeBaseCost(AbstractCard card,int costUpgrade) {
+        int newBaseCost = card.cost + costUpgrade;
+        int diff = card.costForTurn - card.cost;
+        card.cost = newBaseCost;
+        if (card.costForTurn > 0) {
+            card.costForTurn = card.cost + diff;
+        }
+
+        if (card.costForTurn < 0) {
+            card.costForTurn = 0;
+        }
+
+        card.upgradedCost = true;
+    }
    /**
     * Dynamic Patched
-    * @param __instance
+    * @param __instance, the card to be upgraded
+    * @param doCost, whether to upgrade cost
+    * @param doDamage whether to upgrade damage
+    * @param doBlock whether to upgrade block
+    * @param doMagic whether to upgrade magic number
     */
-    public static void additionalUpgrade(AbstractCard __instance) {
+    public static void additionalUpgrade(AbstractCard __instance, boolean doCost, boolean doDamage, boolean doBlock, boolean doMagic) {
         Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
         if (normUpgrades == null) return;
-    //    int costUpgrade = normUpgrades[0];
-    //    if(costUpgrade != 0)
-    //        ReflectionHacks.privateMethod(AbstractCard.class, "upgradeBaseCost", int.class).invoke(__instance, costUpgrade);
-    //    int dmgUpgrade = normUpgrades[1];
-    //    if(dmgUpgrade != 0)
-    //        ReflectionHacks.privateMethod(AbstractCard.class, "upgradeDamage", int.class).invoke(__instance, dmgUpgrade);
-    //    int blckUpgrade = normUpgrades[2];
-    //    if(blckUpgrade != 0)
-    //        ReflectionHacks.privateMethod(AbstractCard.class, "upgradeBlock", int.class).invoke(__instance, blckUpgrade);
-    //    int magkUpgrade = normUpgrades[3];
-    //    if (magkUpgrade != 0)
-    //        ReflectionHacks.privateMethod(AbstractCard.class, "upgradeMagicNumber", int.class).invoke(__instance, magkUpgrade);
+        int costUpgrade = normUpgrades[0];
+        if(doCost && costUpgrade != 0)
+            upgradeBaseCost(__instance, costUpgrade);
+        int dmgUpgrade = normUpgrades[1];
+        if(doDamage && dmgUpgrade != 0)
+            ReflectionHacks.privateMethod(AbstractCard.class, "upgradeDamage", int.class).invoke(__instance, dmgUpgrade);
+        int blckUpgrade = normUpgrades[2];
+        if(doBlock && blckUpgrade != 0)
+            ReflectionHacks.privateMethod(AbstractCard.class, "upgradeBlock", int.class).invoke(__instance, blckUpgrade);
+        int magkUpgrade = normUpgrades[3];
+        if (doMagic && magkUpgrade != 0)
+            ReflectionHacks.privateMethod(AbstractCard.class, "upgradeMagicNumber", int.class).invoke(__instance, magkUpgrade);
        int miscUpgrade = normUpgrades[4];
        __instance.misc += miscUpgrade;
 

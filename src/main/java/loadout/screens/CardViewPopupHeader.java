@@ -422,7 +422,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
                 this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.makeDamageButton, this.makeDamageAOEButton, this.makeBlockButton, this.makeDrawButton, this.makeDiscardButton, this.makeExhaustCardButton
-                , this.cardModButton, this.renameButton, this.descEditButton};
+                , this.cardModButton, this.renameButton, this.descEditButton, this.upgradeModeScreenButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -930,16 +930,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             textPopup.setText(getTextField());
             textPopup.open();
         } else if(button == this.upgradeModeScreenButton) {
-            //switch to from upgrade mode screen
-            this.cardViewScreen.isUpgradeMode = !this.cardViewScreen.isUpgradeMode;
-            if(this.cardViewScreen.isUpgradeMode) {
-                //backup card
-                this.originalPreupgradeCard = cardViewScreen.card;
-                cardViewScreen.card = cardViewScreen.card.makeStatEquivalentCopy();
-                cardViewScreen.card.upgrade();
-            } else {
-                //return the backup
-                cardViewScreen.card = originalPreupgradeCard;
+            if(SCardViewPopup.cardUpgradePreviewScreen != null) {
+                SCardViewPopup.cardUpgradePreviewScreen.open(cardViewScreen, cardViewScreen.card);
             }
         } else {
             return;
