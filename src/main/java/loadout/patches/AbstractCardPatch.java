@@ -86,6 +86,7 @@ public class AbstractCardPatch {
                 player.getRelic(ChemicalX.ID).flash();
                 energyOnUse += 2;
             }
+            c.calculateCardDamage(monster);
             AbstractDungeon.actionManager.addToBottom(new MultiUseAction(c, player, monster, energyOnUse));
         }
     }

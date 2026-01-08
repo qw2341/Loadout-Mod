@@ -32,7 +32,7 @@ public class MultiUseAction extends AbstractGameAction {
             isDone = true;
 
             if (usesLeft > 0 && card.canUse(player, monster)) {
-                card.calculateCardDamage(monster);
+//                card.calculateCardDamage(monster);
                 card.use(player, monster);
                 if (usesLeft > 1) {
                     AbstractDungeon.actionManager.addToBottom(new MultiUseAction(card, player, monster, usesLeft - 1));
