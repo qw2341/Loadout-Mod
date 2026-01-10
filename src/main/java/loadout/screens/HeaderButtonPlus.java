@@ -104,24 +104,28 @@ public class HeaderButtonPlus extends SortHeaderButton {
             this.hb.clicked = false;
 
             CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
-            if (this.isSorting) {
-                this.isAscending = !this.isAscending;
-                if (this.delegate instanceof RelicSelectSortHeader) ((RelicSelectSortHeader)this.delegate).clearActiveButtons();
-                else if (this.delegate instanceof PotionSelectSortHeader) ((PotionSelectSortHeader)this.delegate).clearActiveButtons();
-                else if (this.delegate instanceof CardSelectSortHeader) ((CardSelectSortHeader)this.delegate).clearActiveButtons();
-                else if (this.delegate instanceof AbstractSortHeader) {
-                    ((AbstractSortHeader)this.delegate).clearActiveButtons();
-                }
-            } else if (this.isToggle) {
-                this.isAscending = !this.isAscending;
-            }
-
-            this.delegate.didChangeOrder(this, this.isAscending);
+            updateClickLogic();
         }
         if(isToggle) {
             this.isActive = isAscending;
         }
 
+    }
+
+    protected void updateClickLogic() {
+        if (this.isSorting) {
+            this.isAscending = !this.isAscending;
+            if (this.delegate instanceof RelicSelectSortHeader) ((RelicSelectSortHeader)this.delegate).clearActiveButtons();
+            else if (this.delegate instanceof PotionSelectSortHeader) ((PotionSelectSortHeader)this.delegate).clearActiveButtons();
+            else if (this.delegate instanceof CardSelectSortHeader) ((CardSelectSortHeader)this.delegate).clearActiveButtons();
+            else if (this.delegate instanceof AbstractSortHeader) {
+                ((AbstractSortHeader)this.delegate).clearActiveButtons();
+            }
+        } else if (this.isToggle) {
+            this.isAscending = !this.isAscending;
+        }
+
+        this.delegate.didChangeOrder(this, this.isAscending);
     }
 
     public void updateScrollPosition(float newY) {
