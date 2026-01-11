@@ -102,7 +102,8 @@ public class HeaderButtonPlus extends SortHeaderButton {
 
         if (this.hb.clicked || this.hb.hovered && CInputActionSet.select.isJustPressed()) {
             this.hb.clicked = false;
-
+            InputHelper.justClickedLeft  = false;
+            InputHelper.justReleasedClickLeft = false;
             CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
             updateClickLogic();
         }

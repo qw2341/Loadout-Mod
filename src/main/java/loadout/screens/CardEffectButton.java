@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.codedisaster.steamworks.SteamUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -16,8 +17,13 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 import com.megacrit.cardcrawl.helpers.steamInput.SteamInputHelper;
+import loadout.LoadoutMod;
 import loadout.helper.TextInputHelper;
 import loadout.helper.TextInputReceiver;
+
+import java.util.function.Supplier;
+
+import static loadout.screens.StatModSelectScreen.HP_NUM_OFFSET_X;
 
 public class CardEffectButton implements HeaderButtonPlusListener, TextInputReceiver {
 
@@ -48,12 +54,16 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
 
     public StatModSelectScreen.StatModActions statModActions;
     public CardStuffProvider multiplierGetter;
-    private final float imageOffset = 32.0f;
+    private static final float IMAGE_OFFSET_X = 50.0f;
 
     private boolean isTyping;
     private InputProcessor prevInputProcessor;
     private float waitTimer = 0.0F;
     private final float segment = 50.0F * Settings.scale;
+
+    private boolean isLocked;
+    private Supplier<Boolean> supplier;
+    private HeaderButtonPlus lockButton;
 
     public CardEffectButton(Texture image, float x, float y, String text, StatModSelectScreen.StatModActions statModActions, CardStuffProvider multiplierGetter) {
         this.image = image;
@@ -62,7 +72,17 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
         this.y = y;
         this.text = text;
         this.statModActions = statModActions;
-        this.multiplierGetter = multiplierGetter;
+        this.multiplierGetter = multiplierGetter == null? new CardStuffProvider() {
+            @Override
+            public int getMultiplier() {
+                return LoadoutMod.universalMultiplier;
+            }
+
+            @Override
+            public AbstractCard getCard() {
+                return new Madness(); // Dummy card
+            }
+        } : multiplierGetter;
         this.displayValue = String.valueOf(statModActions.getAmount());
         this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, displayValue, Float.MAX_VALUE, 0.0F);
         this.hb_w = 2f * segment;
@@ -73,6 +93,39 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
         this.downButton = new HeaderButtonPlus("",x + 6f * segment,y,this,true, ImageMaster.FILTER_ARROW);
         //this.imageOffset = this.image == null ? 0f : this.image.getWidth() / 2f;
         this.isTyping = false;
+    }
+
+    public CardEffectButton(Texture image, float x, float y, String text, StatModSelectScreen.StatModActions statModActions, CardStuffProvider multiplierGetter, Supplier<Boolean> supplier) {
+        this.image = image;
+
+        this.x = x;
+        this.y = y;
+        this.text = text;
+        this.statModActions = statModActions;
+        this.multiplierGetter = multiplierGetter == null? new CardStuffProvider() {
+            @Override
+            public int getMultiplier() {
+                return LoadoutMod.universalMultiplier;
+            }
+
+            @Override
+            public AbstractCard getCard() {
+                return new Madness(); // Dummy card
+            }
+        } : multiplierGetter;
+        this.displayValue = String.valueOf(statModActions.getAmount());
+        this.textWidth = FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, displayValue, Float.MAX_VALUE, 0.0F);
+        this.hb_w = 2f * segment;
+        this.hb_h = 50.0f * Settings.yScale;
+        this.hb = new Hitbox(x + 2f * segment,y - hb_h / 2f,hb_w / 2f,hb_h);
+        this.upButton = new HeaderButtonPlus("",x + segment,y,this,true, ImageMaster.FILTER_ARROW);
+        this.upButton.isAscending = false;
+        this.downButton = new HeaderButtonPlus("",x + 4f * segment,y,this,true, ImageMaster.FILTER_ARROW);
+        this.isTyping = false;
+        this.isLocked = supplier.get();
+        this.supplier = supplier;
+        this.lockButton = new HeaderButtonPlus(StatModSelectScreen.TEXT[1],this.x + HP_NUM_OFFSET_X + this.textWidth + 100.0f,this.y, this, false, true, HeaderButtonPlus.Alignment.LEFT);
+        this.lockButton.isAscending = this.isLocked;
     }
 
     public void update() {
@@ -90,6 +143,12 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
         this.upButton.update();
         this.downButton.update();
 
+        if (this.lockButton != null) {
+            this.lockButton.x = this.x + segment * 5.5f;
+            this.lockButton.y = this.y;
+            this.lockButton.update();
+        }
+
         if (this.hb.hovered && InputHelper.justClickedLeft) {
             this.hb.clickStarted = true;
         }
@@ -100,6 +159,8 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
         }
         if (this.hb.clicked || this.hb.hovered && CInputActionSet.select.isJustPressed()) {
             CardCrawlGame.sound.playA("UI_CLICK_1", -0.2F);
+            InputHelper.justClickedLeft  = false;
+            InputHelper.justReleasedClickLeft = false;
             this.hb.clicked = false;
 
             if(!isTyping) {
@@ -133,14 +194,25 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
 
     public void render(SpriteBatch sb) {
         this.hb.render(sb);
-        if(image != null)
-            sb.draw(image, this.x - imageOffset + imageOffset * Settings.scale - 100.0f * Settings.scale, this.y - imageOffset * Settings.scale, imageOffset, imageOffset, imageOffset*2f, imageOffset*2f, Settings.scale, Settings.scale, 0.0F, 0, 0, image.getWidth(), image.getHeight(), false, false);
-        FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, Color.WHITE);
+        if(image != null) {
+            float imageX = this.x - 32.0F + 32.0F * Settings.scale - IMAGE_OFFSET_X * 2.5f - FontHelper.getSmartWidth(FontHelper.topPanelInfoFont, this.text, segment * 2.0f, 0.0F);
+            if (this.hb.hovered) {
+                sb.draw(this.image, imageX, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale * 1.2F, Settings.scale * 1.2F, 0.0F, 0, 0, image.getWidth(), image.getHeight(), false, false);
+            } else {
+                sb.draw(this.image, imageX, this.y - 32.0F * Settings.scale, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, image.getWidth(), image.getHeight(), false, false);
+            }
+        }
+        if (this.supplier != null) {
+            FontHelper.renderFontRightAligned(sb, FontHelper.topPanelInfoFont, this.text, this.x + 0.5f * segment, this.y, Color.WHITE);
+        } else {
+            FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.x, this.y, Color.WHITE);
+        }
         this.upButton.render(sb);
         Color valueColor = isTyping ? Color.CYAN : Color.GREEN;
-        FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.displayValue, this.x + 4f * segment, this.y, valueColor);
+        float displayX = this.supplier == null ? this.x + 4f * segment : this.x + 2.5f * segment;
+        FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.displayValue, displayX, this.y, valueColor);
         this.downButton.render(sb);
-
+        if(this.lockButton != null) this.lockButton.render(sb);
     }
 
     @Override
@@ -149,6 +221,8 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
             this.statModActions.setAmount(this.statModActions.getAmount() + multiplierGetter.getMultiplier());
         } else if(button == this.downButton) {
             this.statModActions.setAmount(this.statModActions.getAmount() - multiplierGetter.getMultiplier());
+        } else if(button == this.lockButton) {
+            changeBool(isAscending);
         }
         this.displayValue = String.valueOf(statModActions.getAmount());
     }
@@ -195,5 +269,15 @@ public class CardEffectButton implements HeaderButtonPlusListener, TextInputRece
     public void reset() {
         this.displayValue = String.valueOf(statModActions.getAmount());
         refreshText();
+    }
+
+    private void changeBool(boolean boolToChange) {
+        this.isLocked = boolToChange;
+        this.statModActions.onBoolChange(boolToChange, statModActions.getAmount());
+    }
+
+    public void refreshBool() {
+        if(this.supplier != null) this.isLocked = this.supplier.get();
+        this.lockButton.isAscending = this.isLocked;
     }
 }
