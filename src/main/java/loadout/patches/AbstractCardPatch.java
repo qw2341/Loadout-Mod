@@ -129,10 +129,10 @@ public class AbstractCardPatch {
     }
 
     public static void upgradeMagicNumber(AbstractCard ac, String cardModID, int amount) {
-        if(ac.timesUpgraded == 1 || InfUpgradePatch.isInfUpgrade(ac)) {
+        if(ac.timesUpgraded == 1 || InfUpgradePatch.isInfUpgrade(ac) || ac.cardID.equals(SearingBlow.ID)) {
             Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
             //Inf upgrade compatibility
-            if (InfUpgradePatch.isInfUpgrade(ac)) amount +=  Math.max(0, ac.timesUpgraded - 1) ;
+            if (InfUpgradePatch.isInfUpgrade(ac) || ac.cardID.equals(SearingBlow.ID)) amount +=  Math.max(0, ac.timesUpgraded - 1) ;
             numberMap.put(cardModID, numberMap.getOrDefault(cardModID, 0) + amount);
         }
     }
