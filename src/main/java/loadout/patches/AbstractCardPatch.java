@@ -129,7 +129,7 @@ public class AbstractCardPatch {
     }
 
     public static void upgradeMagicNumber(AbstractCard ac, String cardModID, int amount) {
-        if(ac.canUpgrade() || InfUpgradePatch.isInfUpgrade(ac)) {
+        if(ac.timesUpgraded == 1 || InfUpgradePatch.isInfUpgrade(ac)) {
             Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
             //Inf upgrade compatibility
             if (InfUpgradePatch.isInfUpgrade(ac)) amount +=  Math.max(0, ac.timesUpgraded - 1) ;
