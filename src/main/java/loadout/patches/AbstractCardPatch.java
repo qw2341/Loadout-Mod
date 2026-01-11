@@ -129,10 +129,12 @@ public class AbstractCardPatch {
     }
 
     public static void upgradeMagicNumber(AbstractCard ac, String cardModID, int amount) {
-        Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
-        //Inf upgrade compatibility
-        amount += CardModifierManager.hasModifier(ac, InfiniteUpgradeMod.ID) ? Math.max(0, ac.timesUpgraded - 1) : 0;
-        numberMap.put(cardModID, numberMap.getOrDefault(cardModID, 0) + amount);
+        if(ac.canUpgrade() || InfUpgradePatch.isInfUpgrade(ac)) {
+            Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
+            //Inf upgrade compatibility
+            if (InfUpgradePatch.isInfUpgrade(ac)) amount +=  Math.max(0, ac.timesUpgraded - 1) ;
+            numberMap.put(cardModID, numberMap.getOrDefault(cardModID, 0) + amount);
+        }
     }
 
     public static final String MAGIC_NUMBER_DELIMITER = ";";
