@@ -20,6 +20,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
 import loadout.actions.MultiUseAction;
+import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.cardmods.XCostMod;
 
 public class AbstractCardPatch {
@@ -129,6 +130,8 @@ public class AbstractCardPatch {
 
     public static void upgradeMagicNumber(AbstractCard ac, String cardModID, int amount) {
         Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
+        //Inf upgrade compatibility
+        amount += CardModifierManager.hasModifier(ac, InfiniteUpgradeMod.ID) ? Math.max(0, ac.timesUpgraded - 1) : 0;
         numberMap.put(cardModID, numberMap.getOrDefault(cardModID, 0) + amount);
     }
 
