@@ -11,11 +11,16 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 import loadout.relics.TildeKey;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AbstractRelicPatches {
     @SpirePatch(clz = AbstractRelic.class, method = SpirePatch.CLASS)
     public static class RelicCounterFields {
         public static SpireField<Boolean> isCounterLocked = new SpireField<Boolean>(() -> Boolean.FALSE);
         public static SpireField<Integer> counterLockAmount = new SpireField<Integer>(() -> -1);
+
+        public static SpireField<Map<String, Integer>> relicMagicNumberMap =  new SpireField<>(HashMap::new);
     }
 
     @SpirePatch2(clz = AbstractRelic.class, method = "update")

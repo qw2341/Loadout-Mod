@@ -239,5 +239,10 @@
 			"丟棄 !loadout:DiscardMod! 張牌。",
 			"消耗 !loadout:ExhaustCMod! 張牌。"
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"遺物計數"
+		]
 	}
 }

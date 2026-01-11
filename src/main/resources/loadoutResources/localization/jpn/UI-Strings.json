@@ -240,6 +240,11 @@
 			"!loadout:DiscardMod! カードを破棄します。",
 			"消耗!loadout:ExhaustCMod! カードを手札に持っています。"
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"遺物カウンター"
+		]
 	}
 
 

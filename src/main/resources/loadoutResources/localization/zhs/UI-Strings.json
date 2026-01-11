@@ -240,6 +240,11 @@
 			"丢弃 !loadout:DiscardMod! 张牌。",
 			"消耗 !loadout:ExhaustCMod! 张牌。"
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"遗物计数"
+		]
 	}
 
 }

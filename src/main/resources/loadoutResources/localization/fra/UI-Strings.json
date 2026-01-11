@@ -240,6 +240,11 @@
 			"Défaussez les cartes !loadout:DiscardMod!.",
 			"Épuisez les cartes !loadout:ExhaustCMod! dans votre main."
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"Compteur de Reliques"
+		]
 	}
 
 

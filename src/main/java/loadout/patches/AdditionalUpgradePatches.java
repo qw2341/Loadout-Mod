@@ -121,7 +121,7 @@ public class AdditionalUpgradePatches {
                 AbstractCardModifier modifier = ModifierLibrary.getModifier(modifierId);
                 
                 if (action == '+') {
-                    if (modifier != null) {
+                    if (modifier != null && !CardModifierManager.hasModifier(__instance, modifierId)) {
                         CardModifierManager.addModifier(__instance, modifier);
                     }
                 } else if (action == '-') {

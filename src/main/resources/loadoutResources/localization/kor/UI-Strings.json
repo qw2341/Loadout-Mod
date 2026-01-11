@@ -240,6 +240,11 @@
 			"!loadout:DiscardMod! 카드를 버립니다.",
 			"소진 !loadout:ExhaustCMod! 카드가 손에 있습니다."
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"유물 카운터"
+		]
 	}
 
 

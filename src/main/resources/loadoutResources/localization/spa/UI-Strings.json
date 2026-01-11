@@ -241,6 +241,11 @@
 			"Descarta !loadout:DiscardMod! cartas.",
 			"Agota !loadout:ExhaustCMod! cartas en tu mano."
 		]
+	},
+	"loadout:RelicViewHeader" :{
+		"TEXT":[
+			"Contador de Reliquias"
+		]
 	}
 
 }
