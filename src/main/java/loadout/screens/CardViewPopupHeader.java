@@ -931,16 +931,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if(button == this.makeInevitableButton) {
             processModifierButton(this.makeInevitableButton, new InevitableMod());
         } else if(button == this.makeInfUpgradeButton) {
-            clearActiveButtons();
-            if (!button.isAscending) {
-                CardModifierManager.removeModifiersById(cardViewScreen.card, InfiniteUpgradeMod.ID, true);
-                cardViewScreen.card.upgraded = cardViewScreen.card.timesUpgraded > 0;
-            } else {
-                CardModifierManager.addModifier(cardViewScreen.card, new InfiniteUpgradeMod());
-                cardViewScreen.card.upgraded = false;
-            }
-            setCardModded(true);
-            resetOtherButtons();
+            processModifierButton(this.makeInfUpgradeButton, new InfiniteUpgradeMod());
         } else if(button == this.makeDieNextTurnButton) {
             processModifierButton(this.makeDieNextTurnButton, new DieNextTurnMod());
         } else if(button == this.makeStickyButton) {
@@ -971,7 +962,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             textPopup.open();
         } else if(button == this.upgradeModeScreenButton) {
             if(SCardViewPopup.cardUpgradePreviewScreen != null) {
-                SCardViewPopup.cardUpgradePreviewScreen.open(cardViewScreen, cardViewScreen.card);
+                SCardViewPopup.cardUpgradePreviewScreen.open(cardViewScreen.card);
             }
         } else {
             return;
@@ -994,10 +985,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private void processMagicNumberButton(HeaderButtonPlus button, AbstractCardModifier modifier) {
         clearActiveButtons();
         if (!button.isAscending) {
-            AbstractCardPatch.removeMagicNumber(cardViewScreen.card, modifier.identifier(null));
             CardModifierManager.removeModifiersById(cardViewScreen.card, modifier.identifier(null), true);
         } else {
-            AbstractCardPatch.addMagicNumber(cardViewScreen.card, modifier.identifier(null), 0);
             CardModifierManager.addModifier(cardViewScreen.card, modifier);
         }
         setCardModded(true);
