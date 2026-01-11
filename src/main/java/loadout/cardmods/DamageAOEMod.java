@@ -1,6 +1,7 @@
 package loadout.cardmods;
 
 import basemod.abstracts.AbstractCardModifier;
+
 import com.evacipated.cardcrawl.mod.stslib.damagemods.BindingHelper;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
@@ -10,10 +11,12 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+
 import loadout.LoadoutMod;
+import loadout.patches.AbstractCardPatch;
 import loadout.util.Wiz;
 
-public class DamageAOEMod extends AbstractCardModifier{
+public class DamageAOEMod extends AbstractLoadoutMagicCardModifier {
     public static String ID = LoadoutMod.makeID("DamageAOEMod");
     public static String description = "";
 
@@ -26,7 +29,7 @@ public class DamageAOEMod extends AbstractCardModifier{
 
     @Override
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
-        addToBot(BindingHelper.makeAction(card, new DamageAllEnemiesAction(Wiz.adp(), card.baseDamage, card.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL)));
+        addToBot(BindingHelper.makeAction(card, new DamageAllEnemiesAction(Wiz.adp(), AbstractCardPatch.getMagicNumber(card, ID), card.damageTypeForTurn, AbstractGameAction.AttackEffect.SLASH_HORIZONTAL)));
     }
 
     @Override
@@ -34,6 +37,7 @@ public class DamageAOEMod extends AbstractCardModifier{
         if(card.target == AbstractCard.CardTarget.SELF)
                 card.target = AbstractCard.CardTarget.ALL;
 //        card.multiDamage = DamageInfo.createDamageMatrix(card.baseDamage);
+        AbstractCardPatch.addMagicNumber(card, ID, 0);
     }
 
     @Override
@@ -52,6 +56,6 @@ public class DamageAOEMod extends AbstractCardModifier{
     }
 
     public static void onLoad() {
-        description = CardCrawlGame.languagePack.getCardStrings("Cleave").DESCRIPTION;
+        description = modifyDescriptionWithCustomMagic(CardCrawlGame.languagePack.getCardStrings("Cleave").DESCRIPTION, ID, "D");
     }
 }

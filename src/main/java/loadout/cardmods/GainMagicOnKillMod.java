@@ -8,9 +8,10 @@ import basemod.abstracts.AbstractCardModifier;
 import loadout.LoadoutMod;
 import loadout.damagemods.MagicDaggerMod;
 import loadout.helper.ModifierLibrary;
+import loadout.patches.AbstractCardPatch;
 import loadout.screens.CardViewPopupHeader;
 
-public class GainMagicOnKillMod extends AbstractCardModifier {
+public class GainMagicOnKillMod extends AbstractLoadoutMagicCardModifier {
 
     public static final String ID = LoadoutMod.makeID("GMOKMod");
     private static String description = ModifierLibrary.TEXT[6];
@@ -30,11 +31,13 @@ public class GainMagicOnKillMod extends AbstractCardModifier {
     @Override
     public void onInitialApplication(AbstractCard card) {
         DamageModifierManager.addModifier(card, daggerMod);
+        AbstractCardPatch.addMagicNumber(card, ID, 0);
     }
 
     @Override
     public void onRemove(AbstractCard card) {
         DamageModifierManager.removeModifier(card, daggerMod);
+        AbstractCardPatch.removeMagicNumber(card, ID);
     }
 
     @Override

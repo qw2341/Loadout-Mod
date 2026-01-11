@@ -8,7 +8,7 @@ import loadout.LoadoutMod;
 import loadout.damagemods.RitualDaggerMod;
 import loadout.helper.ModifierLibrary;
 
-public class GainDamageOnKill extends AbstractCardModifier {
+public class GainDamageOnKill extends AbstractLoadoutMagicCardModifier {
 
     public static String ID = LoadoutMod.makeID("GDOKMod");
     private static String description = ModifierLibrary.TEXT[1];
@@ -28,11 +28,13 @@ public class GainDamageOnKill extends AbstractCardModifier {
     @Override
     public void onInitialApplication(AbstractCard card) {
         DamageModifierManager.addModifier(card, daggerMod);
+        loadout.patches.AbstractCardPatch.addMagicNumber(card, ID, 0);
     }
 
     @Override
     public void onRemove(AbstractCard card) {
         DamageModifierManager.removeModifier(card, daggerMod);
+        loadout.patches.AbstractCardPatch.removeMagicNumber(card, ID);
     }
 
     @Override

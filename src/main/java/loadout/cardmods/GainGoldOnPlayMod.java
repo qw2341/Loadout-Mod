@@ -13,7 +13,7 @@ import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
-public class GainGoldOnPlayMod extends AbstractCardModifier {
+public class GainGoldOnPlayMod extends AbstractLoadoutMagicCardModifier {
 
     public static String ID = LoadoutMod.makeID("GainGoldOnPlayModifier");
     private static String description = ModifierLibrary.TEXT[3];

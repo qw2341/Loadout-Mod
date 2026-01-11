@@ -11,7 +11,7 @@ import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
-public class HealOnPlayMod extends AbstractCardModifier {
+public class HealOnPlayMod extends AbstractLoadoutMagicCardModifier {
 
     public static String ID = LoadoutMod.makeID("HealOnPlayModifier");
     private static String description = ModifierLibrary.TEXT[4];

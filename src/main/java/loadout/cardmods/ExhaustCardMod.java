@@ -9,7 +9,7 @@ import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 
-public class ExhaustCardMod extends AbstractCardModifier {
+public class ExhaustCardMod extends AbstractLoadoutMagicCardModifier {
     public static String ID = LoadoutMod.makeID("ExhaustCMod");
     public static String description = ModifierLibrary.TEXT[9];
 

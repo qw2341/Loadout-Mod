@@ -8,7 +8,7 @@ import loadout.LoadoutMod;
 import loadout.damagemods.LessonLearnedMod;
 import loadout.helper.ModifierLibrary;
 
-public class RandomUpgradeOnKillMod extends AbstractCardModifier {
+public class RandomUpgradeOnKillMod extends AbstractLoadoutMagicCardModifier {
     public static String ID = LoadoutMod.makeID("RandUpOKMod");
     private static String description = ModifierLibrary.TEXT[5];
 
@@ -34,11 +34,13 @@ public class RandomUpgradeOnKillMod extends AbstractCardModifier {
     @Override
     public void onInitialApplication(AbstractCard card) {
         DamageModifierManager.addModifier(card, lessonLearnedMod);
+        loadout.patches.AbstractCardPatch.addMagicNumber(card, ID, 0);
     }
 
     @Override
     public void onRemove(AbstractCard card) {
         DamageModifierManager.removeModifier(card, lessonLearnedMod);
+        loadout.patches.AbstractCardPatch.removeMagicNumber(card, ID);
     }
 
     @Override

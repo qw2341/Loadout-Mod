@@ -10,7 +10,7 @@ import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.util.Wiz;
 
-public class DiscardMod extends AbstractCardModifier {
+public class DiscardMod extends AbstractLoadoutMagicCardModifier {
     public static String ID = LoadoutMod.makeID("DiscardMod");
     public static String description = ModifierLibrary.TEXT[8];
 

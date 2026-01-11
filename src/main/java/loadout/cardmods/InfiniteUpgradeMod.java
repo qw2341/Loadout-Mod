@@ -29,6 +29,17 @@ public class InfiniteUpgradeMod extends AbstractCardModifier {
         return tips;
     }
 
+    @Override
+    public void onInitialApplication(AbstractCard card) {
+        super.onInitialApplication(card);
+        card.upgraded = false;
+    }
+
+    @Override
+    public void onRemove(AbstractCard card) {
+        super.onRemove(card);
+        card.upgraded = card.timesUpgraded > 0;
+    }
 
     @Override
     public String identifier(AbstractCard card) {
