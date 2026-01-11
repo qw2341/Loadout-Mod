@@ -3,7 +3,9 @@ package loadout.screens;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import loadout.LoadoutMod;
 import loadout.patches.AbstractCardPatch;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Designed for adding modifiers to a card
@@ -13,9 +15,7 @@ public class ModifierButtonPlus extends HeaderButtonPlus{
         void customRemovalLogic();
         void customAddingLogic();
 
-        default boolean getStatus(AbstractCard card, String ID) {
-            return CardModifierManager.hasModifier(card, ID);
-        }
+        boolean getStatus();
     }
     private ModifierButtonPlusListener delegate;
     public AbstractCardModifier modifier;
@@ -55,8 +55,6 @@ public class ModifierButtonPlus extends HeaderButtonPlus{
 
     @Override
     protected void updateClickLogic() {
-        super.updateClickLogic();
-
         if (this.isToggle) {
             this.isAscending = !this.isAscending;
         }
@@ -74,11 +72,12 @@ public class ModifierButtonPlus extends HeaderButtonPlus{
         }
 
         AbstractCardPatch.setCardModified(delegate.getCard(), true);
+        this.delegate.didChangeOrder(this, this.isAscending);
     }
 
     public void updateStatus() {
         if(customLogics != null) {
-            this.isAscending = customLogics.getStatus(delegate.getCard(), modifier.identifier(null));
+            this.isAscending = customLogics.getStatus();
         } else {
             this.isAscending = CardModifierManager.hasModifier(delegate.getCard(), modifier.identifier(null));
         }
