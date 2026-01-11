@@ -111,7 +111,8 @@ public class AdditionalUpgradePatches {
 
         // Apply additional modifiers on the first upgrade only
         String[] additionalModifiers = AbstractCardPatch.getCardAdditionalModifiers(__instance);
-        if (additionalModifiers != null && additionalModifiers.length > 0 && __instance.timesUpgraded == 0) {
+        //Times upgraded is one because this method is inserted at the end of the upgrade method
+        if (additionalModifiers != null && additionalModifiers.length > 0 && __instance.timesUpgraded == 1) {
             for (String modifierId : additionalModifiers) {
                 //get the first character to determine add or remove
                 char action = modifierId.charAt(0);
