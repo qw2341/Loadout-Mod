@@ -40,6 +40,11 @@ public class AbstractCardPatch {
             CardModificationFields.isCardModifiedByModifier.set(card, CardModificationFields.isCardModifiedByModifier.get(__instance));
 
             CardModificationFields.additionalMagicNumbers.set(card, new HashMap<String, Integer>(CardModificationFields.additionalMagicNumbers.get(__instance)));
+            Integer[] originalNormalUpgrades = CardModificationFields.additionalNormalUpgrades.get(__instance);
+            CardModificationFields.additionalNormalUpgrades.set(card, Arrays.copyOf(originalNormalUpgrades,originalNormalUpgrades.length));
+            CardModificationFields.additionalMagicUpgrades.set(card, new HashMap<String, Integer>(CardModificationFields.additionalMagicUpgrades.get(__instance)));
+            String[] originalUpgradeModifiers = CardModificationFields.additionalModifiers.get(__instance);
+            CardModificationFields.additionalModifiers.set(card, Arrays.copyOf(originalUpgradeModifiers,originalUpgradeModifiers.length));
         }
     }
 
@@ -199,6 +204,37 @@ public class AbstractCardPatch {
 
     public static void setCardAdditionalModifiers(AbstractCard ac, String[] modifiers) {
         CardModificationFields.additionalModifiers.set(ac, modifiers);
+    }
+
+    public static void addCardAdditionalModifier(AbstractCard ac, String modifierID, boolean isAddition) {
+        String[] current = CardModificationFields.additionalModifiers.get(ac);
+        String[] updated = Arrays.copyOf(current, current.length + 1);
+        String modifier = (isAddition ? "+" : "-") + modifierID;
+        updated[current.length] = modifier;
+        CardModificationFields.additionalModifiers.set(ac, updated);
+    }
+
+    public static void mergeCardAdditionalModifiers(AbstractCard ac, String[] newModifiers) {
+        String[] current = CardModificationFields.additionalModifiers.get(ac);
+        //merge the two arrays, note that '+' and '-' of the same modifiers will cancel out
+        Map<String, Boolean> modifierMap = new HashMap<>();
+        for (String mod : current) {
+            if (mod.length() < 2) continue;
+            String id = mod.substring(1);
+            boolean isAddition = mod.charAt(0) == '+';
+            modifierMap.put(id, isAddition);
+        }
+        for (String mod : newModifiers) {
+            if (mod.length() < 2) continue;
+            String id = mod.substring(1);
+            boolean isAddition = mod.charAt(0) == '+';
+            //cancel out if opposite exists
+            modifierMap.merge(id, isAddition, (oldValue, newValue) -> oldValue != newValue ? null : newValue);
+        }
+        String[] updated = modifierMap.entrySet().stream()
+                .map(entry -> (entry.getValue() ? "+" : "-") + entry.getKey())
+                .toArray(String[]::new);
+        CardModificationFields.additionalModifiers.set(ac, updated);
     }
 
 
