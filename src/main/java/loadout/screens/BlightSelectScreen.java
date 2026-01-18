@@ -1,25 +1,30 @@
 package loadout.screens;
 
-import basemod.patches.whatmod.WhatMod;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.blights.GrotesqueTrophy;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.helpers.BlightHelper;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+
+import basemod.patches.whatmod.WhatMod;
+import infinitespire.blights.InfectiousMalware;
 import loadout.LoadoutMod;
 import loadout.helper.RelicModComparator;
 import loadout.relics.AbstractCustomScreenRelic;
 import loadout.relics.BlightChest;
 import loadout.util.ModConfig;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 
 public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
 
@@ -42,13 +47,24 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
         this.itemsPerLine = 10;
         this.defaultSortType = SortType.MOD;
         this.itemHeight = 75.0f;
+        addBlights();
+    }
+
+    private void addBlights() {
         for (String b: BlightHelper.blights) {
             AbstractBlight ab = BlightHelper.getBlight(b);
-            if(ModConfig.ignoreUnlock) {
-                ab.isSeen = true;
-            }
+            ab.isSeen = true;
+
             this.itemsClone.add(ab);
         }
+
+        //Modded Blights
+        if(Loader.isModLoadedOrSideloaded("infinitespire")) {
+            AbstractBlight abstractBlight = new InfectiousMalware();
+            abstractBlight.isSeen = true;
+            this.itemsClone.add(abstractBlight);
+        }
+
         this.items.addAll(this.itemsClone);
     }
 

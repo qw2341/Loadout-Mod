@@ -6,7 +6,7 @@
     <groupId>loadoutmod</groupId>
     <artifactId>loadout</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Loadout Mod</name>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <description>Adds a debug panel that gives you stuffs.</description>
 
     <properties>
@@ -172,6 +172,14 @@
             <version>5.2.04</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/1610056683/Downfall.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>infinitespire</groupId>
+            <artifactId>infinitespire</artifactId>
+            <version>0.23.0</version>
+            <scope>system</scope>
+            <systemPath>${Steam.path}/workshop/content/646570/1610128058/InfiniteSpire.jar</systemPath>
             <optional>true</optional>
         </dependency>
     </dependencies>
