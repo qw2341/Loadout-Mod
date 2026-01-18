@@ -939,7 +939,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if(button == this.makeDamageButton) {
             processModifierButton(this.makeDamageButton, new DamageMod());
         } else if(button == this.makeDamageAOEButton) {
-            processModifierButton(this.makeDamageAOEButton, new DamageAOEMod());
+            processMagicNumberButton(this.makeDamageAOEButton, new DamageAOEMod());
         } else if(button == this.makeBlockButton) {
             processModifierButton(this.makeBlockButton, new BlockMod());
         } else if(button == this.makeDrawButton) {
