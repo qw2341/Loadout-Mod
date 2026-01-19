@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
 
+import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -12,6 +13,7 @@ import com.megacrit.cardcrawl.cards.red.SearingBlow;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.ChemicalX;
 
 import basemod.helpers.CardModifierManager;
@@ -86,11 +88,16 @@ public class AbstractCardPatch {
 
         public static void use(AbstractCard c, AbstractPlayer player, AbstractMonster monster, int energyOnUse)
         {
-            //energyOnUse = EnergyPanel.getCurrentEnergy();
             c.energyOnUse = energyOnUse;
-            if (player.hasRelic(ChemicalX.ID)) {
+            int numOfChemX = 0;
+            for (AbstractRelic relic:  player.relics) {
+                if (relic.relicId.equals(ChemicalX.ID)) {
+                    numOfChemX++;
+                }
+            }
+            if (numOfChemX > 0) {
                 player.getRelic(ChemicalX.ID).flash();
-                energyOnUse += 2;
+                energyOnUse += 2 * numOfChemX;
             }
             c.calculateCardDamage(monster);
             AbstractDungeon.actionManager.addToBottom(new MultiUseAction(c, player, monster, energyOnUse));
