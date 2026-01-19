@@ -711,10 +711,8 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     }
     public static void createCardList() {
         cardsToDisplay.clear();
-
+        CardLibrary.cards.remove(SutureCard.ID);
         for (AbstractCard c : CardLibrary.cards.values()) {
-
-            if(Objects.equals(c.cardID, SutureCard.ID)) continue;
             if(ModConfig.ignoreUnlock)
                 c.isSeen = true;
             cardsToDisplay.add(c);
@@ -859,8 +857,6 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
 
     @Override
     public void receiveEditCards() {
-        BaseMod.addCard(new SutureCard());
-
         logger.info("loading card modifications");
 
         try {
