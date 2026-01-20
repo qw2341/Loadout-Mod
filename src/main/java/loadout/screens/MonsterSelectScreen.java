@@ -317,7 +317,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         this.currentSortType = SortType.MOD;
         this.defaultSortType = SortType.MOD;
 
-        this.itemHeight = 150.0F;
+        this.itemHeight = 80.0f * Settings.yScale;
         this.itemsPerLine = 5;
     }
 
@@ -467,7 +467,7 @@ public class MonsterSelectScreen extends AbstractSelectScreen<MonsterSelectScree
         String prevMod = "";
 
         itemsPerLine = showPreviews ? 4 : 5;
-
+        scrollTitleCount = 0;
 
         float spaceX = (SPACE_X + (showPreviews ? 125.0F * Settings.scale : 0.0F));
         float spaceY = (SPACE + (showPreviews ? 150.0F * Settings.yScale : 0.0F));

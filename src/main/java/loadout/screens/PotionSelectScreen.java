@@ -51,6 +51,7 @@ public class PotionSelectScreen extends AbstractSelectScreen<AbstractPotion>
         super(owner);
         this.defaultSortType = SortType.RARITY;
         sortHeader = new PotionSelectSortHeader(this);
+        this.itemHeight = 64.0f * Settings.scale;
     }
 
     private boolean checkPotionClass(AbstractPotion ap) {

@@ -410,12 +410,9 @@ public abstract class AbstractSelectScreen<T> implements ScrollBarListener {
 
         int scrollTmp = 0;
         if (size > this.itemsPerLine) {
-            scrollTmp = size / this.itemsPerLine;
-            scrollTmp += this.itemsPerLine;
-            if (size % this.itemsPerLine != 0) {
-                ++scrollTmp;
-            }
-            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * itemHeight * Settings.scale;
+            scrollTmp = (int) Math.ceil( (double) size / this.itemsPerLine);
+//            scrollTmp += this.itemsPerLine;
+            scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT + (scrollTmp + scrollTitleCount) * itemHeight;
         } else {
             scrollUpperBound = scrollLowerBound + Settings.DEFAULT_SCROLL_LIMIT;
         }

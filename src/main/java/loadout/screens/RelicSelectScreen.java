@@ -113,7 +113,8 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
         else sortHeader = new RelicDeleteSortHeader(this);
         this.isDeleteMode = isDeleteMode;
 
-        this.itemHeight = 75.0F;
+        this.itemHeight = 80.0F * Settings.scale;
+        this.itemsPerLine = 10;
     }
 
     @Override
@@ -560,7 +561,7 @@ public class RelicSelectScreen extends AbstractSelectScreen<AbstractRelic> imple
                     }
                 }
             }
-            if (col == 10) {
+            if (col == this.itemsPerLine) {
                 col = 0;
                 row += 1;
             }

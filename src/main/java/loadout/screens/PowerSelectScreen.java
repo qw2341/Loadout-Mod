@@ -227,7 +227,8 @@ public class PowerSelectScreen extends AbstractSelectScreen<PowerSelectScreen.Po
 
         this.sortHeader = new PowerSelectSortHeader(this);
 
-        this.itemHeight = 150.0F;
+        this.itemHeight = 85.0f * Settings.yScale;
+        this.itemsPerLine = 5;
     }
 
 

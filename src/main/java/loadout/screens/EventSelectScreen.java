@@ -156,6 +156,7 @@ public class EventSelectScreen extends AbstractSelectScreen<EventSelectScreen.Ev
 
         if (sortHeader == null) sortHeader = new EventSelectSortHeader(this, START_X);
         this.defaultSortType = SortType.MOD;
+        this.itemHeight = 75.0f * Settings.yScale;
     }
 
 //    private void addBaseGameEvents() {
