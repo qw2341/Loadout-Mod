@@ -19,7 +19,6 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 
 import basemod.patches.whatmod.WhatMod;
-import infinitespire.blights.InfectiousMalware;
 import loadout.LoadoutMod;
 import loadout.helper.RelicModComparator;
 import loadout.relics.AbstractCustomScreenRelic;
@@ -46,7 +45,7 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
         this.sortHeader = new BlightSelectSortHeader(this);
         this.itemsPerLine = 10;
         this.defaultSortType = SortType.MOD;
-        this.itemHeight = 75.0f;
+        this.itemHeight = 75.0f * Settings.yScale;
         addBlights();
     }
 
@@ -58,14 +57,24 @@ public class BlightSelectScreen extends AbstractSelectScreen<AbstractBlight>{
             this.itemsClone.add(ab);
         }
 
-        //Modded Blights
-        if(Loader.isModLoadedOrSideloaded("infinitespire")) {
-            AbstractBlight abstractBlight = new InfectiousMalware();
-            abstractBlight.isSeen = true;
-            this.itemsClone.add(abstractBlight);
-        }
+        addModdedBlights(this.itemsClone);
 
         this.items.addAll(this.itemsClone);
+    }
+
+    private void addModdedBlights(ArrayList<AbstractBlight> list) {
+        //Modded Blights
+        if(Loader.isModLoaded("infinitespire")) {
+            try {
+                System.out.println("Infinite Spire Mod loaded");
+                Class<?> clazz = Class.forName("infinitespire.blights.InfectiousMalware");
+                AbstractBlight blight = (AbstractBlight) clazz.getDeclaredConstructor().newInstance();
+                blight.isSeen = true;
+                list.add(blight);
+            } catch (Throwable t) {
+                LoadoutMod.logger.info("Failed to load modded blights from infinitespire", t);
+            }
+        }
     }
 
 
