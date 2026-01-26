@@ -1,15 +1,12 @@
 package loadout.screens;
 
 
-import VUPShionMod.cards.AbstractVUPShionCard;
-import basemod.BaseMod;
-import basemod.ReflectionHacks;
-import basemod.abstracts.AbstractCardModifier;
-import basemod.cardmods.EtherealMod;
-import basemod.cardmods.ExhaustMod;
-import basemod.cardmods.InnateMod;
-import basemod.cardmods.RetainMod;
-import basemod.helpers.CardModifierManager;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,28 +20,68 @@ import com.megacrit.cardcrawl.cards.colorless.Madness;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
+import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.options.DropdownMenu;
 import com.megacrit.cardcrawl.screens.options.DropdownMenuListener;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
+
+import VUPShionMod.cards.AbstractVUPShionCard;
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
+import basemod.abstracts.AbstractCardModifier;
+import basemod.cardmods.EtherealMod;
+import basemod.cardmods.ExhaustMod;
+import basemod.cardmods.InnateMod;
+import basemod.cardmods.RetainMod;
+import basemod.helpers.CardModifierManager;
 import loadout.LoadoutMod;
-import loadout.cardmods.*;
+import static loadout.LoadoutMod.FABRICATE_MOD_LOADED;
+import static loadout.LoadoutMod.VUPSHION_MOD_LOADED;
+import static loadout.LoadoutMod.cardModifications;
+import static loadout.LoadoutMod.cardsToDisplay;
+import static loadout.LoadoutMod.logger;
+import loadout.cardmods.AutoplayMod;
+import loadout.cardmods.BlockMod;
+import loadout.cardmods.DamageAOEMod;
+import loadout.cardmods.DamageMod;
+import loadout.cardmods.DieNextTurnMod;
+import loadout.cardmods.DiscardMod;
+import loadout.cardmods.DrawMod;
+import loadout.cardmods.ExhaustCardMod;
+import loadout.cardmods.FleetingMod;
+import loadout.cardmods.GainDamageOnKill;
+import loadout.cardmods.GainGoldOnKillMod;
+import loadout.cardmods.GainGoldOnPlayMod;
+import loadout.cardmods.GainHpOnKillMod;
+import loadout.cardmods.GainMagicOnKillMod;
+import loadout.cardmods.GraveMod;
+import loadout.cardmods.HealOnPlayMod;
+import loadout.cardmods.InevitableMod;
+import loadout.cardmods.InfiniteUpgradeMod;
+import loadout.cardmods.LifestealMod;
+import loadout.cardmods.PlayableMod;
+import loadout.cardmods.RandomUpgradeOnKillMod;
+import loadout.cardmods.SoulboundMod;
+import loadout.cardmods.StickyMod;
+import loadout.cardmods.UnetherealMod;
+import loadout.cardmods.UnexhaustMod;
+import loadout.cardmods.UnplayableMod;
+import loadout.cardmods.XCostMod;
 import loadout.helper.EnhancedTextInputReceiver;
 import loadout.helper.FabricateScreenController;
 import loadout.helper.RelicClassComparator;
 import loadout.patches.AbstractCardPatch;
+import loadout.portraits.CardPortraitManager;
 import loadout.relics.CardModifier;
 import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
-import org.apache.commons.lang3.StringUtils;
 import pinacolada.cards.base.PCLCard;
-
-import java.io.IOException;
-import java.util.*;
-
-import static loadout.LoadoutMod.*;
 
 public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMenuListener, CardEffectButton.CardStuffProvider, EnhancedTextInputReceiver {
 
@@ -134,6 +171,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
     private final HeaderButtonPlus renameButton;
     private final HeaderButtonPlus descEditButton;
 
+    private final HeaderButtonPlus changePortraitButton;
     private final HeaderButtonPlus upgradeModeScreenButton;
 
     private String[] dropdownMenuHeaders;
@@ -423,10 +461,14 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         this.descEditButton = new HeaderButtonPlus(TEXT[27],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
 
+        xPosition += this.descEditButton.hb.width + 50.0f * Settings.scale;
+
+        this.changePortraitButton = new HeaderButtonPlus(TEXT[43],xPosition,yPosition,this,true,ImageMaster.SETTINGS_ICON);
+
         HeaderButtonPlus[] tempbs = new HeaderButtonPlus[]{this.restoreDefaultButton,
                 this.saveChangesButton, this.getCopyButton, this.resetWithPermaButton, this.makeUnplayableButton, this.makeExhaustButton, this.makeEtherealButton, this.makeInnateButton, this.makeRetainButton, this.makeXCostButton, this.makeAutoPlayButton, this.makeSoulBoundButton, this.makeFleetingButton, this.makeGraveButton, this.makeGainGoldOnKillButton, this.makeGainHPOnKillButton, this.makeGainGoldOnPlayButton,
                 this.makeHealOnPlayButton, this.randomUpgradeOnKillButton, this.makeGainDamageOnKillButton, this.makeGainMagicOnKillButton, this.makeLifestealButton, this.makeInevitableButton, this.makeInfUpgradeButton, this.makeDieNextTurnButton, this.makeStickyButton, this.makeDamageButton, this.makeDamageAOEButton, this.makeBlockButton, this.makeDrawButton, this.makeDiscardButton, this.makeExhaustCardButton
-                , this.cardModButton, this.renameButton, this.descEditButton, this.upgradeModeScreenButton};
+                , this.cardModButton, this.renameButton, this.descEditButton, this.changePortraitButton, this.upgradeModeScreenButton};
 
         if(FABRICATE_MOD_LOADED) {
             ArrayList<HeaderButtonPlus> bList = new ArrayList<HeaderButtonPlus>();
@@ -757,7 +799,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         CardModifications.cardMap.put(cardId, SerializableCard.toSerializableCard(cardViewScreen.card));
         //logger.info(CardModifications.cardMap.toString());
         CardLibrary.cards.put(cardId,cardViewScreen.card.makeStatEquivalentCopy());
-        //LoadoutMod.createCardList();
+
+        CardPortraitManager.makeTempPortraitPermanent(cardViewScreen.card);
+        CardPortraitManager.INSTANCE.save();
+
         int i = 0;
         boolean found = false;
         for(AbstractCard card : cardsToDisplay) {
@@ -792,6 +837,9 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 logger.error("Error saving card mods");
             }
         }
+
+        if (CardPortraitManager.hasPermanentPortrait(cardId)) CardPortraitManager.INSTANCE.clearPermanentPortrait(cardId);
+
         AbstractCard freshCopy = CardLibrary.getCard(cardId).makeCopy();
         CardLibrary.cards.put(cardId,freshCopy);
         cardViewScreen.card = freshCopy;
@@ -960,7 +1008,11 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             isRenaming = false;
             textPopup.setText(getTextField());
             textPopup.open();
-        } else if(button == this.upgradeModeScreenButton) {
+        } else if (button == this.changePortraitButton) {
+            CardPortraitManager.chooseFileAndSetTempPortrait(cardViewScreen.card);
+            CardPortraitManager.INSTANCE.save();
+        }
+         else if(button == this.upgradeModeScreenButton) {
             if(SCardViewPopup.cardUpgradePreviewScreen != null) {
                 SCardViewPopup.cardUpgradePreviewScreen.open(cardViewScreen.card);
             }

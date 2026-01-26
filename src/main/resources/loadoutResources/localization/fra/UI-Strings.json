@@ -122,6 +122,7 @@
 			"Enregistrer une carte amelioree rendra toutes les cartes futures ameliorees",
 			"Reinitialiser une carte supprimera toutes les modifications temporaires et permanentes",
 			"Enregistrer une carte rendra toutes les cartes futures modifiees comme celle-ci, y compris les modifications d'amelioration"
+			"Changer le portrait"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

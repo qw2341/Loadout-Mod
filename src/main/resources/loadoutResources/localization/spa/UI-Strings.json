@@ -122,7 +122,8 @@
 			"Estas seguro?",
 			"Guardar una carta mejorada hara que todas las cartas futuras esten mejoradas",
 			"Restablecer una carta eliminara todas las modificaciones temporales y permanentes",
-			"Guardar una carta hara que todas las cartas futuras se modifiquen como esta, incluidas las modificaciones de mejora"
+			"Guardar una carta hara que todas las cartas futuras se modifiquen como esta, incluidas las modificaciones de mejora",
+			"Cambiar retrato"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

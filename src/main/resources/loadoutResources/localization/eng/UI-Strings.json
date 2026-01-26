@@ -124,7 +124,8 @@
 			"Are you sure?",
 			"Saving an upgraded card will make all future cards upgraded",
 			"Resetting a card will remove all temporary and permanent modifications",
-			"Saving a card will make all future cards modified like this one, including upgrade modifications"
+			"Saving a card will make all future cards modified like this one, including upgrade modifications",
+			"Change Portrait"
 		]
 	},
 	"loadout:PowerSelectSortHeader": {

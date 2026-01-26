@@ -5,10 +5,9 @@ import java.util.Map;
 import java.util.Arrays;
 
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
-import com.evacipated.cardcrawl.modthespire.lib.SpireField;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.red.SearingBlow;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -24,6 +23,7 @@ import javassist.expr.MethodCall;
 import loadout.actions.MultiUseAction;
 import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.cardmods.XCostMod;
+import loadout.portraits.CardPortraitManager;
 
 public class AbstractCardPatch {
 
@@ -48,6 +48,10 @@ public class AbstractCardPatch {
             CardModificationFields.additionalMagicUpgrades.set(card, new HashMap<String, Integer>(CardModificationFields.additionalMagicUpgrades.get(__instance)));
             String[] originalUpgradeModifiers = CardModificationFields.additionalModifiers.get(__instance);
             CardModificationFields.additionalModifiers.set(card, Arrays.copyOf(originalUpgradeModifiers,originalUpgradeModifiers.length));
+
+            if(CardPortraitManager.hasTempPortrait(__instance)) {
+                CardPortraitManager.INSTANCE.copyTempPortrait(__instance, card);
+            }
         }
     }
 
@@ -264,6 +268,16 @@ public class AbstractCardPatch {
                         f.replace("{ $1 = $0.originalName + \"+\" + $0.timesUpgraded; $_ = $proceed($$); }");
                 }
             };
+        }
+    }
+
+    @SpirePatch2(clz = AbstractCard.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, String.class, int.class, String.class, AbstractCard.CardType.class, AbstractCard.CardColor.class, AbstractCard.CardRarity.class, AbstractCard.CardTarget.class, DamageInfo.DamageType.class})
+    public static class PermanentCardPortraitPatch {
+        @SpirePostfixPatch
+        public static void Postfix(AbstractCard __instance) {
+            if (CardPortraitManager.hasPermanentPortrait(__instance)) {
+                CardPortraitManager.applyPortraitOverride(__instance);
+            }
         }
     }
 }
