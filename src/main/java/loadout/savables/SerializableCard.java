@@ -10,6 +10,7 @@ import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
+import loadout.portraits.CardPortraitManager;
 import loadout.relics.CardModifier;
 
 import java.io.Serializable;
@@ -46,6 +47,8 @@ public class SerializableCard implements Serializable {
     public Integer[] normalUpgradeDiffs;
     public Map<String, Integer> additionalMagicUpgradeDiffs;
     public String[] additionalUpgradeModifiers;
+
+    public String customPortraitId = null;
 
     public static AbstractCard toAbstractCard(SerializableCard sc) {
         if(!CardLibrary.isACard(sc.id)) {
@@ -108,6 +111,11 @@ public class SerializableCard implements Serializable {
 
         InfUpgradePatch.changeCardName(card);
 
+        if (sc.customPortraitId != null) {
+            AbstractCardPatch.setCustomPortraitId(card, sc.customPortraitId);
+            CardPortraitManager.applyPortraitOverride(card);
+        }
+
         return card;
     }
 
@@ -157,6 +165,8 @@ public class SerializableCard implements Serializable {
             sc.modifiers[i] = acm.identifier(card);
             i++;
         }
+
+        sc.customPortraitId = AbstractCardPatch.getCustomPortraitId(card) == null ? null : AbstractCardPatch.getCustomPortraitId(card);
 
         return sc;
     }

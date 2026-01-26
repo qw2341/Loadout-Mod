@@ -37,6 +37,8 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.ui.buttons.ConfirmButton;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import loadout.LoadoutMod;
+import loadout.patches.AbstractCardPatch;
+import loadout.portraits.CardPortraitManager;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -199,8 +201,10 @@ public class SCardViewPopup {
         }
     }
 
-    private void loadPortraitImg() {
-        if (!Settings.PLAYTESTER_ART_MODE && !UnlockTracker.betaCardPref.getBoolean(this.card.cardID, false)) {
+    public void loadPortraitImg() {
+        if (CardPortraitManager.hasTempPortrait(this.card)) {
+            this.portraitImg = CardPortraitManager.INSTANCE.getTexture(AbstractCardPatch.getCustomPortraitId(this.card));
+        } else if (!Settings.PLAYTESTER_ART_MODE && !UnlockTracker.betaCardPref.getBoolean(this.card.cardID, false)) {
             this.portraitImg = ImageMaster.loadImage("images/1024Portraits/" + this.card.assetUrl + ".png");
             if (this.portraitImg == null) {
                 this.portraitImg = ImageMaster.loadImage("images/1024PortraitsBeta/" + this.card.assetUrl + ".png");

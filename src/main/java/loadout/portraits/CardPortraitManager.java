@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,10 +27,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -40,6 +41,9 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import basemod.abstracts.CustomSavable;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
+import loadout.patches.AbstractCardPatch;
+import loadout.savables.CardLoadouts;
+import loadout.savables.SerializableCard;
 
 public class CardPortraitManager {
     // Slay the Spire card portrait region size (adjust if you want a different target).
@@ -52,12 +56,9 @@ public class CardPortraitManager {
     private final Path mapsDir;
     private final Path metaDir;
     private final Path permanentMapPath;
-    private final Path tempMapPath;
     private final Path assetsMetaPath;
-    private final boolean persistTemp;
 
     private final Map<String, String> permanentOverrides = new HashMap<>();
-    private final Map<String, String> tempOverrides = new HashMap<>();
     private final Map<String, PortraitAssetMeta> assetMeta = new HashMap<>();
 
     private final LinkedHashMap<String, CachedRegion> regionCache = new LinkedHashMap<>(16, 0.75f, true);
@@ -70,14 +71,12 @@ public class CardPortraitManager {
     }
 
     public CardPortraitManager(String configId, boolean persistTemp) {
-        this.persistTemp = persistTemp;
         Path configDir = Paths.get(SpireConfig.makeFilePath(configId, "CardPortraits", "json")).getParent();
         this.portraitsDir = configDir.resolve("portraits");
         this.assetsDir = portraitsDir.resolve("assets");
         this.mapsDir = portraitsDir.resolve("maps");
         this.metaDir = portraitsDir.resolve("meta");
         this.permanentMapPath = mapsDir.resolve("permanent.json");
-        this.tempMapPath = mapsDir.resolve("temp.json");
         this.assetsMetaPath = metaDir.resolve("assets.json");
     }
 
@@ -85,10 +84,6 @@ public class CardPortraitManager {
         ensureDirectories();
         permanentOverrides.clear();
         permanentOverrides.putAll(readStringMap(permanentMapPath));
-        tempOverrides.clear();
-        if (persistTemp) {
-            tempOverrides.putAll(readStringMap(tempMapPath));
-        }
         assetMeta.clear();
         assetMeta.putAll(readAssetMetaMap(assetsMetaPath));
 
@@ -98,17 +93,13 @@ public class CardPortraitManager {
     public void save() {
         ensureDirectories();
         writeJsonAtomic(permanentMapPath, permanentOverrides);
-        if (persistTemp) {
-            writeJsonAtomic(tempMapPath, tempOverrides);
-        }
         writeJsonAtomic(assetsMetaPath, assetMeta);
     }
 
     private void refreshCardLibrary() {
-        for (String cardId : permanentOverrides.keySet()) {
-            AbstractCard card = CardLibrary.getCard(cardId);
-            if (card != null) {
-                LoadoutMod.logger.info("Refreshing portrait for card: " + cardId);
+        for (AbstractCard card : CardLibrary.cards.values()) {
+            if (hasTempPortrait(card)) {
+                LoadoutMod.logger.info("Refreshing portrait for card: " + card.cardID);
                 CardPortraitManager.applyPortraitOverride(card);
             }
         }
@@ -159,27 +150,24 @@ public class CardPortraitManager {
 
 
 
-    public void setTempPortrait(UUID cardUuid, String assetId) {
-        if (cardUuid == null || assetId == null) {
+    public void setTempPortrait(AbstractCard card, String assetId) {
+        if (card == null || assetId == null) {
             return;
         }
-        tempOverrides.put(cardUuid.toString(), assetId);
+        AbstractCardPatch.setCustomPortraitId(card, assetId);
     }
 
-    public void clearTempPortrait(UUID cardUuid) {
-        if (cardUuid == null) {
+    public void clearTempPortrait(AbstractCard card) {
+        if (card == null) {
             return;
         }
-        tempOverrides.remove(cardUuid.toString());
+        AbstractCardPatch.setCustomPortraitId(card, "");
     }
 
-    public TextureAtlas.AtlasRegion getPortrait(String cardId, UUID cardUuid, TextureAtlas.AtlasRegion fallback) {
-        // Precedence: temp override (cardUuid) > permanent override (cardId) > fallback.
-        String assetId = null;
-        if (cardUuid != null) {
-            assetId = tempOverrides.get(cardUuid.toString());
-        }
-        if (assetId == null && cardId != null) {
+    public TextureAtlas.AtlasRegion getPortrait(String cardId, String tempAssetId, TextureAtlas.AtlasRegion fallback) {
+        // Precedence: temp override (custom field) > permanent override (cardId) > fallback.
+        String assetId = tempAssetId;
+        if ((assetId == null || assetId.isEmpty()) && cardId != null) {
             assetId = permanentOverrides.get(cardId);
         }
 
@@ -187,57 +175,93 @@ public class CardPortraitManager {
             return fallback;
         }
 
-        TextureAtlas.AtlasRegion region = getCachedRegion(assetId);
-        if (region == null) {
-            LoadoutMod.logger.info("Failed to load portrait for card id: " + cardId + ",  and UUID: " + cardUuid);
+        CachedRegion cachedRegion = getCachedRegion(assetId);
+
+        if (cachedRegion == null) {
+            LoadoutMod.logger.info("Failed to load portrait for card id: " + cardId);
             // Missing/corrupt asset -> drop mapping and fall back.
-            if (cardUuid != null) {
-                tempOverrides.remove(cardUuid.toString(), assetId);
-            }
             if (cardId != null) {
                 permanentOverrides.remove(cardId, assetId);
             }
             return fallback;
         }
-        return region;
+        return cachedRegion.region;
     }
+
+    public Texture getTexture(String assetId) {
+        CachedRegion cachedRegion = getCachedRegion(assetId);
+
+        if (cachedRegion == null) {
+            LoadoutMod.logger.info("Failed to load portrait for asset id: " + assetId);
+            return null;
+        }
+        return cachedRegion.texture;
+    }
+
+    public Texture getLargeDisposableTexture(String assetId) {
+        Path assetPath = assetsDir.resolve(assetId + ".png");
+        if (!Files.exists(assetPath)) {
+            LoadoutMod.logger.info("Portrait asset missing: " + assetId);
+            return null;
+        }
+
+        Texture texture;
+        try {
+            texture = new Texture(new FileHandle(assetPath.toFile()));
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        } catch (Exception e) {
+            LoadoutMod.logger.info("Failed to load portrait for asset id: " + assetId);
+            return null;
+        }
+        return texture;
+    }
+
 
     public TextureAtlas.AtlasRegion getTempPortrait(AbstractCard card) {
-        return getPortrait(null, card.uuid, card.portrait);
+        String assetId = card != null ? AbstractCardPatch.getCustomPortraitId(card) : null;
+        return getPortrait(null, assetId, card != null ? card.portrait : null);
     }
 
-    public void copyTempPortrait(AbstractCard from, AbstractCard to) {
-        tempOverrides.put(to.uuid.toString(), tempOverrides.get(from.uuid.toString()));
-        to.portrait = from.portrait;
+    public static void copyTempPortrait(AbstractCard from, AbstractCard to) {
+        if (from == null || to == null) {
+            return;
+        }
+        String assetId = AbstractCardPatch.getCustomPortraitId(from);
+        
+        AbstractCardPatch.setCustomPortraitId(to, assetId);
+        applyPortraitOverride(to);
     }
 
     public void garbageCollectAssets() {
         ensureDirectories();
         Set<String> referenced = new HashSet<>();
-        referenced.addAll(permanentOverrides.values());
-        referenced.addAll(tempOverrides.values());
-
+        
         // Remove mappings to missing files.
         removeMissingMappings(permanentOverrides);
-        removeMissingMappings(tempOverrides);
-
-        referenced.clear();
         referenced.addAll(permanentOverrides.values());
-        referenced.addAll(tempOverrides.values());
 
-        // Garbage collection deletes assets not referenced by any mapping.
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(assetsDir, "*.png")) {
-            for (Path file : stream) {
-                String fileName = file.getFileName().toString();
-                String assetId = fileName.substring(0, fileName.length() - ".png".length());
+        //Check temp references in deck loadouts
+        for(ArrayList<SerializableCard> deck : CardLoadouts.loadouts.values()) {
+            for(SerializableCard card : deck) {
+                if (card.customPortraitId != null) {
+                    referenced.add(card.customPortraitId);
+                }
+            }
+        }
+
+        // Remove unreferenced asset files and metadata.
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(assetsDir, ASSET_PREFIX + "*.png")) {
+            for (Path assetPath : stream) {
+                String fileName = assetPath.getFileName().toString();
+                String assetId = fileName.substring(0, fileName.length() - 4); // Remove .png
                 if (!referenced.contains(assetId)) {
-                    Files.deleteIfExists(file);
+                    Files.delete(assetPath);
                     disposeCached(assetId);
                     assetMeta.remove(assetId);
                 }
             }
         } catch (IOException e) {
-            LoadoutMod.logger.error("Portrait GC failed", e);
+            LoadoutMod.logger.error("Failed to garbage collect portrait assets", e);;
         }
 
         pruneCache(referenced);
@@ -252,17 +276,6 @@ public class CardPortraitManager {
 
     public Map<String, String> getPermanentOverrides() {
         return Collections.unmodifiableMap(permanentOverrides);
-    }
-
-    public Map<UUID, String> getTempOverrides() {
-        Map<UUID, String> ret = new HashMap<>();
-        for (Map.Entry<String, String> entry : tempOverrides.entrySet()) {
-            try {
-                ret.put(UUID.fromString(entry.getKey()), entry.getValue());
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
-        return ret;
     }
 
     public void setMaxCacheSize(int maxCacheSize) {
@@ -282,22 +295,25 @@ public class CardPortraitManager {
         }
     }
 
-    private TextureAtlas.AtlasRegion getCachedRegion(String assetId) {
+    private CachedRegion getCachedRegion(String assetId) {
         CachedRegion cached = regionCache.get(assetId);
         if (cached != null) {
-            return cached.region;
+            return cached;
         }
 
         Path assetPath = assetsDir.resolve(assetId + ".png");
         if (!Files.exists(assetPath)) {
+            LoadoutMod.logger.info("Portrait asset missing: " + assetId);
             return null;
         }
 
         try {
             Texture texture = new Texture(new FileHandle(assetPath.toFile()));
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
-            regionCache.put(assetId, new CachedRegion(texture, region));
-            return region;
+            CachedRegion cachedRegion = new CachedRegion(texture, region);
+            regionCache.put(assetId, cachedRegion);
+            return cachedRegion;
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to load portrait asset: " + assetId, e);
             return null;
@@ -469,19 +485,19 @@ public class CardPortraitManager {
         }
     }
 
-    public static TextureAtlas.AtlasRegion resolvePortrait(AbstractCard card, TextureAtlas.AtlasRegion fallback) {
-        UUID uuid = card != null ? card.uuid : null;
-        String cardId = card != null ? card.cardID : null;
-        return INSTANCE.getPortrait(cardId, uuid, fallback);
-    }
-
     public static void applyPortraitOverride(AbstractCard card) {
         if (card == null) {
             return;
         }
-        TextureAtlas.AtlasRegion fallback = card.portrait;
-        TextureAtlas.AtlasRegion override = resolvePortrait(card, fallback);
-        card.portrait = override;
+        String assetId = AbstractCardPatch.getCustomPortraitId(card);
+
+        if (assetId != null && !assetId.isEmpty()) {
+            CachedRegion region = INSTANCE.getCachedRegion(assetId);
+            if (region != null) {
+                card.portrait = region.region;
+                ReflectionHacks.setPrivate(card, AbstractCard.class, "portraitImg", region.texture);
+            }
+        }
     }
 
     public static void chooseFileAndSetPermanentPortrait(String cardId) {
@@ -510,7 +526,9 @@ public class CardPortraitManager {
         File selected = new File(dialog.getDirectory(), dialog.getFile());
         try {
             String assetId = INSTANCE.importPortrait(selected, dialog.getFile());
-            INSTANCE.setTempPortrait(card.uuid, assetId);
+            INSTANCE.setTempPortrait(card, assetId);
+            //set card modded
+            AbstractCardPatch.setCardModified(card, true);
             applyPortraitOverride(card);
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to import portrait", e);
@@ -521,10 +539,10 @@ public class CardPortraitManager {
         if (card == null) {
             return;
         }
-        String assetId = INSTANCE.tempOverrides.get(card.uuid.toString());
+        String assetId = AbstractCardPatch.getCustomPortraitId(card);
         if (assetId != null) {
             INSTANCE.setPermanentPortrait(card.cardID, assetId);
-            INSTANCE.clearTempPortrait(card.uuid);
+            INSTANCE.clearTempPortrait(card);
         }
     }
 
@@ -532,7 +550,8 @@ public class CardPortraitManager {
         if (card == null) {
             return false;
         }
-        return INSTANCE.tempOverrides.containsKey(card.uuid.toString());
+        String assetId = AbstractCardPatch.getCustomPortraitId(card);
+        return assetId != null && !assetId.isEmpty();
     }
 
     public static boolean hasPermanentPortrait(AbstractCard card) {
@@ -546,15 +565,12 @@ public class CardPortraitManager {
         return INSTANCE.permanentOverrides.containsKey(cardID);
     }
 
-    public static boolean hasAnyPortrait(AbstractCard card) {
-        return hasTempPortrait(card) || hasPermanentPortrait(card);
-    }
 
     public static void clearAllPortraits(AbstractCard card) {
         if (card == null) {
             return;
         }
-        INSTANCE.clearTempPortrait(card.uuid);
+        INSTANCE.clearTempPortrait(card);
         INSTANCE.clearPermanentPortrait(card.cardID);
     }
 }

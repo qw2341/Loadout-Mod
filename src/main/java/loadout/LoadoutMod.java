@@ -910,6 +910,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
     public void receivePostDeath() {
         TildeKey.resetPlayerMorph();
         TildeKey.resetToDefault();
+        CardPortraitManager.INSTANCE.garbageCollectAssets();
     }
 
     @Override

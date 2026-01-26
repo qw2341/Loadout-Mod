@@ -49,9 +49,8 @@ public class AbstractCardPatch {
             String[] originalUpgradeModifiers = CardModificationFields.additionalModifiers.get(__instance);
             CardModificationFields.additionalModifiers.set(card, Arrays.copyOf(originalUpgradeModifiers,originalUpgradeModifiers.length));
 
-            if(CardPortraitManager.hasTempPortrait(__instance)) {
-                CardPortraitManager.INSTANCE.copyTempPortrait(__instance, card);
-            }
+            CardPortraitManager.copyTempPortrait(__instance, card);
+            
         }
     }
 
@@ -122,6 +121,8 @@ public class AbstractCardPatch {
          * '-' indicates to remove the modifier on upgrade
          */
         public static SpireField<String[]> additionalModifiers = new SpireField<>(() -> new String[0]);
+
+        public static SpireField<String> customCardPortraitAssetId  = new SpireField<>(() -> "");
     }
 
     public static int getMagicNumber(AbstractCard ac, String cardModID) {
@@ -253,7 +254,13 @@ public class AbstractCardPatch {
         CardModificationFields.additionalModifiers.set(ac, updated);
     }
 
+    public static String getCustomPortraitId(AbstractCard ac) {
+        return CardModificationFields.customCardPortraitAssetId.get(ac);
+    }
 
+    public static void setCustomPortraitId(AbstractCard ac, String portraitId) {
+        CardModificationFields.customCardPortraitAssetId.set(ac, portraitId);
+    }
 
     @SpirePatch(clz = SearingBlow.class, method = "upgrade")
     public static class upgradeNamePatch {
@@ -271,13 +278,13 @@ public class AbstractCardPatch {
         }
     }
 
-    @SpirePatch2(clz = AbstractCard.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, String.class, int.class, String.class, AbstractCard.CardType.class, AbstractCard.CardColor.class, AbstractCard.CardRarity.class, AbstractCard.CardTarget.class, DamageInfo.DamageType.class})
-    public static class PermanentCardPortraitPatch {
-        @SpirePostfixPatch
-        public static void Postfix(AbstractCard __instance) {
-            if (CardPortraitManager.hasPermanentPortrait(__instance)) {
-                CardPortraitManager.applyPortraitOverride(__instance);
-            }
-        }
-    }
+//    @SpirePatch2(clz = AbstractCard.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, String.class, int.class, String.class, AbstractCard.CardType.class, AbstractCard.CardColor.class, AbstractCard.CardRarity.class, AbstractCard.CardTarget.class, DamageInfo.DamageType.class})
+//    public static class PermanentCardPortraitPatch {
+//        @SpirePostfixPatch
+//        public static void Postfix(AbstractCard __instance) {
+//            if (CardPortraitManager.hasPermanentPortrait(__instance)) {
+//                CardPortraitManager.applyPortraitOverride(__instance);
+//            }
+//        }
+//    }
 }

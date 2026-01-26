@@ -6,6 +6,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import basemod.abstracts.CustomCard;
+import javassist.*;
+
 import org.clapper.util.classutil.AbstractClassFilter;
 import org.clapper.util.classutil.AndClassFilter;
 import org.clapper.util.classutil.ClassFilter;
@@ -17,14 +20,11 @@ import org.clapper.util.classutil.NotClassFilter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtMethod;
 import javassist.expr.MethodCall;
 import loadout.LoadoutMod;
+import loadout.patches.AbstractCardPatch;
 import loadout.patches.AdditionalUpgradePatches;
+import loadout.portraits.CardPortraitManager;
 import loadout.savables.CardModifications;
 
 /**
@@ -77,6 +77,13 @@ public class CardClassPatcher implements Runnable{
         String upgradePatchBgn = AdditionalUpgradePatches.class.getName() + ".additionalUpgrade(this, ";
         Boolean[] doUpgrade = new Boolean[]{true, true, true, true};
         String upgradePatchEnd = ");";
+        CtClass customCardCT;
+        try {
+            customCardCT = this.clazzPool.get(CustomCard.class.getName());
+        } catch (NotFoundException e) {
+            customCardCT = null;
+            LoadoutMod.logger.info("Error getting custom card ctclass!");
+        }
         /**
          * Dynamic Patches
          */
@@ -103,6 +110,14 @@ public class CardClassPatcher implements Runnable{
                     }
                 });
                 upgradeMethod.insertAfter(upgradePatchBgn + doUpgrade[0] + ", " + doUpgrade[1] + ", " + doUpgrade[2] + ", " + doUpgrade[3] + upgradePatchEnd);
+
+                if(ctClass.subtypeOf(customCardCT)) {
+                    //patch getPortraitImage only if its overriden
+                    ctClass.getDeclaredMethod("getPortraitImage").insertBefore("if(!" + AbstractCardPatch.class.getName() + ".getCustomPortraitId(this).isEmpty()) { " +
+                            "return " + CardPortraitManager.class.getName() + ".INSTANCE.getTexture(" + AbstractCardPatch.class.getName() +
+                            ".getCustomPortraitId(this));" +
+                            "}" );
+                }
             } catch (Exception ignored) {
                 LoadoutMod.logger.info("Error patching {}!", classInfo.getClassName());
                 //ignored.printStackTrace();

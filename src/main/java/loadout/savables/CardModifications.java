@@ -26,6 +26,7 @@ import basemod.helpers.CardModifierManager;
 import loadout.LoadoutMod;
 import loadout.helper.ModifierLibrary;
 import loadout.patches.AbstractCardPatch;
+import loadout.portraits.CardPortraitManager;
 import loadout.relics.CardModifier;
 
 public class CardModifications
@@ -132,6 +133,11 @@ public class CardModifications
 
             if(sc.additionalMagicNumbers != null) {
                 AbstractCardPatch.deserializeAdditionalMagicNumbers(card, sc.additionalMagicNumbers);
+            }
+
+            if(sc.customPortraitId != null) {
+                AbstractCardPatch.setCustomPortraitId(card, sc.customPortraitId);
+                CardPortraitManager.applyPortraitOverride(card);
             }
 //            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
 //                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "

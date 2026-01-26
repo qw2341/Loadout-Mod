@@ -845,7 +845,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         cardViewScreen.card = freshCopy;
         cardViewScreen.group.group.remove(idx);
         cardViewScreen.group.group.add(idx,freshCopy);
-
+        cardViewScreen.loadPortraitImg();
         setCardModded(false);
     }
 
@@ -894,6 +894,8 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
                 cardViewScreen.group.group.remove(idx);
                 cardViewScreen.group.group.add(idx,freshCopy);
             }
+
+            cardViewScreen.loadPortraitImg();
 
             resetOtherButtons();
         } else if (button == this.makeUnplayableButton) {
@@ -1011,6 +1013,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
         } else if (button == this.changePortraitButton) {
             CardPortraitManager.chooseFileAndSetTempPortrait(cardViewScreen.card);
             CardPortraitManager.INSTANCE.save();
+            cardViewScreen.loadPortraitImg();
         }
          else if(button == this.upgradeModeScreenButton) {
             if(SCardViewPopup.cardUpgradePreviewScreen != null) {
