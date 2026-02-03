@@ -150,10 +150,15 @@ public class PortraitCropDialog extends JDialog {
     private static final class PreviewPanel extends JPanel {
         private static final int FRAME_PADDING = 24;
         private static final double MAX_ZOOM = 5.0;
+        private static final int MASK_OVERLAY_ALPHA = 140;
 
         private final BufferedImage source;
         private PortraitFrameType frameType;
         private final ZoomListener zoomListener;
+        private BufferedImage maskSource;
+        private BufferedImage maskOverlay;
+        private int maskOverlayW = -1;
+        private int maskOverlayH = -1;
 
         private Rectangle2D.Double frameRect = new Rectangle2D.Double();
         private double minScale = 1.0;
@@ -167,6 +172,7 @@ public class PortraitCropDialog extends JDialog {
             this.source = source;
             this.frameType = frameType;
             this.zoomListener = zoomListener;
+            updateMaskSource();
 
             setBackground(new Color(32, 32, 32));
             MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -211,6 +217,7 @@ public class PortraitCropDialog extends JDialog {
 
         public void setFrameType(PortraitFrameType frameType) {
             this.frameType = frameType;
+            updateMaskSource();
             updateFrameRect(true);
         }
 
@@ -258,7 +265,9 @@ public class PortraitCropDialog extends JDialog {
             double cropH = frameRect.getHeight() / scale;
             cropX = clamp(cropX, 0.0, source.getWidth() - cropW);
             cropY = clamp(cropY, 0.0, source.getHeight() - cropH);
-            return new CropResult(new ImageUtil.CropRect(cropX, cropY, cropW, cropH), frameType);
+            BufferedImage smallMask = frameType != null ? frameType.getSmallMask() : null;
+            BufferedImage largeMask = frameType != null ? frameType.getLargeMask() : null;
+            return new CropResult(new ImageUtil.CropRect(cropX, cropY, cropW, cropH, smallMask, largeMask), frameType);
         }
 
         @Override
@@ -292,6 +301,10 @@ public class PortraitCropDialog extends JDialog {
             g2.fillRect(frameX + frameW, frameY, bounds.width - frameX - frameW, frameH);
             g2.fillRect(0, frameY + frameH, bounds.width, bounds.height - frameY - frameH);
 
+            if (maskOverlay != null) {
+                g2.drawImage(maskOverlay, frameX, frameY, null);
+            }
+
             g2.setColor(new Color(255, 255, 255, 200));
             g2.setStroke(new BasicStroke(2.0f));
             g2.draw(frameRect);
@@ -319,6 +332,7 @@ public class PortraitCropDialog extends JDialog {
             double x = (width - frameW) / 2.0;
             double y = (height - frameH) / 2.0;
             frameRect.setRect(x, y, frameW, frameH);
+            updateMaskOverlay();
 
             // Minimum zoom ensures the crop frame is always fully covered (no empty areas).
             minScale = Math.max(frameW / source.getWidth(), frameH / source.getHeight());
@@ -334,6 +348,59 @@ public class PortraitCropDialog extends JDialog {
             }
             notifyZoom();
             repaint();
+        }
+
+        private void updateMaskSource() {
+            if (frameType == null) {
+                maskSource = null;
+            } else {
+                BufferedImage largeMask = frameType.getLargeMask();
+                maskSource = largeMask != null ? largeMask : frameType.getSmallMask();
+            }
+            maskOverlay = null;
+            maskOverlayW = -1;
+            maskOverlayH = -1;
+        }
+
+        private void updateMaskOverlay() {
+            if (maskSource == null) {
+                maskOverlay = null;
+                return;
+            }
+            int w = (int) Math.round(frameRect.getWidth());
+            int h = (int) Math.round(frameRect.getHeight());
+            if (w <= 0 || h <= 0) {
+                maskOverlay = null;
+                return;
+            }
+            if (maskOverlay != null && w == maskOverlayW && h == maskOverlayH) {
+                return;
+            }
+            BufferedImage scaledMask = ImageUtil.scale(maskSource, w, h);
+            maskOverlay = buildMaskOverlay(scaledMask, MASK_OVERLAY_ALPHA);
+            maskOverlayW = w;
+            maskOverlayH = h;
+        }
+
+        private static BufferedImage buildMaskOverlay(BufferedImage mask, int maxAlpha) {
+            int w = mask.getWidth();
+            int h = mask.getHeight();
+            int[] maskPixels = mask.getRGB(0, 0, w, h, null, 0, w);
+            int[] outPixels = new int[maskPixels.length];
+            for (int i = 0; i < maskPixels.length; i++) {
+                int pixel = maskPixels[i];
+                int a = (pixel >>> 24) & 0xFF;
+                int r = (pixel >> 16) & 0xFF;
+                int g = (pixel >> 8) & 0xFF;
+                int b = pixel & 0xFF;
+                int luma = (r + g + b) / 3;
+                int coverage = (luma * a) / 255;
+                int alpha = (int) Math.round((1.0 - (coverage / 255.0)) * maxAlpha);
+                outPixels[i] = (alpha << 24);
+            }
+            BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            out.setRGB(0, 0, w, h, outPixels, 0, w);
+            return out;
         }
 
         private void centerImage() {

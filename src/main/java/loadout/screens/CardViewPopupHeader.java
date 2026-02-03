@@ -802,7 +802,7 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
 
         CardPortraitManager.makeTempPortraitPermanent(cardViewScreen.card);
         CardPortraitManager.INSTANCE.save();
-
+        AbstractCardPatch.setCardModified(cardViewScreen.card, false);
         int i = 0;
         boolean found = false;
         for(AbstractCard card : cardsToDisplay) {
