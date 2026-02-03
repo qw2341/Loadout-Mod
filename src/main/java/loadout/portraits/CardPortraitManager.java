@@ -29,8 +29,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import basemod.ReflectionHacks;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -49,7 +51,14 @@ public class CardPortraitManager {
     // Slay the Spire card portrait region size (adjust if you want a different target).
     public static final int TARGET_WIDTH = 250;
     public static final int TARGET_HEIGHT = 190;
+    // Large portrait size for inspect/1024Portraits style usage (adjust if needed).
+    public static final int LARGE_WIDTH = 500;
+    public static final int LARGE_HEIGHT = 380;
     public static final String ASSET_PREFIX = "sha256_";
+    private static final String SMALL_SUFFIX = "_small";
+    private static final String LARGE_SUFFIX = "_large";
+    // Debug: skip decoding/crop UI to isolate file dialog lag.
+    private static final boolean DEBUG_SKIP_CROP_DECODE = true;
 
     private final Path portraitsDir;
     private final Path assetsDir;
@@ -86,6 +95,7 @@ public class CardPortraitManager {
         permanentOverrides.putAll(readStringMap(permanentMapPath));
         assetMeta.clear();
         assetMeta.putAll(readAssetMetaMap(assetsMetaPath));
+        upgradeLegacyMeta();
 
         refreshCardLibrary();
     }
@@ -110,28 +120,54 @@ public class CardPortraitManager {
             throw new IOException("Portrait source file missing.");
         }
 
-        BufferedImage normalized = normalizeImage(file, TARGET_WIDTH, TARGET_HEIGHT);
-        byte[] pngBytes = toPngBytes(normalized);
-        // Hash-based asset IDs dedupe identical images and keep mappings portable.
-        String assetId = ASSET_PREFIX + sha256Hex(pngBytes);
-        Path assetPath = assetsDir.resolve(assetId + ".png");
+        BufferedImage src = ImageUtil.readImage(file);
+        ImageUtil.CropRect crop = ImageUtil.centerCropRect(src, getPortraitAspect());
+        BufferedImage large = ImageUtil.cropAndScale(src, crop, LARGE_WIDTH, LARGE_HEIGHT);
+        return storePortraitAssets(large, sourceNameOptional);
+    }
+
+    public String importPortraitWithCropUI(File file, String sourceNameOptional) throws IOException {
+        return importPortraitWithCropUI(file, sourceNameOptional, PortraitFrameType.ATTACK);
+    }
+
+    public String importPortraitWithCropUI(File file, String sourceNameOptional, PortraitFrameType defaultFrameType) throws IOException {
+        if (file == null || !file.exists()) {
+            throw new IOException("Portrait source file missing.");
+        }
+
+        BufferedImage src = ImageUtil.readImage(file);
+        PortraitCropDialog.CropResult cropResult = PortraitCropDialog.showDialog(src, defaultFrameType);
+        if (cropResult == null) {
+            return null;
+        }
+
+        BufferedImage large = ImageUtil.cropAndScale(src, cropResult.cropRect, LARGE_WIDTH, LARGE_HEIGHT);
+        return storePortraitAssets(large, sourceNameOptional);
+    }
+
+    private String storePortraitAssets(BufferedImage largeImage, String sourceNameOptional) throws IOException {
+        // Hash the LARGE PNG bytes so identical crops map to the same assetId; small is derived deterministically.
+        byte[] largePngBytes = toPngBytes(largeImage);
+        String assetId = ASSET_PREFIX + sha256Hex(largePngBytes);
+        Path largePath = assetPathLarge(assetId);
+        Path smallPath = assetPathSmall(assetId);
         ensureDirectories();
 
-        if (!Files.exists(assetPath)) {
-            writeBytesAtomic(assetPath, pngBytes);
+        if (!Files.exists(largePath)) {
+            writeBytesAtomic(largePath, largePngBytes);
+        }
+        if (!Files.exists(smallPath)) {
+            BufferedImage smallImage = ImageUtil.scale(largeImage, TARGET_WIDTH, TARGET_HEIGHT);
+            byte[] smallPngBytes = toPngBytes(smallImage);
+            writeBytesAtomic(smallPath, smallPngBytes);
         }
 
-        if (!assetMeta.containsKey(assetId)) {
-            PortraitAssetMeta meta = new PortraitAssetMeta();
-            meta.assetId = assetId;
-            meta.width = TARGET_WIDTH;
-            meta.height = TARGET_HEIGHT;
-            meta.createdAt = Instant.now().toString();
-            meta.sourceName = sourceNameOptional;
-            assetMeta.put(assetId, meta);
-        }
-
+        upsertAssetMeta(assetId, sourceNameOptional, true, true);
         return assetId;
+    }
+
+    private static double getPortraitAspect() {
+        return (double) TARGET_WIDTH / (double) TARGET_HEIGHT;
     }
 
     public void setPermanentPortrait(String cardId, String assetId) {
@@ -188,6 +224,17 @@ public class CardPortraitManager {
         return cachedRegion.region;
     }
 
+    public String getResolvedAssetId(AbstractCard card) {
+        if (card == null) {
+            return null;
+        }
+        String assetId = AbstractCardPatch.getCustomPortraitId(card);
+        if (assetId == null || assetId.isEmpty()) {
+            assetId = permanentOverrides.get(card.cardID);
+        }
+        return (assetId == null || assetId.isEmpty()) ? null : assetId;
+    }
+
     public Texture getTexture(String assetId) {
         CachedRegion cachedRegion = getCachedRegion(assetId);
 
@@ -199,21 +246,41 @@ public class CardPortraitManager {
     }
 
     public Texture getLargeDisposableTexture(String assetId) {
-        Path assetPath = assetsDir.resolve(assetId + ".png");
-        if (!Files.exists(assetPath)) {
+        Path largePath = assetPathLarge(assetId);
+        if (!Files.exists(largePath)) {
+            Path sourcePath = assetPathLegacy(assetId);
+            if (!Files.exists(sourcePath)) {
+                sourcePath = assetPathSmall(assetId);
+            }
+            if (Files.exists(sourcePath)) {
+                try {
+                    BufferedImage src = ImageUtil.readImage(sourcePath.toFile());
+                    BufferedImage largeImage = src;
+                    if (src.getWidth() != LARGE_WIDTH || src.getHeight() != LARGE_HEIGHT) {
+                        largeImage = ImageUtil.scale(src, LARGE_WIDTH, LARGE_HEIGHT);
+                    }
+                    writeBytesAtomic(largePath, toPngBytes(largeImage));
+                    upsertAssetMeta(assetId, null, Files.exists(assetPathSmall(assetId)) || Files.exists(assetPathLegacy(assetId)), true);
+                } catch (Exception e) {
+                    LoadoutMod.logger.info("Failed to upgrade large portrait for asset id: " + assetId, e);
+                }
+            }
+        }
+
+        Path assetPath = resolveLargePath(assetId);
+        if (assetPath == null) {
             LoadoutMod.logger.info("Portrait asset missing: " + assetId);
             return null;
         }
 
-        Texture texture;
         try {
-            texture = new Texture(new FileHandle(assetPath.toFile()));
+            Texture texture = new Texture(new FileHandle(assetPath.toFile()));
             texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            return texture;
         } catch (Exception e) {
             LoadoutMod.logger.info("Failed to load portrait for asset id: " + assetId);
             return null;
         }
-        return texture;
     }
 
 
@@ -250,18 +317,25 @@ public class CardPortraitManager {
         }
 
         // Remove unreferenced asset files and metadata.
+        Set<String> removedAssets = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(assetsDir, ASSET_PREFIX + "*.png")) {
             for (Path assetPath : stream) {
-                String fileName = assetPath.getFileName().toString();
-                String assetId = fileName.substring(0, fileName.length() - 4); // Remove .png
+                String assetId = extractAssetId(assetPath.getFileName().toString());
+                if (assetId == null) {
+                    continue;
+                }
                 if (!referenced.contains(assetId)) {
                     Files.delete(assetPath);
-                    disposeCached(assetId);
-                    assetMeta.remove(assetId);
+                    removedAssets.add(assetId);
                 }
             }
         } catch (IOException e) {
             LoadoutMod.logger.error("Failed to garbage collect portrait assets", e);;
+        }
+
+        for (String assetId : removedAssets) {
+            disposeCached(assetId);
+            assetMeta.remove(assetId);
         }
 
         pruneCache(referenced);
@@ -295,14 +369,134 @@ public class CardPortraitManager {
         }
     }
 
+    private Path assetPathSmall(String assetId) {
+        return assetsDir.resolve(assetId + SMALL_SUFFIX + ".png");
+    }
+
+    private Path assetPathLarge(String assetId) {
+        return assetsDir.resolve(assetId + LARGE_SUFFIX + ".png");
+    }
+
+    private Path assetPathLegacy(String assetId) {
+        return assetsDir.resolve(assetId + ".png");
+    }
+
+    private Path resolveSmallPath(String assetId) {
+        Path small = assetPathSmall(assetId);
+        if (Files.exists(small)) {
+            return small;
+        }
+        Path legacy = assetPathLegacy(assetId);
+        if (Files.exists(legacy)) {
+            return legacy;
+        }
+        Path large = assetPathLarge(assetId);
+        if (Files.exists(large)) {
+            return large;
+        }
+        return null;
+    }
+
+    private Path resolveLargePath(String assetId) {
+        Path large = assetPathLarge(assetId);
+        if (Files.exists(large)) {
+            return large;
+        }
+        Path legacy = assetPathLegacy(assetId);
+        if (Files.exists(legacy)) {
+            return legacy;
+        }
+        Path small = assetPathSmall(assetId);
+        if (Files.exists(small)) {
+            return small;
+        }
+        return null;
+    }
+
+    private boolean assetExists(String assetId) {
+        return Files.exists(assetPathSmall(assetId))
+            || Files.exists(assetPathLarge(assetId))
+            || Files.exists(assetPathLegacy(assetId));
+    }
+
+    private String extractAssetId(String fileName) {
+        if (!fileName.endsWith(".png") || !fileName.startsWith(ASSET_PREFIX)) {
+            return null;
+        }
+        String base = fileName.substring(0, fileName.length() - 4);
+        if (base.endsWith(SMALL_SUFFIX)) {
+            return base.substring(0, base.length() - SMALL_SUFFIX.length());
+        }
+        if (base.endsWith(LARGE_SUFFIX)) {
+            return base.substring(0, base.length() - LARGE_SUFFIX.length());
+        }
+        return base;
+    }
+
+    private void upsertAssetMeta(String assetId, String sourceNameOptional, boolean hasSmall, boolean hasLarge) {
+        PortraitAssetMeta meta = assetMeta.get(assetId);
+        if (meta == null) {
+            meta = new PortraitAssetMeta();
+            meta.assetId = assetId;
+            meta.createdAt = Instant.now().toString();
+            assetMeta.put(assetId, meta);
+        }
+
+        if (sourceNameOptional != null) {
+            meta.sourceName = sourceNameOptional;
+        }
+
+        if (hasSmall) {
+            meta.hasSmall = true;
+            meta.width = TARGET_WIDTH;
+            meta.height = TARGET_HEIGHT;
+            meta.smallWidth = TARGET_WIDTH;
+            meta.smallHeight = TARGET_HEIGHT;
+        }
+
+        if (hasLarge) {
+            meta.hasLarge = true;
+            meta.largeWidth = LARGE_WIDTH;
+            meta.largeHeight = LARGE_HEIGHT;
+        }
+    }
+
+    private void upgradeLegacyMeta() {
+        for (PortraitAssetMeta meta : assetMeta.values()) {
+            if (meta == null || meta.assetId == null) {
+                continue;
+            }
+            if (meta.smallWidth == 0 && meta.width > 0) {
+                meta.smallWidth = meta.width;
+                meta.smallHeight = meta.height;
+                meta.hasSmall = true;
+            }
+            if (!meta.hasSmall && Files.exists(assetPathSmall(meta.assetId))) {
+                meta.hasSmall = true;
+                meta.smallWidth = TARGET_WIDTH;
+                meta.smallHeight = TARGET_HEIGHT;
+            }
+            if (!meta.hasSmall && Files.exists(assetPathLegacy(meta.assetId))) {
+                meta.hasSmall = true;
+                meta.smallWidth = meta.width > 0 ? meta.width : TARGET_WIDTH;
+                meta.smallHeight = meta.height > 0 ? meta.height : TARGET_HEIGHT;
+            }
+            if (!meta.hasLarge && Files.exists(assetPathLarge(meta.assetId))) {
+                meta.hasLarge = true;
+                meta.largeWidth = LARGE_WIDTH;
+                meta.largeHeight = LARGE_HEIGHT;
+            }
+        }
+    }
+
     private CachedRegion getCachedRegion(String assetId) {
         CachedRegion cached = regionCache.get(assetId);
         if (cached != null) {
             return cached;
         }
 
-        Path assetPath = assetsDir.resolve(assetId + ".png");
-        if (!Files.exists(assetPath)) {
+        Path assetPath = resolveSmallPath(assetId);
+        if (assetPath == null) {
             LoadoutMod.logger.info("Portrait asset missing: " + assetId);
             return null;
         }
@@ -345,8 +539,7 @@ public class CardPortraitManager {
         Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, String> entry = it.next();
-            Path assetPath = assetsDir.resolve(entry.getValue() + ".png");
-            if (!Files.exists(assetPath)) {
+            if (!assetExists(entry.getValue())) {
                 it.remove();
             }
         }
@@ -450,6 +643,7 @@ public class CardPortraitManager {
 
     private static byte[] toPngBytes(BufferedImage image) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        // Deterministic PNG encoding for hashing (no metadata, just pixel content).
         if (!ImageIO.write(image, "png", out)) {
             throw new IOException("Failed to encode PNG.");
         }
@@ -495,44 +689,189 @@ public class CardPortraitManager {
             CachedRegion region = INSTANCE.getCachedRegion(assetId);
             if (region != null) {
                 card.portrait = region.region;
-                ReflectionHacks.setPrivate(card, AbstractCard.class, "portraitImg", region.texture);
+                ReflectionHacks.setPrivate(card, AbstractCard.class, "portraitImg", INSTANCE.getLargeDisposableTexture(assetId));
             }
         }
     }
 
+    private static PortraitFrameType getDefaultFrameType(AbstractCard card) {
+        if (card == null || card.type == null) {
+            return PortraitFrameType.SKILL;
+        }
+        switch (card.type) {
+            case ATTACK:
+                return PortraitFrameType.ATTACK;
+            case POWER:
+                return PortraitFrameType.POWER;
+            default:
+                return PortraitFrameType.SKILL;
+        }
+    }
+
     public static void chooseFileAndSetPermanentPortrait(String cardId) {
-        // UI selection belongs outside the manager.
-        FileDialog dialog = new FileDialog((Frame) null, "Select portrait", FileDialog.LOAD);
-        dialog.setVisible(true);
-        if (dialog.getFile() == null) {
+        File selected = choosePortraitFile();
+        if (selected == null) {
             return;
         }
-        File selected = new File(dialog.getDirectory(), dialog.getFile());
+        if (DEBUG_SKIP_CROP_DECODE) {
+            LoadoutMod.logger.info("Portrait import skipped (DEBUG_SKIP_CROP_DECODE).");
+            return;
+        }
         try {
-            String assetId = INSTANCE.importPortrait(selected, dialog.getFile());
+            String assetId = INSTANCE.importPortraitWithCropUI(selected, selected.getName(), PortraitFrameType.ATTACK);
+            if (assetId == null) {
+                return;
+            }
             INSTANCE.setPermanentPortrait(cardId, assetId);
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to import portrait", e);
         }
     }
 
-    public static void chooseFileAndSetTempPortrait(AbstractCard card) {
-        // UI selection belongs outside the manager.
-        FileDialog dialog = new FileDialog((Frame) null, "Select portrait", FileDialog.LOAD);
-        dialog.setVisible(true);
-        if (dialog.getFile() == null) {
-            return;
+    public static boolean chooseFileAndSetTempPortrait(AbstractCard card) {
+        File selected = choosePortraitFile();
+        if (selected == null) {
+            return false;
         }
-        File selected = new File(dialog.getDirectory(), dialog.getFile());
+
         try {
-            String assetId = INSTANCE.importPortrait(selected, dialog.getFile());
+            PortraitFrameType defaultFrame = getDefaultFrameType(card);
+            String assetId = INSTANCE.importPortraitWithCropUI(selected, selected.getName(), defaultFrame);
+            if (assetId == null) {
+                return false;
+            }
             INSTANCE.setTempPortrait(card, assetId);
+//            System.out.println("Portrait imported: " + assetId + " and card now has custom portrait id of: " + AbstractCardPatch.getCustomPortraitId(card));
             //set card modded
             AbstractCardPatch.setCardModified(card, true);
             applyPortraitOverride(card);
+            return true;
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to import portrait", e);
+            return false;
         }
+    }
+
+    public static void chooseFileAndSetTempPortraitAsync(AbstractCard card, Runnable onApplied) {
+        if (card == null) {
+            return;
+        }
+        Thread worker = new Thread(() -> {
+            File selected = choosePortraitFile();
+            if (selected == null) {
+                return;
+            }
+            String assetId;
+            try {
+                PortraitFrameType defaultFrame = getDefaultFrameType(card);
+                assetId = INSTANCE.importPortraitWithCropUI(selected, selected.getName(), defaultFrame);
+                if (assetId == null) {
+                    return;
+                }
+            } catch (Exception e) {
+                LoadoutMod.logger.error("Failed to import portrait", e);
+                return;
+            }
+            Gdx.app.postRunnable(() -> {
+                INSTANCE.setTempPortrait(card, assetId);
+                applyPortraitOverride(card);
+                if (onApplied != null) {
+                    onApplied.run();
+                }
+            });
+        }, "LoadoutPortraitPicker");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    public static void chooseFileAndSetPermanentPortraitAsync(String cardId, Runnable onApplied) {
+        if (cardId == null) {
+            return;
+        }
+        Thread worker = new Thread(() -> {
+            File selected = choosePortraitFile();
+            if (selected == null) {
+                return;
+            }
+            String assetId;
+            try {
+                assetId = INSTANCE.importPortraitWithCropUI(selected, selected.getName(), PortraitFrameType.ATTACK);
+                if (assetId == null) {
+                    return;
+                }
+            } catch (Exception e) {
+                LoadoutMod.logger.error("Failed to import portrait", e);
+                return;
+            }
+            Gdx.app.postRunnable(() -> {
+                INSTANCE.setPermanentPortrait(cardId, assetId);
+                if (onApplied != null) {
+                    onApplied.run();
+                }
+            });
+        }, "LoadoutPortraitPicker");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    private static File choosePortraitFile() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return showFileDialog();
+        }
+        final File[] selected = new File[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> selected[0] = showFileDialog());
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to open portrait picker", e);
+            return null;
+        }
+        return selected[0];
+    }
+
+    private static Frame fileDialogOwner;
+//    private static FileDialog fileDialog;
+
+    private static Frame getFileDialogOwner() {
+        if (fileDialogOwner == null) {
+            Frame owner = new Frame();
+            owner.setUndecorated(true);
+            owner.setSize(0, 0);
+            owner.setLocationRelativeTo(null);
+            owner.setAlwaysOnTop(true);
+            owner.setVisible(false);
+            fileDialogOwner = owner;
+        }
+
+        return fileDialogOwner;
+    }
+
+    private static File showFileDialog() {
+        Frame owner = getFileDialogOwner();
+//        Frame owner = null;
+
+        owner.setAlwaysOnTop(true);
+        owner.setVisible(true);
+        owner.toFront();
+        owner.requestFocus();
+        FileDialog dialog = getFileDialog(owner);
+        dialog.setVisible(true);
+        File selected = null;
+        if (dialog.getFile() != null) {
+            selected = new File(dialog.getDirectory(), dialog.getFile());
+        }
+        dialog.setFile(null);
+        owner.setAlwaysOnTop(false);
+        owner.setVisible(false);
+        return selected;
+    }
+
+    private static FileDialog getFileDialog(Frame owner) {
+
+        FileDialog fileDialog = new FileDialog(owner, "Select portrait", FileDialog.LOAD);
+        fileDialog.setModal(true);
+        fileDialog.setAlwaysOnTop(true);
+
+        return fileDialog;
     }
 
     public static void makeTempPortraitPermanent(AbstractCard card) {

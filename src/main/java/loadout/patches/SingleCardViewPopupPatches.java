@@ -16,8 +16,9 @@ public class SingleCardViewPopupPatches {
     public static class LoadPortraitPatch {
         @SpirePrefixPatch
         public static SpireReturn<Void> Prefix(SingleCardViewPopup __instance, AbstractCard ___card) {
-            if (CardPortraitManager.hasTempPortrait(___card)) {
-                Texture portraitTexture = CardPortraitManager.INSTANCE.getLargeDisposableTexture(AbstractCardPatch.getCustomPortraitId(___card));
+            String assetId = CardPortraitManager.INSTANCE.getResolvedAssetId(___card);
+            if (assetId != null) {
+                Texture portraitTexture = CardPortraitManager.INSTANCE.getLargeDisposableTexture(assetId);
                 if (portraitTexture != null) {
                     ReflectionHacks.setPrivate(__instance, SingleCardViewPopup.class, "portraitImg", portraitTexture);
                     return SpireReturn.Return();

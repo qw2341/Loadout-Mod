@@ -202,8 +202,10 @@ public class SCardViewPopup {
     }
 
     public void loadPortraitImg() {
-        if (CardPortraitManager.hasTempPortrait(this.card)) {
-            this.portraitImg = CardPortraitManager.INSTANCE.getTexture(AbstractCardPatch.getCustomPortraitId(this.card));
+        String assetId = CardPortraitManager.INSTANCE.getResolvedAssetId(this.card);
+        if (assetId != null) {
+            // Use a disposable large texture for the popup so we never dispose the cached small portrait.
+            this.portraitImg = CardPortraitManager.INSTANCE.getLargeDisposableTexture(assetId);
         } else if (!Settings.PLAYTESTER_ART_MODE && !UnlockTracker.betaCardPref.getBoolean(this.card.cardID, false)) {
             this.portraitImg = ImageMaster.loadImage("images/1024Portraits/" + this.card.assetUrl + ".png");
             if (this.portraitImg == null) {
@@ -676,7 +678,9 @@ public class SCardViewPopup {
 
             this.renderHelper(sb, (float)Settings.WIDTH / 2.0F, (float)Settings.HEIGHT / 2.0F + 136.0F * Settings.scale, img);
         } else if (this.portraitImg != null) {
-            sb.draw(this.portraitImg, (float)Settings.WIDTH / 2.0F - 250.0F, (float)Settings.HEIGHT / 2.0F - 190.0F + 136.0F * Settings.scale, 250.0F, 190.0F, 500.0F, 380.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 500, 380, false, false);
+            int srcW = this.portraitImg.getWidth();
+            int srcH = this.portraitImg.getHeight();
+            sb.draw(this.portraitImg, (float)Settings.WIDTH / 2.0F - 250.0F, (float)Settings.HEIGHT / 2.0F - 190.0F + 136.0F * Settings.scale, 250.0F, 190.0F, 500.0F, 380.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, srcW, srcH, false, false);
         } else if (this.card.jokePortrait != null) {
             sb.draw(this.card.jokePortrait, (float)Settings.WIDTH / 2.0F - (float)this.card.portrait.packedWidth / 2.0F, (float)Settings.HEIGHT / 2.0F - (float)this.card.portrait.packedHeight / 2.0F + 140.0F * Settings.scale, (float)this.card.portrait.packedWidth / 2.0F, (float)this.card.portrait.packedHeight / 2.0F, (float)this.card.portrait.packedWidth, (float)this.card.portrait.packedHeight, this.drawScale * Settings.scale, this.drawScale * Settings.scale, 0.0F);
         }

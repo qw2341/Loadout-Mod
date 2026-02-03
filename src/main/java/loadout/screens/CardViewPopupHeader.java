@@ -1011,9 +1011,10 @@ public class CardViewPopupHeader implements HeaderButtonPlusListener, DropdownMe
             textPopup.setText(getTextField());
             textPopup.open();
         } else if (button == this.changePortraitButton) {
-            CardPortraitManager.chooseFileAndSetTempPortrait(cardViewScreen.card);
-            CardPortraitManager.INSTANCE.save();
-            cardViewScreen.loadPortraitImg();
+            if (CardPortraitManager.chooseFileAndSetTempPortrait(cardViewScreen.card)) {
+                CardPortraitManager.INSTANCE.save();
+                cardViewScreen.loadPortraitImg();
+            }
         }
          else if(button == this.upgradeModeScreenButton) {
             if(SCardViewPopup.cardUpgradePreviewScreen != null) {
