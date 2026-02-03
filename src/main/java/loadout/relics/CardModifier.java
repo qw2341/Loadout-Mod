@@ -19,18 +19,21 @@ import loadout.LoadoutMod;
 import loadout.cardmods.InfiniteUpgradeMod;
 import loadout.patches.AbstractCardPatch;
 import loadout.patches.InfUpgradePatch;
+import loadout.portraits.CardPortraitManager;
 import loadout.savables.CustomSaver;
+import loadout.savables.SerializableCard;
 import loadout.screens.GCardSelectScreen;
 import rs.lazymankits.interfaces.cards.BranchableUpgradeCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static loadout.LoadoutMod.*;
 
-public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Object[][]> {
+public class CardModifier extends AbstractCardScreenRelic implements CustomSavable<Map<Integer, SerializableCard>> {
 
     public static final String ID = LoadoutMod.makeID("CardModifier");
     public static Texture IMG = null;
@@ -121,7 +124,36 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
 
 
     @Override
-    public Object[][] onSave() {
+    public Map<Integer, SerializableCard> onSave() {
+        if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
+            int len = AbstractDungeon.player.masterDeck.group.size();
+            Map<Integer, SerializableCard> ret = new HashMap<>();
+            for (int i = 0; i<len; i++) {
+                AbstractCard card = AbstractDungeon.player.masterDeck.group.get(i);
+                if (AbstractCardPatch.isCardModified(card)) {
+                    ret.put(i, SerializableCard.toSerializableCard(card));
+                }
+            }
+            return ret;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onLoad(Map<Integer, SerializableCard> ret) {
+        if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
+            if (ret != null && !ret.isEmpty()) {
+                    for (Map.Entry<Integer, SerializableCard> entry : ret.entrySet()) {
+                        AbstractDungeon.player.masterDeck.group.set(entry.getKey(),SerializableCard.toAbstractCard(entry.getValue()));
+                    }
+            }
+        }
+
+    }
+
+    //for backwards compat only
+    public Object[][] onSaveOld() {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
             ArrayList<Object[]> ret = new ArrayList<>();
@@ -152,7 +184,10 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                         nd[1] = card.rawDescription.equals(unmoddedCopy.rawDescription) ? null : card.rawDescription;
                         nameDescMap.put(i, nd);
                     }
-
+//                    cardStat[13] = Arrays.toString(AbstractCardPatch.getCardNormalUpgrade(card));
+//                    cardStat[14] = AbstractCardPatch.getCardAdditionalMagicUpgrade(card);
+//                    cardStat[15] = Arrays.toString(AbstractCardPatch.getCardAdditionalModifiers(card));
+//                    cardStat[16] = AbstractCardPatch.getCustomPortraitId(card);
 
                     ret.add(cardStat);
                 }
@@ -170,8 +205,7 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
         return null;
     }
 
-    @Override
-    public void onLoad(Object[][] ret) {
+    public void onLoadOld(Object[][] ret) {
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             int len = AbstractDungeon.player.masterDeck.group.size();
             if (ret != null && ret.length <= len && ret.length > 0 ) {
@@ -249,43 +283,40 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
                         card.misc = (int)(double)ret[i][11];
                         AbstractCardPatch.setCardModified(card,true);
 
-//                        if() {
-//                            if(ret[i][13] != null) {
-//                                card.originalName = (String) ret[i][13];
-//                                card.name = getUpgradedName(card);
-//                                ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
-//                            }
-//                            if(ret[i][14] != null) {
-//                                card.rawDescription = (String) ret[i][14];
-//                                card.initializeDescription();
-//                            }
-//                        }
-
                         if(CardModifierManager.hasModifier(card, InfiniteUpgradeMod.ID)) {
                             card.upgraded = false;
                             card.timesUpgraded = (int)(double)ret[i][12];
                             InfUpgradePatch.changeCardName(card);
                         }
+
+//                        if(ret[0].length >= 17) {
+//                            //if it contains the field for additional upgrades
+//                            AbstractCardPatch.setCardNormalUpgrade(card, (Integer[]) ret[i][13]);
+//
+//                            //apply temp portrait override between S/L
+//                            CardPortraitManager.applyPortraitOverride(card);
+//                        }
                     }
                 }
+
+
                 if(nameDescMap != null && !nameDescMap.isEmpty()) {
                     for (Map.Entry<Integer, String[]> e: nameDescMap.entrySet()) {
                         AbstractCard card = AbstractDungeon.player.masterDeck.group.get(e.getKey());
                         String[] nd = e.getValue();
                         if(nd[0] != null) {
-                                card.originalName = (String) nd[0];
-                                card.name = getUpgradedName(card);
-                                ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
-                            }
-                            if(nd[1] != null) {
-                                card.rawDescription = (String) nd[1];
-                                card.initializeDescription();
-                            }
+                            card.originalName = (String) nd[0];
+                            card.name = getUpgradedName(card);
+                            ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
+                        }
+                        if(nd[1] != null) {
+                            card.rawDescription = (String) nd[1];
+                            card.initializeDescription();
+                        }
                     }
                 }
             }
         }
-
     }
 
     public static String getUpgradedName(AbstractCard card) {

@@ -14,10 +14,7 @@ import loadout.portraits.CardPortraitManager;
 import loadout.relics.CardModifier;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SerializableCard implements Serializable {
     public String id;
@@ -166,7 +163,7 @@ public class SerializableCard implements Serializable {
             i++;
         }
 
-        sc.customPortraitId = AbstractCardPatch.getCustomPortraitId(card) == null ? null : AbstractCardPatch.getCustomPortraitId(card);
+        sc.customPortraitId = Objects.equals(AbstractCardPatch.getCustomPortraitId(card), "") ? null : AbstractCardPatch.getCustomPortraitId(card);
 
         return sc;
     }

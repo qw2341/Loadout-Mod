@@ -293,6 +293,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         //AllInOneBag Save Load
         BaseMod.addSaveField(AllInOneBag.ID, AllInOneBag.INSTANCE);
         BaseMod.addSaveField(RelicStateSavables.ID, new RelicStateSavables());
+        BaseMod.addSaveField(CardModifier.ID,AllInOneBag.INSTANCE.cardModifier);
 
         logger.info("Replacing custom card portraits");
         CardPortraitManager.INSTANCE.load();
