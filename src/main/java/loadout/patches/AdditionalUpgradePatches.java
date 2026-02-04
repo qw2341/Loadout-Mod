@@ -3,10 +3,7 @@ package loadout.patches;
 import java.util.Map;
 
 import basemod.ReflectionHacks;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.abstracts.AbstractCardModifier;
@@ -14,12 +11,15 @@ import basemod.helpers.CardModifierManager;
 import loadout.helper.ModifierLibrary;
 
 public class AdditionalUpgradePatches {
+
+    static boolean skipPatch = false;
+
    @SpirePatch2(clz = AbstractCard.class, method = "upgradeDamage")
    public static class UpgradeDamagePatch {
        @SpirePrefixPatch
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
             Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
-            if (normUpgrades == null) return;
+            if (normUpgrades == null || skipPatch) return;
             // System.out.println("Upgrading! The array is: " + java.util.Arrays.toString(normUpgrades));
             amount[0] += normUpgrades[1];
        }
@@ -30,7 +30,7 @@ public class AdditionalUpgradePatches {
        @SpirePrefixPatch
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
             Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
-            if (normUpgrades == null) return;
+            if (normUpgrades == null || skipPatch) return;
             amount[0] += normUpgrades[2];
        }
    }
@@ -40,7 +40,7 @@ public class AdditionalUpgradePatches {
        @SpirePrefixPatch
        public static void Prefix(AbstractCard __instance, @ByRef int[] amount) {
             Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
-            if (normUpgrades == null) return;
+            if (normUpgrades == null || skipPatch) return;
             amount[0] += normUpgrades[3];
        }
    }
@@ -50,7 +50,7 @@ public class AdditionalUpgradePatches {
        @SpireInsertPatch(rloc = 2)
        public static void Insert(AbstractCard __instance, @ByRef int[] newBaseCost) {
             Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
-            if (normUpgrades == null) return;
+            if (normUpgrades == null || skipPatch) return;
             __instance.cost += normUpgrades[0];
        }
    }
@@ -84,6 +84,7 @@ public class AdditionalUpgradePatches {
     public static void additionalUpgrade(AbstractCard __instance, boolean doCost, boolean doDamage, boolean doBlock, boolean doMagic) {
         Integer[] normUpgrades = AbstractCardPatch.getCardNormalUpgrade(__instance);
         if (normUpgrades == null) return;
+        skipPatch = true;
         int costUpgrade = normUpgrades[0];
         if(doCost && costUpgrade != 0)
             upgradeBaseCost(__instance, costUpgrade);
@@ -98,6 +99,7 @@ public class AdditionalUpgradePatches {
             ReflectionHacks.privateMethod(AbstractCard.class, "upgradeMagicNumber", int.class).invoke(__instance, magkUpgrade);
        int miscUpgrade = normUpgrades[4];
        __instance.misc += miscUpgrade;
+       skipPatch = false;
 
     //Additional magic number upgrade
         Map<String, Integer> additionalMagicUpgrades = AbstractCardPatch.getCardAdditionalMagicUpgrade(__instance);
