@@ -32,9 +32,13 @@ public class MultiUseAction extends AbstractGameAction {
             isDone = true;
 
             if (usesLeft > 0 && card.canUse(player, monster)) {
-                for (int i=0; i < usesLeft; i++)
+                for (int i=0; i < usesLeft; i++) {
                     card.use(player, monster);
-
+                }
+//                card.use(player, monster);
+//                if (usesLeft > 1) {
+//                    AbstractDungeon.actionManager.addToBottom(new MultiUseAction(card, player, monster, usesLeft - 1));
+//                }
             }
         }
     }
