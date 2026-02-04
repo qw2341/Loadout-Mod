@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
 
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -39,6 +40,8 @@ public class AbstractCardPatch {
             card.originalName = __instance.originalName;
             card.name = __instance.name;
             card.rawDescription = __instance.rawDescription;
+            ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
+            card.initializeDescription();
 
             CardModificationFields.isCardModifiedByModifier.set(card, CardModificationFields.isCardModifiedByModifier.get(__instance));
 
