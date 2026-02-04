@@ -438,7 +438,7 @@ public class AllInOneBag implements UIElement, CustomSavable<RelicSavables> {
     @Override
     public void onLoad(RelicSavables save) {
         if(save == null) return;
-        if(save.modifierSave != null) cardModifier.onLoadOld(save.modifierSave); // backwards compat
+//        cardModifier.onLoadOld(save.modifierSave); // backwards compat
         powerGiver.onLoad(save.powerGiverSave);
         tildeKey.onLoad(save.tildeKeySave);
     }

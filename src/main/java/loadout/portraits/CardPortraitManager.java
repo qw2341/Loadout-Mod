@@ -322,9 +322,12 @@ public class CardPortraitManager {
             for (Path assetPath : stream) {
                 String assetId = extractAssetId(assetPath.getFileName().toString());
                 if (assetId == null) {
+                    Files.delete(assetPath);
                     continue;
                 }
                 if (!referenced.contains(assetId)) {
+                    disposeCached(assetId);
+                    assetMeta.remove(assetId);
                     Files.delete(assetPath);
                     removedAssets.add(assetId);
                 }
@@ -333,10 +336,6 @@ public class CardPortraitManager {
             LoadoutMod.logger.error("Failed to garbage collect portrait assets", e);;
         }
 
-        for (String assetId : removedAssets) {
-            disposeCached(assetId);
-            assetMeta.remove(assetId);
-        }
 
         pruneCache(referenced);
     }
@@ -881,7 +880,6 @@ public class CardPortraitManager {
         String assetId = AbstractCardPatch.getCustomPortraitId(card);
         if (assetId != null) {
             INSTANCE.setPermanentPortrait(card.cardID, assetId);
-            INSTANCE.clearTempPortrait(card);
         }
     }
 

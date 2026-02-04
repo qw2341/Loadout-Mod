@@ -89,6 +89,8 @@ public class CardModifications
 
         if(!isGettingUnmoddedCopy) {
 
+//            System.out.println("Modifying card with SC: " + sc.toString());
+
             for (int i = card.timesUpgraded; i < sc.timesUpgraded; i++) {card.upgrade();}
             card.cost = sc.cost;
             card.costForTurn = card.cost;
@@ -142,6 +144,7 @@ public class CardModifications
 //            LoadoutMod.logger.info("Resulting cardID: "+card.cardID+" cost: " + card.cost + " damage: "
 //                    +card.baseDamage+" block: " + card.baseBlock +" is card modded: "
 //                    + AbstractCardPatch.isCardModified(card));
+//            System.out.println("Resulting card is modified: " + AbstractCardPatch.isCardModified(card));
         }
 
     }

@@ -6,6 +6,7 @@ import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.BranchingUpgradesCard;
 import com.evacipated.cardcrawl.modthespire.Loader;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -26,6 +27,7 @@ import loadout.screens.GCardSelectScreen;
 import rs.lazymankits.interfaces.cards.BranchableUpgradeCard;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -145,11 +147,19 @@ public class CardModifier extends AbstractCardScreenRelic implements CustomSavab
         if (AbstractDungeon.player != null && AbstractDungeon.player.masterDeck != null) {
             if (ret != null && !ret.isEmpty()) {
                     for (Map.Entry<Integer, SerializableCard> entry : ret.entrySet()) {
-                        AbstractDungeon.player.masterDeck.group.set(entry.getKey(),SerializableCard.toAbstractCard(entry.getValue()));
+//                        System.out.println("Card Index: " + entry.getKey() + "; Serializable Card: " + entry.getValue().toString());
+                        AbstractCard cardToPut = SerializableCard.toAbstractCard(entry.getValue());
+                        AbstractCardPatch.setCardModified(cardToPut, true);
+                        AbstractDungeon.player.masterDeck.group.set(entry.getKey(),cardToPut);
                     }
             }
         }
 
+    }
+
+    @Override
+    public Type savedType() {
+        return new TypeToken<Map<Integer, SerializableCard>>(){}.getType();
     }
 
     //for backwards compat only

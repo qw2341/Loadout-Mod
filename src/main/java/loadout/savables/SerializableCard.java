@@ -111,6 +111,12 @@ public class SerializableCard implements Serializable {
         if (sc.customPortraitId != null) {
             AbstractCardPatch.setCustomPortraitId(card, sc.customPortraitId);
             CardPortraitManager.applyPortraitOverride(card);
+        } else {
+            //check for permanent overrides
+            if (CardPortraitManager.hasPermanentPortrait(card)) {
+                AbstractCardPatch.setCustomPortraitId(card, CardPortraitManager.INSTANCE.getResolvedAssetId(card));
+                CardPortraitManager.applyPortraitOverride(card);
+            }
         }
 
         return card;
@@ -170,6 +176,6 @@ public class SerializableCard implements Serializable {
 
     @Override
     public String toString() {
-        return "[CardID: " + this.id + "; Cost: " + this.cost + "; Damage: " + this.baseDamage + "; Block: " + this.baseBlock;
+        return "[CardID: " + this.id + "; Changed Name: " + this.originalName + "; Is Modified: " + this.modified + "; Cost: " + this.cost + "; Damage: " + this.baseDamage + "; Block: " + this.baseBlock + "; Modifiers: " + Arrays.toString(this.modifiers) + "; Additional Magic Numbers: " + this.additionalMagicNumbers + "; Changed Desc: " + this.rawDescription + "; Custom Portrait Id: " + this.customPortraitId + " ]";
     }
 }

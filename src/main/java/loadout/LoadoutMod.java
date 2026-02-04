@@ -44,10 +44,7 @@ import loadout.cards.SutureCard;
 import loadout.helper.ModifierLibrary;
 import loadout.helper.RelicNameComparator;
 import loadout.portraits.CardPortraitManager;
-import loadout.savables.CardLoadouts;
-import loadout.savables.CardModifications;
-import loadout.savables.Favorites;
-import loadout.savables.RelicStateSavables;
+import loadout.savables.*;
 import loadout.screens.SidePanel;
 import loadout.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -294,6 +291,7 @@ StartGameSubscriber, PrePlayerUpdateSubscriber, RenderSubscriber, PostCampfireSu
         BaseMod.addSaveField(AllInOneBag.ID, AllInOneBag.INSTANCE);
         BaseMod.addSaveField(RelicStateSavables.ID, new RelicStateSavables());
         BaseMod.addSaveField(CardModifier.ID,AllInOneBag.INSTANCE.cardModifier);
+        BaseMod.addSaveField(LoadoutCardFieldsSavables.class.getSimpleName(), new LoadoutCardFieldsSavables());
 
         logger.info("Replacing custom card portraits");
         CardPortraitManager.INSTANCE.load();
