@@ -846,10 +846,8 @@ public class CardPortraitManager {
 
     private static File showFileDialog() {
         Frame owner = getFileDialogOwner();
-//        Frame owner = null;
 
         owner.setAlwaysOnTop(true);
-        owner.setVisible(true);
         owner.toFront();
         owner.requestFocus();
         FileDialog dialog = getFileDialog(owner);
@@ -860,7 +858,7 @@ public class CardPortraitManager {
         }
         dialog.setFile(null);
         owner.setAlwaysOnTop(false);
-        owner.setVisible(false);
+
         return selected;
     }
 
