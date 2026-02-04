@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import loadout.patches.AbstractCardPatch;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class LoadoutCardFieldsSavables implements CustomSavable<LoadoutCardField
         return new TypeToken<AdditionalFieldData>() {}.getType();
     }
 
-    public static class AdditionalFieldData {
+    public static class AdditionalFieldData implements Serializable {
         //saves the fields on every card in a deck
         public ArrayList<Map<String, Integer>> additionalMagicUpgradeDiffs;
         public ArrayList<String> additionalMagicNumbers;
