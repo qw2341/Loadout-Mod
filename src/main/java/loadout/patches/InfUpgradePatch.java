@@ -58,7 +58,8 @@ public class InfUpgradePatch {
     public static void changeCardName(AbstractCard card) {
         if(isInfUpgrade(card)) {
             try {
-                card.name = ((CardStrings) ReflectionHacks.getPrivateStatic(card.getClass(), "cardStrings")).NAME + "+" + card.timesUpgraded;
+//                card.name = ((CardStrings) ReflectionHacks.getPrivateStatic(card.getClass(), "cardStrings")).NAME + "+" + card.timesUpgraded;
+                card.name = card.originalName + "+" + card.timesUpgraded;
                 ReflectionHacks.privateMethod(AbstractCard.class, "initializeTitle").invoke(card);
                 card.upgraded = false;
             } catch (Exception e) {
