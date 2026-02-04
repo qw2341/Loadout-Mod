@@ -160,6 +160,7 @@ public class AbstractCardPatch {
     }
 
      public static void deserializeAdditionalMagicNumbers(AbstractCard ac, String data) {
+        if(data == null || data.isEmpty()) return;
         Map<String, Integer> numberMap = CardModificationFields.additionalMagicNumbers.get(ac);
         numberMap.clear();
         String[] pairs = data.split(MAGIC_NUMBER_DELIMITER);
