@@ -22,6 +22,7 @@ public class LoadoutCardFieldsSavables implements CustomSavable<LoadoutCardField
 
     @Override
     public void onLoad(AdditionalFieldData additionalFieldData) {
+        if(additionalFieldData == null) return;
         if(AbstractDungeon.player == null || AbstractDungeon.player.masterDeck == null) return;
         additionalFieldData.onLoad(AbstractDungeon.player.masterDeck.group);
     }
