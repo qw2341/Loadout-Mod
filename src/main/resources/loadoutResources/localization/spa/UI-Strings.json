@@ -28,7 +28,9 @@
 			"#rwarning: ¡Deshabilitar la reliquia del modificador causará modificaciones de la tarjeta #rall, incluidas modificaciones permanentes al mal funcionamiento!",
 			"Habilitar todo Bag [Experimental]",
 			"Habilite la edición con el botón derecho en las entidades",
-			"Selección de pieles"
+			"Selección de pieles",
+			"Exportar imagen de tarjeta personalizada",
+			"Importar imagen de tarjeta personalizada"
 		]
 	},
 	"loadout:RelicSelectionScreen": {

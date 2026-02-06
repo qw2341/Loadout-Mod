@@ -28,7 +28,9 @@
 			"#rAVERTISSEMENT: La désactivation de la relique du modificateur entraînera un dysfonctionnement de toutes les modifications de la carte, y compris les modifications permanentes!",
 			"Activer Tout le Sac [Expérimental]",
 			"Activer l'édition par clic droit sur les entités",
-			"Sélection de la peau"
+			"Sélection de la peau",
+			"Exporter l'image de la carte personnalisée",
+			"Importer l'image de la carte personnalisée"
 		]
 	},
 	"loadout:RelicSelectionScreen": {
@@ -121,7 +123,7 @@
 			"Etes-vous sur ?",
 			"Enregistrer une carte amelioree rendra toutes les cartes futures ameliorees",
 			"Reinitialiser une carte supprimera toutes les modifications temporaires et permanentes",
-			"Enregistrer une carte rendra toutes les cartes futures modifiees comme celle-ci, y compris les modifications d'amelioration"
+			"Enregistrer une carte rendra toutes les cartes futures modifiees comme celle-ci, y compris les modifications d'amelioration",
 			"Changer le portrait"
 		]
 	},
@@ -240,6 +242,18 @@
 			"Piochez des cartes !loadout:DrawMod!.",
 			"Défaussez les cartes !loadout:DiscardMod!.",
 			"Épuisez les cartes !loadout:ExhaustCMod! dans votre main."
+		]
+	},
+	"loadout:PortraitImportExport": {
+		"TEXT": [
+			"Import Portraits",
+			"A portrait for \"%s\" already exists. How do you want to handle it?",
+			"Overwrite All",
+			"Overwrite",
+			"Skip All",
+			"Skip",
+			"Abort",
+			"Export Portraits"
 		]
 	},
 	"loadout:RelicViewHeader" :{

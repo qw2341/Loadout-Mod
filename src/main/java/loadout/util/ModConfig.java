@@ -1,9 +1,10 @@
 package loadout.util;
 
-import basemod.BaseMod;
-import basemod.ModLabeledButton;
-import basemod.ModLabeledToggleButton;
-import basemod.ModPanel;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -11,16 +12,17 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
+
+import basemod.BaseMod;
+import basemod.ModLabeledButton;
+import basemod.ModLabeledToggleButton;
+import basemod.ModPanel;
 import loadout.LoadoutMod;
+import static loadout.LoadoutMod.skinManager;
+import loadout.portraits.CardPortraitManager;
 import loadout.relics.AllInOneBag;
 import loadout.savables.CardModifications;
 import loadout.uiElements.ModLabeledDropdown;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.Properties;
-
-import static loadout.LoadoutMod.skinManager;
 
 public class ModConfig {
 
@@ -440,6 +442,22 @@ public class ModConfig {
                     }
                 });
         settingsPanel.addUIElement(removeModificationsButton);
+
+        settingYPos -= 2 * lineSpacing;
+
+        ModLabeledButton exportCustomPortraitButton = new ModLabeledButton(SettingText[20],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel,
+                (button) -> {
+                    CardPortraitManager.INSTANCE.exportPortraitPackage();
+                });
+        settingsPanel.addUIElement(exportCustomPortraitButton);
+
+        settingYPos -= 2 * lineSpacing;
+
+        ModLabeledButton importCustomPortraitButton = new ModLabeledButton(SettingText[21],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel,
+                (button) -> {
+                    CardPortraitManager.INSTANCE.importPortraitPackage();
+                });
+        settingsPanel.addUIElement(importCustomPortraitButton);
 
         BaseMod.registerModBadge(badgeTexture, LoadoutMod.MODNAME, LoadoutMod.AUTHOR, LoadoutMod.DESCRIPTION, settingsPanel);
 

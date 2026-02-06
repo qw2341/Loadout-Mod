@@ -29,8 +29,8 @@
 			"Enable Everything Bag [Experimental]",
 			"Enable right click edit on entities",
 			"Skin Selection",
-			"Enable ID Display",
-			"Shows developer information, like ID, class, and ModID, in tips when hovered"
+			"Export Custom Portraits",
+			"Import Custom Portraits"
 		]
 	},
 	"loadout:RelicSelectionScreen": {
@@ -243,6 +243,18 @@
 			"Draw !loadout:DrawMod! cards.",
 			"Discard !loadout:DiscardMod! cards.",
 			"Exhaust !loadout:ExhaustCMod! cards in your hand."
+		]
+	},
+	"loadout:PortraitImportExport": {
+		"TEXT": [
+			"Import Portraits",
+			"A portrait for \"%s\" already exists. How do you want to handle it?",
+			"Overwrite All",
+			"Overwrite",
+			"Skip All",
+			"Skip",
+			"Abort",
+			"Export Portraits"
 		]
 	},
 	"loadout:RelicViewHeader" :{

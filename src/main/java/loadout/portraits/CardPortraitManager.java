@@ -8,7 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -21,14 +23,21 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import basemod.ReflectionHacks;
@@ -39,6 +48,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.localization.UIStrings;
 
 import basemod.abstracts.CustomSavable;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
@@ -57,6 +68,21 @@ public class CardPortraitManager {
     public static final String ASSET_PREFIX = "sha256_";
     private static final String SMALL_SUFFIX = "_small";
     private static final String LARGE_SUFFIX = "_large";
+    private static final String PORTRAIT_PACKAGE_EXTENSION = ".lpp";
+    private static final String PORTRAIT_PACKAGE_MANIFEST = "manifest.json";
+    private static final String PORTRAIT_PACKAGE_ASSETS_PREFIX = "assets/";
+    private static final int PORTRAIT_PACKAGE_VERSION = 1;
+    private static final String DEFAULT_EXPORT_FILE_NAME = "loadout_portraits" + PORTRAIT_PACKAGE_EXTENSION;
+    private static final String[] PORTRAIT_PACKAGE_TEXT_FALLBACK = new String[] {
+        "Import Portraits",
+        "A portrait for \"%s\" already exists. How do you want to handle it?",
+        "Overwrite All",
+        "Overwrite",
+        "Skip All",
+        "Skip",
+        "Abort",
+        "Export Portraits"
+    };
     // Debug: skip decoding/crop UI to isolate file dialog lag.
     private static final boolean DEBUG_SKIP_CROP_DECODE = true;
 
@@ -104,6 +130,71 @@ public class CardPortraitManager {
         ensureDirectories();
         writeJsonAtomic(permanentMapPath, permanentOverrides);
         writeJsonAtomic(assetsMetaPath, assetMeta);
+    }
+
+    public boolean exportPortraitPackage() {
+        File selected = choosePortraitPackageFile(true);
+        if (selected == null) {
+            return false;
+        }
+
+        Path outputPath = ensurePortraitPackageExtension(selected.toPath());
+        try {
+            exportPortraitPackage(outputPath);
+            return true;
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to export portrait package", e);
+            return false;
+        }
+    }
+
+    public boolean importPortraitPackage() {
+        File selected = choosePortraitPackageFile(false);
+        if (selected == null) {
+            return false;
+        }
+        Path inputPath = selected.toPath();
+        if (!hasPortraitPackageExtension(inputPath)) {
+            LoadoutMod.logger.warn("Selected portrait package has invalid extension: " + inputPath);
+            return false;
+        }
+
+        try {
+            PortraitPackageData data = readPortraitPackageData(inputPath);
+            if (data == null) {
+                LoadoutMod.logger.warn("Portrait package missing manifest: " + inputPath);
+                return false;
+            }
+
+            Map<String, String> incomingOverrides = data.permanentOverrides != null ? data.permanentOverrides : Collections.emptyMap();
+            Map<String, PortraitAssetMeta> incomingMeta = data.assetMeta != null ? data.assetMeta : Collections.emptyMap();
+            Set<String> assetIds = new HashSet<>();
+            assetIds.addAll(incomingOverrides.values());
+            assetIds.addAll(incomingMeta.keySet());
+
+            if (!mergePermanentOverridesWithPrompt(incomingOverrides)) {
+                return false;
+            }
+
+            ensureDirectories();
+            extractPortraitPackageAssets(inputPath, assetIds);
+            mergeAssetMeta(incomingMeta);
+            for (String assetId : assetIds) {
+                if (assetId == null || assetId.isEmpty()) {
+                    continue;
+                }
+                boolean hasSmall = Files.exists(assetPathSmall(assetId)) || Files.exists(assetPathLegacy(assetId));
+                boolean hasLarge = Files.exists(assetPathLarge(assetId));
+                upsertAssetMeta(assetId, null, hasSmall, hasLarge);
+            }
+            removeMissingMappings(permanentOverrides);
+            upgradeLegacyMeta();
+            save();
+            return true;
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to import portrait package", e);
+            return false;
+        }
     }
 
     private void refreshCardLibrary() {
@@ -544,6 +635,352 @@ public class CardPortraitManager {
         }
     }
 
+    private enum ImportConflictDecision {
+        OVERWRITE_ALL,
+        OVERWRITE,
+        SKIP_ALL,
+        SKIP,
+        ABORT
+    }
+
+    private boolean mergePermanentOverridesWithPrompt(Map<String, String> incomingOverrides) {
+        if (incomingOverrides == null || incomingOverrides.isEmpty()) {
+            return true;
+        }
+
+        Map<String, String> merged = new HashMap<>(permanentOverrides);
+        ImportConflictDecision defaultDecision = null;
+
+        for (Map.Entry<String, String> entry : incomingOverrides.entrySet()) {
+            String cardId = entry.getKey();
+            String incomingAssetId = entry.getValue();
+            if (cardId == null || incomingAssetId == null) {
+                continue;
+            }
+
+            String existingAssetId = merged.get(cardId);
+            if (existingAssetId != null && !Objects.equals(existingAssetId, incomingAssetId)) {
+                ImportConflictDecision decision = defaultDecision;
+                if (decision == null) {
+                    decision = showImportConflictDialog(cardId);
+                    if (decision == ImportConflictDecision.OVERWRITE_ALL || decision == ImportConflictDecision.SKIP_ALL) {
+                        defaultDecision = decision;
+                    }
+                }
+
+                if (decision == ImportConflictDecision.ABORT) {
+                    return false;
+                }
+                if (decision == ImportConflictDecision.SKIP || decision == ImportConflictDecision.SKIP_ALL) {
+                    continue;
+                }
+            }
+
+            merged.put(cardId, incomingAssetId);
+        }
+
+        permanentOverrides.clear();
+        permanentOverrides.putAll(merged);
+        return true;
+    }
+
+    private static ImportConflictDecision showImportConflictDialog(String cardId) {
+        final ImportConflictDecision[] out = new ImportConflictDecision[1];
+        Runnable task = () -> {
+            String[] text = getPortraitPackageText();
+            String title = text[0];
+            String message;
+            try {
+                message = String.format(text[1], cardId);
+            } catch (Exception e) {
+                message = text[1] + " " + cardId;
+            }
+            String[] options = new String[] { text[2], text[3], text[4], text[5], text[6] };
+
+            Frame owner = getFileDialogOwner();
+            owner.setAlwaysOnTop(true);
+            owner.toFront();
+            owner.requestFocus();
+
+            int choice = JOptionPane.showOptionDialog(
+                owner,
+                message,
+                title,
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[1]
+            );
+
+            owner.setAlwaysOnTop(false);
+
+            switch (choice) {
+                case 0:
+                    out[0] = ImportConflictDecision.OVERWRITE_ALL;
+                    break;
+                case 1:
+                    out[0] = ImportConflictDecision.OVERWRITE;
+                    break;
+                case 2:
+                    out[0] = ImportConflictDecision.SKIP_ALL;
+                    break;
+                case 3:
+                    out[0] = ImportConflictDecision.SKIP;
+                    break;
+                case 4:
+                    out[0] = ImportConflictDecision.ABORT;
+                    break;
+                default:
+                    out[0] = ImportConflictDecision.ABORT;
+                    break;
+            }
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(task);
+            } catch (Exception e) {
+                LoadoutMod.logger.error("Failed to show portrait import conflict dialog", e);
+                return ImportConflictDecision.ABORT;
+            }
+        }
+
+        return out[0] != null ? out[0] : ImportConflictDecision.ABORT;
+    }
+
+    private void exportPortraitPackage(Path outputPath) throws IOException {
+        ensureDirectories();
+        Map<String, String> exportOverrides = new HashMap<>(permanentOverrides);
+        removeMissingMappings(exportOverrides);
+
+        Set<String> assetIds = new HashSet<>(exportOverrides.values());
+        Map<String, PortraitAssetMeta> exportMeta = new HashMap<>();
+        for (String assetId : assetIds) {
+            if (assetId == null || assetId.isEmpty()) {
+                continue;
+            }
+            PortraitAssetMeta meta = assetMeta.get(assetId);
+            if (meta == null) {
+                meta = buildFallbackMeta(assetId);
+            }
+            exportMeta.put(assetId, meta);
+        }
+
+        PortraitPackageData data = new PortraitPackageData();
+        data.version = PORTRAIT_PACKAGE_VERSION;
+        data.createdAt = Instant.now().toString();
+        data.permanentOverrides = exportOverrides;
+        data.assetMeta = exportMeta;
+
+        writePortraitPackage(outputPath, data, assetIds);
+    }
+
+    private PortraitPackageData readPortraitPackageData(Path inputPath) throws IOException {
+        try (ZipFile zipFile = new ZipFile(inputPath.toFile())) {
+            ZipEntry manifestEntry = zipFile.getEntry(PORTRAIT_PACKAGE_MANIFEST);
+            if (manifestEntry == null) {
+                return null;
+            }
+            try (InputStream in = zipFile.getInputStream(manifestEntry)) {
+                String json = new String(readAllBytes(in), StandardCharsets.UTF_8);
+                return CustomSavable.saveFileGson.fromJson(json, PortraitPackageData.class);
+            }
+        }
+    }
+
+    private void writePortraitPackage(Path outputPath, PortraitPackageData data, Set<String> assetIds) throws IOException {
+        Path parent = outputPath.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(outputPath))) {
+            zip.setLevel(Deflater.BEST_COMPRESSION);
+
+            ZipEntry manifestEntry = new ZipEntry(PORTRAIT_PACKAGE_MANIFEST);
+            zip.putNextEntry(manifestEntry);
+            zip.write(toJsonBytes(data));
+            zip.closeEntry();
+
+            for (String assetId : assetIds) {
+                if (assetId == null || assetId.isEmpty()) {
+                    continue;
+                }
+                writeAssetEntryIfExists(zip, assetPathSmall(assetId));
+                writeAssetEntryIfExists(zip, assetPathLarge(assetId));
+                writeAssetEntryIfExists(zip, assetPathLegacy(assetId));
+            }
+        }
+    }
+
+    private void writeAssetEntryIfExists(ZipOutputStream zip, Path assetPath) throws IOException {
+        if (assetPath == null || !Files.exists(assetPath)) {
+            return;
+        }
+        ZipEntry entry = new ZipEntry(PORTRAIT_PACKAGE_ASSETS_PREFIX + assetPath.getFileName().toString());
+        zip.putNextEntry(entry);
+        try (InputStream in = Files.newInputStream(assetPath)) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                zip.write(buffer, 0, read);
+            }
+        }
+        zip.closeEntry();
+    }
+
+    private void extractPortraitPackageAssets(Path inputPath, Set<String> assetIds) throws IOException {
+        if (assetIds == null || assetIds.isEmpty()) {
+            return;
+        }
+        try (ZipFile zipFile = new ZipFile(inputPath.toFile())) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                String name = entry.getName();
+                if (!name.startsWith(PORTRAIT_PACKAGE_ASSETS_PREFIX)) {
+                    continue;
+                }
+                String relative = name.substring(PORTRAIT_PACKAGE_ASSETS_PREFIX.length());
+                if (relative.isEmpty()) {
+                    continue;
+                }
+                String fileName = Paths.get(relative).getFileName().toString();
+                String assetId = extractAssetId(fileName);
+                if (assetId == null || !assetIds.contains(assetId)) {
+                    continue;
+                }
+
+                Path dest = assetsDir.resolve(relative).normalize();
+                if (!dest.startsWith(assetsDir)) {
+                    continue;
+                }
+                if (Files.exists(dest)) {
+                    continue;
+                }
+                Files.createDirectories(dest.getParent());
+                try (InputStream in = zipFile.getInputStream(entry)) {
+                    Files.copy(in, dest);
+                }
+            }
+        }
+    }
+
+    private void mergeAssetMeta(Map<String, PortraitAssetMeta> incomingMeta) {
+        if (incomingMeta == null || incomingMeta.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, PortraitAssetMeta> entry : incomingMeta.entrySet()) {
+            String assetId = entry.getKey();
+            PortraitAssetMeta incoming = entry.getValue();
+            if (assetId == null || incoming == null) {
+                continue;
+            }
+
+            PortraitAssetMeta existing = assetMeta.get(assetId);
+            if (existing == null) {
+                assetMeta.put(assetId, incoming);
+                continue;
+            }
+
+            if (existing.createdAt == null && incoming.createdAt != null) {
+                existing.createdAt = incoming.createdAt;
+            }
+            if (existing.sourceName == null && incoming.sourceName != null) {
+                existing.sourceName = incoming.sourceName;
+            }
+            if (!existing.hasSmall && incoming.hasSmall) {
+                existing.hasSmall = true;
+                existing.smallWidth = incoming.smallWidth;
+                existing.smallHeight = incoming.smallHeight;
+                if (existing.width == 0) {
+                    existing.width = incoming.width;
+                }
+                if (existing.height == 0) {
+                    existing.height = incoming.height;
+                }
+            }
+            if (!existing.hasLarge && incoming.hasLarge) {
+                existing.hasLarge = true;
+                existing.largeWidth = incoming.largeWidth;
+                existing.largeHeight = incoming.largeHeight;
+            }
+        }
+    }
+
+    private PortraitAssetMeta buildFallbackMeta(String assetId) {
+        PortraitAssetMeta meta = new PortraitAssetMeta();
+        meta.assetId = assetId;
+        meta.createdAt = Instant.now().toString();
+        boolean hasSmall = Files.exists(assetPathSmall(assetId)) || Files.exists(assetPathLegacy(assetId));
+        boolean hasLarge = Files.exists(assetPathLarge(assetId));
+        if (hasSmall) {
+            meta.hasSmall = true;
+            meta.width = TARGET_WIDTH;
+            meta.height = TARGET_HEIGHT;
+            meta.smallWidth = TARGET_WIDTH;
+            meta.smallHeight = TARGET_HEIGHT;
+        }
+        if (hasLarge) {
+            meta.hasLarge = true;
+            meta.largeWidth = LARGE_WIDTH;
+            meta.largeHeight = LARGE_HEIGHT;
+        }
+        return meta;
+    }
+
+    private static boolean hasPortraitPackageExtension(Path path) {
+        if (path == null) {
+            return false;
+        }
+        String name = path.getFileName().toString().toLowerCase();
+        return name.endsWith(PORTRAIT_PACKAGE_EXTENSION);
+    }
+
+    private static Path ensurePortraitPackageExtension(Path path) {
+        if (path == null) {
+            return null;
+        }
+        if (hasPortraitPackageExtension(path)) {
+            return path;
+        }
+        return path.resolveSibling(path.getFileName().toString() + PORTRAIT_PACKAGE_EXTENSION);
+    }
+
+    private static byte[] toJsonBytes(Object obj) {
+        StringWriter writer = new StringWriter();
+        CustomSavable.saveFileGson.toJson(obj, writer);
+        return writer.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static byte[] readAllBytes(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        return out.toByteArray();
+    }
+
+    private static String[] getPortraitPackageText() {
+        try {
+            UIStrings strings = CardCrawlGame.languagePack.getUIString(LoadoutMod.makeID("PortraitImportExport"));
+            if (strings != null && strings.TEXT != null && strings.TEXT.length >= PORTRAIT_PACKAGE_TEXT_FALLBACK.length) {
+                return strings.TEXT;
+            }
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to load portrait import/export UI strings", e);
+        }
+        return PORTRAIT_PACKAGE_TEXT_FALLBACK;
+    }
+
     private Map<String, String> readStringMap(Path path) {
         if (!Files.exists(path)) {
             return new HashMap<>();
@@ -661,6 +1098,13 @@ public class CardPortraitManager {
         } catch (Exception e) {
             throw new IOException("Failed to hash portrait bytes.", e);
         }
+    }
+
+    private static class PortraitPackageData {
+        public int version;
+        public String createdAt;
+        public Map<String, String> permanentOverrides;
+        public Map<String, PortraitAssetMeta> assetMeta;
     }
 
     private static class CachedRegion {
@@ -827,6 +1271,20 @@ public class CardPortraitManager {
         return selected[0];
     }
 
+    private static File choosePortraitPackageFile(boolean save) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return showPortraitPackageFileDialog(save);
+        }
+        final File[] selected = new File[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> selected[0] = showPortraitPackageFileDialog(save));
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to open portrait package dialog", e);
+            return null;
+        }
+        return selected[0];
+    }
+
     private static Frame fileDialogOwner;
 //    private static FileDialog fileDialog;
 
@@ -862,11 +1320,45 @@ public class CardPortraitManager {
         return selected;
     }
 
+    private static File showPortraitPackageFileDialog(boolean save) {
+        Frame owner = getFileDialogOwner();
+        String[] text = getPortraitPackageText();
+        String title = save ? text[7] : text[0];
+
+        owner.setAlwaysOnTop(true);
+        owner.toFront();
+        owner.requestFocus();
+        FileDialog dialog = getPortraitPackageFileDialog(owner, title, save);
+        dialog.setVisible(true);
+        File selected = null;
+        if (dialog.getFile() != null) {
+            selected = new File(dialog.getDirectory(), dialog.getFile());
+        }
+        dialog.setFile(null);
+        owner.setAlwaysOnTop(false);
+
+        return selected;
+    }
+
     private static FileDialog getFileDialog(Frame owner) {
 
         FileDialog fileDialog = new FileDialog(owner, "Select portrait", FileDialog.LOAD);
         fileDialog.setModal(true);
         fileDialog.setAlwaysOnTop(true);
+
+        return fileDialog;
+    }
+
+    private static FileDialog getPortraitPackageFileDialog(Frame owner, String title, boolean save) {
+        FileDialog fileDialog = new FileDialog(owner, title, save ? FileDialog.SAVE : FileDialog.LOAD);
+        fileDialog.setModal(true);
+        fileDialog.setAlwaysOnTop(true);
+        fileDialog.setFilenameFilter((dir, name) -> name != null && name.toLowerCase().endsWith(PORTRAIT_PACKAGE_EXTENSION));
+        if (save) {
+            fileDialog.setFile(DEFAULT_EXPORT_FILE_NAME);
+        } else {
+            fileDialog.setFile("*" + PORTRAIT_PACKAGE_EXTENSION);
+        }
 
         return fileDialog;
     }
