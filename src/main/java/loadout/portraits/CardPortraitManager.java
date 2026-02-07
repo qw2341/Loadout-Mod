@@ -56,6 +56,7 @@ import com.megacrit.cardcrawl.helpers.CardLibrary;
 import loadout.LoadoutMod;
 import loadout.patches.AbstractCardPatch;
 import loadout.savables.CardLoadouts;
+import loadout.savables.CardModifications;
 import loadout.savables.SerializableCard;
 
 public class CardPortraitManager {
@@ -81,7 +82,9 @@ public class CardPortraitManager {
         "Skip All",
         "Skip",
         "Abort",
-        "Export Portraits"
+        "Export Portraits",
+        "Portrait export completed successfully.",
+        "Portrait import completed successfully."
     };
     // Debug: skip decoding/crop UI to isolate file dialog lag.
     private static final boolean DEBUG_SKIP_CROP_DECODE = true;
@@ -141,6 +144,7 @@ public class CardPortraitManager {
         Path outputPath = ensurePortraitPackageExtension(selected.toPath());
         try {
             exportPortraitPackage(outputPath);
+            showPortraitPackageSuccessDialog(true);
             return true;
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to export portrait package", e);
@@ -190,6 +194,7 @@ public class CardPortraitManager {
             removeMissingMappings(permanentOverrides);
             upgradeLegacyMeta();
             save();
+            showPortraitPackageSuccessDialog(false);
             return true;
         } catch (Exception e) {
             LoadoutMod.logger.error("Failed to import portrait package", e);
@@ -676,6 +681,7 @@ public class CardPortraitManager {
                 }
             }
 
+            saveAsPermanentPortrait(cardId, incomingAssetId);
             merged.put(cardId, incomingAssetId);
         }
 
@@ -749,6 +755,46 @@ public class CardPortraitManager {
         }
 
         return out[0] != null ? out[0] : ImportConflictDecision.ABORT;
+    }
+
+    private static void showPortraitPackageSuccessDialog(boolean export) {
+        Runnable task = () -> {
+            String[] text = getPortraitPackageText();
+            String title = export ? text[7] : text[0];
+            String message = export ? text[8] : text[9];
+
+            Frame owner = getFileDialogOwner();
+            owner.setAlwaysOnTop(true);
+            owner.toFront();
+            owner.requestFocus();
+            JOptionPane.showMessageDialog(owner, message, title, JOptionPane.INFORMATION_MESSAGE);
+            owner.setAlwaysOnTop(false);
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(task);
+            } catch (Exception e) {
+                LoadoutMod.logger.error("Failed to show portrait import/export success dialog", e);
+            }
+        }
+    }
+
+    private void saveAsPermanentPortrait(String cardId, String assetId) {
+        if( CardModifications.cardMap.get(cardId)  != null ) {
+            CardModifications.cardMap.get(cardId).customPortraitId  = assetId;
+        } else {
+            SerializableCard sc = SerializableCard.toSerializableCard(CardLibrary.getCard(cardId));
+            sc.customPortraitId = assetId;
+            CardModifications.cardMap.put(cardId, sc);
+        }
+        try {
+            LoadoutMod.cardModifications.save();
+        } catch (Exception e) {
+            LoadoutMod.logger.error("Failed to save card portraits when importing", e);
+        }
     }
 
     private void exportPortraitPackage(Path outputPath) throws IOException {

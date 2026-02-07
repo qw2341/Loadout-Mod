@@ -246,14 +246,16 @@
 	},
 	"loadout:PortraitImportExport": {
 		"TEXT": [
-			"Import Portraits",
-			"A portrait for \"%s\" already exists. How do you want to handle it?",
-			"Overwrite All",
-			"Overwrite",
-			"Skip All",
-			"Skip",
-			"Abort",
-			"Export Portraits"
+			"Importer les portraits",
+			"Un portrait existe déjà pour \"%s\". Comment souhaitez-vous le gérer?",
+			"Tout écraser",
+			"Écraser",
+			"Tout ignorer",
+			"Ignorer",
+			"Annuler",
+			"Exporter les portraits",
+			"Exportation des portraits terminée avec succès.",
+			"Importation des portraits terminée avec succès."
 		]
 	},
 	"loadout:RelicViewHeader" :{

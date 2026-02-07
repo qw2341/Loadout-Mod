@@ -245,6 +245,20 @@
 			"Agota !loadout:ExhaustCMod! cartas en tu mano."
 		]
 	},
+	"loadout:PortraitImportExport": {
+		"TEXT": [
+			"Importar retratos",
+			"Ya existe un retrato para \"%s\". ¿Cómo desea gestionarlo?",
+			"Sobrescribir todo",
+			"Sobrescribir",
+			"Omitir todo",
+			"Omitir",
+			"Cancelar",
+			"Exportar retratos",
+			"Exportación de retrato completada correctamente.",
+			"Importación de retrato completada correctamente."
+		]
+	},
 	"loadout:RelicViewHeader" :{
 		"TEXT":[
 			"Contador de Reliquias"

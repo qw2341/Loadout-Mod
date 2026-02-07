@@ -425,7 +425,7 @@ public class ModConfig {
 
 
 
-        settingYPos -= lineSpacing;
+        settingYPos = Settings.HEIGHT / 4.0f;
         settingXPos += 800.0f;
 
         ModLabeledButton removeModificationsButton = new ModLabeledButton(SettingText[15],settingXPos, settingYPos, Settings.CREAM_COLOR, Settings.RED_TEXT_COLOR, FontHelper.charDescFont, settingsPanel,

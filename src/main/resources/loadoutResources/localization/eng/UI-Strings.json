@@ -254,7 +254,9 @@
 			"Skip All",
 			"Skip",
 			"Abort",
-			"Export Portraits"
+			"Export Portraits",
+			"Portrait export completed successfully.",
+			"Portrait import completed successfully."
 		]
 	},
 	"loadout:RelicViewHeader" :{

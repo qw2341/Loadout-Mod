@@ -243,6 +243,20 @@
 			"消耗 !loadout:ExhaustCMod! 張牌。"
 		]
 	},
+	"loadout:PortraitImportExport": {
+		"TEXT": [
+			"導入自定義卡圖",
+			"%s 的自定義卡圖已存在。您想如何處理？",
+			"全部覆蓋",
+			"覆蓋",
+			"全部跳過",
+			"跳過",
+			"中止",
+			"導出自定義卡圖",
+			"自定義卡圖導出成功。",
+			"自定義卡圖導入成功。"
+		]
+	},
 	"loadout:RelicViewHeader" :{
 		"TEXT":[
 			"遺物計數"
